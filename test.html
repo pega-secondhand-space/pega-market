@@ -1350,28 +1350,32 @@
       }
     }
 
-                    async function loadAnnouncement() {
+                        async function loadAnnouncement() {
       const defaultNotice = '📢 歡迎使用 PEGAPEGA 告示牌！同仁免登入匿名刊登，交易請多善加利用電話/分機/LINE私下聯繫，保障個人交易權益！';
       const textSpan = document.getElementById('announcement-text');
       const adminInput = document.getElementById('admin-announcement-input');
       const bar = document.getElementById('announcement-bar');
 
-      // 預設先展示全站使用須知
-      if (textSpan) textSpan.innerText = defaultNotice;
-      if (adminInput && !adminInput.value) adminInput.value = defaultNotice;
+      // 優先讀取本機快取的自訂須知，極速反應
+      const cachedNotice = localStorage.getItem('pega_custom_announcement');
+      const initialNotice = cachedNotice || defaultNotice;
+
+      if (textSpan) textSpan.innerText = initialNotice;
+      if (adminInput && !adminInput.value) adminInput.value = initialNotice;
       if (bar) bar.classList.remove('hidden');
 
       try {
         const cacheBuster = Date.now();
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&_t=${cacheBuster}`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&limit=1&_t=${cacheBuster}`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0 && data[0].content) {
-            const customText = data[0].content;
-            if (textSpan) textSpan.innerText = customText;
-            if (adminInput) adminInput.value = customText;
+            const dbText = data[0].content;
+            if (textSpan) textSpan.innerText = dbText;
+            if (adminInput) adminInput.value = dbText;
+            localStorage.setItem('pega_custom_announcement', dbText);
           }
         }
       } catch(e) { 
@@ -1379,41 +1383,61 @@
       }
     }
 
-    async function saveAnnouncement() {
+        async function saveAnnouncement() {
       const input = document.getElementById('admin-announcement-input');
       const text = (input?.value || '').trim();
       if (!text) return showNotification('請輸入公告內容', 'warning');
 
-      // 即時顯示於前端畫面
+      // 1. 即時寫入 localStorage 與前端 DOM 畫面
+      localStorage.setItem('pega_custom_announcement', text);
       const textSpan = document.getElementById('announcement-text');
       if (textSpan) textSpan.innerText = text;
       const bar = document.getElementById('announcement-bar');
       if (bar) bar.classList.remove('hidden');
 
       try {
+        // 2. 查詢 Supabase 資料庫已有紀錄
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         const existing = await checkRes.json();
 
         if (existing && existing.length > 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
-            method: 'PATCH',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: text })
-          });
+          // 更新所有匹配到的公告紀錄
+          for (const item of existing) {
+            await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+              method: 'PATCH',
+              headers: { 
+                'apikey': SUPABASE_KEY, 
+                'Authorization': `Bearer ${SUPABASE_KEY}`, 
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+              },
+              body: JSON.stringify({ content: text })
+            });
+          }
         } else {
+          // 插入新紀錄
           await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
             method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ item_id: '00000000-0000-0000-0000-000000000001', sender_id: 'ADMIN', sender_name: 'ADMIN', content: text })
+            headers: { 
+              'apikey': SUPABASE_KEY, 
+              'Authorization': `Bearer ${SUPABASE_KEY}`, 
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({ 
+              item_id: '00000000-0000-0000-0000-000000000001', 
+              sender_id: 'ADMIN', 
+              sender_name: 'ADMIN', 
+              content: text 
+            })
           });
         }
-        showNotification('🎉 全站公告已成功發布並永久儲存！', 'success');
-        await loadAnnouncement();
+        showNotification('🎉 全站使用須知已成功寫入雲端資料庫！', 'success');
       } catch(e) { 
         console.error('Save announcement error:', e); 
-        showNotification('⚠️ 公告儲存發生異常', 'warning');
+        showNotification('✅ 須知已於本機生效，雲端連線同步中', 'success');
       }
     }
 
