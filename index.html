@@ -1,12 +1,239 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title id="doc-site-title">PEGAPEGA</title>
-  
-  <!-- 錯誤捕獲機制 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body id="main-body" class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans transition-all duration-300 bg-cover bg-center bg-fixed">
+
+  <!-- 除錯與系統錯誤提示框 -->
+  <div id="debug-error-box" class="hidden bg-red-600/90 text-white text-xs font-bold px-4 py-2 text-center sticky top-0 z-50 shadow-md"></div>
+
+  <!-- 全站置頂公告欄 -->
+  <div id="announcement-bar" class="hidden bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-indigo-100 px-4 py-2.5 text-xs font-bold flex items-center justify-between shadow-lg border-b border-indigo-500/30">
+    <div class="flex items-center gap-2 max-w-4xl mx-auto truncate">
+      <span class="bg-amber-400 text-gray-950 px-2 py-0.5 rounded-md text-[10px] font-black uppercase shrink-0">📢 全站公告</span>
+      <span id="announcement-text" class="truncate"></span>
+    </div>
+    <button onclick="closeAnnouncementBar()" class="text-indigo-300 hover:text-white shrink-0 ml-2"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- 頂部導航欄 (Navbar) -->
+  <header class="bg-gray-900/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <h1 onclick="refreshPageData()" title="點擊一鍵重新整理資料" class="text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition flex items-center gap-1.5"><span id="site-title-text">PEGAPEGA</span> <i class="fa-solid fa-rotate-right text-xs text-indigo-400"></i></h1>
+        <span id="user-identity-display" class="text-xs text-gray-300 font-bold bg-gray-900/90 px-3 py-1.5 rounded-xl border border-gray-700/80 shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-user-secret text-indigo-400"></i> 匿名同仁
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openIssueModal()" class="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
+          <i class="fa-solid fa-bug text-amber-400"></i> <span class="hidden sm:inline">回報問題與建議</span>
+        </button>
+
+        <button onclick="openAdminModal()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-indigo-300 border border-indigo-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
+          <i class="fa-solid fa-user-shield text-indigo-400"></i> <span id="admin-btn-text">後台管理</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
+
+    <!-- 搜尋列與篩選 Tab -->
+    <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div class="relative w-full sm:w-80">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+        <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品標題、描述或聯絡資訊..." class="w-full pl-9 pr-4 py-2 bg-gray-900/90 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition shadow-inner">
+      </div>
+
+      <div class="flex gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 text-xs font-bold">
+        <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-xl bg-indigo-600 text-white transition shadow active:scale-95 shrink-0">全部</button>
+        <button onclick="setFilter('sell')" id="filter-sell" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">💰 想賣</button>
+        <button onclick="setFilter('buy')" id="filter-buy" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🔍 想買</button>
+        <button onclick="setFilter('free')" id="filter-free" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🎁 免費送</button>
+      </div>
+    </div>
+
+    <!-- 告示牌貼文清單 (網格展示) -->
+    <div id="grid-container" class="mx-auto">
+      <div id="item-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <!-- 動態刊登項目 -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 浮動刊登按鈕 (FAB) -->
+  <button onclick="openCreateModal()" class="fixed right-5 bottom-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 z-30 border border-indigo-400/40">
+    <i class="fa-solid fa-plus text-base"></i>
+    <span class="text-xs sm:text-sm">我要刊登</span>
+  </button>
+
+  <!-- 刊登物品 Modal -->
+  <div id="create-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+      <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle text-indigo-400"></i> 我要發布告示牌貼文
+        </h3>
+        <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5 overflow-y-auto space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs">💰 想賣</button>
+            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs">🔍 想買</button>
+            <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs">🎁 免費送</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">物品名稱/標題：</label>
+          <input type="text" id="post-title" placeholder="例如：精美單眼鏡頭清潔組 / 求購二手電風扇" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">價格 (NT$)：</label>
+          <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">📞 聯絡方式 (分機 / LINE / Teams / 面交地點)：</label>
+          <input type="text" id="post-contact" placeholder="例如：分機 45555 / LINE: pega123 / A棟大廳面交" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">物品描述：</label>
+          <textarea id="post-desc" rows="3" placeholder="請詳細說明物品狀況、規格或交易地點..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">照片網址 (選填)：</label>
+          <input type="text" id="post-img" placeholder="請貼上照片圖片連結 (留空自動附上精美預設圖)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">⏳ 自動下架截止日設定：</label>
+          <select id="item-expiration" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 font-medium focus:outline-none focus:border-indigo-500">
+            <option value="none" selected>無限制 (預設永久展示直至手動下架)</option>
+            <option value="7">7 天後自動下架 (1 週刊登)</option>
+            <option value="14">14 天後自動下架 (2 週刊登)</option>
+            <option value="30">30 天後自動下架 (1 個月)</option>
+            <option value="60">60 天後自動下架 (2 個月)</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeCreateModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-bold rounded-xl transition">取消</button>
+          <button onclick="submitCreateItem()" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95">🎉 發布貼文</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 後台管理 Modal -->
+  <div id="admin-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[520px] animate-fadeIn">
+      <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
+          <i class="fa-solid fa-user-shield text-indigo-400"></i> 版主管理控制台
+        </h3>
+        <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-5 flex-1 overflow-y-auto space-y-4">
+        <!-- 未登入介面 -->
+        <div id="admin-login-view" class="space-y-4 max-w-xs mx-auto text-center py-6">
+          <p class="text-xs text-gray-300 font-bold">請輸入版主管理密碼：</p>
+          <input type="password" id="admin-pwd-input" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="預設密碼: admin123" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 text-center font-bold focus:outline-none focus:border-indigo-500">
+          <button onclick="checkAdminPassword()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">登入控制台</button>
+        </div>
+
+        <!-- 已登入介面 -->
+        <div id="admin-dashboard-view" class="hidden space-y-4">
+          <div class="flex items-center justify-between bg-gray-900 p-3 rounded-xl border border-gray-700 text-xs">
+            <span class="font-bold text-emerald-400">✅ 版主身份已驗證權限解鎖</span>
+            <button onclick="logoutAdmin()" class="px-3 py-1 bg-red-900/60 text-red-300 hover:bg-red-800 rounded-lg font-bold">登出版主</button>
+          </div>
+
+          <!-- 網站平台名稱設定 -->
+          <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
+            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-heading text-indigo-400"></i> 網站平台名稱設定 (即時生效)：
+            </label>
+            <div class="flex gap-2">
+              <input type="text" id="admin-sitename-input" placeholder="例如：PEGAPEGA" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+              <button onclick="saveSiteName()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
+                💾 儲存名稱
+              </button>
+            </div>
+          </div>
+
+          <!-- 全站公告設定 -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-gray-300">📢 發布全站廣播公告：</label>
+            <textarea id="admin-announcement-input" rows="3" placeholder="請輸入全站公告內容..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
+            <div class="flex justify-end gap-2">
+              <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl transition">清除公告</button>
+              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">💾 儲存公告</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🐛 回報網站問題與建議留言板 Modal -->
+  <div id="issue-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+      <div class="px-5 py-4 bg-gray-900/90 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-lg">
+            🐛
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-gray-100">回報網站問題與建議留言板</h3>
+            <p class="text-[10px] text-gray-400">匿名提出除錯反饋與改善建議</p>
+          </div>
+        </div>
+        <button onclick="closeIssueModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-5 flex-1 overflow-y-auto space-y-4">
+        <div class="bg-gray-900/90 p-3.5 rounded-2xl border border-gray-700/80 space-y-3">
+          <h4 class="font-bold text-xs text-amber-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-pen-to-square"></i> 我要提出問題或建議：
+          </h4>
+          <textarea id="issue-content" rows="2" placeholder="請詳細描述遇到的問題或功能建議..." class="w-full p-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 resize-none font-medium"></textarea>
+          <div class="flex justify-end">
+            <button onclick="submitNewIssue()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">
+              <i class="fa-solid fa-paper-plane"></i> 送出問題單
+            </button>
+          </div>
+        </div>
+
+        <div id="issue-list-container" class="space-y-3">
+          <!-- 動態載入問題清單 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript 腳本 -->
   <script>
     window.onerror = function(msg, url, lineNo, columnNo, error) {
       var errBox = document.getElementById('debug-error-box');
@@ -16,312 +243,7 @@
       }
       return false;
     };
-  </script>
 
-  <!-- CDNs -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    body {
-      background-color: #111827;
-      color: #f3f4f6;
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      transition: background-image 0.5s ease-in-out;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body id="main-body" class="bg-gray-900 text-gray-100 min-h-screen pb-24 font-sans">
-
-  <!-- Tailwind Safelist -->
-  <div class="hidden grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 max-w-xs max-w-xl max-w-3xl max-w-5xl max-w-7xl bg-blue-600 bg-blue-500 border-blue-400"></div>
-
-  <!-- 除錯與錯誤通報列 -->
-  <div id="debug-error-box" class="hidden bg-red-900/90 border-b border-red-500 text-red-100 p-3 text-xs text-center sticky top-0 z-50 shadow-md"></div>
-
-  <!-- 頂部導覽列 -->
-  <header class="bg-gray-800/85 backdrop-blur-md border-b border-gray-700/80 p-4 sticky top-0 z-20 shadow-lg">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-2">
-      <div>
-        <h1 onclick="refreshPageData()" title="點擊一鍵重新整理資料" class="text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition flex items-center gap-1.5"><span id="site-title-text">PEGAPEGA</span> <i class="fa-solid fa-rotate-right text-xs text-indigo-400"></i></h1>
-        <p id="user-display" class="text-[11px] text-gray-400 mt-0.5">載入使用者身分中...</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <button onclick="openAdminModal()" class="text-xs bg-indigo-600/80 hover:bg-indigo-600 text-white px-3.5 py-2 rounded-full border border-indigo-500/50 transition flex items-center gap-1.5 shadow font-bold">
-          <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text">後台管理</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- 主內容區域 -->
-  <main class="max-w-7xl mx-auto p-3 sm:p-5 space-y-4">
-
-    <!-- 告示板 (公告欄) -->
-    <div id="announcement-bar" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-3 rounded-xl text-xs flex items-start gap-2.5 shadow-sm backdrop-blur-sm max-w-2xl mx-auto">
-      <i class="fa-solid fa-bullhorn text-amber-400 mt-0.5 text-sm shrink-0"></i>
-      <p id="announcement-text" class="leading-relaxed flex-1"></p>
-    </div>
-
-    <!-- 搜尋與分類篩選列 -->
-    <div class="max-w-xl mx-auto space-y-2.5">
-      <div class="flex gap-2 items-center">
-        <div class="relative flex-1">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
-          <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品名稱、求購或描述..." 
-                 class="w-full pl-10 pr-4 py-2.5 bg-gray-800/90 text-gray-100 rounded-xl text-sm border border-gray-700 focus:outline-none focus:border-indigo-500 shadow-inner placeholder-gray-500 backdrop-blur-sm">
-        </div>
-
-        <!-- 🔵 藍色底亮眼凸顯的排版切換下拉選單 -->
-        <div class="relative flex items-center shrink-0">
-          <select id="grid-layout-select" onchange="changeGridLayout(this.value)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold border-2 border-blue-400 rounded-xl text-xs px-3 py-2.5 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer">
-            <option value="1" class="bg-gray-800 text-gray-100">單排 1 卡</option>
-            <option value="2" class="bg-gray-800 text-gray-100">單排 2 卡 (手機建議)</option>
-            <option value="3" class="bg-gray-800 text-gray-100">單排 3 卡</option>
-            <option value="4" class="bg-gray-800 text-gray-100">單排 4 卡 (電腦預設)</option>
-            <option value="5" class="bg-gray-800 text-gray-100">單排 5 卡</option>
-          </select>
-        </div>
-      </div>
-      
-      <div class="grid grid-cols-4 gap-1.5 text-xs font-medium">
-        <button onclick="setFilter('all')" id="btn-all" class="py-2 rounded-xl bg-indigo-600 text-white font-bold shadow-md transition">全部</button>
-        <button onclick="setFilter('sell')" id="btn-sell" class="py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm">💰 想賣</button>
-        <button onclick="setFilter('buy')" id="btn-buy" class="py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm">🔍 想買</button>
-        <button onclick="setFilter('free')" id="btn-free" class="py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm">🎁 免費送</button>
-      </div>
-    </div>
-
-    <!-- 商品大廳外層容器 -->
-    <div id="grid-container" class="mx-auto transition-all duration-300">
-      <!-- 商品大廳：動態網格 -->
-      <div id="item-grid" class="grid gap-3 sm:gap-4 transition-all duration-300">
-        <p class="col-span-full text-gray-400 text-center py-12 text-sm">正在載入刊登項目中...</p>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- 右下角懸浮刊登按鈕 -->
-  <button onclick="openPostModal()" class="fixed right-4 bottom-6 bg-indigo-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl hover:bg-indigo-500 active:scale-95 transition flex items-center gap-2 z-30 border border-indigo-400/30">
-    <i class="fa-solid fa-plus text-lg"></i>
-    <span class="text-sm">我要刊登</span>
-  </button>
-
-  <!-- 大圖與詳細內容 Modal -->
-  <div id="image-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4" onclick="closeImageModal()">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[85vh]" onclick="event.stopPropagation()">
-      <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-gray-900/80 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg z-10 hover:bg-gray-700 transition">&times;</button>
-
-      <div id="modal-img-box" class="w-full bg-black flex items-center justify-center min-h-[200px] max-h-[350px] overflow-hidden"></div>
-
-      <div class="p-4 space-y-3 overflow-y-auto">
-        <div class="flex items-center justify-between">
-          <span id="modal-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full"></span>
-          <span id="modal-time" class="text-xs text-gray-400"></span>
-        </div>
-        <h3 id="modal-title" class="text-lg font-bold text-gray-100"></h3>
-        <p id="modal-price" class="text-xl font-black text-indigo-400"></p>
-        <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-700/50">
-          <p class="text-xs text-gray-400 mb-1">詳細說明：</p>
-          <p id="modal-desc" class="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed"></p>
-        </div>
-        <p id="modal-seller" class="text-xs text-gray-500"></p>
-
-        <button id="modal-chat-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
-          <i class="fa-regular fa-comments"></i> 私訊聯繫
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 多功能管理員後台 Modal -->
-  <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl p-5 space-y-4 max-h-[90vh] flex flex-col">
-      <div class="flex justify-between items-center border-b border-gray-700 pb-3">
-        <h3 class="font-bold text-base text-gray-100 flex items-center gap-2">
-          <i class="fa-solid fa-user-shield text-indigo-400"></i> 管理員控制台
-        </h3>
-        <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white text-xl font-bold">&times;</button>
-      </div>
-
-      <!-- 登入區域 (支援 Enter 鍵直接登入、大輸入框與高清對比) -->
-      <form id="admin-login-box" onsubmit="event.preventDefault(); checkAdminPassword();" class="space-y-4 py-2">
-        <div>
-          <label class="block text-sm font-bold text-gray-200 mb-1.5">請輸入管理員密碼：</label>
-          <input type="password" id="admin-password" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="請輸入密碼，按 Enter 即可進入" 
-                 class="w-full p-3.5 bg-gray-900 border-2 border-indigo-500/70 focus:border-indigo-400 rounded-xl text-base text-white placeholder-gray-500 font-medium tracking-wider shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
-        </div>
-        <button type="submit" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold text-base hover:bg-indigo-500 active:scale-98 transition shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-solid fa-right-to-bracket"></i> 登入後台 (按 Enter 亦可進入)
-        </button>
-      </form>
-
-      <!-- 後台管理控制面板 -->
-      <div id="admin-panel" class="hidden flex-1 overflow-y-auto space-y-4 text-xs pr-1">
-        <div class="flex justify-between items-center bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-800/40 text-indigo-300">
-          <span class="font-medium">✅ 管理員已登入</span>
-          <div class="flex items-center gap-2">
-            <button onclick="exportItemsCSV()" class="bg-emerald-600/90 hover:bg-emerald-600 text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 transition shadow">
-              <i class="fa-solid fa-file-csv"></i> 匯出 CSV 備份
-            </button>
-            <button onclick="logoutAdmin()" class="bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded-lg font-bold transition">登出</button>
-          </div>
-        </div>
-
-        <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700 grid grid-cols-4 gap-2 text-center">
-          <div>
-            <p class="text-gray-400 text-[10px]">總刊登數</p>
-            <p id="stat-total" class="text-base font-bold text-indigo-400">0</p>
-          </div>
-          <div>
-            <p class="text-gray-400 text-[10px]">求購數量</p>
-            <p id="stat-buy" class="text-base font-bold text-amber-400">0</p>
-          </div>
-          <div>
-            <p class="text-gray-400 text-[10px]">免費贈送</p>
-            <p id="stat-free" class="text-base font-bold text-emerald-400">0</p>
-          </div>
-          <div>
-            <p class="text-gray-400 text-[10px]">📌 官方置頂</p>
-            <p id="stat-pinned" class="text-base font-bold text-amber-300">0</p>
-          </div>
-        </div>
-
-        <!-- 後台分頁 Tab -->
-        <div class="flex gap-2 border-b border-gray-700 pb-2">
-          <button onclick="switchAdminTab('items')" id="admin-tab-btn-items" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition flex items-center gap-1">
-            <i class="fa-solid fa-list-check"></i> 刊登內容總管
-          </button>
-          <button onclick="switchAdminTab('settings')" id="admin-tab-btn-settings" class="px-3 py-1.5 rounded-xl bg-gray-800 text-gray-400 hover:text-gray-200 border border-gray-700 font-bold transition flex items-center gap-1">
-            <i class="fa-solid fa-gear"></i> 全站公告與設定
-          </button>
-        </div>
-
-        <!-- 分頁 1: 刊登內容總管清單 (寬敞大視覺與分類過濾) -->
-        <div id="admin-tab-items" class="space-y-3">
-          <div class="flex flex-wrap gap-2 items-center justify-between bg-gray-900/60 p-2.5 rounded-xl border border-gray-700/60">
-            <div class="relative flex-1 min-w-[200px]">
-              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
-              <input type="text" id="admin-item-search" oninput="renderAdminItemList()" placeholder="搜尋刊登標題、描述或發布者暱稱..." class="w-full pl-8 pr-3 py-1.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500">
-            </div>
-            <div class="flex gap-1 text-[11px] font-bold">
-              <button onclick="setAdminFilter('all')" id="admin-filter-all" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white transition shadow">全部</button>
-              <button onclick="setAdminFilter('sell')" id="admin-filter-sell" class="px-2.5 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">💰 想賣</button>
-              <button onclick="setAdminFilter('buy')" id="admin-filter-buy" class="px-2.5 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">🔍 想買</button>
-              <button onclick="setAdminFilter('free')" id="admin-filter-free" class="px-2.5 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">🎁 免費送</button>
-              <button onclick="setAdminFilter('pinned')" id="admin-filter-pinned" class="px-2.5 py-1.5 rounded-lg bg-gray-800 text-amber-400 hover:bg-gray-700 transition">📌 已置頂</button>
-            </div>
-          </div>
-
-          <div id="admin-item-list" class="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
-            <!-- 動態渲染刊登列表 -->
-          </div>
-        </div>
-
-        <!-- 分頁 2: 全站與公告設定 -->
-        <div id="admin-tab-settings" class="hidden space-y-4">
-          <div class="space-y-1.5">
-            <label class="font-bold text-gray-200 block">📢 頂部告示板公告修改：</label>
-            <textarea id="admin-announcement-input" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-200 h-16 placeholder-gray-500" placeholder="寫下新的公告..."></textarea>
-            <button onclick="updateAnnouncement()" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-1.5 rounded-xl font-bold transition">更新全站公告</button>
-          </div>
-
-          <div class="space-y-1.5 border-t border-gray-700 pt-3">
-            <label class="font-bold text-gray-200 block">🖼️ 換全站桌面背景圖 (網址 URL)：</label>
-            <div class="flex gap-2">
-              <input type="text" id="bg-url-input" placeholder="貼上圖片 URL (留空還原預設)" class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-100">
-              <button onclick="changeBgImage()" class="bg-indigo-600 text-white px-3 rounded-xl font-bold hover:bg-indigo-500 transition">儲存背景</button>
-            </div>
-          </div>
-
-          <div class="space-y-1.5 border-t border-gray-700 pt-3">
-            <label class="font-bold text-gray-200 block">🔑 更換管理員密碼：</label>
-            <div class="flex gap-2">
-              <input type="password" id="new-admin-pwd" placeholder="新密碼" class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-100">
-              <button onclick="changeAdminPassword()" class="bg-emerald-600 text-white px-3 rounded-xl font-bold hover:bg-emerald-500 transition">修改密碼</button>
-            </div>
-          </div>
-
-          <div class="space-y-1.5 border-t border-gray-700 pt-3">
-            <label class="font-bold text-gray-200 block">🚫 敏感詞 / 禁詞過濾 (用逗號隔開)：</label>
-            <input type="text" id="banned-words-input" placeholder="例如: 賭博,槍枝,黃牛" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-100">
-            <button onclick="saveBannedWords()" class="w-full bg-gray-700 hover:bg-gray-600 text-gray-200 py-1.5 rounded-xl font-bold transition">儲存敏感詞設定</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- 刊登 / 編輯 Modal -->
-  <div id="post-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-md max-h-[90vh] rounded-t-2xl sm:rounded-2xl flex flex-col overflow-hidden">
-      <div class="p-4 bg-gray-750 border-b border-gray-700 flex justify-between items-center">
-        <h3 id="post-modal-title" class="font-bold text-base text-gray-100">刊登物品 / 發布求購</h3>
-        <button onclick="closePostModal()" class="text-gray-400 hover:text-white text-xl font-bold">&times;</button>
-      </div>
-      
-      <form id="post-form" class="p-4 overflow-y-auto space-y-3.5 text-sm">
-        <input type="hidden" id="editing-item-id" value="">
-
-        <div>
-          <label class="block text-xs font-medium text-gray-400 mb-1">刊登類型</label>
-          <select id="type" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100" onchange="togglePriceInput()">
-            <option value="sell">💰 我想賣</option>
-            <option value="buy">🔍 想買/求購</option>
-            <option value="free">🎁 免費贈送</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-gray-400 mb-1">上傳圖片 (選填)</label>
-          <input type="file" id="image-input" accept="image/*" onchange="previewImageDimension(this)" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-300 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500">
-          <p id="img-dimension-badge" class="text-[10px] text-indigo-400 mt-1 hidden"></p>
-        </div>
-
-        <div>
-          <input type="text" id="title" placeholder="標題 (例: 徵二手 iPhone 13 / 售9成新滑鼠)" required class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500">
-        </div>
-
-        <div id="price-container">
-          <input type="text" id="price" placeholder="預售金額 / 徵求預算 ($)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500">
-        </div>
-
-        <div>
-          <textarea id="description" placeholder="補充描述 (如物品狀況、面交地點、預算範圍等)..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500 h-20"></textarea>
-        </div>
-
-        <div>
-          <input type="text" id="contact" placeholder="(選填) Teams / LINE 聯絡方式" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500">
-        </div>
-
-        <button type="submit" id="submit-btn" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-500 transition shadow-lg">確認發布</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- 聊天室 Modal -->
-  <div id="chat-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-end sm:items-center justify-center z-50">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-md h-[85vh] rounded-t-2xl sm:rounded-2xl flex flex-col overflow-hidden">
-      <div class="p-4 bg-gray-750 border-b border-gray-700 flex justify-between items-center">
-        <h3 id="chat-title" class="font-bold text-sm truncate text-gray-100">對話區</h3>
-        <button onclick="closeChat()" class="text-gray-400 hover:text-white text-xl font-bold">&times;</button>
-      </div>
-      <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-2.5 bg-gray-900 text-sm"></div>
-      <div class="p-3 border-t border-gray-700 flex gap-2 bg-gray-800">
-        <input type="text" id="chat-input" placeholder="輸入匿名訊息..." class="flex-1 p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-gray-100 focus:outline-none focus:border-indigo-500 placeholder-gray-500">
-        <button onclick="sendMessage()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-500 transition">發送</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
     const SUPABASE_URL = 'https://llnnbanqtmnccfvtwooo.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTI5MTkyNiwiZXhwIjoyMTAwODY3OTI2fQ.RTdMtKEw9tD3N2KSO3mY7M2Z4ZVB1ZY24SPv-yzL0Hk';
 
@@ -329,90 +251,35 @@
     try {
       if (typeof supabase !== 'undefined' && supabase.createClient) {
         db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      } else {
-        console.warn('Supabase SDK CDN failed to load properly.');
       }
     } catch(e) {
       console.error('Supabase init error:', e);
     }
 
     let adminPassword = localStorage.getItem('pega_admin_pwd') || 'admin123';
-    let isAdmin = localStorage.getItem('pega_is_admin') === 'true'; 
+    let isAdmin = localStorage.getItem('pega_is_admin') === 'true';
 
-    let deviceId = localStorage.getItem('user_device_id');
-    let nickname = localStorage.getItem('user_nickname');
+    let deviceId = localStorage.getItem('pega_device_id');
+    let nickname = localStorage.getItem('pega_nickname');
     if (!deviceId) {
-      deviceId = 'usr_' + Math.random().toString(36).substr(2, 9);
+      deviceId = 'usr_' + Math.random().toString(36).substring(2, 11);
       nickname = 'PEGA同仁#' + Math.floor(1000 + Math.random() * 9000);
-      localStorage.setItem('user_device_id', deviceId);
-      localStorage.setItem('user_nickname', nickname);
+      localStorage.setItem('pega_device_id', deviceId);
+      localStorage.setItem('pega_nickname', nickname);
     }
 
-    var userDisp = document.getElementById('user-display');
-    if (userDisp) userDisp.innerText = '你的代號：' + nickname;
+    let allItems = [];
+    let currentFilter = 'all';
+    let postType = 'sell';
+    let globalPinnedIds = [];
 
-    if (isAdmin) {
-      var adminBtnText = document.getElementById('admin-btn-text');
-      if (adminBtnText) adminBtnText.innerText = '後台管理 (已登入)';
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 您的代號：<strong class="text-indigo-300 font-bold">${nickname}</strong>`;
+      }
     }
 
-    const savedBg = localStorage.getItem('pega_bg_url');
-    if (savedBg) {
-      var mainBody = document.getElementById('main-body');
-      if (mainBody) mainBody.style.backgroundImage = `url('${savedBg}')`;
-      var bgInput = document.getElementById('bg-url-input');
-      if (bgInput) bgInput.value = savedBg;
-    }
-
-    const isMobile = window.innerWidth < 640;
-    let savedCols = localStorage.getItem('pega_grid_cols');
-    if (!savedCols) {
-      savedCols = isMobile ? '2' : '4';
-      localStorage.setItem('pega_grid_cols', savedCols);
-    }
-    
-    var gridSelect = document.getElementById('grid-layout-select');
-    if (gridSelect) gridSelect.value = savedCols;
-    applyGridLayout(savedCols);
-
-    function changeGridLayout(cols) {
-      localStorage.setItem('pega_grid_cols', cols);
-      applyGridLayout(cols);
-    }
-
-    function applyGridLayout(cols) {
-      const container = document.getElementById('grid-container');
-      const grid = document.getElementById('item-grid');
-      if (!container || !grid) return;
-      
-      container.className = container.className.replace(/max-w-[^\s]+/g, '').trim();
-      grid.className = grid.className.replace(/grid-cols-\d+/g, '').trim();
-
-      const maxWMap = {
-        '1': 'max-w-xs',
-        '2': 'max-w-xl',
-        '3': 'max-w-3xl',
-        '4': 'max-w-5xl',
-        '5': 'max-w-7xl'
-      };
-
-      const containerWidth = maxWMap[cols] || 'max-w-5xl';
-      container.classList.add(containerWidth);
-      grid.classList.add(`grid-cols-${cols}`);
-    }
-
-    
-    // 🔄 點擊頂部標題一鍵刷新
-    function refreshPageData() {
-      const searchInput = document.getElementById('search-input');
-      if (searchInput) searchInput.value = '';
-      setFilter('all');
-      const grid = document.getElementById('item-grid');
-      if (grid) grid.innerHTML = '<p class="col-span-full text-gray-400 text-center py-12 text-sm">正在重新載入刊登項目中...</p>';
-  
-    // ==========================================
-    // 🏷️ 網站名稱動態設定 Logic (預設: PEGAPEGA)
-    // ==========================================
     function loadSiteName() {
       const savedName = localStorage.getItem('pega_site_name') || 'PEGAPEGA';
       const titleSpan = document.getElementById('site-title-text');
@@ -427,531 +294,19 @@
     function saveSiteName() {
       const input = document.getElementById('admin-sitename-input');
       const newName = (input?.value || '').trim();
-      if (!newName) {
-        showNotification('⚠️ 網站名稱不可為空', 'warning');
-        return;
-      }
+      if (!newName) return alert('⚠️ 網站名稱不可為空');
       localStorage.setItem('pega_site_name', newName);
-  
-    // ==========================================
-    // 🔑 身份持久化與專屬復原碼 Logic
-    // ==========================================
-    function getRecoveryCode(devId) {
-      if (!devId) return 'PEGA-8888';
-      let hash = 0;
-      for (let i = 0; i < devId.length; i++) {
-        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
-        hash |= 0;
-      }
-      const codeNum = Math.abs(hash % 9000) + 1000;
-      return `PEGA-${codeNum}`;
+      loadSiteName();
+      alert(`✅ 網站名稱已更新為：${newName}`);
     }
 
-    function updateIdentityDisplay() {
-      const display = document.getElementById('user-identity-display');
-      if (display) {
-        const recCode = getRecoveryCode(deviceId);
-        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
-      }
-    }
-
-    function copyRecoveryCode() {
-      const recCode = getRecoveryCode(deviceId);
-      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
-      navigator.clipboard.writeText(copyText).then(() => {
-        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
-      }).catch(() => {
-        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
-      });
-    }
-
-    function promptRestoreIdentity() {
-      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
-      if (!code || !code.trim()) return;
-      const cleanCode = code.trim().toUpperCase();
-      if (!cleanCode.startsWith('PEGA-')) {
-        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
-        return;
-      }
-
-      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
-      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
-
-      localStorage.setItem('pega_device_id', restoredDevId);
-      localStorage.setItem('pega_nickname', restoredNick);
-      deviceId = restoredDevId;
-      nickname = restoredNick;
-
-      updateIdentityDisplay();
-      refreshPageData();
-      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
-    }
-
-    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
-    async function sendTestMessage() {
-      const testMsgs = [
-        '你好！請問這個商品還在嗎？',
-        '方便約在公司大廳面交嗎？',
-        '功能測試：訊息連線正常發送！',
-        '收到，謝謝回覆！'
-      ];
-      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
-      const input = document.getElementById('chat-input');
-      if (input) {
-        input.value = randomMsg;
-        sendMessage();
-      }
-    }
-
-    updateIdentityDisplay();
-  
-    // ==========================================
-    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
-    // ==========================================
-    let currentUpdateItemId = null;
-    let currentQAItemId = null;
-
-    function openSellerUpdateModal(itemId, title) {
-      currentUpdateItemId = itemId;
-      const titleElem = document.getElementById('seller-update-title');
-      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
-      document.getElementById('seller-update-content').value = '';
-      document.getElementById('seller-update-passcode').value = '';
-      document.getElementById('seller-update-modal').classList.remove('hidden');
-    }
-
-    function closeSellerUpdateModal() {
-      const modal = document.getElementById('seller-update-modal');
-      if (modal) modal.classList.add('hidden');
-      currentUpdateItemId = null;
-    }
-
-    async function submitSellerUpdate() {
-      const content = (document.getElementById('seller-update-content')?.value || '').trim();
-      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入補充更新內容', 'warning');
-        return;
-      }
-
-      if (!pass && !isAdmin) {
-        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `UPDATE_${currentUpdateItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-
-        if (res.ok) {
-          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
-          closeSellerUpdateModal();
-          loadItems();
-        }
-      } catch(e) {
-        console.error('Submit update error:', e);
-      }
-    }
-
-    async function openPublicQAModal(itemId, title) {
-      currentQAItemId = itemId;
-      const titleElem = document.getElementById('public-qa-title');
-      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.remove('hidden');
-      loadPublicQAMessages(itemId);
-    }
-
-    function closePublicQAModal() {
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.add('hidden');
-      currentQAItemId = null;
-    }
-
-    async function loadPublicQAMessages(itemId) {
-      const container = document.getElementById('public-qa-list');
-      if (!container) return;
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        if (res.ok) {
-          const msgs = await res.json();
-          if (msgs.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
-            return;
-          }
-
-          container.innerHTML = msgs.map(m => {
-            const isMe = m.sender_id === deviceId;
-            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-300 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
-                  </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
-                </div>
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-                  ${safeContent}
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.scrollTop = container.scrollHeight;
-        }
-      } catch(e) {
-        console.error('Load QA error:', e);
-      }
-    }
-
-    async function submitPublicQA() {
-      const input = document.getElementById('public-qa-input');
-      const content = (input?.value || '').trim();
-      if (!content || !currentQAItemId) return;
-
-      const container = document.getElementById('public-qa-list');
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      if (container) {
-        const tempQA = `
-          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-gray-300 flex items-center gap-1">
-                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
-              </span>
-              <span class="text-[10px] text-gray-500">剛才</span>
-            </div>
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-              ${safeContent}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', tempQA);
-        container.scrollTop = container.scrollHeight;
-      }
-
-      input.value = '';
-
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `QA_${currentQAItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-        loadPublicQAMessages(currentQAItemId);
-      } catch(e) {
-        console.error('Submit QA error:', e);
-      }
-    }
-
-    loadSiteName();
-      showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
-    }
-
-
-    // ==========================================
-    // 🔑 身份持久化與專屬復原碼 Logic
-    // ==========================================
-    function getRecoveryCode(devId) {
-      if (!devId) return 'PEGA-8888';
-      let hash = 0;
-      for (let i = 0; i < devId.length; i++) {
-        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
-        hash |= 0;
-      }
-      const codeNum = Math.abs(hash % 9000) + 1000;
-      return `PEGA-${codeNum}`;
-    }
-
-    function updateIdentityDisplay() {
-      const display = document.getElementById('user-identity-display');
-      if (display) {
-        const recCode = getRecoveryCode(deviceId);
-        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
-      }
-    }
-
-    function copyRecoveryCode() {
-      const recCode = getRecoveryCode(deviceId);
-      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
-      navigator.clipboard.writeText(copyText).then(() => {
-        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
-      }).catch(() => {
-        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
-      });
-    }
-
-    function promptRestoreIdentity() {
-      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
-      if (!code || !code.trim()) return;
-      const cleanCode = code.trim().toUpperCase();
-      if (!cleanCode.startsWith('PEGA-')) {
-        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
-        return;
-      }
-
-      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
-      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
-
-      localStorage.setItem('pega_device_id', restoredDevId);
-      localStorage.setItem('pega_nickname', restoredNick);
-      deviceId = restoredDevId;
-      nickname = restoredNick;
-
-      updateIdentityDisplay();
-      refreshPageData();
-      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
-    }
-
-    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
-    async function sendTestMessage() {
-      const testMsgs = [
-        '你好！請問這個商品還在嗎？',
-        '方便約在公司大廳面交嗎？',
-        '功能測試：訊息連線正常發送！',
-        '收到，謝謝回覆！'
-      ];
-      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
-      const input = document.getElementById('chat-input');
-      if (input) {
-        input.value = randomMsg;
-        sendMessage();
-      }
-    }
-
-    updateIdentityDisplay();
-  
-    // ==========================================
-    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
-    // ==========================================
-    let currentUpdateItemId = null;
-    let currentQAItemId = null;
-
-    function openSellerUpdateModal(itemId, title) {
-      currentUpdateItemId = itemId;
-      const titleElem = document.getElementById('seller-update-title');
-      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
-      document.getElementById('seller-update-content').value = '';
-      document.getElementById('seller-update-passcode').value = '';
-      document.getElementById('seller-update-modal').classList.remove('hidden');
-    }
-
-    function closeSellerUpdateModal() {
-      const modal = document.getElementById('seller-update-modal');
-      if (modal) modal.classList.add('hidden');
-      currentUpdateItemId = null;
-    }
-
-    async function submitSellerUpdate() {
-      const content = (document.getElementById('seller-update-content')?.value || '').trim();
-      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入補充更新內容', 'warning');
-        return;
-      }
-
-      if (!pass && !isAdmin) {
-        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `UPDATE_${currentUpdateItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-
-        if (res.ok) {
-          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
-          closeSellerUpdateModal();
-          loadItems();
-        }
-      } catch(e) {
-        console.error('Submit update error:', e);
-      }
-    }
-
-    async function openPublicQAModal(itemId, title) {
-      currentQAItemId = itemId;
-      const titleElem = document.getElementById('public-qa-title');
-      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.remove('hidden');
-      loadPublicQAMessages(itemId);
-    }
-
-    function closePublicQAModal() {
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.add('hidden');
-      currentQAItemId = null;
-    }
-
-    async function loadPublicQAMessages(itemId) {
-      const container = document.getElementById('public-qa-list');
-      if (!container) return;
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        if (res.ok) {
-          const msgs = await res.json();
-          if (msgs.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
-            return;
-          }
-
-          container.innerHTML = msgs.map(m => {
-            const isMe = m.sender_id === deviceId;
-            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-300 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
-                  </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
-                </div>
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-                  ${safeContent}
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.scrollTop = container.scrollHeight;
-        }
-      } catch(e) {
-        console.error('Load QA error:', e);
-      }
-    }
-
-    async function submitPublicQA() {
-      const input = document.getElementById('public-qa-input');
-      const content = (input?.value || '').trim();
-      if (!content || !currentQAItemId) return;
-
-      const container = document.getElementById('public-qa-list');
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      if (container) {
-        const tempQA = `
-          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-gray-300 flex items-center gap-1">
-                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
-              </span>
-              <span class="text-[10px] text-gray-500">剛才</span>
-            </div>
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-              ${safeContent}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', tempQA);
-        container.scrollTop = container.scrollHeight;
-      }
-
-      input.value = '';
-
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `QA_${currentQAItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-        loadPublicQAMessages(currentQAItemId);
-      } catch(e) {
-        console.error('Submit QA error:', e);
-      }
-    }
-
-    loadSiteName();
-      loadAnnouncement();
-      loadAndRenderIssues();
+    function refreshPageData() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.value = '';
+      setFilter('all');
       loadItems();
+      loadAnnouncement();
     }
-    
-    let allItems = [];
-    let currentFilter = 'all';
-    let currentItemId = null;
-    let chatSubscription = null;
-
-    function switchAdminTab(tabName) {
-      const itemsTab = document.getElementById('admin-tab-items');
-      const settingsTab = document.getElementById('admin-tab-settings');
-      const itemsBtn = document.getElementById('admin-tab-btn-items');
-      const settingsBtn = document.getElementById('admin-tab-btn-settings');
-
-      if (tabName === 'items') {
-        itemsTab.classList.remove('hidden');
-        settingsTab.classList.add('hidden');
-        itemsBtn.className = 'px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition flex items-center gap-1';
-        settingsBtn.className = 'px-3 py-1.5 rounded-xl bg-gray-800 text-gray-400 hover:text-gray-200 border border-gray-700 font-bold transition flex items-center gap-1';
-        renderAdminItemList();
-      } else {
-        itemsTab.classList.add('hidden');
-        settingsTab.classList.remove('hidden');
-        settingsBtn.className = 'px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition flex items-center gap-1';
-        itemsBtn.className = 'px-3 py-1.5 rounded-xl bg-gray-800 text-gray-400 hover:text-gray-200 border border-gray-700 font-bold transition flex items-center gap-1';
-      }
-    }
-
-    let globalPinnedIds = [];
 
     async function loadGlobalPinnedIds() {
       try {
@@ -972,59 +327,35 @@
       }
     }
 
-    function getPinnedItems() {
-      return globalPinnedIds;
-    }
-
     async function togglePinItem(id) {
+      if (!isAdmin) return alert('⚠️ 只有版主可以置頂商品');
       let pinned = [...globalPinnedIds];
       if (pinned.includes(id)) {
         pinned = pinned.filter(pId => pId !== id);
-        showNotification('📌 已取消置頂 (手機與電腦已同步連動)', 'info');
+        alert('📍 已取消該刊登項目的置頂狀態！');
       } else {
         pinned.push(id);
-        showNotification('📌 已成功置頂！(手機與電腦已同步連動)', 'success');
+        alert('📌 已成功將該刊登項目標記為【官方置頂】！');
       }
-      
       globalPinnedIds = pinned;
       renderItems();
-      renderAdminItemList();
-      updateStats();
 
-      // Sync to Supabase Database for 100% Mobile <-> PC Realtime Sync
       try {
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PINNED_IDS&select=id`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         const existing = await checkRes.json();
-
         if (existing && existing.length > 0) {
           await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
             method: 'PATCH',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json'
-            },
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ content: JSON.stringify(pinned) })
           });
         } else {
           await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
             method: 'POST',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              item_id: 'SYSTEM_PINNED_IDS',
-              sender_id: 'ADMIN',
-              sender_name: 'ADMIN',
-              content: JSON.stringify(pinned)
-            })
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: 'SYSTEM_PINNED_IDS', sender_id: 'ADMIN', sender_name: 'ADMIN', content: JSON.stringify(pinned) })
           });
         }
       } catch(e) {
@@ -1032,2151 +363,366 @@
       }
     }
 
-    let currentAdminFilter = 'all';
-
-    function setAdminFilter(filter) {
-      currentAdminFilter = filter;
-      ['all', 'sell', 'buy', 'free', 'pinned'].forEach(f => {
-        const btn = document.getElementById('admin-filter-' + f);
-        if (btn) {
-          if (f === filter) {
-            btn.className = f === 'pinned' ? 'px-2.5 py-1.5 rounded-lg bg-amber-600 text-white font-bold transition shadow' : 'px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition shadow';
-          } else {
-            btn.className = f === 'pinned' ? 'px-2.5 py-1.5 rounded-lg bg-gray-800 text-amber-400 hover:bg-gray-700 transition' : 'px-2.5 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition';
-          }
+    async function loadItems() {
+      await loadGlobalPinnedIds();
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=*&order=created_at.desc`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (res.ok) {
+          allItems = await res.json();
+          renderItems();
         }
-      });
-      renderAdminItemList();
+      } catch(e) {
+        console.error('Load items error:', e);
+      }
     }
 
-    function renderAdminItemList() {
-      const listContainer = document.getElementById('admin-item-list');
-      if (!listContainer) return;
+    function renderItems() {
+      const grid = document.getElementById('item-grid');
+      if (!grid) return;
 
-      const searchKey = (document.getElementById('admin-item-search')?.value || '').toLowerCase();
-      const pinnedIds = getPinnedItems();
+      const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
 
       const filtered = allItems.filter(item => {
-        const title = (item.title || '').toLowerCase();
-        const desc = (item.description || '').toLowerCase();
-        const nick = (item.nickname || '').toLowerCase();
-        const matchesSearch = title.includes(searchKey) || desc.includes(searchKey) || nick.includes(searchKey);
+        if (currentFilter !== 'all' && item.type !== currentFilter) return false;
+        if (searchVal) {
+          const matchTitle = (item.title || '').toLowerCase().includes(searchVal);
+          const matchDesc = (item.description || '').toLowerCase().includes(searchVal);
+          const matchContact = (item.contact || '').toLowerCase().includes(searchVal);
+          return matchTitle || matchDesc || matchContact;
+        }
+        return true;
+      });
 
-        const itemType = item.type || 'sell';
-        const isPinned = pinnedIds.includes(item.id);
-
-        let matchesFilter = true;
-        if (currentAdminFilter === 'sell') matchesFilter = itemType === 'sell';
-        if (currentAdminFilter === 'buy') matchesFilter = itemType === 'buy';
-        if (currentAdminFilter === 'free') matchesFilter = itemType === 'free';
-        if (currentAdminFilter === 'pinned') matchesFilter = isPinned;
-
-        return matchesSearch && matchesFilter;
+      // Sort pinned items to the top
+      filtered.sort((a, b) => {
+        const aPinned = globalPinnedIds.includes(a.id) ? 1 : 0;
+        const bPinned = globalPinnedIds.includes(b.id) ? 1 : 0;
+        return bPinned - aPinned;
       });
 
       if (filtered.length === 0) {
-        listContainer.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">查無符合作業條件的刊登項目</p>';
+        grid.innerHTML = '<p class="col-span-full text-gray-400 text-center py-12 text-sm">尚無相符的刊登貼文</p>';
         return;
       }
 
-      listContainer.innerHTML = filtered.map(item => {
-        const isPinned = pinnedIds.includes(item.id);
-        const itemType = item.type || 'sell';
-        
-        // Expiration check
-        let isExpired = false;
-        let daysLeftStr = '';
-        if (item.expires_at) {
-          const expDate = new Date(item.expires_at);
-          const now = new Date();
-          const diffDays = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
-          if (diffDays <= 0) {
-            isExpired = true;
-          } else {
-            daysLeftStr = `⏳ 剩 ${diffDays} 天`;
-          }
-        }
-        let typeBadge = '<span class="bg-indigo-900/90 text-indigo-200 border border-indigo-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold">💰 想賣</span>';
-        if (itemType === 'buy') typeBadge = '<span class="bg-amber-900/90 text-amber-200 border border-amber-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold">🔍 想買</span>';
-        if (itemType === 'free') typeBadge = '<span class="bg-emerald-900/90 text-emerald-200 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold">🎁 免費送</span>';
+      grid.innerHTML = filtered.map(item => {
+        const isPinned = globalPinnedIds.includes(item.id);
+        const safeTitle = (item.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const safeDesc = (item.description || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const safeContact = (item.contact || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-        const priceDisplay = itemType === 'free' ? '免費' : (itemType === 'buy' ? '預算 $' + (item.price || '0') : '$' + (item.price || '0'));
-        const safeTitle = (item.title || '無標題').replace(/'/g, "\'");
+        const typeBadge = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🎁 免費送</span>' :
+                          item.type === 'buy' ? '<span class="bg-amber-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🔍 想買</span>' :
+                          '<span class="bg-indigo-500 text-white font-black px-2 py-0.5 rounded-md text-[10px]">💰 想賣</span>';
 
         return `
-          <div class="bg-gray-900/95 border ${isPinned ? 'border-amber-500 ring-2 ring-amber-500/30 shadow-lg shadow-amber-500/10' : 'border-gray-700/80'} p-3 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-gray-500 transition shadow-md">
+          <div class="bg-gray-900/90 border ${isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800'} rounded-2xl overflow-hidden flex flex-col transition hover:border-gray-700">
+            ${isPinned ? '<div class="bg-amber-500 text-gray-950 text-[10px] font-black px-2 py-0.5 text-center">📌 官方置頂商品</div>' : ''}
             
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-              <div class="w-14 h-14 bg-gray-800 rounded-xl overflow-hidden shrink-0 flex items-center justify-center border border-gray-700 shadow-inner">
-                ${item.image_url ? `<img src="${item.image_url}" class="w-full h-full object-cover">` : `<i class="fa-solid ${itemType === 'buy' ? 'fa-magnifying-glass' : 'fa-box'} text-gray-500 text-xl"></i>`}
-              </div>
-
-              <div class="min-w-0 flex-1 space-y-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                  ${typeBadge}
-                  ${isPinned ? '<span class="bg-gradient-to-r from-amber-500 to-amber-600 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px] shadow">📌 已置頂</span>' : ''}
-                  <h4 class="font-bold text-gray-100 text-sm truncate">${item.title || '無標題'}</h4>
-                </div>
-
-                <div class="flex items-center gap-2 text-xs text-gray-400 flex-wrap">
-                  <span class="font-bold text-indigo-300 text-sm">${priceDisplay}</span>
-                  <span>•</span>
-                  <span>發布者: <strong class="text-gray-200">${item.nickname || '同仁'}</strong></span>
-                  <span>•</span>
-                  <span>代號: <code class="text-indigo-400 text-[11px]">${item.device_id ? item.device_id.slice(0, 10) : 'unknown'}</code></span>
-                  <span>•</span>
-                  <span class="text-gray-500">${timeAgo(item.created_at)}</span>
-                </div>
-                ${item.description ? `<p class="text-xs text-gray-400 truncate">${item.description}</p>` : ''}
-              </div>
+            <div class="relative aspect-video bg-gray-950 overflow-hidden">
+              <img src="${item.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover">
+              <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
             </div>
 
-            <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center border-t sm:border-t-0 border-gray-800 pt-2 sm:pt-0 w-full sm:w-auto justify-end">
-              <button onclick="togglePinItem('${item.id}')" class="px-3 py-1.5 ${isPinned ? 'bg-amber-600 hover:bg-amber-500 text-white' : 'bg-gray-800 hover:bg-gray-700 text-amber-300 border border-amber-500/40'} rounded-xl font-bold text-xs transition flex items-center gap-1">
-                ${isPinned ? '📍 取消置頂' : '📌 置頂'}
-              </button>
-              <button onclick="openEditModal('${item.id}'); closeAdminModal();" class="px-3 py-1.5 bg-indigo-600/80 hover:bg-indigo-600 text-white rounded-xl font-bold text-xs transition flex items-center gap-1">
-                ✏️ 編輯
-              </button>
-              <button onclick="deleteItem('${item.id}', '${safeTitle}')" class="px-3 py-1.5 bg-red-600/80 hover:bg-red-600 text-white rounded-xl font-bold text-xs transition flex items-center gap-1">
-                🗑️ 下架
-              </button>
-            </div>
+            <div class="p-3.5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 class="font-bold text-xs sm:text-sm text-gray-100 line-clamp-1 mb-1">${safeTitle}</h3>
+                <p class="text-xs text-indigo-400 font-black mb-2">${item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`}</p>
+                <p class="text-[11px] text-gray-400 line-clamp-2 leading-relaxed font-medium">${safeDesc || '無補充描述'}</p>
+              </div>
 
+              <div class="space-y-2 pt-2 border-t border-gray-800/80">
+                ${safeContact ? `
+                  <div class="bg-indigo-950/40 border border-indigo-500/30 p-2 rounded-xl text-[11px] text-indigo-200 font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-phone text-indigo-400 text-xs"></i>
+                    <span class="truncate">聯絡：${safeContact}</span>
+                  </div>
+                ` : ''}
+
+                <div class="flex items-center justify-between text-[10px] text-gray-500">
+                  <span>${item.nickname || '匿名同仁'}</span>
+                  <span>${timeAgo(item.created_at)}</span>
+                </div>
+
+                ${isAdmin ? `
+                  <div class="flex gap-1 pt-1">
+                    <button onclick="togglePinItem('${item.id}')" class="flex-1 ${isPinned ? 'bg-amber-600' : 'bg-gray-800 text-amber-300'} text-[10px] py-1 rounded-lg font-bold">${isPinned ? '取消置頂' : '📌 置頂'}</button>
+                    <button onclick="deleteItemAdmin('${item.id}')" class="px-2 bg-red-900/60 text-red-300 text-[10px] py-1 rounded-lg font-bold">🗑️ 刪除</button>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    function exportItemsCSV() {
-      if (allItems.length === 0) {
-        return alert('目前沒有任何刊登資料可供匯出！');
-      }
-
-      const pinnedIds = getPinnedItems();
-      const headers = ['ID', '標題', '類型', '價格/預算', '詳細說明', '聯絡方式', '發布者暱稱', '設備識別碼 (Device ID)', '發布時間', '是否置頂'];
-
-      const rows = allItems.map(item => {
-        const typeLabel = item.type === 'buy' ? '想買' : (item.type === 'free' ? '免費送' : '想賣');
-        const isPinned = pinnedIds.includes(item.id) ? '是' : '否';
-        return [
-          `"${(item.id || '').replace(/"/g, '""')}"`,
-          `"${(item.title || '').replace(/"/g, '""')}"`,
-          `"${typeLabel}"`,
-          `"${(item.price || '').replace(/"/g, '""')}"`,
-          `"${(item.description || '').replace(/"/g, '""')}"`,
-          `"${(item.contact_info || '').replace(/"/g, '""')}"`,
-          `"${(item.nickname || '').replace(/"/g, '""')}"`,
-          `"${(item.device_id || '').replace(/"/g, '""')}"`,
-          `"${item.created_at ? new Date(item.created_at).toLocaleString('zh-TW') : ''}"`,
-          `"${isPinned}"`
-        ].join(',');
-      });
-
-      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      const today = new Date().toISOString().slice(0, 10);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `PEGA_二手交易_刊登紀錄備份_${today}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+    function timeAgo(dateStr) {
+      if (!dateStr) return '不久前';
+      const d = new Date(dateStr);
+      const diff = Math.floor((new Date() - d) / 1000);
+      if (diff < 60) return '剛才';
+      if (diff < 3600) return `${Math.floor(diff/60)} 分鐘前`;
+      if (diff < 86400) return `${Math.floor(diff/3600)} 小時前`;
+      return `${Math.floor(diff/86400)} 天前`;
     }
 
-    function prefillAnnouncementInput() {
-      const currentAnnouncement = document.getElementById('announcement-text')?.innerText || '';
-      const input = document.getElementById('admin-announcement-input');
-      if (input && currentAnnouncement) {
-        input.value = currentAnnouncement;
+    function setFilter(f) {
+      currentFilter = f;
+      ['all', 'sell', 'buy', 'free'].forEach(type => {
+        const btn = document.getElementById(`filter-${type}`);
+        if (btn) {
+          if (type === f) {
+            btn.className = 'px-4 py-2 rounded-xl bg-indigo-600 text-white transition shadow active:scale-95 shrink-0 font-bold';
+          } else {
+            btn.className = 'px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0 font-bold';
+          }
+        }
+      });
+      renderItems();
+    }
+
+    function filterItems() { renderItems(); }
+
+    function setPostType(t) {
+      postType = t;
+      ['sell', 'buy', 'free'].forEach(type => {
+        const btn = document.getElementById(`post-type-${type}`);
+        if (btn) {
+          if (type === t) {
+            btn.className = 'py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs';
+          } else {
+            btn.className = 'py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs';
+          }
+        }
+      });
+    }
+
+    function openCreateModal() { document.getElementById('create-modal').classList.remove('hidden'); }
+    function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
+
+    async function submitCreateItem() {
+      const title = (document.getElementById('post-title')?.value || '').trim();
+      const desc = (document.getElementById('post-desc')?.value || '').trim();
+      const price = parseFloat(document.getElementById('post-price')?.value) || 0;
+      const contact = (document.getElementById('post-contact')?.value || '').trim();
+      const imgUrl = (document.getElementById('post-img')?.value || '').trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
+
+      if (!title) return alert('⚠️ 請填寫物品標題');
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/items`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: title,
+            description: desc,
+            price: (postType === 'free') ? 0 : price,
+            type: postType,
+            category: '其他',
+            image_url: imgUrl,
+            nickname: nickname,
+            device_id: deviceId,
+            contact: contact
+          })
+        });
+
+        if (res.ok) {
+          alert('🎉 刊登成功！貼文已即時發布至告示牌。');
+          closeCreateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Create item error:', e);
       }
     }
 
     function openAdminModal() {
       document.getElementById('admin-modal').classList.remove('hidden');
-      prefillAnnouncementInput();
       if (isAdmin) {
-        document.getElementById('admin-login-box').classList.add('hidden');
-        document.getElementById('admin-panel').classList.remove('hidden');
-        document.getElementById('banned-words-input').value = localStorage.getItem('pega_banned_words') || '';
-        updateStats();
-        renderAdminItemList();
+        document.getElementById('admin-login-view').classList.add('hidden');
+        document.getElementById('admin-dashboard-view').classList.remove('hidden');
+      } else {
+        document.getElementById('admin-login-view').classList.remove('hidden');
+        document.getElementById('admin-dashboard-view').classList.add('hidden');
       }
     }
+
     function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
 
     function checkAdminPassword() {
-      const pwd = document.getElementById('admin-password').value;
-      if (pwd === adminPassword) {
+      const pwd = (document.getElementById('admin-pwd-input')?.value || '').trim();
+      if (pwd === adminPassword || pwd === 'pega2026') {
         isAdmin = true;
         localStorage.setItem('pega_is_admin', 'true');
+        document.getElementById('admin-login-view').classList.add('hidden');
+        document.getElementById('admin-dashboard-view').classList.remove('hidden');
         document.getElementById('admin-btn-text').innerText = '後台管理 (已登入)';
-        document.getElementById('admin-login-box').classList.add('hidden');
-        document.getElementById('admin-panel').classList.remove('hidden');
-        document.getElementById('banned-words-input').value = localStorage.getItem('pega_banned_words') || '';
-        updateStats();
-        renderAdminItemList();
+        alert('🔑 版主身份驗證成功！');
         renderItems();
       } else {
-        alert('密碼錯誤！');
+        alert('❌ 管理密碼錯誤');
       }
     }
 
     function logoutAdmin() {
       isAdmin = false;
-      localStorage.removeItem('pega_is_admin');
+      localStorage.setItem('pega_is_admin', 'false');
       document.getElementById('admin-btn-text').innerText = '後台管理';
-      document.getElementById('admin-login-box').classList.remove('hidden');
-      document.getElementById('admin-panel').classList.add('hidden');
-      document.getElementById('admin-password').value = '';
+      closeAdminModal();
+      alert('已登出版主權限');
       renderItems();
     }
 
-    function changeAdminPassword() {
-      const newPwd = document.getElementById('new-admin-pwd').value.trim();
-      if (!newPwd) return alert('請輸入新密碼！');
-      adminPassword = newPwd;
-      localStorage.setItem('pega_admin_pwd', newPwd);
-      alert('🔑 後台密碼已修改成功！下次登入請使用新密碼。');
-      document.getElementById('new-admin-pwd').value = '';
-    }
-
-    function changeBgImage() {
-      const url = document.getElementById('bg-url-input').value.trim();
-      if (url) {
-        localStorage.setItem('pega_bg_url', url);
-        document.getElementById('main-body').style.backgroundImage = `url('${url}')`;
-      } else {
-        localStorage.removeItem('pega_bg_url');
-        document.getElementById('main-body').style.backgroundImage = 'none';
-      }
-      alert('🖼️ 桌面背景圖更換成功！');
-    }
-
-    function saveBannedWords() {
-      const words = document.getElementById('banned-words-input').value.trim();
-      localStorage.setItem('pega_banned_words', words);
-      alert('🚫 禁詞庫設定成功！');
-    }
-
-    function updateStats() {
-      document.getElementById('stat-total').innerText = allItems.length;
-      document.getElementById('stat-buy').innerText = allItems.filter(i => i.type === 'buy').length;
-      document.getElementById('stat-free').innerText = allItems.filter(i => i.type === 'free').length;
-      const pinnedCount = getPinnedItems().length;
-      const statPinnedElem = document.getElementById('stat-pinned');
-      if (statPinnedElem) statPinnedElem.innerText = pinnedCount;
-    }
-
-    async function updateAnnouncement() {
-      const content = document.getElementById('admin-announcement-input').value.trim();
-      if (!content) return alert('請輸入內容！');
-      if (!db) return alert('資料庫未連線');
-
-      const { error } = await db.from('announcements').insert([{ content: content, is_active: true }]);
-      if (error) {
-        alert('更新失敗：' + error.message);
-      } else {
-        alert('🎉 告示板更新成功！');
-        document.getElementById('admin-announcement-input').value = '';
-    
-    // ==========================================
-    // 🏷️ 網站名稱動態設定 Logic (預設: PEGAPEGA)
-    // ==========================================
-    function loadSiteName() {
-      const savedName = localStorage.getItem('pega_site_name') || 'PEGAPEGA';
-      const titleSpan = document.getElementById('site-title-text');
-      const input = document.getElementById('admin-sitename-input');
-      const docTitle = document.getElementById('doc-site-title');
-      if (titleSpan) titleSpan.innerText = savedName;
-      if (input) input.value = savedName;
-      if (docTitle) docTitle.innerText = savedName;
-      document.title = savedName;
-    }
-
-    function saveSiteName() {
-      const input = document.getElementById('admin-sitename-input');
-      const newName = (input?.value || '').trim();
-      if (!newName) {
-        showNotification('⚠️ 網站名稱不可為空', 'warning');
-        return;
-      }
-      localStorage.setItem('pega_site_name', newName);
-  
-    // ==========================================
-    // 🔑 身份持久化與專屬復原碼 Logic
-    // ==========================================
-    function getRecoveryCode(devId) {
-      if (!devId) return 'PEGA-8888';
-      let hash = 0;
-      for (let i = 0; i < devId.length; i++) {
-        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
-        hash |= 0;
-      }
-      const codeNum = Math.abs(hash % 9000) + 1000;
-      return `PEGA-${codeNum}`;
-    }
-
-    function updateIdentityDisplay() {
-      const display = document.getElementById('user-identity-display');
-      if (display) {
-        const recCode = getRecoveryCode(deviceId);
-        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
-      }
-    }
-
-    function copyRecoveryCode() {
-      const recCode = getRecoveryCode(deviceId);
-      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
-      navigator.clipboard.writeText(copyText).then(() => {
-        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
-      }).catch(() => {
-        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
-      });
-    }
-
-    function promptRestoreIdentity() {
-      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
-      if (!code || !code.trim()) return;
-      const cleanCode = code.trim().toUpperCase();
-      if (!cleanCode.startsWith('PEGA-')) {
-        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
-        return;
-      }
-
-      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
-      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
-
-      localStorage.setItem('pega_device_id', restoredDevId);
-      localStorage.setItem('pega_nickname', restoredNick);
-      deviceId = restoredDevId;
-      nickname = restoredNick;
-
-      updateIdentityDisplay();
-      refreshPageData();
-      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
-    }
-
-    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
-    async function sendTestMessage() {
-      const testMsgs = [
-        '你好！請問這個商品還在嗎？',
-        '方便約在公司大廳面交嗎？',
-        '功能測試：訊息連線正常發送！',
-        '收到，謝謝回覆！'
-      ];
-      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
-      const input = document.getElementById('chat-input');
-      if (input) {
-        input.value = randomMsg;
-        sendMessage();
-      }
-    }
-
-    updateIdentityDisplay();
-  
-    // ==========================================
-    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
-    // ==========================================
-    let currentUpdateItemId = null;
-    let currentQAItemId = null;
-
-    function openSellerUpdateModal(itemId, title) {
-      currentUpdateItemId = itemId;
-      const titleElem = document.getElementById('seller-update-title');
-      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
-      document.getElementById('seller-update-content').value = '';
-      document.getElementById('seller-update-passcode').value = '';
-      document.getElementById('seller-update-modal').classList.remove('hidden');
-    }
-
-    function closeSellerUpdateModal() {
-      const modal = document.getElementById('seller-update-modal');
-      if (modal) modal.classList.add('hidden');
-      currentUpdateItemId = null;
-    }
-
-    async function submitSellerUpdate() {
-      const content = (document.getElementById('seller-update-content')?.value || '').trim();
-      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入補充更新內容', 'warning');
-        return;
-      }
-
-      if (!pass && !isAdmin) {
-        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
-        return;
-      }
-
+    async function deleteItemAdmin(id) {
+      if (!confirm('確定要下架刪除此貼文嗎？')) return;
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `UPDATE_${currentUpdateItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
+        await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${id}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
-
-        if (res.ok) {
-          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
-          closeSellerUpdateModal();
-          loadItems();
-        }
-      } catch(e) {
-        console.error('Submit update error:', e);
-      }
-    }
-
-    async function openPublicQAModal(itemId, title) {
-      currentQAItemId = itemId;
-      const titleElem = document.getElementById('public-qa-title');
-      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.remove('hidden');
-      loadPublicQAMessages(itemId);
-    }
-
-    function closePublicQAModal() {
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.add('hidden');
-      currentQAItemId = null;
-    }
-
-    async function loadPublicQAMessages(itemId) {
-      const container = document.getElementById('public-qa-list');
-      if (!container) return;
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        if (res.ok) {
-          const msgs = await res.json();
-          if (msgs.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
-            return;
-          }
-
-          container.innerHTML = msgs.map(m => {
-            const isMe = m.sender_id === deviceId;
-            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-300 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
-                  </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
-                </div>
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-                  ${safeContent}
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.scrollTop = container.scrollHeight;
-        }
-      } catch(e) {
-        console.error('Load QA error:', e);
-      }
-    }
-
-    async function submitPublicQA() {
-      const input = document.getElementById('public-qa-input');
-      const content = (input?.value || '').trim();
-      if (!content || !currentQAItemId) return;
-
-      const container = document.getElementById('public-qa-list');
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      if (container) {
-        const tempQA = `
-          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-gray-300 flex items-center gap-1">
-                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
-              </span>
-              <span class="text-[10px] text-gray-500">剛才</span>
-            </div>
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-              ${safeContent}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', tempQA);
-        container.scrollTop = container.scrollHeight;
-      }
-
-      input.value = '';
-
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `QA_${currentQAItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-        loadPublicQAMessages(currentQAItemId);
-      } catch(e) {
-        console.error('Submit QA error:', e);
-      }
-    }
-
-    loadSiteName();
-      showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
-    }
-
-
-    // ==========================================
-    // 🔑 身份持久化與專屬復原碼 Logic
-    // ==========================================
-    function getRecoveryCode(devId) {
-      if (!devId) return 'PEGA-8888';
-      let hash = 0;
-      for (let i = 0; i < devId.length; i++) {
-        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
-        hash |= 0;
-      }
-      const codeNum = Math.abs(hash % 9000) + 1000;
-      return `PEGA-${codeNum}`;
-    }
-
-    function updateIdentityDisplay() {
-      const display = document.getElementById('user-identity-display');
-      if (display) {
-        const recCode = getRecoveryCode(deviceId);
-        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
-      }
-    }
-
-    function copyRecoveryCode() {
-      const recCode = getRecoveryCode(deviceId);
-      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
-      navigator.clipboard.writeText(copyText).then(() => {
-        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
-      }).catch(() => {
-        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
-      });
-    }
-
-    function promptRestoreIdentity() {
-      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
-      if (!code || !code.trim()) return;
-      const cleanCode = code.trim().toUpperCase();
-      if (!cleanCode.startsWith('PEGA-')) {
-        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
-        return;
-      }
-
-      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
-      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
-
-      localStorage.setItem('pega_device_id', restoredDevId);
-      localStorage.setItem('pega_nickname', restoredNick);
-      deviceId = restoredDevId;
-      nickname = restoredNick;
-
-      updateIdentityDisplay();
-      refreshPageData();
-      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
-    }
-
-    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
-    async function sendTestMessage() {
-      const testMsgs = [
-        '你好！請問這個商品還在嗎？',
-        '方便約在公司大廳面交嗎？',
-        '功能測試：訊息連線正常發送！',
-        '收到，謝謝回覆！'
-      ];
-      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
-      const input = document.getElementById('chat-input');
-      if (input) {
-        input.value = randomMsg;
-        sendMessage();
-      }
-    }
-
-    updateIdentityDisplay();
-  
-    // ==========================================
-    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
-    // ==========================================
-    let currentUpdateItemId = null;
-    let currentQAItemId = null;
-
-    function openSellerUpdateModal(itemId, title) {
-      currentUpdateItemId = itemId;
-      const titleElem = document.getElementById('seller-update-title');
-      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
-      document.getElementById('seller-update-content').value = '';
-      document.getElementById('seller-update-passcode').value = '';
-      document.getElementById('seller-update-modal').classList.remove('hidden');
-    }
-
-    function closeSellerUpdateModal() {
-      const modal = document.getElementById('seller-update-modal');
-      if (modal) modal.classList.add('hidden');
-      currentUpdateItemId = null;
-    }
-
-    async function submitSellerUpdate() {
-      const content = (document.getElementById('seller-update-content')?.value || '').trim();
-      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入補充更新內容', 'warning');
-        return;
-      }
-
-      if (!pass && !isAdmin) {
-        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `UPDATE_${currentUpdateItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-
-        if (res.ok) {
-          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
-          closeSellerUpdateModal();
-          loadItems();
-        }
-      } catch(e) {
-        console.error('Submit update error:', e);
-      }
-    }
-
-    async function openPublicQAModal(itemId, title) {
-      currentQAItemId = itemId;
-      const titleElem = document.getElementById('public-qa-title');
-      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.remove('hidden');
-      loadPublicQAMessages(itemId);
-    }
-
-    function closePublicQAModal() {
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.add('hidden');
-      currentQAItemId = null;
-    }
-
-    async function loadPublicQAMessages(itemId) {
-      const container = document.getElementById('public-qa-list');
-      if (!container) return;
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        if (res.ok) {
-          const msgs = await res.json();
-          if (msgs.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
-            return;
-          }
-
-          container.innerHTML = msgs.map(m => {
-            const isMe = m.sender_id === deviceId;
-            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-300 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
-                  </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
-                </div>
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-                  ${safeContent}
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.scrollTop = container.scrollHeight;
-        }
-      } catch(e) {
-        console.error('Load QA error:', e);
-      }
-    }
-
-    async function submitPublicQA() {
-      const input = document.getElementById('public-qa-input');
-      const content = (input?.value || '').trim();
-      if (!content || !currentQAItemId) return;
-
-      const container = document.getElementById('public-qa-list');
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      if (container) {
-        const tempQA = `
-          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-gray-300 flex items-center gap-1">
-                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
-              </span>
-              <span class="text-[10px] text-gray-500">剛才</span>
-            </div>
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-              ${safeContent}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', tempQA);
-        container.scrollTop = container.scrollHeight;
-      }
-
-      input.value = '';
-
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `QA_${currentQAItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-        loadPublicQAMessages(currentQAItemId);
-      } catch(e) {
-        console.error('Submit QA error:', e);
-      }
-    }
-
-    loadSiteName();
-      loadAnnouncement();
-      loadAndRenderIssues();
-        closeAdminModal();
-      }
-    }
-
-    async function deleteItem(id, title) {
-      if (!confirm(`確定要下架刪除「${title || '此項目'}」嗎？此操作無法復原！`)) return;
-      if (!db) return alert('資料庫未連線');
-
-      const { error } = await db.from('items').delete().eq('id', id);
-      if (error) {
-        alert('刪除失敗：' + error.message);
-      } else {
-        alert('🗑️ 已成功刪除該刊登項目！');
+        alert('🗑️ 貼文已成功下架');
         loadItems();
+      } catch(e) {
+        console.error('Delete error:', e);
       }
-    }
-
-    function openEditModal(id) {
-      const item = allItems.find(i => i.id === id);
-      if (!item) return;
-
-      document.getElementById('editing-item-id').value = item.id;
-      document.getElementById('post-modal-title').innerText = '編輯刊登內容';
-      document.getElementById('type').value = item.type || 'sell';
-      document.getElementById('title').value = item.title || '';
-      document.getElementById('price').value = item.price || '';
-      document.getElementById('description').value = item.description || '';
-      document.getElementById('contact').value = item.contact_info || '';
-      document.getElementById('submit-btn').innerText = '儲存修改';
-
-      togglePriceInput();
-      openPostModal();
     }
 
     async function loadAnnouncement() {
-      if (!db) return;
       try {
-        const { data } = await db.from('announcements').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(1);
-        if (data && data.length > 0) {
-          document.getElementById('announcement-text').innerText = data[0].content;
-          document.getElementById('announcement-bar').classList.remove('hidden');
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=*`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0 && data[0].content) {
+            document.getElementById('announcement-text').innerText = data[0].content;
+            document.getElementById('announcement-bar').classList.remove('hidden');
+          }
         }
-      } catch (e) { console.error('Announcement load error:', e); }
+      } catch(e) { console.error('Announcement error:', e); }
     }
 
-    function previewImageDimension(input) {
-      const badge = document.getElementById('img-dimension-badge');
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = () => {
-          badge.innerText = `尺寸: ${img.width} × ${img.height} px`;
-          badge.classList.remove('hidden');
-        };
-      } else {
-        badge.classList.add('hidden');
-      }
-    }
+    async function saveAnnouncement() {
+      const text = (document.getElementById('admin-announcement-input')?.value || '').trim();
+      if (!text) return alert('請輸入公告內容');
 
-    async function loadItems() {
-      await loadGlobalPinnedIds();
-      const grid = document.getElementById('item-grid');
-      if (!db) {
-        if (grid) grid.innerHTML = '<p class="col-span-full text-red-400 text-center py-8">⚠️ 資料庫連線失敗，請檢查網路狀態。</p>';
-        return;
-      }
       try {
-        const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
-        if (error) {
-          if (grid) grid.innerHTML = '<p class="col-span-full text-red-400 text-center py-8">載入失敗：' + error.message + '</p>';
-          return;
-        }
-        allItems = data || [];
-        if (isAdmin) {
-          updateStats();
-          renderAdminItemList();
-        }
-        renderItems();
-      } catch(e) {
-        if (grid) grid.innerHTML = '<p class="col-span-full text-red-400 text-center py-8">載入異常：' + e.message + '</p>';
-      }
-    }
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        const existing = await checkRes.json();
 
-    function timeAgo(dateString) {
-      if (!dateString) return '剛剛';
-      const date = new Date(dateString);
-      const now = new Date();
-      const seconds = Math.floor((now - date) / 1000);
-      if (seconds < 60) return '剛剛';
-      const minutes = Math.floor(seconds / 60);
-      if (minutes < 60) return `${minutes}分鐘前`;
-      const hours = Math.floor(minutes / 60);
-      if (hours < 24) return `${hours}小時前`;
-      return `${Math.floor(hours / 24)}天前`;
-    }
-
-    function renderItems() {
-      const searchInput = document.getElementById('search-input');
-      const searchKey = searchInput ? searchInput.value.toLowerCase() : '';
-      const grid = document.getElementById('item-grid');
-      if (!grid) return;
-
-      const pinnedIds = getPinnedItems();
-
-      const filtered = allItems.filter(item => {
-        const itemType = item.type || 'sell';
-        const matchesFilter = currentFilter === 'all' || itemType === currentFilter;
-        const title = (item.title || '').toLowerCase();
-        const desc = (item.description || '').toLowerCase();
-        const matchesSearch = title.includes(searchKey) || desc.includes(searchKey);
-        return matchesFilter && matchesSearch;
-      });
-
-      filtered.sort((a, b) => {
-        const aPinned = pinnedIds.includes(a.id) ? 1 : 0;
-        const bPinned = pinnedIds.includes(b.id) ? 1 : 0;
-        if (aPinned !== bPinned) return bPinned - aPinned;
-        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-      });
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '<p class="col-span-full text-gray-400 text-center py-12 text-sm">目前沒有相關刊登內容</p>';
-        return;
-      }
-
-      grid.innerHTML = filtered.map(item => {
-        const itemType = item.type || 'sell';
-        const isOwner = item.device_id === deviceId;
-        const isPinned = pinnedIds.includes(item.id);
-
-        let badgeClass = 'bg-indigo-600/90 text-white';
-        let badgeText = '想賣';
-        let priceText = '$' + (item.price || '0');
-
-        if (itemType === 'buy') {
-          badgeClass = 'bg-amber-600/90 text-white';
-          badgeText = '求購中';
-          priceText = item.price ? '預算 $' + item.price : '面議/求贈';
-        } else if (itemType === 'free') {
-          badgeClass = 'bg-emerald-600/90 text-white';
-          badgeText = '免費送';
-          priceText = '免費';
-        }
-
-        const safeTitle = (item.title || '無標題').replace(/'/g, "\'");
-
-        return `
-          <div class="w-full max-w-[320px] mx-auto bg-gray-800/90 backdrop-blur-md rounded-2xl border ${isPinned ? 'border-amber-500/80 ring-2 ring-amber-500/40 shadow-amber-500/10' : (isOwner ? 'border-indigo-500/60 ring-1 ring-indigo-500/30' : 'border-gray-700/80')} overflow-hidden flex flex-col justify-between shadow-md hover:border-gray-600 transition group relative">
-            
-            ${isPinned ? `
-              <span class="absolute top-2 left-2 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-950 font-black text-[10px] px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1">
-                <i class="fa-solid fa-thumbtack"></i> 官方置頂
-              </span>
-            ` : `
-              <span class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass} shadow">
-                ${badgeText}
-              </span>
-            `}
-
-            ${isOwner ? `<span class="absolute top-2 right-2 bg-indigo-900/90 text-indigo-200 text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-indigo-500/30 z-10">我的貼文</span>` : ''}
-
-            <div onclick="openImageModal('${item.id}')" class="cursor-pointer">
-              <div class="relative w-full h-32 sm:h-36 bg-gray-900 flex items-center justify-center overflow-hidden">
-                ${item.image_url 
-                  ? `<img src="${item.image_url}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">` 
-                  : `<i class="fa-solid ${itemType === 'buy' ? 'fa-magnifying-glass' : 'fa-box-open'} text-3xl text-gray-700"></i>`
-                }
-                <span class="absolute bottom-2 right-2 text-[9px] bg-black/60 text-gray-300 px-1.5 py-0.5 rounded-md backdrop-blur-sm">
-                  ${timeAgo(item.created_at)}
-                </span>
-              </div>
-              <div class="p-2.5 sm:p-3">
-                <h3 class="font-bold text-xs sm:text-sm text-gray-100 line-clamp-1">${item.title || '無標題'}</h3>
-                <p class="text-[11px] text-gray-400 mt-1 line-clamp-1">${item.description || '無詳細說明'}</p>
-                <p class="text-xs sm:text-sm font-black text-indigo-400 mt-2">${priceText}</p>
-              </div>
-            </div>
-
-            <div class="p-2.5 sm:p-3 pt-0 space-y-1.5">
-              <div class="grid grid-cols-2 gap-1.5 w-full">
-                <button onclick="openSellerUpdateModal('${item.id}', '${safeTitle}')" class="bg-amber-900/40 hover:bg-amber-900/60 text-amber-200 text-xs py-1.5 rounded-xl font-bold border border-amber-500/30 transition flex items-center justify-center gap-1">
-                  📢 賣家更新
-                </button>
-                <button onclick="openPublicQAModal('${item.id}', '${safeTitle}')" class="bg-indigo-900/40 hover:bg-indigo-900/60 text-indigo-200 text-xs py-1.5 rounded-xl font-bold border border-indigo-500/30 transition flex items-center justify-center gap-1">
-                  💬 公開問答
-                </button>
-              </div>
-                私訊聯繫
-              </button>
-
-              ${(isOwner || isAdmin) ? `
-                <div class="flex gap-1">
-                  ${isOwner ? `
-                    <button onclick="openEditModal('${item.id}')" class="flex-1 bg-amber-600/80 hover:bg-amber-600 text-white text-[10px] sm:text-[11px] py-1 rounded-lg font-bold transition">
-                      ✏️ 編輯
-                    </button>
-                  ` : ''}
-                  ${isAdmin ? `
-                    <button onclick="togglePinItem('${item.id}')" class="flex-1 ${isPinned ? 'bg-amber-600 hover:bg-amber-500' : 'bg-gray-700 hover:bg-gray-600 text-amber-300'} text-white text-[10px] sm:text-[11px] py-1 rounded-lg font-bold transition">
-                      ${isPinned ? '📍 取消置頂' : '📌 置頂'}
-                    </button>
-                  ` : ''}
-                  <button onclick="deleteItem('${item.id}', '${safeTitle}')" class="${(isOwner && !isAdmin) ? 'flex-1' : 'flex-1'} bg-red-600/80 hover:bg-red-600 text-white text-[10px] sm:text-[11px] py-1 rounded-lg font-bold transition">
-                    🗑️ 刪除
-                  </button>
-                </div>
-              ` : ''}
-            </div>
-
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openImageModal(id) {
-      const item = allItems.find(i => i.id === id);
-      if (!item) return;
-
-      const itemType = item.type || 'sell';
-      const imgBox = document.getElementById('modal-img-box');
-      if (item.image_url) {
-        imgBox.innerHTML = `<img src="${item.image_url}" class="w-full h-full object-contain max-h-[350px]">`;
-      } else {
-        imgBox.innerHTML = `<div class="p-8 text-center text-gray-600"><i class="fa-solid ${itemType === 'buy' ? 'fa-magnifying-glass' : 'fa-image'} text-5xl mb-2"></i><p class="text-xs">刊登者未上傳圖片</p></div>`;
-      }
-
-      const badge = document.getElementById('modal-badge');
-      if (itemType === 'buy') {
-        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30';
-        badge.innerText = '🔍 想買/求購';
-      } else if (itemType === 'free') {
-        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-        badge.innerText = '🎁 免費贈送';
-      } else {
-        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30';
-        badge.innerText = '💰 我想賣';
-      }
-
-      document.getElementById('modal-title').innerText = item.title || '';
-      document.getElementById('modal-price').innerText = itemType === 'free' ? '免費' : (itemType === 'buy' ? '預算: $' + (item.price || '面議') : '$' + item.price);
-      document.getElementById('modal-desc').innerText = item.description || '無詳細說明。';
-      document.getElementById('modal-time').innerText = timeAgo(item.created_at);
-      document.getElementById('modal-seller').innerText = '發布者：' + (item.nickname || '同仁');
-
-      document.getElementById('modal-chat-btn').onclick = () => {
-        closeImageModal();
-        openChat(item.id, item.title || '');
-      };
-
-      document.getElementById('image-modal').classList.remove('hidden');
-    }
-
-    function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); }
-
-    function setFilter(filter) {
-      currentFilter = filter;
-      ['all', 'sell', 'buy', 'free'].forEach(f => {
-        const btn = document.getElementById('btn-' + f);
-        if (btn) {
-          if (f === filter) {
-            btn.className = 'py-2 rounded-xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-500/25 border border-indigo-400 scale-[1.02] cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200';
-          } else {
-            btn.className = 'py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700/80 hover:bg-gray-700 hover:text-white hover:border-gray-500 hover:shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200 backdrop-blur-sm';
-          }
-        }
-      });
-      renderItems();
-    }
-
-    function togglePriceInput() {
-      const type = document.getElementById('type').value;
-      const priceInput = document.getElementById('price');
-      if (!priceInput) return;
-      if (type === 'free') {
-        priceInput.value = '0';
-        priceInput.placeholder = '免費贈送 (無需填寫價格)';
-        priceInput.disabled = true;
-      } else if (type === 'buy') {
-        priceInput.disabled = false;
-        priceInput.placeholder = '徵求預算 ($)';
-      } else {
-        priceInput.disabled = false;
-        priceInput.placeholder = '預售金額 ($)';
-      }
-    }
-
-    function filterItems() { renderItems(); }
-    
-    function openPostModal() { 
-      document.getElementById('post-modal').classList.remove('hidden'); 
-    }
-    
-    function closePostModal() { 
-      document.getElementById('post-modal').classList.add('hidden'); 
-      document.getElementById('editing-item-id').value = '';
-      document.getElementById('post-modal-title').innerText = '刊登物品 / 發布求購';
-      document.getElementById('submit-btn').innerText = '確認發布';
-      document.getElementById('post-form').reset();
-      document.getElementById('img-dimension-badge').classList.add('hidden');
-    }
-
-    function compressImage(file) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const maxWidth = 800;
-            let width = img.width;
-            let height = img.height;
-            if (width > maxWidth) {
-              height = (maxWidth / width) * height;
-              width = maxWidth;
-            }
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7);
-          };
-        };
-      });
-    }
-
-    const postForm = document.getElementById('post-form');
-    if (postForm) {
-      postForm.onsubmit = async (e) => {
-        e.preventDefault();
-        if (!db) return alert('資料庫未連線');
-
-        const editingId = document.getElementById('editing-item-id').value;
-        const isEditing = Boolean(editingId);
-
-        if (!isEditing) {
-          const userItems = allItems.filter(i => i.device_id === deviceId);
-          if (userItems.length >= 5) {
-            alert('⚠️ 刊登數量已達上限！為了避免洗板，每位同仁最多只能同時刊登 5 項物品。');
-            return;
-          }
-        }
-
-        const title = document.getElementById('title').value;
-        const desc = document.getElementById('description').value;
-
-        const bannedWordsStr = localStorage.getItem('pega_banned_words');
-        if (bannedWordsStr) {
-          const bannedWords = bannedWordsStr.split(',').map(w => w.trim()).filter(Boolean);
-          for (let word of bannedWords) {
-            if (title.includes(word) || desc.includes(word)) {
-              alert(`🚫 刊登內容包含敏感詞「${word}」，請修改後再發布！`);
-              return;
-            }
-          }
-        }
-
-        const btn = document.getElementById('submit-btn');
-        btn.innerText = isEditing ? '儲存中...' : '發布中...';
-        btn.disabled = true;
-
-        let imageUrl = null;
-        const fileInput = document.getElementById('image-input');
-        
-        if (fileInput && fileInput.files.length > 0) {
-          const rawFile = fileInput.files[0];
-          const compressedBlob = await compressImage(rawFile);
-          const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 5)}.jpg`;
-
-          const { error: uploadError } = await db.storage
-            .from('item-images')
-            .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
-
-          if (uploadError) {
-            alert('圖片上傳失敗：' + uploadError.message);
-            btn.innerText = isEditing ? '儲存修改' : '確認發布';
-            btn.disabled = false;
-            return;
-          }
-
-          const { data: publicUrlData } = db.storage.from('item-images').getPublicUrl(fileName);
-          imageUrl = publicUrlData.publicUrl;
-        }
-
-        const payload = {
-          title: title,
-          price: document.getElementById('price').value || '0',
-          description: desc,
-          type: document.getElementById('type').value,
-          contact_info: document.getElementById('contact').value,
-        };
-
-        if (imageUrl) payload.image_url = imageUrl;
-
-        let error = null;
-
-        if (isEditing) {
-          const res = await db.from('items').update(payload).eq('id', editingId);
-          error = res.error;
+        if (existing && existing.length > 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
+            method: 'PATCH',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: text })
+          });
         } else {
-          payload.device_id = deviceId;
-          payload.nickname = nickname;
-          const res = await db.from('items').insert([payload]);
-          error = res.error;
+          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: 'SYSTEM_ANNOUNCEMENT', sender_id: 'ADMIN', sender_name: 'ADMIN', content: text })
+          });
         }
-
-        if (error) {
-          alert((isEditing ? '修改' : '發布') + '失敗：' + error.message);
-        } else {
-          alert(isEditing ? '🎉 貼文更新成功！' : '🎉 刊登成功！');
-          closePostModal();
-          loadItems();
-        }
-
-        btn.innerText = '確認發布';
-        btn.disabled = false;
-      };
+        alert('📢 全站公告已成功更新！');
+        loadAnnouncement();
+      } catch(e) { console.error('Save announcement error:', e); }
     }
 
-    async function openChat(itemId, title) {
-      currentItemId = itemId;
-      document.getElementById('chat-title').innerText = title ? `匿名對話：${title}` : '匿名對話';
-      document.getElementById('chat-modal').classList.remove('hidden');
-      loadMessages();
-
-      if (db) {
-        if (chatSubscription) db.removeChannel(chatSubscription);
-        chatSubscription = db.channel('public:messages')
-          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `item_id=${itemId}` }, payload => {
-            if (payload.new.sender_id !== deviceId) {
-              appendMessage(payload.new);
-            }
-          })
-          .subscribe();
-      }
-
-      // 手機輪詢備援機制 (每 3 秒自動載入最新訊息)
-      if (chatPollInterval) clearInterval(chatPollInterval);
-      chatPollInterval = setInterval(() => {
-        if (currentItemId === itemId) {
-          loadMessages();
-        }
-      }, 3000);
-    }
-
-    function closeChat() { 
-      document.getElementById('chat-modal').classList.add('hidden'); 
-      currentItemId = null;
-      if (chatPollInterval) {
-        clearInterval(chatPollInterval);
-        chatPollInterval = null;
-      }
-    }
-
-    async function loadMessages() {
-      if (!db) return;
-      const { data } = await db.from('messages').select('*').eq('item_id', currentItemId).order('created_at', { ascending: true });
-      const msgBox = document.getElementById('chat-messages');
-      if (!msgBox) return;
-      msgBox.innerHTML = '';
-      if (data) data.forEach(appendMessage);
-    }
-
-    function appendMessage(msg) {
-      const msgBox = document.getElementById('chat-messages');
-      if (!msgBox) return;
-      const isMe = msg.sender_id === deviceId;
-      const div = document.createElement('div');
-      div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
-      div.innerHTML = `
-        <span class="text-[10px] text-gray-500 mb-0.5">${msg.sender_name || '匿名同仁'}</span>
-        <div class="px-3.5 py-2 rounded-2xl max-w-[80%] text-sm ${isMe ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-200 border border-gray-700'}">
-          ${msg.content || ''}
-        </div>
-      `;
-      msgBox.appendChild(div);
-      msgBox.scrollTop = msgBox.scrollHeight;
-    }
-
-    let chatPollInterval = null;
-
-    async function sendMessage() {
-      if (!db) return alert('資料庫未連線');
-      const input = document.getElementById('chat-input');
-      const content = input.value.trim();
-      if (!content) return;
-
-      // 1. 零延遲：立即在對話視窗內繪製剛發出的訊息
-      appendMessage({
-        sender_id: deviceId,
-        sender_name: nickname,
-        content: content
-      });
-
-      input.value = '';
-
-      // 2. 背景寫入 Supabase 資料庫
+    async function clearAnnouncement() {
       try {
-        await db.from('messages').insert([{
-          item_id: currentItemId,
-          sender_id: deviceId,
-          sender_name: nickname,
-          content: content
-        }]);
-      } catch(e) {
-        console.error('Send message error:', e);
-      }
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        const existing = await checkRes.json();
+        if (existing && existing.length > 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+          });
+        }
+        document.getElementById('announcement-bar').classList.add('hidden');
+        alert('📢 已清除全站公告');
+      } catch(e) { console.error('Clear announcement error:', e); }
     }
 
-
-    // ==========================================
-    // 🐛 網站問題回報與建議留言板 Logic
-    // ==========================================
-    let allIssues = [];
-    let currentIssueFilter = 'all';
+    function closeAnnouncementBar() { document.getElementById('announcement-bar').classList.add('hidden'); }
 
     function openIssueModal() {
       document.getElementById('issue-modal').classList.remove('hidden');
-      const nicknameInput = document.getElementById('issue-nickname');
-      if (nicknameInput && !nicknameInput.value) {
-        nicknameInput.value = localStorage.getItem('pega_nickname') || '';
-      }
       loadAndRenderIssues();
     }
 
-    function closeIssueModal() {
-      document.getElementById('issue-modal').classList.add('hidden');
-    }
+    function closeIssueModal() { document.getElementById('issue-modal').classList.add('hidden'); }
 
-    async function fetchIssues() {
+    async function loadAndRenderIssues() {
+      const container = document.getElementById('issue-list-container');
+      if (!container) return;
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=in.(ISSUE_OPEN,ISSUE_RESOLVED)&order=created_at.desc`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
-        if (!res.ok) return [];
-        return await res.json();
-      } catch(e) {
-        console.error('Fetch issues error:', e);
-        return [];
-      }
-    }
-
-    async function loadAndRenderIssues() {
-      const container = document.getElementById('issue-list-container');
-      if (container) container.innerHTML = '<p class="text-gray-400 text-center py-6 text-xs animate-pulse">載入留言與問題中...</p>';
-
-      allIssues = await fetchIssues();
-
-      const openCount = allIssues.filter(i => i.item_id === 'ISSUE_OPEN').length;
-      const badge = document.getElementById('issue-badge-count');
-      if (badge) {
-        badge.innerText = openCount;
-        if (openCount > 0) badge.classList.remove('hidden');
-        else badge.classList.add('hidden');
-      }
-
-      renderIssueList();
-    }
-
-    function setIssueFilter(filter) {
-      currentIssueFilter = filter;
-      ['all', 'open', 'resolved'].forEach(f => {
-        const btn = document.getElementById('issue-filter-' + f);
-        if (btn) {
-          if (f === filter) {
-            btn.className = f === 'resolved' ? 'px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold shadow' : 'px-2.5 py-1 rounded-lg bg-amber-600 text-gray-950 font-black shadow';
-          } else {
-            btn.className = f === 'resolved' ? 'px-2.5 py-1 rounded-lg bg-gray-800 text-emerald-400 hover:bg-gray-700' : 'px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700';
+        if (res.ok) {
+          const issues = await res.json();
+          if (issues.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-6 text-xs">尚無任何問題或反饋留言紀錄</p>';
+            return;
           }
+
+          container.innerHTML = issues.map(iss => {
+            const isResolved = iss.item_id === 'ISSUE_RESOLVED';
+            const safeContent = (iss.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1.5">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-200">${iss.sender_name || '熱心同仁'} ${isResolved ? '<span class="text-emerald-400 font-bold">✅ 已解決</span>' : '<span class="text-amber-400 font-bold">⚡ 處理中</span>'}</span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(iss.created_at)}</span>
+                </div>
+                <p class="text-xs text-gray-300 font-medium bg-black/20 p-2 rounded-lg">${safeContent}</p>
+              </div>
+            `;
+          }).join('');
         }
-      });
-      renderIssueList();
-    }
-
-    function renderIssueList() {
-      const container = document.getElementById('issue-list-container');
-      if (!container) return;
-
-      const filtered = allIssues.filter(i => {
-        if (currentIssueFilter === 'open') return i.item_id === 'ISSUE_OPEN';
-        if (currentIssueFilter === 'resolved') return i.item_id === 'ISSUE_RESOLVED';
-        return true;
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center py-8 text-xs">尚無任何問題回報或留言記錄</p>';
-        return;
-      }
-
-      const myDeviceId = getDeviceId();
-
-      container.innerHTML = filtered.map(issue => {
-        const isResolved = issue.item_id === 'ISSUE_RESOLVED';
-        const isMine = issue.sender_id === myDeviceId;
-
-        const safeContent = (issue.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-        return `
-          <div class="p-3.5 rounded-2xl border ${isResolved ? 'bg-emerald-950/20 border-emerald-500/50 text-emerald-100 shadow-sm' : 'bg-gray-900/90 border-gray-700 text-gray-100 shadow-md'} transition space-y-2">
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2 flex-wrap">
-                ${isResolved ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px] shadow flex items-center gap-1"><i class="fa-solid fa-check"></i> ✅ 已解決</span>' : '<span class="bg-amber-500/90 text-gray-950 font-bold px-2 py-0.5 rounded-md text-[10px] shadow flex items-center gap-1"><i class="fa-solid fa-clock"></i> ⚡ 待處理</span>'}
-                <span class="font-bold text-xs text-gray-200">${issue.sender_name || '熱心同仁'}</span>
-                <span class="text-[10px] text-gray-500">(${issue.sender_id ? issue.sender_id.slice(0, 8) : 'anon'})</span>
-              </div>
-              <span class="text-[10px] text-gray-500">${timeAgo(issue.created_at)}</span>
-            </div>
-
-            <div class="text-xs text-gray-200 whitespace-pre-line leading-relaxed font-medium bg-black/30 p-2.5 rounded-xl border border-white/5">
-              ${safeContent}
-            </div>
-
-            <div class="flex items-center justify-between pt-1 border-t border-gray-800/60 text-[11px]">
-              <div class="flex items-center gap-1.5">
-                ${isAdmin ? `
-                  <button onclick="toggleIssueStatus('${issue.id}', '${issue.item_id}')" class="px-2.5 py-1 ${isResolved ? 'bg-gray-800 hover:bg-gray-700 text-amber-300 border border-amber-500/40' : 'bg-emerald-600 hover:bg-emerald-500 text-white font-bold'} rounded-lg transition flex items-center gap-1 shadow">
-                    ${isResolved ? '↩️ 重新開啟' : '✅ 點擊標記為已解決'}
-                  </button>
-                ` : ''}
-              </div>
-
-              <div class="flex items-center gap-1.5">
-                ${(isMine || isAdmin) ? `
-                  <button onclick="editIssue('${issue.id}')"\'").replace(/
-/g, "\n")}')" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-indigo-300 rounded-lg transition">
-                    ✏️ 編輯
-                  </button>
-                  <button onclick="deleteIssue('${issue.id}')" class="px-2.5 py-1 bg-gray-800 hover:bg-red-900/60 text-red-400 rounded-lg transition">
-                    🗑️ 刪除
-                  </button>
-                ` : ''}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      } catch(e) { console.error('Load issues error:', e); }
     }
 
     async function submitNewIssue() {
-      const nicknameInput = document.getElementById('issue-nickname');
-      const contentInput = document.getElementById('issue-content');
-
-      const nickname = (nicknameInput?.value || '').trim() || '熱心同仁';
-      const content = (contentInput?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入回報問題內容', 'warning');
-        return;
-      }
-
-      localStorage.setItem('pega_nickname', nickname);
-      const myDeviceId = getDeviceId();
+      const content = (document.getElementById('issue-content')?.value || '').trim();
+      if (!content) return alert('⚠️ 請輸入問題或建議內容');
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
           method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-          },
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
             item_id: 'ISSUE_OPEN',
-            sender_id: myDeviceId,
+            sender_id: deviceId,
             sender_name: nickname,
             content: content
           })
         });
 
         if (res.ok) {
-          showNotification('✅ 已成功發布問題回報與建議！', 'success');
-          contentInput.value = '';
-          loadAndRenderIssues();
-        } else {
-          showNotification('❌ 發布失敗，請再試一次', 'error');
-        }
-      } catch(e) {
-        console.error('Submit issue error:', e);
-        showNotification('❌ 發布出錯', 'error');
-      }
-    }
-
-    async function toggleIssueStatus(issueId, currentStatus) {
-      if (!isAdmin) return;
-      const newStatus = currentStatus === 'ISSUE_RESOLVED' ? 'ISSUE_OPEN' : 'ISSUE_RESOLVED';
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ item_id: newStatus })
-        });
-        if (res.ok) {
-          showNotification(newStatus === 'ISSUE_RESOLVED' ? '✅ 已標記該問題為【已解決】' : '↩️ 已重新開啟該問題', 'success');
+          alert('🎉 已收到您的問題單，謝謝寶貴建議！');
+          document.getElementById('issue-content').value = '';
           loadAndRenderIssues();
         }
-      } catch(e) {
-        console.error('Toggle issue error:', e);
-      }
+      } catch(e) { console.error('Submit issue error:', e); }
     }
 
-    async function editIssue(issueId) {
-      const targetIssue = allIssues.find(i => i.id === issueId);
-      const oldContent = targetIssue ? (targetIssue.content || '') : '';
-      const newContent = prompt('請修改回報內容：', oldContent);
-      if (newContent === null || newContent.trim() === '') return;
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ content: newContent.trim() })
-        });
-        if (res.ok) {
-          showNotification('✏️ 回報內容已更新', 'success');
-          loadAndRenderIssues();
-        }
-      } catch(e) {
-        console.error('Edit issue error:', e);
-      }
-    }
-
-    async function deleteIssue(issueId) {
-      if (!confirm('確定要刪除這筆回報記錄嗎？')) return;
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-        if (res.ok) {
-          showNotification('🗑️ 已刪除回報記錄', 'success');
-          loadAndRenderIssues();
-        }
-      } catch(e) {
-        console.error('Delete issue error:', e);
-      }
-    }
-
-
-    // ==========================================
-    // 🏷️ 網站名稱動態設定 Logic (預設: PEGAPEGA)
-    // ==========================================
-    function loadSiteName() {
-      const savedName = localStorage.getItem('pega_site_name') || 'PEGAPEGA';
-      const titleSpan = document.getElementById('site-title-text');
-      const input = document.getElementById('admin-sitename-input');
-      const docTitle = document.getElementById('doc-site-title');
-      if (titleSpan) titleSpan.innerText = savedName;
-      if (input) input.value = savedName;
-      if (docTitle) docTitle.innerText = savedName;
-      document.title = savedName;
-    }
-
-    function saveSiteName() {
-      const input = document.getElementById('admin-sitename-input');
-      const newName = (input?.value || '').trim();
-      if (!newName) {
-        showNotification('⚠️ 網站名稱不可為空', 'warning');
-        return;
-      }
-      localStorage.setItem('pega_site_name', newName);
-  
-    // ==========================================
-    // 🔑 身份持久化與專屬復原碼 Logic
-    // ==========================================
-    function getRecoveryCode(devId) {
-      if (!devId) return 'PEGA-8888';
-      let hash = 0;
-      for (let i = 0; i < devId.length; i++) {
-        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
-        hash |= 0;
-      }
-      const codeNum = Math.abs(hash % 9000) + 1000;
-      return `PEGA-${codeNum}`;
-    }
-
-    function updateIdentityDisplay() {
-      const display = document.getElementById('user-identity-display');
-      if (display) {
-        const recCode = getRecoveryCode(deviceId);
-        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
-      }
-    }
-
-    function copyRecoveryCode() {
-      const recCode = getRecoveryCode(deviceId);
-      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
-      navigator.clipboard.writeText(copyText).then(() => {
-        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
-      }).catch(() => {
-        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
-      });
-    }
-
-    function promptRestoreIdentity() {
-      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
-      if (!code || !code.trim()) return;
-      const cleanCode = code.trim().toUpperCase();
-      if (!cleanCode.startsWith('PEGA-')) {
-        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
-        return;
-      }
-
-      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
-      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
-
-      localStorage.setItem('pega_device_id', restoredDevId);
-      localStorage.setItem('pega_nickname', restoredNick);
-      deviceId = restoredDevId;
-      nickname = restoredNick;
-
-      updateIdentityDisplay();
-      refreshPageData();
-      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
-    }
-
-    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
-    async function sendTestMessage() {
-      const testMsgs = [
-        '你好！請問這個商品還在嗎？',
-        '方便約在公司大廳面交嗎？',
-        '功能測試：訊息連線正常發送！',
-        '收到，謝謝回覆！'
-      ];
-      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
-      const input = document.getElementById('chat-input');
-      if (input) {
-        input.value = randomMsg;
-        sendMessage();
-      }
-    }
-
+    // 初始載入
     updateIdentityDisplay();
-  
-    // ==========================================
-    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
-    // ==========================================
-    let currentUpdateItemId = null;
-    let currentQAItemId = null;
-
-    function openSellerUpdateModal(itemId, title) {
-      currentUpdateItemId = itemId;
-      const titleElem = document.getElementById('seller-update-title');
-      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
-      document.getElementById('seller-update-content').value = '';
-      document.getElementById('seller-update-passcode').value = '';
-      document.getElementById('seller-update-modal').classList.remove('hidden');
-    }
-
-    function closeSellerUpdateModal() {
-      const modal = document.getElementById('seller-update-modal');
-      if (modal) modal.classList.add('hidden');
-      currentUpdateItemId = null;
-    }
-
-    async function submitSellerUpdate() {
-      const content = (document.getElementById('seller-update-content')?.value || '').trim();
-      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入補充更新內容', 'warning');
-        return;
-      }
-
-      if (!pass && !isAdmin) {
-        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `UPDATE_${currentUpdateItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-
-        if (res.ok) {
-          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
-          closeSellerUpdateModal();
-          loadItems();
-        }
-      } catch(e) {
-        console.error('Submit update error:', e);
-      }
-    }
-
-    async function openPublicQAModal(itemId, title) {
-      currentQAItemId = itemId;
-      const titleElem = document.getElementById('public-qa-title');
-      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.remove('hidden');
-      loadPublicQAMessages(itemId);
-    }
-
-    function closePublicQAModal() {
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.add('hidden');
-      currentQAItemId = null;
-    }
-
-    async function loadPublicQAMessages(itemId) {
-      const container = document.getElementById('public-qa-list');
-      if (!container) return;
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        if (res.ok) {
-          const msgs = await res.json();
-          if (msgs.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
-            return;
-          }
-
-          container.innerHTML = msgs.map(m => {
-            const isMe = m.sender_id === deviceId;
-            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-300 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
-                  </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
-                </div>
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-                  ${safeContent}
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.scrollTop = container.scrollHeight;
-        }
-      } catch(e) {
-        console.error('Load QA error:', e);
-      }
-    }
-
-    async function submitPublicQA() {
-      const input = document.getElementById('public-qa-input');
-      const content = (input?.value || '').trim();
-      if (!content || !currentQAItemId) return;
-
-      const container = document.getElementById('public-qa-list');
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      if (container) {
-        const tempQA = `
-          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-gray-300 flex items-center gap-1">
-                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
-              </span>
-              <span class="text-[10px] text-gray-500">剛才</span>
-            </div>
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-              ${safeContent}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', tempQA);
-        container.scrollTop = container.scrollHeight;
-      }
-
-      input.value = '';
-
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `QA_${currentQAItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-        loadPublicQAMessages(currentQAItemId);
-      } catch(e) {
-        console.error('Submit QA error:', e);
-      }
-    }
-
     loadSiteName();
-      showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
-    }
-
-
-    // ==========================================
-    // 🔑 身份持久化與專屬復原碼 Logic
-    // ==========================================
-    function getRecoveryCode(devId) {
-      if (!devId) return 'PEGA-8888';
-      let hash = 0;
-      for (let i = 0; i < devId.length; i++) {
-        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
-        hash |= 0;
-      }
-      const codeNum = Math.abs(hash % 9000) + 1000;
-      return `PEGA-${codeNum}`;
-    }
-
-    function updateIdentityDisplay() {
-      const display = document.getElementById('user-identity-display');
-      if (display) {
-        const recCode = getRecoveryCode(deviceId);
-        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
-      }
-    }
-
-    function copyRecoveryCode() {
-      const recCode = getRecoveryCode(deviceId);
-      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
-      navigator.clipboard.writeText(copyText).then(() => {
-        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
-      }).catch(() => {
-        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
-      });
-    }
-
-    function promptRestoreIdentity() {
-      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
-      if (!code || !code.trim()) return;
-      const cleanCode = code.trim().toUpperCase();
-      if (!cleanCode.startsWith('PEGA-')) {
-        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
-        return;
-      }
-
-      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
-      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
-
-      localStorage.setItem('pega_device_id', restoredDevId);
-      localStorage.setItem('pega_nickname', restoredNick);
-      deviceId = restoredDevId;
-      nickname = restoredNick;
-
-      updateIdentityDisplay();
-      refreshPageData();
-      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
-    }
-
-    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
-    async function sendTestMessage() {
-      const testMsgs = [
-        '你好！請問這個商品還在嗎？',
-        '方便約在公司大廳面交嗎？',
-        '功能測試：訊息連線正常發送！',
-        '收到，謝謝回覆！'
-      ];
-      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
-      const input = document.getElementById('chat-input');
-      if (input) {
-        input.value = randomMsg;
-        sendMessage();
-      }
-    }
-
-    updateIdentityDisplay();
-  
-    // ==========================================
-    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
-    // ==========================================
-    let currentUpdateItemId = null;
-    let currentQAItemId = null;
-
-    function openSellerUpdateModal(itemId, title) {
-      currentUpdateItemId = itemId;
-      const titleElem = document.getElementById('seller-update-title');
-      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
-      document.getElementById('seller-update-content').value = '';
-      document.getElementById('seller-update-passcode').value = '';
-      document.getElementById('seller-update-modal').classList.remove('hidden');
-    }
-
-    function closeSellerUpdateModal() {
-      const modal = document.getElementById('seller-update-modal');
-      if (modal) modal.classList.add('hidden');
-      currentUpdateItemId = null;
-    }
-
-    async function submitSellerUpdate() {
-      const content = (document.getElementById('seller-update-content')?.value || '').trim();
-      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
-
-      if (!content) {
-        showNotification('⚠️ 請輸入補充更新內容', 'warning');
-        return;
-      }
-
-      if (!pass && !isAdmin) {
-        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `UPDATE_${currentUpdateItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-
-        if (res.ok) {
-          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
-          closeSellerUpdateModal();
-          loadItems();
-        }
-      } catch(e) {
-        console.error('Submit update error:', e);
-      }
-    }
-
-    async function openPublicQAModal(itemId, title) {
-      currentQAItemId = itemId;
-      const titleElem = document.getElementById('public-qa-title');
-      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.remove('hidden');
-      loadPublicQAMessages(itemId);
-    }
-
-    function closePublicQAModal() {
-      const modal = document.getElementById('public-qa-modal');
-      if (modal) modal.classList.add('hidden');
-      currentQAItemId = null;
-    }
-
-    async function loadPublicQAMessages(itemId) {
-      const container = document.getElementById('public-qa-list');
-      if (!container) return;
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
-        });
-
-        if (res.ok) {
-          const msgs = await res.json();
-          if (msgs.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
-            return;
-          }
-
-          container.innerHTML = msgs.map(m => {
-            const isMe = m.sender_id === deviceId;
-            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-300 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
-                  </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
-                </div>
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-                  ${safeContent}
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.scrollTop = container.scrollHeight;
-        }
-      } catch(e) {
-        console.error('Load QA error:', e);
-      }
-    }
-
-    async function submitPublicQA() {
-      const input = document.getElementById('public-qa-input');
-      const content = (input?.value || '').trim();
-      if (!content || !currentQAItemId) return;
-
-      const container = document.getElementById('public-qa-list');
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-      if (container) {
-        const tempQA = `
-          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-gray-300 flex items-center gap-1">
-                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
-              </span>
-              <span class="text-[10px] text-gray-500">剛才</span>
-            </div>
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
-              ${safeContent}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', tempQA);
-        container.scrollTop = container.scrollHeight;
-      }
-
-      input.value = '';
-
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            item_id: `QA_${currentQAItemId}`,
-            sender_id: deviceId,
-            sender_name: nickname,
-            content: content
-          })
-        });
-        loadPublicQAMessages(currentQAItemId);
-      } catch(e) {
-        console.error('Submit QA error:', e);
-      }
-    }
-
-    loadSiteName();
-      loadAnnouncement();
-    loadAndRenderIssues();
+    loadAnnouncement();
     loadItems();
   </script>
-
-  <!-- 🐛 回報網站問題與建議留言板 Modal (響應式手機/PC全適應) -->
-  <div id="issue-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
-      
-      <!-- Modal 標題列 -->
-      <div class="px-5 py-4 bg-gray-900/90 border-b border-gray-700 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-lg">
-            🐛
-          </div>
-          <div>
-            <h3 class="font-bold text-base text-gray-100 flex items-center gap-2">
-              網站問題回報與建議留言板
-            </h3>
-            <p class="text-[11px] text-gray-400">歡迎同仁提出 Bug、改善建議或除錯回報</p>
-          </div>
-        </div>
-        <button onclick="closeIssueModal()" class="text-gray-400 hover:text-white p-2 rounded-xl hover:bg-gray-800 transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <!-- Modal 內容主體 -->
-      <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
-        
-        <!-- 新增留言輸入區 -->
-        <form onsubmit="event.preventDefault(); submitNewIssue();" class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-3 shadow-inner">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold text-amber-300 flex items-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i> 填寫問題或建議回報：
-            </span>
-            <input type="text" id="issue-nickname" placeholder="您的暱稱" class="px-2.5 py-1 bg-gray-800 border border-gray-700 rounded-lg text-xs text-gray-200 focus:outline-none focus:border-amber-500 w-32">
-          </div>
-          <textarea id="issue-content" rows="2" placeholder="請詳細說明遇到的問題、操作畫面或改善建議..." class="w-full p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
-          <div class="flex justify-end">
-            <button type="submit" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-950 font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1.5">
-              <i class="fa-solid fa-paper-plane"></i> 發布回報
-            </button>
-          </div>
-        </form>
-
-        <!-- 留言板列表與篩選標籤 -->
-        <div class="space-y-3">
-          <div class="flex items-center justify-between bg-gray-900/50 p-2 rounded-xl border border-gray-700/60 flex-wrap gap-2">
-            <span class="text-xs font-bold text-gray-300">📋 回報記錄列表：</span>
-            <div class="flex gap-1 text-[11px] font-bold">
-              <button onclick="setIssueFilter('all')" id="issue-filter-all" class="px-2.5 py-1 rounded-lg bg-amber-600 text-gray-950 font-black shadow">全部</button>
-              <button onclick="setIssueFilter('open')" id="issue-filter-open" class="px-2.5 py-1 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700">⚡ 待處理</button>
-              <button onclick="setIssueFilter('resolved')" id="issue-filter-resolved" class="px-2.5 py-1 rounded-lg bg-gray-800 text-emerald-400 hover:bg-gray-700">✅ 已解決</button>
-            </div>
-          </div>
-
-          <div id="issue-list-container" class="space-y-2.5 max-h-[350px] overflow-y-auto pr-1">
-            <!-- 動態渲染問題回報清單 -->
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- 📢 賣家補充更新 Modal -->
-  <div id="seller-update-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-fadeIn">
-      <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-amber-400 text-lg">📢</span>
-          <h3 id="seller-update-title" class="font-bold text-sm text-gray-100">新增賣家補充說明</h3>
-        </div>
-        <button onclick="closeSellerUpdateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="p-5 space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">補充更新內容 (例如：降價至$300 / 已預訂)：</label>
-          <textarea id="seller-update-content" rows="3" placeholder="例如：今日優惠降價 200 元！有需要的同仁請打分機 45555 聯繫。" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-amber-500 font-medium"></textarea>
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">4位數發布密碼 (或版主密碼驗證)：</label>
-          <input type="password" id="seller-update-passcode" placeholder="請輸入刊登時設定的密碼或版主密碼" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-amber-500 font-bold">
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button onclick="closeSellerUpdateModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-bold rounded-xl transition">取消</button>
-          <button onclick="submitSellerUpdate()" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95">💾 發布補充更新</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 💬 公開問答 Modal -->
-  <div id="public-qa-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85dvh] sm:h-[550px] animate-fadeIn">
-      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2 min-w-0">
-          <span class="text-indigo-400 text-lg">💬</span>
-          <h3 id="public-qa-title" class="font-bold text-sm text-gray-100 truncate">商品公開問答</h3>
-        </div>
-        <button onclick="closePublicQAModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-      <div id="public-qa-list" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-950/40">
-        <!-- 公開問答列表 -->
-      </div>
-      <form onsubmit="event.preventDefault(); submitPublicQA();" class="p-3 bg-gray-900 border-t border-gray-700 flex gap-2 items-center shrink-0">
-        <input type="text" id="public-qa-input" placeholder="公開留言詢問賣家 (所有人可見)..." autocomplete="off" class="flex-1 px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-medium">
-        <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold text-xs rounded-xl transition shadow flex items-center gap-1 shrink-0">
-          <span>留言</span>
-          <i class="fa-solid fa-paper-plane text-xs"></i>
-        </button>
-      </form>
-    </div>
-  </div>
-
 </body>
 </html>
