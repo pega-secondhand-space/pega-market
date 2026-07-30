@@ -504,7 +504,177 @@
     }
 
     updateIdentityDisplay();
-      loadSiteName();
+  
+    // ==========================================
+    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
+    // ==========================================
+    let currentUpdateItemId = null;
+    let currentQAItemId = null;
+
+    function openSellerUpdateModal(itemId, title) {
+      currentUpdateItemId = itemId;
+      const titleElem = document.getElementById('seller-update-title');
+      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
+      document.getElementById('seller-update-content').value = '';
+      document.getElementById('seller-update-passcode').value = '';
+      document.getElementById('seller-update-modal').classList.remove('hidden');
+    }
+
+    function closeSellerUpdateModal() {
+      const modal = document.getElementById('seller-update-modal');
+      if (modal) modal.classList.add('hidden');
+      currentUpdateItemId = null;
+    }
+
+    async function submitSellerUpdate() {
+      const content = (document.getElementById('seller-update-content')?.value || '').trim();
+      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
+
+      if (!content) {
+        showNotification('⚠️ 請輸入補充更新內容', 'warning');
+        return;
+      }
+
+      if (!pass && !isAdmin) {
+        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `UPDATE_${currentUpdateItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+
+        if (res.ok) {
+          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
+          closeSellerUpdateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Submit update error:', e);
+      }
+    }
+
+    async function openPublicQAModal(itemId, title) {
+      currentQAItemId = itemId;
+      const titleElem = document.getElementById('public-qa-title');
+      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.remove('hidden');
+      loadPublicQAMessages(itemId);
+    }
+
+    function closePublicQAModal() {
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.add('hidden');
+      currentQAItemId = null;
+    }
+
+    async function loadPublicQAMessages(itemId) {
+      const container = document.getElementById('public-qa-list');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          const msgs = await res.json();
+          if (msgs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
+            return;
+          }
+
+          container.innerHTML = msgs.map(m => {
+            const isMe = m.sender_id === deviceId;
+            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-300 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
+                  </span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
+                </div>
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch(e) {
+        console.error('Load QA error:', e);
+      }
+    }
+
+    async function submitPublicQA() {
+      const input = document.getElementById('public-qa-input');
+      const content = (input?.value || '').trim();
+      if (!content || !currentQAItemId) return;
+
+      const container = document.getElementById('public-qa-list');
+      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      if (container) {
+        const tempQA = `
+          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-gray-300 flex items-center gap-1">
+                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
+              </span>
+              <span class="text-[10px] text-gray-500">剛才</span>
+            </div>
+            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+              ${safeContent}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', tempQA);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      input.value = '';
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `QA_${currentQAItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+        loadPublicQAMessages(currentQAItemId);
+      } catch(e) {
+        console.error('Submit QA error:', e);
+      }
+    }
+
+    loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
     }
 
@@ -580,7 +750,177 @@
     }
 
     updateIdentityDisplay();
-      loadSiteName();
+  
+    // ==========================================
+    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
+    // ==========================================
+    let currentUpdateItemId = null;
+    let currentQAItemId = null;
+
+    function openSellerUpdateModal(itemId, title) {
+      currentUpdateItemId = itemId;
+      const titleElem = document.getElementById('seller-update-title');
+      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
+      document.getElementById('seller-update-content').value = '';
+      document.getElementById('seller-update-passcode').value = '';
+      document.getElementById('seller-update-modal').classList.remove('hidden');
+    }
+
+    function closeSellerUpdateModal() {
+      const modal = document.getElementById('seller-update-modal');
+      if (modal) modal.classList.add('hidden');
+      currentUpdateItemId = null;
+    }
+
+    async function submitSellerUpdate() {
+      const content = (document.getElementById('seller-update-content')?.value || '').trim();
+      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
+
+      if (!content) {
+        showNotification('⚠️ 請輸入補充更新內容', 'warning');
+        return;
+      }
+
+      if (!pass && !isAdmin) {
+        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `UPDATE_${currentUpdateItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+
+        if (res.ok) {
+          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
+          closeSellerUpdateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Submit update error:', e);
+      }
+    }
+
+    async function openPublicQAModal(itemId, title) {
+      currentQAItemId = itemId;
+      const titleElem = document.getElementById('public-qa-title');
+      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.remove('hidden');
+      loadPublicQAMessages(itemId);
+    }
+
+    function closePublicQAModal() {
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.add('hidden');
+      currentQAItemId = null;
+    }
+
+    async function loadPublicQAMessages(itemId) {
+      const container = document.getElementById('public-qa-list');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          const msgs = await res.json();
+          if (msgs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
+            return;
+          }
+
+          container.innerHTML = msgs.map(m => {
+            const isMe = m.sender_id === deviceId;
+            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-300 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
+                  </span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
+                </div>
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch(e) {
+        console.error('Load QA error:', e);
+      }
+    }
+
+    async function submitPublicQA() {
+      const input = document.getElementById('public-qa-input');
+      const content = (input?.value || '').trim();
+      if (!content || !currentQAItemId) return;
+
+      const container = document.getElementById('public-qa-list');
+      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      if (container) {
+        const tempQA = `
+          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-gray-300 flex items-center gap-1">
+                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
+              </span>
+              <span class="text-[10px] text-gray-500">剛才</span>
+            </div>
+            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+              ${safeContent}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', tempQA);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      input.value = '';
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `QA_${currentQAItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+        loadPublicQAMessages(currentQAItemId);
+      } catch(e) {
+        console.error('Submit QA error:', e);
+      }
+    }
+
+    loadSiteName();
       loadAnnouncement();
       loadAndRenderIssues();
       loadItems();
@@ -1037,7 +1377,177 @@
     }
 
     updateIdentityDisplay();
-      loadSiteName();
+  
+    // ==========================================
+    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
+    // ==========================================
+    let currentUpdateItemId = null;
+    let currentQAItemId = null;
+
+    function openSellerUpdateModal(itemId, title) {
+      currentUpdateItemId = itemId;
+      const titleElem = document.getElementById('seller-update-title');
+      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
+      document.getElementById('seller-update-content').value = '';
+      document.getElementById('seller-update-passcode').value = '';
+      document.getElementById('seller-update-modal').classList.remove('hidden');
+    }
+
+    function closeSellerUpdateModal() {
+      const modal = document.getElementById('seller-update-modal');
+      if (modal) modal.classList.add('hidden');
+      currentUpdateItemId = null;
+    }
+
+    async function submitSellerUpdate() {
+      const content = (document.getElementById('seller-update-content')?.value || '').trim();
+      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
+
+      if (!content) {
+        showNotification('⚠️ 請輸入補充更新內容', 'warning');
+        return;
+      }
+
+      if (!pass && !isAdmin) {
+        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `UPDATE_${currentUpdateItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+
+        if (res.ok) {
+          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
+          closeSellerUpdateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Submit update error:', e);
+      }
+    }
+
+    async function openPublicQAModal(itemId, title) {
+      currentQAItemId = itemId;
+      const titleElem = document.getElementById('public-qa-title');
+      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.remove('hidden');
+      loadPublicQAMessages(itemId);
+    }
+
+    function closePublicQAModal() {
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.add('hidden');
+      currentQAItemId = null;
+    }
+
+    async function loadPublicQAMessages(itemId) {
+      const container = document.getElementById('public-qa-list');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          const msgs = await res.json();
+          if (msgs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
+            return;
+          }
+
+          container.innerHTML = msgs.map(m => {
+            const isMe = m.sender_id === deviceId;
+            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-300 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
+                  </span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
+                </div>
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch(e) {
+        console.error('Load QA error:', e);
+      }
+    }
+
+    async function submitPublicQA() {
+      const input = document.getElementById('public-qa-input');
+      const content = (input?.value || '').trim();
+      if (!content || !currentQAItemId) return;
+
+      const container = document.getElementById('public-qa-list');
+      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      if (container) {
+        const tempQA = `
+          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-gray-300 flex items-center gap-1">
+                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
+              </span>
+              <span class="text-[10px] text-gray-500">剛才</span>
+            </div>
+            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+              ${safeContent}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', tempQA);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      input.value = '';
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `QA_${currentQAItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+        loadPublicQAMessages(currentQAItemId);
+      } catch(e) {
+        console.error('Submit QA error:', e);
+      }
+    }
+
+    loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
     }
 
@@ -1113,7 +1623,177 @@
     }
 
     updateIdentityDisplay();
-      loadSiteName();
+  
+    // ==========================================
+    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
+    // ==========================================
+    let currentUpdateItemId = null;
+    let currentQAItemId = null;
+
+    function openSellerUpdateModal(itemId, title) {
+      currentUpdateItemId = itemId;
+      const titleElem = document.getElementById('seller-update-title');
+      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
+      document.getElementById('seller-update-content').value = '';
+      document.getElementById('seller-update-passcode').value = '';
+      document.getElementById('seller-update-modal').classList.remove('hidden');
+    }
+
+    function closeSellerUpdateModal() {
+      const modal = document.getElementById('seller-update-modal');
+      if (modal) modal.classList.add('hidden');
+      currentUpdateItemId = null;
+    }
+
+    async function submitSellerUpdate() {
+      const content = (document.getElementById('seller-update-content')?.value || '').trim();
+      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
+
+      if (!content) {
+        showNotification('⚠️ 請輸入補充更新內容', 'warning');
+        return;
+      }
+
+      if (!pass && !isAdmin) {
+        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `UPDATE_${currentUpdateItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+
+        if (res.ok) {
+          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
+          closeSellerUpdateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Submit update error:', e);
+      }
+    }
+
+    async function openPublicQAModal(itemId, title) {
+      currentQAItemId = itemId;
+      const titleElem = document.getElementById('public-qa-title');
+      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.remove('hidden');
+      loadPublicQAMessages(itemId);
+    }
+
+    function closePublicQAModal() {
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.add('hidden');
+      currentQAItemId = null;
+    }
+
+    async function loadPublicQAMessages(itemId) {
+      const container = document.getElementById('public-qa-list');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          const msgs = await res.json();
+          if (msgs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
+            return;
+          }
+
+          container.innerHTML = msgs.map(m => {
+            const isMe = m.sender_id === deviceId;
+            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-300 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
+                  </span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
+                </div>
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch(e) {
+        console.error('Load QA error:', e);
+      }
+    }
+
+    async function submitPublicQA() {
+      const input = document.getElementById('public-qa-input');
+      const content = (input?.value || '').trim();
+      if (!content || !currentQAItemId) return;
+
+      const container = document.getElementById('public-qa-list');
+      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      if (container) {
+        const tempQA = `
+          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-gray-300 flex items-center gap-1">
+                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
+              </span>
+              <span class="text-[10px] text-gray-500">剛才</span>
+            </div>
+            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+              ${safeContent}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', tempQA);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      input.value = '';
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `QA_${currentQAItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+        loadPublicQAMessages(currentQAItemId);
+      } catch(e) {
+        console.error('Submit QA error:', e);
+      }
+    }
+
+    loadSiteName();
       loadAnnouncement();
       loadAndRenderIssues();
         closeAdminModal();
@@ -1961,7 +2641,177 @@
     }
 
     updateIdentityDisplay();
-      loadSiteName();
+  
+    // ==========================================
+    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
+    // ==========================================
+    let currentUpdateItemId = null;
+    let currentQAItemId = null;
+
+    function openSellerUpdateModal(itemId, title) {
+      currentUpdateItemId = itemId;
+      const titleElem = document.getElementById('seller-update-title');
+      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
+      document.getElementById('seller-update-content').value = '';
+      document.getElementById('seller-update-passcode').value = '';
+      document.getElementById('seller-update-modal').classList.remove('hidden');
+    }
+
+    function closeSellerUpdateModal() {
+      const modal = document.getElementById('seller-update-modal');
+      if (modal) modal.classList.add('hidden');
+      currentUpdateItemId = null;
+    }
+
+    async function submitSellerUpdate() {
+      const content = (document.getElementById('seller-update-content')?.value || '').trim();
+      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
+
+      if (!content) {
+        showNotification('⚠️ 請輸入補充更新內容', 'warning');
+        return;
+      }
+
+      if (!pass && !isAdmin) {
+        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `UPDATE_${currentUpdateItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+
+        if (res.ok) {
+          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
+          closeSellerUpdateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Submit update error:', e);
+      }
+    }
+
+    async function openPublicQAModal(itemId, title) {
+      currentQAItemId = itemId;
+      const titleElem = document.getElementById('public-qa-title');
+      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.remove('hidden');
+      loadPublicQAMessages(itemId);
+    }
+
+    function closePublicQAModal() {
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.add('hidden');
+      currentQAItemId = null;
+    }
+
+    async function loadPublicQAMessages(itemId) {
+      const container = document.getElementById('public-qa-list');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          const msgs = await res.json();
+          if (msgs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
+            return;
+          }
+
+          container.innerHTML = msgs.map(m => {
+            const isMe = m.sender_id === deviceId;
+            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-300 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
+                  </span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
+                </div>
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch(e) {
+        console.error('Load QA error:', e);
+      }
+    }
+
+    async function submitPublicQA() {
+      const input = document.getElementById('public-qa-input');
+      const content = (input?.value || '').trim();
+      if (!content || !currentQAItemId) return;
+
+      const container = document.getElementById('public-qa-list');
+      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      if (container) {
+        const tempQA = `
+          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-gray-300 flex items-center gap-1">
+                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
+              </span>
+              <span class="text-[10px] text-gray-500">剛才</span>
+            </div>
+            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+              ${safeContent}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', tempQA);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      input.value = '';
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `QA_${currentQAItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+        loadPublicQAMessages(currentQAItemId);
+      } catch(e) {
+        console.error('Submit QA error:', e);
+      }
+    }
+
+    loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
     }
 
@@ -2037,7 +2887,177 @@
     }
 
     updateIdentityDisplay();
-      loadSiteName();
+  
+    // ==========================================
+    // 📢 賣家補充說明 & 💬 公開問答 Logic (方案二)
+    // ==========================================
+    let currentUpdateItemId = null;
+    let currentQAItemId = null;
+
+    function openSellerUpdateModal(itemId, title) {
+      currentUpdateItemId = itemId;
+      const titleElem = document.getElementById('seller-update-title');
+      if (titleElem) titleElem.innerText = `賣家補充說明：${title || ''}`;
+      document.getElementById('seller-update-content').value = '';
+      document.getElementById('seller-update-passcode').value = '';
+      document.getElementById('seller-update-modal').classList.remove('hidden');
+    }
+
+    function closeSellerUpdateModal() {
+      const modal = document.getElementById('seller-update-modal');
+      if (modal) modal.classList.add('hidden');
+      currentUpdateItemId = null;
+    }
+
+    async function submitSellerUpdate() {
+      const content = (document.getElementById('seller-update-content')?.value || '').trim();
+      const pass = (document.getElementById('seller-update-passcode')?.value || '').trim();
+
+      if (!content) {
+        showNotification('⚠️ 請輸入補充更新內容', 'warning');
+        return;
+      }
+
+      if (!pass && !isAdmin) {
+        showNotification('⚠️ 請輸入刊登時設定的密碼或版主密碼', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `UPDATE_${currentUpdateItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+
+        if (res.ok) {
+          showNotification('📢 賣家補充更新已成功發布 (手機與電腦已同步連動)！', 'success');
+          closeSellerUpdateModal();
+          loadItems();
+        }
+      } catch(e) {
+        console.error('Submit update error:', e);
+      }
+    }
+
+    async function openPublicQAModal(itemId, title) {
+      currentQAItemId = itemId;
+      const titleElem = document.getElementById('public-qa-title');
+      if (titleElem) titleElem.innerText = `公開問答：${title || ''}`;
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.remove('hidden');
+      loadPublicQAMessages(itemId);
+    }
+
+    function closePublicQAModal() {
+      const modal = document.getElementById('public-qa-modal');
+      if (modal) modal.classList.add('hidden');
+      currentQAItemId = null;
+    }
+
+    async function loadPublicQAMessages(itemId) {
+      const container = document.getElementById('public-qa-list');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.QA_${itemId}&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          const msgs = await res.json();
+          if (msgs.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何公開留言詢問，有疑問歡迎在此發問！</p>';
+            return;
+          }
+
+          container.innerHTML = msgs.map(m => {
+            const isMe = m.sender_id === deviceId;
+            const safeContent = (m.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `
+              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-gray-300 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-user text-indigo-400"></i> ${m.sender_name || '匿名同仁'} ${isMe ? '<span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>' : ''}
+                  </span>
+                  <span class="text-[10px] text-gray-500">${timeAgo(m.created_at)}</span>
+                </div>
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch(e) {
+        console.error('Load QA error:', e);
+      }
+    }
+
+    async function submitPublicQA() {
+      const input = document.getElementById('public-qa-input');
+      const content = (input?.value || '').trim();
+      if (!content || !currentQAItemId) return;
+
+      const container = document.getElementById('public-qa-list');
+      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      if (container) {
+        const tempQA = `
+          <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-gray-300 flex items-center gap-1">
+                <i class="fa-solid fa-circle-user text-indigo-400"></i> ${nickname} <span class="text-[10px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.2 rounded">(我)</span>
+              </span>
+              <span class="text-[10px] text-gray-500">剛才</span>
+            </div>
+            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/20 p-2 rounded-lg border border-white/5 whitespace-pre-line">
+              ${safeContent}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', tempQA);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      input.value = '';
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            item_id: `QA_${currentQAItemId}`,
+            sender_id: deviceId,
+            sender_name: nickname,
+            content: content
+          })
+        });
+        loadPublicQAMessages(currentQAItemId);
+      } catch(e) {
+        console.error('Submit QA error:', e);
+      }
+    }
+
+    loadSiteName();
       loadAnnouncement();
     loadAndRenderIssues();
     loadItems();
