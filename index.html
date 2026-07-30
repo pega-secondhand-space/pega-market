@@ -1936,8 +1936,9 @@
       showNotification('📥 歷史成交紀錄文字檔已成功下載！', 'success');
     }
 
-                        async function loadAnnouncement() {
-      const defaultNotice = '📢【使用須知】歡迎使用 PEGAPEGA 告示牌！1. 本平台免登入即可發布買賣與贈送 2. 請務必填寫真實分機或 LINE 以利聯繫 3. 交易完成請點擊卡片『下架我的貼文』以防騷擾 4. 歡迎同仁善加利用免費贈送專區！';
+    async function loadAnnouncement() {
+      // 預設的使用須知，帶有漂亮的斷行
+      const defaultNotice = '歡迎使用 PEGAPEGA 告示牌！\n1. 本平台免登入即可發布買賣與贈送\n2. 請務必填寫真實分機或 LINE 以利聯繫\n3. 交易完成請點擊卡片『下架我的貼文』以防騷擾\n4. 歡迎同仁善加利用免費贈送專區！';
       const textSpan = document.getElementById('announcement-text');
       const adminInput = document.getElementById('admin-announcement-input');
       const bar = document.getElementById('announcement-bar');
@@ -1969,29 +1970,23 @@
       }
     }
 
-        async function saveAnnouncement() {
+    async function saveAnnouncement() {
       const input = document.getElementById('admin-announcement-input');
       const text = (input?.value || '').trim();
       if (!text) return showNotification('請輸入公告內容', 'warning');
 
-      // 1. 即時寫入 localStorage 與前端 DOM 畫面
-      localStorage.setItem('pega_custom_announcement', text);
-      const textSpan = document.getElementById('announcement-text');
-      if (textSpan) textSpan.innerText = text;
-      const bar = document.getElementById('announcement-bar');
-      if (bar) bar.classList.remove('hidden');
-
       try {
-        // 2. 查詢 Supabase 資料庫已有紀錄
+        // 1. 查詢 Supabase 資料庫已有紀錄
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
+        if (!checkRes.ok) throw new Error('連線失敗，無法取得公告紀錄。');
         const existing = await checkRes.json();
 
         if (existing && existing.length > 0) {
           // 更新所有匹配到的公告紀錄
           for (const item of existing) {
-            await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+            const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
               method: 'PATCH',
               headers: { 
                 'apikey': SUPABASE_KEY, 
@@ -2001,10 +1996,11 @@
               },
               body: JSON.stringify({ content: text })
             });
+            if (!patchRes.ok) throw new Error('雲端公告修改失敗。');
           }
         } else {
           // 插入新紀錄
-          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          const postRes = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
             method: 'POST',
             headers: { 
               'apikey': SUPABASE_KEY, 
@@ -2019,11 +2015,20 @@
               content: text 
             })
           });
+          if (!postRes.ok) throw new Error('雲端公告寫入失敗。');
         }
+
+        // 2. 確定寫入雲端成功後，即時寫入 localStorage 與前端 DOM 畫面
+        localStorage.setItem('pega_custom_announcement', text);
+        const textSpan = document.getElementById('announcement-text');
+        if (textSpan) textSpan.innerText = text;
+        const bar = document.getElementById('announcement-bar');
+        if (bar) bar.classList.remove('hidden');
+
         showNotification('🎉 全站使用須知已成功寫入雲端資料庫！', 'success');
       } catch(e) { 
         console.error('Save announcement error:', e); 
-        showNotification('✅ 須知已於本機生效，雲端連線同步中', 'success');
+        showNotification(`❌ 儲存公告失敗：${e.message}`, 'error');
       }
     }
 
@@ -2032,15 +2037,20 @@
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
+        if (!checkRes.ok) throw new Error('連線查詢失敗。');
         const existing = await checkRes.json();
         if (existing && existing.length > 0) {
           for (const item of existing) {
-            await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+            const delRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
               method: 'DELETE',
               headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
             });
+            if (!delRes.ok) throw new Error('雲端公告清除失敗。');
           }
         }
+        
+        // 刪除本地快取
+        localStorage.removeItem('pega_custom_announcement');
         
         const textSpan = document.getElementById('announcement-text');
         const adminInput = document.getElementById('admin-announcement-input');
@@ -2051,7 +2061,10 @@
         if (bar) bar.classList.add('hidden');
 
         showNotification('🗑️ 全站公告已從資料庫與畫面完全清除！', 'info');
-      } catch(e) { console.error('Clear announcement error:', e); }
+      } catch(e) { 
+        console.error('Clear announcement error:', e); 
+        showNotification(`❌ 清除失敗：${e.message}`, 'error');
+      }
     }
 
     function closeAnnouncementBar() { document.getElementById('announcement-bar').classList.add('hidden'); }
