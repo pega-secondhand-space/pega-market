@@ -1532,7 +1532,7 @@
 
     async function openChat(itemId, title) {
       currentItemId = itemId;
-      document.getElementById('chat-title').innerText = '對話：' + title;
+      document.getElementById('chat-title').innerText = title ? `匿名對話：${title}` : '匿名對話';
       document.getElementById('chat-modal').classList.remove('hidden');
       loadMessages();
 
@@ -1540,13 +1540,30 @@
         if (chatSubscription) db.removeChannel(chatSubscription);
         chatSubscription = db.channel('public:messages')
           .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `item_id=${itemId}` }, payload => {
-            appendMessage(payload.new);
+            if (payload.new.sender_id !== deviceId) {
+              appendMessage(payload.new);
+            }
           })
           .subscribe();
       }
+
+      // 手機輪詢備援機制 (每 3 秒自動載入最新訊息)
+      if (chatPollInterval) clearInterval(chatPollInterval);
+      chatPollInterval = setInterval(() => {
+        if (currentItemId === itemId) {
+          loadMessages();
+        }
+      }, 3000);
     }
 
-    function closeChat() { document.getElementById('chat-modal').classList.add('hidden'); }
+    function closeChat() { 
+      document.getElementById('chat-modal').classList.add('hidden'); 
+      currentItemId = null;
+      if (chatPollInterval) {
+        clearInterval(chatPollInterval);
+        chatPollInterval = null;
+      }
+    }
 
     async function loadMessages() {
       if (!db) return;
@@ -1573,19 +1590,34 @@
       msgBox.scrollTop = msgBox.scrollHeight;
     }
 
+    let chatPollInterval = null;
+
     async function sendMessage() {
       if (!db) return alert('資料庫未連線');
       const input = document.getElementById('chat-input');
       const content = input.value.trim();
       if (!content) return;
-      input.value = '';
 
-      await db.from('messages').insert([{
-        item_id: currentItemId,
+      // 1. 零延遲：立即在對話視窗內繪製剛發出的訊息
+      appendMessage({
         sender_id: deviceId,
         sender_name: nickname,
         content: content
-      }]);
+      });
+
+      input.value = '';
+
+      // 2. 背景寫入 Supabase 資料庫
+      try {
+        await db.from('messages').insert([{
+          item_id: currentItemId,
+          sender_id: deviceId,
+          sender_name: nickname,
+          content: content
+        }]);
+      } catch(e) {
+        console.error('Send message error:', e);
+      }
     }
 
 
