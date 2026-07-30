@@ -637,8 +637,9 @@
       const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
 
       const filtered = allItems.filter(item => {
-        if (item.expires_at) {
-          const expDate = new Date(item.expires_at);
+        const itemExp = getItemExpiration(item);
+        if (itemExp) {
+          const expDate = new Date(itemExp);
           if (expDate < new Date()) return false; // Filter out expired items
         }
         if (currentFilter !== 'all' && item.type !== currentFilter) return false;
@@ -666,7 +667,8 @@
       grid.innerHTML = filtered.map(item => {
         const isPinned = globalPinnedIds.includes(item.id);
         const safeTitle = (item.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const safeDesc = (item.description || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const cleanDescText = getCleanDescription(item.description);
+        const safeDesc = cleanDescText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const contactStr = item.contact_info || item.contact || '';
         const safeContact = contactStr.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -702,7 +704,7 @@
 
                 <div class="flex items-center justify-between text-[10px] text-gray-500">
                   <span>${item.nickname || '匿名同仁'}</span>
-                  <span>${getExpirationCountdown(item.expires_at)}</span>
+                  <span>${getExpirationCountdown(getItemExpiration(item))}</span>
                 </div>
 
                 ${(item.device_id === deviceId || (JSON.parse(localStorage.getItem('my_created_item_ids') || '[]')).includes(item.id)) ? `
@@ -745,10 +747,10 @@
       if (priceElem) priceElem.innerText = item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`;
       if (timeElem) timeElem.innerText = timeAgo(item.created_at);
       if (contactText) contactText.innerText = item.contact_info || item.contact || '刊登者未特別留言聯絡方式';
-      if (descElem) descElem.innerText = item.description || '無詳細補充描述';
+      if (descElem) descElem.innerText = getCleanDescription(item.description) || '無詳細補充描述';
       if (nickElem) nickElem.innerText = item.nickname || '匿名同仁';
       const expElem = document.getElementById('detail-expiration');
-      if (expElem) expElem.innerHTML = getExpirationCountdown(item.expires_at);
+      if (expElem) expElem.innerHTML = getExpirationCountdown(getItemExpiration(item));
 
       if (typeBadge) {
         typeBadge.innerHTML = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🎁 免費送</span>' :
@@ -807,6 +809,18 @@
     }
 
     
+    
+    function getItemExpiration(item) {
+      if (item.expires_at) return item.expires_at;
+      const match = (item.description || '').match(/\[EXP:(.*?)\]/);
+      return match ? match[1] : null;
+    }
+
+    function getCleanDescription(desc) {
+      if (!desc) return '';
+      return desc.replace(/\[EXP:.*?\]/g, '').trim();
+    }
+
     function getExpirationCountdown(expiresAt) {
       if (!expiresAt) return '<span class="text-gray-400">⏳ 永久展示</span>';
       const now = new Date();
@@ -869,7 +883,7 @@
     function openCreateModal() { document.getElementById('create-modal').classList.remove('hidden'); }
     function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
 
-                async function submitCreateItem() {
+                    async function submitCreateItem() {
       const errorBox = document.getElementById('create-modal-error');
       const errorText = document.getElementById('create-modal-error-text');
       const submitBtn = document.getElementById('submit-create-btn');
@@ -900,7 +914,6 @@
         titleInput.classList.remove('border-red-500');
       }
 
-      // 檢查是否上傳至少 1 張照片
       if (!imgUrl1) {
         if (errorBox && errorText) {
           errorText.innerText = '⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！';
@@ -917,24 +930,23 @@
 
       const finalImgUrl = imgUrl2 ? `${imgUrl1}|||${imgUrl2}` : imgUrl1;
 
-      // 計算自動下架截止時間 (ISO timestamp string)
-      let expiresAt = null;
+      // 如果有設定下架天數，將到期時間戳標記編碼於說明中
+      let finalDesc = desc;
       if (expDays !== 'none') {
         const d = new Date();
         d.setDate(d.getDate() + parseInt(expDays, 10));
-        expiresAt = d.toISOString();
+        finalDesc = `${desc}\n[EXP:${d.toISOString()}]`;
       }
 
       const payload = {
         title: title,
-        description: desc,
+        description: finalDesc,
         price: (postType === 'free') ? 0 : price,
         type: postType,
         image_url: finalImgUrl,
         nickname: nickname,
         device_id: deviceId,
-        contact_info: contact,
-        expires_at: expiresAt
+        contact_info: contact
       };
 
       try {
@@ -957,6 +969,7 @@
             myItems.push(newItemId);
             localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
           }
+
           showNotification('🎉 刊登成功！貼文已即時發布至告示牌。', 'success');
           closeCreateModal();
           // Reset form
