@@ -63,6 +63,10 @@
           <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
         </div>
 
+          <button onclick="openArchiveModal()" class="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
+            <i class="fa-solid fa-handshake text-emerald-400"></i> <span class="hidden sm:inline">成交紀錄</span>
+          </button>
+
           <button onclick="openIssueModal()" class="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
             <i class="fa-solid fa-bug text-amber-400"></i> <span class="hidden sm:inline">回報問題與建議</span>
           </button>
@@ -445,6 +449,64 @@
     </div>
   </div>
 
+  <!-- 🤝 歷史成交紀錄 Modal -->
+  <div id="archive-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[580px] animate-fadeIn">
+      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0 font-sans">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-base">
+            🤝
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-gray-100">歷史成交與下架存檔紀錄</h3>
+            <p class="text-[10px] text-gray-400">已售出商品之歷史存檔，提供同仁統計與查閱</p>
+          </div>
+        </div>
+        <!-- 醒目圓形紅底白字 X 關閉按鈕 -->
+        <button onclick="closeArchiveModal()" class="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 ml-2" title="按下關閉視窗">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 統計方塊與工具列 -->
+      <div class="px-5 py-3 bg-gray-900/60 border-b border-gray-700/80 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 font-sans">
+        <div class="flex flex-wrap gap-2 text-[11px] font-bold text-gray-300">
+          <span class="bg-emerald-950 border border-emerald-800 text-emerald-300 px-2.5 py-1 rounded-lg">累計成交：<strong id="archive-stat-count" class="text-white">0</strong> 件</span>
+          <span class="bg-indigo-950 border border-indigo-800 text-indigo-300 px-2.5 py-1 rounded-lg">交易總額：<strong id="archive-stat-sum" class="text-white">NT$ 0</strong></span>
+          <span class="bg-purple-950 border border-purple-800 text-purple-300 px-2.5 py-1 rounded-lg">免費贈送：<strong id="archive-stat-free" class="text-white">0</strong> 件</span>
+        </div>
+        <div class="flex gap-2 w-full sm:w-auto">
+          <input type="text" id="archive-search" oninput="filterArchive()" placeholder="搜尋存檔物品..." class="px-3 py-1.5 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500 w-full sm:w-44 font-medium">
+          <button onclick="exportArchiveToTxt()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black text-xs rounded-xl transition shadow flex items-center gap-1 shrink-0">
+            <i class="fa-solid fa-download"></i> 匯出文字檔
+          </button>
+        </div>
+      </div>
+
+      <!-- 數據表格 -->
+      <div class="flex-1 overflow-auto p-4 font-sans">
+        <div class="min-w-full inline-block align-middle">
+          <div class="overflow-hidden border border-gray-700 rounded-xl">
+            <table class="min-w-full divide-y divide-gray-700 text-left text-xs text-gray-300">
+              <thead class="bg-gray-900 font-bold text-gray-200">
+                <tr>
+                  <th scope="col" class="px-4 py-3">商品/需求名稱</th>
+                  <th scope="col" class="px-3 py-3 w-20">類型</th>
+                  <th scope="col" class="px-3 py-3 w-24">金額</th>
+                  <th scope="col" class="px-3 py-3 w-24">刊登者</th>
+                  <th scope="col" class="px-4 py-3 w-32">成交下架時間</th>
+                </tr>
+              </thead>
+              <tbody id="archive-table-body" class="divide-y divide-gray-800 bg-gray-950/40 font-medium">
+                <!-- 動態加載成交紀錄 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript 腳本 (支援原生圖片壓縮上傳資料庫與全視圖展覽) -->
   <script>
     window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -587,6 +649,7 @@
     }
 
     let allItems = [];
+    let allArchiveLogs = [];
     let currentFilter = 'all';
     let postType = 'sell';
     let globalPinnedIds = [];
@@ -829,10 +892,26 @@
 
       const filtered = allItems.filter(item => {
         if (item.id === '00000000-0000-0000-0000-000000000001' || item.id === '00000000-0000-0000-0000-000000000002' || item.title === 'SYSTEM_ANNOUNCEMENT_BOARD' || item.title === 'SYSTEM_ISSUE_BOARD') return false;
+
+        // Auto-delete sold items after 2 days (48 hours)
+        if (isItemSold(item)) {
+          const soldTime = getItemSoldTime(item);
+          if (soldTime) {
+            const diffMs = new Date() - soldTime;
+            if (diffMs > 2 * 24 * 60 * 60 * 1000) {
+              deleteItemSilently(item.id);
+              return false;
+            }
+          }
+        }
+
         const itemExp = getItemExpiration(item);
         if (itemExp) {
           const expDate = new Date(itemExp);
-          if (expDate < new Date()) return false; // Filter out expired items
+          if (expDate < new Date()) {
+            deleteItemSilently(item.id);
+            return false; // Filter out expired items
+          }
         }
         if (currentFilter !== 'all' && item.type !== currentFilter) return false;
         if (searchVal) {
@@ -844,11 +923,23 @@
         return true;
       });
 
-      // Sort pinned items to the top
+      // Sort items: Active pinned items first, then active regular items, and sold items placed at the bottom.
       filtered.sort((a, b) => {
+        const aSold = isItemSold(a) ? 1 : 0;
+        const bSold = isItemSold(b) ? 1 : 0;
+        if (aSold !== bSold) {
+          return aSold - bSold; // Sold items (1) go after active items (0)
+        }
+
         const aPinned = globalPinnedIds.includes(a.id) ? 1 : 0;
         const bPinned = globalPinnedIds.includes(b.id) ? 1 : 0;
-        return bPinned - aPinned;
+        if (aPinned !== bPinned) {
+          return bPinned - aPinned; // Pinned (1) goes before unpinned (0)
+        }
+
+        const aTime = new Date(a.created_at || 0);
+        const bTime = new Date(b.created_at || 0);
+        return bTime - aTime;
       });
 
       filteredTotalCount = filtered.length;
@@ -900,6 +991,7 @@
       const pageItems = filtered.slice(startIndex, startIndex + itemsPerPage);
 
       grid.innerHTML = pageItems.map(item => {
+        const isSold = isItemSold(item);
         const isPinned = globalPinnedIds.includes(item.id);
         const safeTitle = (item.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const cleanDescText = getCleanDescription(item.description);
@@ -911,15 +1003,45 @@
                           item.type === 'buy' ? '<span class="bg-amber-500 text-gray-950 font-black px-3 py-1 rounded-lg text-xs sm:text-sm shadow-md">🔍 想買</span>' :
                           '<span class="bg-indigo-500 text-white font-black px-3 py-1 rounded-lg text-xs sm:text-sm shadow-md">💰 想賣</span>';
 
+        let expCountdownHtml = '';
+        if (isSold) {
+          const soldTime = getItemSoldTime(item);
+          if (soldTime) {
+            const remainingMs = (2 * 24 * 60 * 60 * 1000) - (new Date() - soldTime);
+            const remainingHours = Math.max(0, Math.floor(remainingMs / (1000 * 60 * 60)));
+            if (remainingHours > 24) {
+              const remainingDays = Math.floor(remainingHours / 24);
+              const hours = remainingHours % 24;
+              expCountdownHtml = `<span class="text-emerald-400 font-bold">⏳ 售出：剩 ${remainingDays} 天 ${hours} 小時下架</span>`;
+            } else {
+              expCountdownHtml = `<span class="text-red-400 font-bold animate-pulse">⏳ 售出：剩 ${remainingHours} 小時下架</span>`;
+            }
+          } else {
+            expCountdownHtml = `<span class="text-emerald-400 font-bold">⏳ 已標記售出</span>`;
+          }
+        } else {
+          expCountdownHtml = getExpirationCountdown(getItemExpiration(item));
+        }
+
         return `
-          <div onclick="openDetailModal('${item.id}')" class="bg-gray-900/95 border ${isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800'} rounded-2xl overflow-hidden flex flex-col transition hover:border-indigo-500/60 cursor-pointer group">
-            ${isPinned ? '<div class="bg-amber-500 text-gray-950 text-xs sm:text-sm font-black px-3 py-1 text-center">📌 官方置頂商品</div>' : ''}
+          <div onclick="openDetailModal('${item.id}')" class="bg-gray-900/95 border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800'} rounded-2xl overflow-hidden flex flex-col transition ${isSold ? '' : 'hover:border-indigo-500/60 group'} cursor-pointer">
+            ${(isPinned && !isSold) ? '<div class="bg-amber-500 text-gray-950 text-xs sm:text-sm font-black px-3 py-1 text-center">📌 官方置頂商品</div>' : ''}
             
             <div class="relative aspect-video bg-gray-950 overflow-hidden flex items-center justify-center">
-              <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300">
+              <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="max-w-full max-h-full object-contain ${isSold ? '' : 'group-hover:scale-105'} transition-transform duration-300">
               <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
               
-              ${(item.image_url || '').includes('|||') ? `
+              <!-- 已售出打勾按鈕 -->
+              <div class="absolute top-2 right-2 z-20" onclick="event.stopPropagation()">
+                <button onclick="toggleItemSoldState('${item.id}')" 
+                        class="w-8 h-8 rounded-full border shadow-md flex items-center justify-center transition active:scale-90 font-bold text-xs 
+                        ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-black/60 border-white/30 text-gray-300 hover:text-white hover:bg-black/80'}"
+                        title="${isSold ? '標記為未售出' : '標記為已售出'}">
+                  <i class="fa-solid ${isSold ? 'fa-check-double' : 'fa-check'} text-sm"></i>
+                </button>
+              </div>
+
+              ${((item.image_url || '').includes('|||') && !isSold) ? `
                 <div class="absolute inset-x-1 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none px-1">
                   <button onclick="event.stopPropagation(); switchCardPhoto('${item.id}', 0)" class="pointer-events-auto bg-black/75 hover:bg-black text-white w-8 h-8 rounded-full text-xs sm:text-sm flex items-center justify-center border border-white/20 transition active:scale-90 shadow-md">
                     <i class="fa-solid fa-chevron-left"></i>
@@ -936,13 +1058,13 @@
 
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
-                <h3 class="font-black text-base sm:text-lg text-gray-100 line-clamp-1 mb-1.5 group-hover:text-indigo-300 transition leading-snug">${safeTitle}</h3>
+                <h3 class="font-black text-base sm:text-lg text-gray-100 line-clamp-1 mb-1.5 ${isSold ? '' : 'group-hover:text-indigo-300'} transition leading-snug">${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}</h3>
                 <p class="text-base sm:text-lg text-indigo-400 font-black mb-2">${item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`}</p>
                 <p class="text-xs sm:text-base text-gray-300 line-clamp-2 leading-relaxed font-medium">${safeDesc || '無補充描述'}</p>
               </div>
 
               <div class="space-y-2.5 pt-3 border-t border-gray-800/80">
-                ${safeContact ? `
+                ${(safeContact && !isSold) ? `
                   <div onclick="event.stopPropagation(); handleContactClick('${safeContact}')" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 p-2.5 rounded-xl text-xs sm:text-base text-indigo-200 font-bold flex items-center justify-between gap-2 transition active:scale-95 cursor-pointer shadow-sm" title="點擊一鍵複製聯絡方式">
                     <div class="flex items-center gap-1.5 truncate">
                       <i class="fa-solid fa-phone text-indigo-400 text-xs sm:text-sm"></i>
@@ -954,18 +1076,18 @@
 
                 <div class="flex items-center justify-between text-xs sm:text-sm text-gray-400 font-medium">
                   <span>${item.nickname || '匿名同仁'}</span>
-                  <span class="text-amber-400/90 font-bold">${getExpirationCountdown(getItemExpiration(item))}</span>
+                  <span class="font-bold">${expCountdownHtml}</span>
                 </div>
 
-                ${(item.device_id === deviceId || (JSON.parse(localStorage.getItem('my_created_item_ids') || '[]')).includes(item.id)) ? `
+                ${((item.device_id === deviceId || (JSON.parse(localStorage.getItem('my_created_item_ids') || '[]')).includes(item.id))) ? `
                   <button onclick="event.stopPropagation(); deleteMyItem('${item.id}')" class="w-full bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-700/60 text-xs sm:text-sm py-2 rounded-xl font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-trash-can"></i> 下架我的貼文 (已售出)
+                    <i class="fa-solid fa-trash-can"></i> ${isSold ? '立即刪除下架' : '下架我的貼文 (已售出)'}
                   </button>
                 ` : ''}
 
                 ${isAdmin ? `
                   <div class="flex gap-1.5 pt-1" onclick="event.stopPropagation()">
-                    <button onclick="togglePinItem('${item.id}')" class="flex-1 ${isPinned ? 'bg-amber-600' : 'bg-gray-800 text-amber-300'} text-xs sm:text-sm py-1.5 rounded-xl font-bold transition">${isPinned ? '取消置頂' : '📌 置頂'}</button>
+                    ${!isSold ? `<button onclick="togglePinItem('${item.id}')" class="flex-1 ${isPinned ? 'bg-amber-600' : 'bg-gray-800 text-amber-300'} text-xs sm:text-sm py-1.5 rounded-xl font-bold transition">${isPinned ? '取消置頂' : '📌 置頂'}</button>` : ''}
                     <button onclick="deleteItemAdmin('${item.id}')" class="px-3 bg-red-900/60 text-red-300 text-xs sm:text-sm py-1.5 rounded-xl font-bold transition">🗑️ 刪除</button>
                   </div>
                 ` : ''}
@@ -1099,7 +1221,16 @@
 
     function getCleanDescription(desc) {
       if (!desc) return '';
-      return desc.replace(/\[EXP:.*?\]/g, '').trim();
+      return desc.replace(/\[EXP:.*?\]/g, '').replace(/\[SOLD_AT:.*?\]/g, '').trim();
+    }
+
+    function isItemSold(item) {
+      return (item.description || '').includes('[SOLD_AT:');
+    }
+
+    function getItemSoldTime(item) {
+      const match = (item.description || '').match(/\[SOLD_AT:(.*?)\]/);
+      return match ? new Date(match[1]) : null;
     }
 
     function getExpirationCountdown(expiresAt) {
@@ -1457,6 +1588,116 @@
       }
     }
 
+    async function deleteItemSilently(itemId) {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${itemId}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+      } catch(e) {
+        console.error('Silent delete error:', e);
+      }
+    }
+
+    async function toggleItemSoldState(itemId) {
+      const item = allItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+      const hasPermission = (item.device_id === deviceId) || myItems.includes(item.id) || isAdmin;
+
+      if (!hasPermission) {
+        return showNotification('⚠️ 只有該貼文的發布同仁或版主可以標記「已售出」喔！', 'warning');
+      }
+
+      const isSold = isItemSold(item);
+      let newDesc = item.description || '';
+
+      if (isSold) {
+        // Unmark as sold
+        newDesc = newDesc.replace(/\[SOLD_AT:.*?\]/g, '').trim();
+        showNotification('🔄 已取消「已售出」標記，物品重新上架！', 'info');
+      } else {
+        // Mark as sold
+        const soldTimeStr = new Date().toISOString();
+        newDesc = `${newDesc}\n[SOLD_AT:${soldTimeStr}]`;
+        showNotification('✅ 成功標記為「已售出」，將於 2 天後自動下架！', 'success');
+
+        // Save transaction log in background
+        saveTransactionLog(item, soldTimeStr);
+      }
+
+      // Update locally immediately
+      item.description = newDesc;
+      renderItems();
+
+      // Update in Supabase database
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${itemId}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ description: newDesc })
+        });
+      } catch(e) {
+        console.error('Update description error:', e);
+      }
+    }
+
+    async function saveTransactionLog(item, soldTimeStr) {
+      const logPayload = {
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        type: item.type,
+        sold_at: soldTimeStr,
+        created_at: item.created_at,
+        nickname: item.nickname
+      };
+
+      try {
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000003&sender_id=eq.${item.id}&select=id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        const existing = await checkRes.json();
+
+        if (existing && existing.length > 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content: JSON.stringify(logPayload) })
+          });
+        } else {
+          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              item_id: '00000000-0000-0000-0000-000000000003',
+              sender_id: item.id,
+              sender_name: 'TRANSACTION',
+              content: JSON.stringify(logPayload)
+            })
+          });
+        }
+      } catch(e) {
+        console.error('Save transaction log error:', e);
+      }
+    }
+
     async function deleteItemAdmin(id) {
       if (!confirm('確定要下架刪除此貼文嗎？')) return;
       try {
@@ -1469,6 +1710,190 @@
       } catch(e) {
         console.error('Delete error:', e);
       }
+    }
+
+    function openArchiveModal() {
+      document.getElementById('archive-modal').classList.remove('hidden');
+      loadArchiveLogs();
+    }
+
+    function closeArchiveModal() {
+      document.getElementById('archive-modal').classList.add('hidden');
+    }
+
+    async function loadArchiveLogs() {
+      const tbody = document.getElementById('archive-table-body');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400 font-bold">⏳ 正在連線讀取存檔數據...</td></tr>`;
+      }
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000003&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        
+        if (!res.ok) throw new Error('讀取失敗');
+        const rows = await res.json();
+        
+        allArchiveLogs = rows.map(r => {
+          try {
+            return JSON.parse(r.content);
+          } catch(e) {
+            return null;
+          }
+        }).filter(Boolean);
+
+        renderArchive(allArchiveLogs);
+      } catch(e) {
+        console.error('Load archive logs error:', e);
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-red-400 font-bold">⚠️ 無法連線讀取歷史存檔 (${e.message})</td></tr>`;
+        }
+      }
+    }
+
+    function renderArchive(logs) {
+      const tbody = document.getElementById('archive-table-body');
+      if (!tbody) return;
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400 font-bold">尚無成交或下架存檔紀錄</td></tr>`;
+        document.getElementById('archive-stat-count').innerText = '0';
+        document.getElementById('archive-stat-sum').innerText = 'NT$ 0';
+        document.getElementById('archive-stat-free').innerText = '0';
+        return;
+      }
+
+      // Calculate stats
+      let totalCount = logs.length;
+      let totalSum = 0;
+      let freeCount = 0;
+
+      const html = logs.map(log => {
+        const titleSafe = (log.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const price = log.type === 'free' ? 0 : parseInt(log.price || '0', 10);
+        const nicknameSafe = (log.nickname || '匿名同仁').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
+        // Sum values
+        if (log.type === 'free') {
+          freeCount++;
+        } else {
+          totalSum += price;
+        }
+
+        const typeBadge = log.type === 'free' ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded text-[11px]">🎁 送</span>' :
+                          log.type === 'buy' ? '<span class="bg-amber-950 text-amber-400 border border-amber-800 px-2 py-0.5 rounded text-[11px]">🔍 買</span>' :
+                          '<span class="bg-indigo-950 text-indigo-400 border border-indigo-800 px-2 py-0.5 rounded text-[11px]">💰 賣</span>';
+
+        const priceStr = log.type === 'free' ? '免費送' : `NT$ ${price.toLocaleString()}`;
+        const soldDate = log.sold_at ? new Date(log.sold_at).toLocaleString('zh-TW', { hour12: false }) : '未知時間';
+
+        return `
+          <tr class="hover:bg-gray-800/40 transition">
+            <td class="px-4 py-3 font-bold text-gray-100">${titleSafe}</td>
+            <td class="px-3 py-3">${typeBadge}</td>
+            <td class="px-3 py-3 font-black text-indigo-400">${priceStr}</td>
+            <td class="px-3 py-3 text-gray-400">${nicknameSafe}</td>
+            <td class="px-4 py-3 text-gray-400 text-[11px]">${soldDate}</td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.innerHTML = html;
+
+      // Update statistics elements
+      document.getElementById('archive-stat-count').innerText = totalCount;
+      document.getElementById('archive-stat-sum').innerText = `NT$ ${totalSum.toLocaleString()}`;
+      document.getElementById('archive-stat-free').innerText = freeCount;
+    }
+
+    function filterArchive() {
+      const search = (document.getElementById('archive-search')?.value || '').toLowerCase().trim();
+      if (!search) {
+        renderArchive(allArchiveLogs);
+        return;
+      }
+
+      const filtered = allArchiveLogs.filter(log => {
+        const titleMatch = (log.title || '').toLowerCase().includes(search);
+        const nicknameMatch = (log.nickname || '').toLowerCase().includes(search);
+        const priceMatch = String(log.price || '').includes(search);
+        return titleMatch || nicknameMatch || priceMatch;
+      });
+
+      renderArchive(filtered);
+    }
+
+    function exportArchiveToTxt() {
+      if (allArchiveLogs.length === 0) {
+        return showNotification('⚠️ 目前沒有任何成交紀錄可以匯出！', 'warning');
+      }
+
+      const searchVal = document.getElementById('archive-search')?.value || '';
+      let logsToExport = allArchiveLogs;
+      if (searchVal) {
+        logsToExport = allArchiveLogs.filter(log => {
+          const titleMatch = (log.title || '').toLowerCase().includes(searchVal);
+          const nicknameMatch = (log.nickname || '').toLowerCase().includes(searchVal);
+          const priceMatch = String(log.price || '').includes(searchVal);
+          return titleMatch || nicknameMatch || priceMatch;
+        });
+      }
+
+      let totalSum = 0;
+      let freeCount = 0;
+      let text = `==================================================\n`;
+      text += `    PEGA 二手告示牌 - 歷史成交與下架存檔紀錄\n`;
+      text += `    導出時間：${new Date().toLocaleString('zh-TW', { hour12: false })}\n`;
+      if (searchVal) {
+        text += `    搜尋條件：${searchVal}\n`;
+      }
+      text += `==================================================\n\n`;
+
+      logsToExport.forEach((log, index) => {
+        const typeStr = log.type === 'free' ? '免費送' : log.type === 'buy' ? '想買' : '想賣';
+        const price = log.type === 'free' ? 0 : parseInt(log.price || '0', 10);
+        
+        if (log.type === 'free') {
+          freeCount++;
+        } else {
+          totalSum += price;
+        }
+
+        const priceText = log.type === 'free' ? 'NT$ 0 (免費)' : `NT$ ${price.toLocaleString()}`;
+        const soldDate = log.sold_at ? new Date(log.sold_at).toLocaleString('zh-TW', { hour12: false }) : '未知時間';
+        const createDate = log.created_at ? new Date(log.created_at).toLocaleString('zh-TW', { hour12: false }) : '未知時間';
+
+        text += `${index + 1}. 【${typeStr}】${log.title}\n`;
+        text += `   - 交易金額：${priceText}\n`;
+        text += `   - 刊登同仁：${log.nickname || '匿名同仁'}\n`;
+        text += `   - 上架時間：${createDate}\n`;
+        text += `   - 成交時間：${soldDate}\n`;
+        text += `   - 商品 ID ：${log.id}\n`;
+        text += `--------------------------------------------------\n`;
+      });
+
+      text += `\n==================================================\n`;
+      text += `【存檔統計摘要】\n`;
+      text += `累計存檔總數：${logsToExport.length} 件\n`;
+      text += `交易金額總計：NT$ ${totalSum.toLocaleString()} 元\n`;
+      text += `免費贈送件數：${freeCount} 件\n`;
+      text += `==================================================\n`;
+
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `PEGA_secondhand_transactions_${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showNotification('📥 歷史成交紀錄文字檔已成功下載！', 'success');
     }
 
                         async function loadAnnouncement() {
