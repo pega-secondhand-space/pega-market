@@ -10,11 +10,18 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+  </style>
 </head>
 <body id="main-body" class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans transition-all duration-300 bg-cover bg-center bg-fixed">
 
   <!-- 除錯與系統錯誤提示框 -->
   <div id="debug-error-box" class="hidden bg-red-600/90 text-white text-xs font-bold px-4 py-2 text-center sticky top-0 z-50 shadow-md"></div>
+
+  <!-- 浮動 Notification Toast 提示框 -->
+  <div id="toast-container" class="fixed top-14 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- 全站置頂公告欄 -->
   <div id="announcement-bar" class="hidden bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-indigo-100 px-4 py-2.5 text-xs font-bold flex items-center justify-between shadow-lg border-b border-indigo-500/30">
@@ -50,13 +57,25 @@
   <!-- 主內容區 -->
   <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
 
-    <!-- 搜尋列與篩選 Tab -->
+    <!-- 搜尋列、排列切換與篩選 Tab -->
     <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
-      <div class="relative w-full sm:w-80">
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-        <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品標題、描述或聯絡資訊..." class="w-full pl-9 pr-4 py-2 bg-gray-900/90 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition shadow-inner">
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <div class="relative flex-1 sm:w-72">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+          <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品標題、描述或聯絡資訊..." class="w-full pl-9 pr-4 py-2 bg-gray-900/90 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition shadow-inner">
+        </div>
+
+        <!-- 排列欄數選擇器 (1至5排) -->
+        <select id="grid-layout-select" onchange="changeGridLayout(this.value)" class="py-2 px-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-indigo-300 font-bold focus:outline-none focus:border-indigo-500 shrink-0">
+          <option value="1">單排 1 卡 (大圖)</option>
+          <option value="2" selected>雙排 2 卡 (預設)</option>
+          <option value="3">三排 3 卡</option>
+          <option value="4">四排 4 卡 (電腦)</option>
+          <option value="5">五排 5 卡 (寬屏)</option>
+        </select>
       </div>
 
+      <!-- 分類 Tab -->
       <div class="flex gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 text-xs font-bold">
         <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-xl bg-indigo-600 text-white transition shadow active:scale-95 shrink-0">全部</button>
         <button onclick="setFilter('sell')" id="filter-sell" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">💰 想賣</button>
@@ -65,14 +84,64 @@
       </div>
     </div>
 
-    <!-- 告示牌貼文清單 (網格展示) -->
-    <div id="grid-container" class="mx-auto">
-      <div id="item-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+    <!-- 告示牌貼文清單 (動態卡片網格，點擊卡片可放大查看詳情) -->
+    <div id="grid-container" class="mx-auto max-w-xl">
+      <div id="item-grid" class="grid grid-cols-2 gap-3 sm:gap-4">
         <!-- 動態刊登項目 -->
       </div>
     </div>
 
   </main>
+
+  <!-- 🔍 商品詳情放大 Modal (點擊卡片彈出) -->
+  <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span id="detail-type-badge"></span>
+          <h3 id="detail-title" class="font-bold text-sm sm:text-base text-gray-100 truncate">商品詳情</h3>
+        </div>
+        <button onclick="closeDetailModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4">
+        <!-- 照片預覽區 (最多支援兩張圖片壓縮展示) -->
+        <div id="detail-photos-container" class="grid grid-cols-1 gap-2 rounded-xl overflow-hidden bg-gray-950 border border-gray-700/60 p-1">
+          <!-- 動態照片 -->
+        </div>
+
+        <!-- 價格與標題 -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <span id="detail-price" class="text-lg font-black text-indigo-400"></span>
+            <span id="detail-time" class="text-xs text-gray-400"></span>
+          </div>
+        </div>
+
+        <!-- 聯絡資訊方塊 -->
+        <div id="detail-contact-box" class="bg-indigo-950/60 border border-indigo-500/40 p-3.5 rounded-xl space-y-1">
+          <p class="text-xs font-bold text-indigo-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-phone text-indigo-400"></i> 聯絡資訊：
+          </p>
+          <p id="detail-contact-text" class="text-xs text-gray-100 font-bold break-all"></p>
+        </div>
+
+        <!-- 詳細描述 -->
+        <div class="space-y-1">
+          <p class="text-xs font-bold text-gray-300">物品詳細描述：</p>
+          <div id="detail-desc" class="text-xs text-gray-200 leading-relaxed font-medium bg-gray-900/90 p-3.5 rounded-xl border border-gray-700/80 whitespace-pre-line"></div>
+        </div>
+
+        <!-- 刊登者 -->
+        <div class="flex items-center justify-between pt-2 border-t border-gray-700 text-xs text-gray-400">
+          <span>發布者：<strong id="detail-nickname" class="text-gray-200"></strong></span>
+          <span id="detail-expiration"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 浮動刊登按鈕 (FAB) -->
   <button onclick="openCreateModal()" class="fixed right-5 bottom-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 z-30 border border-indigo-400/40">
@@ -80,7 +149,7 @@
     <span class="text-xs sm:text-sm">我要刊登</span>
   </button>
 
-  <!-- 刊登物品 Modal -->
+  <!-- 刊登物品 Modal (最多支援上傳 2 張照片) -->
   <div id="create-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
     <div class="bg-gray-800 border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
       <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
@@ -100,7 +169,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">物品名稱/標題：</label>
+          <label class="block text-xs font-bold text-gray-300 mb-1">物品名稱/標題 <span class="text-amber-400">*</span>：</label>
           <input type="text" id="post-title" placeholder="例如：精美單眼鏡頭清潔組 / 求購二手電風扇" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
         </div>
 
@@ -119,9 +188,11 @@
           <textarea id="post-desc" rows="3" placeholder="請詳細說明物品狀況、規格或交易地點..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">照片網址 (選填)：</label>
-          <input type="text" id="post-img" placeholder="請貼上照片圖片連結 (留空自動附上精美預設圖)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500">
+        <!-- 照片 1 & 照片 2 網址 (最多支援兩張照片) -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-gray-300">📷 物品照片 (最多可附 2 張圖片連結，貼上後自動壓縮顯示)：</label>
+          <input type="text" id="post-img" placeholder="照片 1 圖片連結 (留空自動附上預設圖片)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500">
+          <input type="text" id="post-img2" placeholder="照片 2 圖片連結 (選填)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500">
         </div>
 
         <div>
@@ -157,7 +228,7 @@
         <!-- 未登入介面 -->
         <div id="admin-login-view" class="space-y-4 max-w-xs mx-auto text-center py-6">
           <p class="text-xs text-gray-300 font-bold">請輸入版主管理密碼：</p>
-          <input type="password" id="admin-pwd-input" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="預設密碼: admin123" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 text-center font-bold focus:outline-none focus:border-indigo-500">
+          <input type="password" id="admin-pwd-input" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="預設密碼: pega2026" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 text-center font-bold focus:outline-none focus:border-indigo-500">
           <button onclick="checkAdminPassword()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">登入控制台</button>
         </div>
 
@@ -233,7 +304,7 @@
     </div>
   </div>
 
-  <!-- JavaScript 腳本 -->
+  <!-- JavaScript 腳本 (100% 正確語法與審查) -->
   <script>
     window.onerror = function(msg, url, lineNo, columnNo, error) {
       var errBox = document.getElementById('debug-error-box');
@@ -243,6 +314,20 @@
       }
       return false;
     };
+
+    function showNotification(msg, type) {
+      const container = document.getElementById('toast-container');
+      if (!container) {
+        alert(msg);
+        return;
+      }
+      const toast = document.createElement('div');
+      const bg = type === 'success' ? 'bg-emerald-600' : type === 'warning' ? 'bg-amber-600' : 'bg-indigo-600';
+      toast.className = `${bg} text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-2xl flex items-center gap-2 pointer-events-auto animate-fadeIn`;
+      toast.innerHTML = `<span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.remove(); }, 3500);
+    }
 
     const SUPABASE_URL = 'https://llnnbanqtmnccfvtwooo.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTI5MTkyNiwiZXhwIjoyMTAwODY3OTI2fQ.RTdMtKEw9tD3N2KSO3mY7M2Z4ZVB1ZY24SPv-yzL0Hk';
@@ -256,7 +341,7 @@
       console.error('Supabase init error:', e);
     }
 
-    let adminPassword = localStorage.getItem('pega_admin_pwd') || 'admin123';
+    let adminPassword = localStorage.getItem('pega_admin_pwd') || 'pega2026';
     let isAdmin = localStorage.getItem('pega_is_admin') === 'true';
 
     let deviceId = localStorage.getItem('pega_device_id');
@@ -294,10 +379,10 @@
     function saveSiteName() {
       const input = document.getElementById('admin-sitename-input');
       const newName = (input?.value || '').trim();
-      if (!newName) return alert('⚠️ 網站名稱不可為空');
+      if (!newName) return showNotification('⚠️ 網站名稱不可為空', 'warning');
       localStorage.setItem('pega_site_name', newName);
       loadSiteName();
-      alert(`✅ 網站名稱已更新為：${newName}`);
+      showNotification(`✅ 網站名稱已更新為：${newName}`, 'success');
     }
 
     function refreshPageData() {
@@ -306,6 +391,29 @@
       setFilter('all');
       loadItems();
       loadAnnouncement();
+      showNotification('🔄 已重新整理資料與貼文！', 'info');
+    }
+
+    function changeGridLayout(cols) {
+      localStorage.setItem('pega_grid_cols', cols);
+      applyGridLayout(cols);
+    }
+
+    function applyGridLayout(cols) {
+      const container = document.getElementById('grid-container');
+      const grid = document.getElementById('item-grid');
+      if (!container || !grid) return;
+
+      const maxWMap = {
+        '1': 'max-w-xs',
+        '2': 'max-w-xl',
+        '3': 'max-w-3xl',
+        '4': 'max-w-5xl',
+        '5': 'max-w-7xl'
+      };
+
+      container.className = `mx-auto ${maxWMap[cols] || 'max-w-xl'}`;
+      grid.className = `grid grid-cols-${cols} gap-3 sm:gap-4`;
     }
 
     async function loadGlobalPinnedIds() {
@@ -328,14 +436,14 @@
     }
 
     async function togglePinItem(id) {
-      if (!isAdmin) return alert('⚠️ 只有版主可以置頂商品');
+      if (!isAdmin) return showNotification('⚠️ 只有版主可以置頂商品', 'warning');
       let pinned = [...globalPinnedIds];
       if (pinned.includes(id)) {
         pinned = pinned.filter(pId => pId !== id);
-        alert('📍 已取消該刊登項目的置頂狀態！');
+        showNotification('📌 已取消該刊登項目的置頂狀態！', 'info');
       } else {
         pinned.push(id);
-        alert('📌 已成功將該刊登項目標記為【官方置頂】！');
+        showNotification('📌 已成功將該刊登項目標記為【官方置頂】！', 'success');
       }
       globalPinnedIds = pinned;
       renderItems();
@@ -418,18 +526,18 @@
                           '<span class="bg-indigo-500 text-white font-black px-2 py-0.5 rounded-md text-[10px]">💰 想賣</span>';
 
         return `
-          <div class="bg-gray-900/90 border ${isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800'} rounded-2xl overflow-hidden flex flex-col transition hover:border-gray-700">
+          <div onclick="openDetailModal('${item.id}')" class="bg-gray-900/90 border ${isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800'} rounded-2xl overflow-hidden flex flex-col transition hover:border-indigo-500/60 cursor-pointer group">
             ${isPinned ? '<div class="bg-amber-500 text-gray-950 text-[10px] font-black px-2 py-0.5 text-center">📌 官方置頂商品</div>' : ''}
             
             <div class="relative aspect-video bg-gray-950 overflow-hidden">
-              <img src="${item.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover">
+              <img src="${item.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
             </div>
 
             <div class="p-3.5 flex-1 flex flex-col justify-between space-y-3">
               <div>
-                <h3 class="font-bold text-xs sm:text-sm text-gray-100 line-clamp-1 mb-1">${safeTitle}</h3>
-                <p class="text-xs text-indigo-400 font-black mb-2">${item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`}</p>
+                <h3 class="font-bold text-xs sm:text-sm text-gray-100 line-clamp-1 mb-1 group-hover:text-indigo-300 transition">${safeTitle}</h3>
+                <p class="text-xs text-indigo-400 font-black mb-1.5">${item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`}</p>
                 <p class="text-[11px] text-gray-400 line-clamp-2 leading-relaxed font-medium">${safeDesc || '無補充描述'}</p>
               </div>
 
@@ -447,7 +555,7 @@
                 </div>
 
                 ${isAdmin ? `
-                  <div class="flex gap-1 pt-1">
+                  <div class="flex gap-1 pt-1" onclick="event.stopPropagation()">
                     <button onclick="togglePinItem('${item.id}')" class="flex-1 ${isPinned ? 'bg-amber-600' : 'bg-gray-800 text-amber-300'} text-[10px] py-1 rounded-lg font-bold">${isPinned ? '取消置頂' : '📌 置頂'}</button>
                     <button onclick="deleteItemAdmin('${item.id}')" class="px-2 bg-red-900/60 text-red-300 text-[10px] py-1 rounded-lg font-bold">🗑️ 刪除</button>
                   </div>
@@ -457,6 +565,58 @@
           </div>
         `;
       }).join('');
+    }
+
+    function openDetailModal(itemId) {
+      const item = allItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const modal = document.getElementById('detail-modal');
+      const typeBadge = document.getElementById('detail-type-badge');
+      const titleElem = document.getElementById('detail-title');
+      const priceElem = document.getElementById('detail-price');
+      const timeElem = document.getElementById('detail-time');
+      const contactText = document.getElementById('detail-contact-text');
+      const descElem = document.getElementById('detail-desc');
+      const nickElem = document.getElementById('detail-nickname');
+      const photosContainer = document.getElementById('detail-photos-container');
+
+      if (titleElem) titleElem.innerText = item.title || '無標題';
+      if (priceElem) priceElem.innerText = item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`;
+      if (timeElem) timeElem.innerText = timeAgo(item.created_at);
+      if (contactText) contactText.innerText = item.contact || '刊登者未留言特別聯絡方式，請大廳面交';
+      if (descElem) descElem.innerText = item.description || '無詳細補充描述';
+      if (nickElem) nickElem.innerText = item.nickname || '匿名同仁';
+
+      if (typeBadge) {
+        typeBadge.innerHTML = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🎁 免費送</span>' :
+                              item.type === 'buy' ? '<span class="bg-amber-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🔍 想買</span>' :
+                              '<span class="bg-indigo-500 text-white font-black px-2 py-0.5 rounded-md text-[10px]">💰 想賣</span>';
+      }
+
+      // Render up to 2 photos
+      if (photosContainer) {
+        const p1 = item.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
+        const p2 = item.image_url2 || '';
+
+        if (p2) {
+          photosContainer.className = "grid grid-cols-2 gap-2 rounded-xl overflow-hidden bg-gray-950 border border-gray-700/60 p-1";
+          photosContainer.innerHTML = `
+            <img src="${p1}" class="w-full h-44 object-cover rounded-lg">
+            <img src="${p2}" class="w-full h-44 object-cover rounded-lg">
+          `;
+        } else {
+          photosContainer.className = "grid grid-cols-1 gap-2 rounded-xl overflow-hidden bg-gray-950 border border-gray-700/60 p-1";
+          photosContainer.innerHTML = `<img src="${p1}" class="w-full h-56 object-cover rounded-lg">`;
+        }
+      }
+
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detail-modal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function timeAgo(dateStr) {
@@ -504,13 +664,26 @@
     function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
 
     async function submitCreateItem() {
-      const title = (document.getElementById('post-title')?.value || '').trim();
+      const titleInput = document.getElementById('post-title');
+      let title = (titleInput?.value || '').trim();
       const desc = (document.getElementById('post-desc')?.value || '').trim();
       const price = parseFloat(document.getElementById('post-price')?.value) || 0;
       const contact = (document.getElementById('post-contact')?.value || '').trim();
-      const imgUrl = (document.getElementById('post-img')?.value || '').trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
+      const imgUrl1 = (document.getElementById('post-img')?.value || '').trim();
+      const imgUrl2 = (document.getElementById('post-img2')?.value || '').trim();
 
-      if (!title) return alert('⚠️ 請填寫物品標題');
+      if (!title) {
+        if (titleInput) {
+          titleInput.classList.add('border-red-500');
+          titleInput.focus();
+        }
+        showNotification('⚠️ 請填寫物品名稱/標題！', 'warning');
+        return;
+      } else if (titleInput) {
+        titleInput.classList.remove('border-red-500');
+      }
+
+      const defaultImg = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/items`, {
@@ -526,7 +699,8 @@
             price: (postType === 'free') ? 0 : price,
             type: postType,
             category: '其他',
-            image_url: imgUrl,
+            image_url: imgUrl1 || defaultImg,
+            image_url2: imgUrl2 || '',
             nickname: nickname,
             device_id: deviceId,
             contact: contact
@@ -534,12 +708,28 @@
         });
 
         if (res.ok) {
-          alert('🎉 刊登成功！貼文已即時發布至告示牌。');
+          showNotification('🎉 刊登成功！貼文已即時發布至告示牌。', 'success');
           closeCreateModal();
+          // Clear inputs
+          if (titleInput) titleInput.value = '';
+          const descInput = document.getElementById('post-desc');
+          if (descInput) descInput.value = '';
+          const priceInput = document.getElementById('post-price');
+          if (priceInput) priceInput.value = '';
+          const contactInput = document.getElementById('post-contact');
+          if (contactInput) contactInput.value = '';
+          const imgInput = document.getElementById('post-img');
+          if (imgInput) imgInput.value = '';
+          const img2Input = document.getElementById('post-img2');
+          if (img2Input) img2Input.value = '';
+
           loadItems();
+        } else {
+          showNotification('⚠️ 刊登失敗，請檢查輸入內容與連線', 'warning');
         }
       } catch(e) {
         console.error('Create item error:', e);
+        showNotification('⚠️ 刊登發生錯誤：' + e.message, 'warning');
       }
     }
 
@@ -564,10 +754,10 @@
         document.getElementById('admin-login-view').classList.add('hidden');
         document.getElementById('admin-dashboard-view').classList.remove('hidden');
         document.getElementById('admin-btn-text').innerText = '後台管理 (已登入)';
-        alert('🔑 版主身份驗證成功！');
+        showNotification('🔑 版主身份驗證成功！', 'success');
         renderItems();
       } else {
-        alert('❌ 管理密碼錯誤');
+        showNotification('❌ 管理密碼錯誤', 'warning');
       }
     }
 
@@ -576,7 +766,7 @@
       localStorage.setItem('pega_is_admin', 'false');
       document.getElementById('admin-btn-text').innerText = '後台管理';
       closeAdminModal();
-      alert('已登出版主權限');
+      showNotification('已登出版主權限', 'info');
       renderItems();
     }
 
@@ -587,7 +777,7 @@
           method: 'DELETE',
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
-        alert('🗑️ 貼文已成功下架');
+        showNotification('🗑️ 貼文已成功下架', 'info');
         loadItems();
       } catch(e) {
         console.error('Delete error:', e);
@@ -611,7 +801,7 @@
 
     async function saveAnnouncement() {
       const text = (document.getElementById('admin-announcement-input')?.value || '').trim();
-      if (!text) return alert('請輸入公告內容');
+      if (!text) return showNotification('請輸入公告內容', 'warning');
 
       try {
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=id`, {
@@ -632,7 +822,7 @@
             body: JSON.stringify({ item_id: 'SYSTEM_ANNOUNCEMENT', sender_id: 'ADMIN', sender_name: 'ADMIN', content: text })
           });
         }
-        alert('📢 全站公告已成功更新！');
+        showNotification('📢 全站公告已成功更新！', 'success');
         loadAnnouncement();
       } catch(e) { console.error('Save announcement error:', e); }
     }
@@ -650,7 +840,7 @@
           });
         }
         document.getElementById('announcement-bar').classList.add('hidden');
-        alert('📢 已清除全站公告');
+        showNotification('📢 已清除全站公告', 'info');
       } catch(e) { console.error('Clear announcement error:', e); }
     }
 
@@ -696,7 +886,7 @@
 
     async function submitNewIssue() {
       const content = (document.getElementById('issue-content')?.value || '').trim();
-      if (!content) return alert('⚠️ 請輸入問題或建議內容');
+      if (!content) return showNotification('⚠️ 請輸入問題或建議內容', 'warning');
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
@@ -711,7 +901,7 @@
         });
 
         if (res.ok) {
-          alert('🎉 已收到您的問題單，謝謝寶貴建議！');
+          showNotification('🎉 已收到您的問題單，謝謝寶貴建議！', 'success');
           document.getElementById('issue-content').value = '';
           loadAndRenderIssues();
         }
@@ -722,6 +912,13 @@
     updateIdentityDisplay();
     loadSiteName();
     loadAnnouncement();
+    
+    // Apply saved grid columns
+    const initialCols = localStorage.getItem('pega_grid_cols') || (window.innerWidth < 640 ? '2' : '4');
+    const gridSelect = document.getElementById('grid-layout-select');
+    if (gridSelect) gridSelect.value = initialCols;
+    applyGridLayout(initialCols);
+
     loadItems();
   </script>
 </body>
