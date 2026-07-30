@@ -90,22 +90,21 @@
     <div id="grid-container" class="mx-auto max-w-xl">
       <div id="item-grid" class="grid grid-cols-2 gap-3 sm:gap-4">
         <!-- 動態刊登項目 -->
-      
-      <!-- 分頁頁碼導航列 (手機/電腦響應式防遮擋設計) -->
-      <div id="pagination-container" class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/95 p-3 sm:p-4 rounded-2xl border border-gray-800 text-xs shadow-xl backdrop-blur-md">
+      </div>
+
+      <!-- 分頁頁碼導航列 (獨立在 grid 外，防擦除/防遮擋設計) -->
+      <div id="pagination-container" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/95 p-3.5 sm:p-4 rounded-2xl border border-gray-800 text-xs shadow-2xl backdrop-blur-md relative z-20">
         <div class="text-gray-300 font-bold text-center sm:text-left text-[11px] sm:text-xs">
           頁次：<span id="page-current" class="text-indigo-300 font-black">1</span> / <span id="page-total" class="text-gray-200 font-black">1</span> 頁 (共 <span id="items-total-count" class="text-amber-400 font-black">0</span> 筆貼文)
         </div>
-        <div class="flex items-center justify-center gap-1.5 font-bold w-full sm:w-auto">
-          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">⏮ 首頁</button>
-          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">◀ 上一頁</button>
-          <span id="page-numbers-span" class="px-2 font-black text-indigo-400 text-xs shrink-0">1 / 1</span>
-          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">下一頁 ▶</button>
-          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">末頁 ⏭</button>
+        <div class="flex items-center justify-center gap-1.5 font-bold w-full sm:w-auto overflow-x-auto py-1">
+          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">⏮ 首頁</button>
+          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">◀ 上一頁</button>
+          <span id="page-numbers-span" class="px-2 font-black text-indigo-400 text-xs flex gap-1 items-center shrink-0">1 / 1</span>
+          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">下一頁 ▶</button>
+          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">末頁 ⏭</button>
         </div>
       </div>
-
-    </div>
     </div>
 
   </main>
@@ -1272,18 +1271,28 @@
 
     function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-    function checkAdminPassword() {
+        async function checkAdminPassword() {
       const pwd = (document.getElementById('admin-pwd-input')?.value || '').trim();
       if (pwd === adminPassword || pwd === 'pega2026' || pwd === 'admin123') {
         isAdmin = true;
-        localStorage.setItem('pega_is_admin', 'true');
-        document.getElementById('admin-login-view').classList.add('hidden');
+        document.getElementById('admin-pwd-view').classList.add('hidden');
         document.getElementById('admin-dashboard-view').classList.remove('hidden');
-        document.getElementById('admin-btn-text').innerText = '後台管理 (已登入)';
-        showNotification('🔑 版主身份驗證成功！', 'success');
+        document.getElementById('admin-btn-text').innerText = '管理面板 (已登入)';
+        showNotification('🔑 版主身份驗證成功！已進入管理後台', 'success');
+        
+        // 登入成功後，即時加載公告與每頁筆數設定並填入輸入框
+        await loadAnnouncement();
+        await loadItemsPerPageSetting();
+
+        const currentAnn = document.getElementById('announcement-text')?.innerText || '';
+        const annInput = document.getElementById('admin-announcement-input');
+        if (annInput && currentAnn) {
+          annInput.value = currentAnn;
+        }
+
         renderItems();
       } else {
-        showNotification('❌ 管理密碼錯誤', 'warning');
+        showNotification('⚠️ 密碼錯誤，存取被拒', 'warning');
       }
     }
 
@@ -1340,17 +1349,22 @@
       }
     }
 
-    async function loadAnnouncement() {
+        async function loadAnnouncement() {
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=*`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         if (res.ok) {
           const data = await res.json();
-          if (data && data.length > 0 && data[0].content) {
-            document.getElementById('announcement-text').innerText = data[0].content;
-            document.getElementById('announcement-bar').classList.remove('hidden');
-          }
+          const defaultAnn = '📢 歡迎來到 PEGAPEGA 告示牌交易系統！同仁免登入匿名刊登買賣送，填寫分機/LINE私下聯繫最便捷安全！';
+          const currentText = (data && data.length > 0 && data[0].content) ? data[0].content : defaultAnn;
+          
+          const textSpan = document.getElementById('announcement-text');
+          const adminInput = document.getElementById('admin-announcement-input');
+          
+          if (textSpan) textSpan.innerText = currentText;
+          if (adminInput) adminInput.value = currentText;
+          document.getElementById('announcement-bar').classList.remove('hidden');
         }
       } catch(e) { console.error('Announcement error:', e); }
     }
