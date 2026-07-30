@@ -56,7 +56,7 @@
   </div>
 
   <!-- 主內容區 -->
-  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
+  <main class="flex-1 max-w-6xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6 space-y-5 pb-28 sm:pb-12">
 
     <!-- 搜尋列、排列切換與篩選 Tab -->
     <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
@@ -90,17 +90,17 @@
       <div id="item-grid" class="grid grid-cols-2 gap-3 sm:gap-4">
         <!-- 動態刊登項目 -->
       
-      <!-- 分頁頁碼導航列 -->
-      <div id="pagination-container" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/80 p-3.5 rounded-2xl border border-gray-800 text-xs">
-        <div class="text-gray-400 font-bold">
-          頁次：<span id="page-current" class="text-indigo-300">1</span> / <span id="page-total" class="text-gray-200">1</span> 頁 (共 <span id="items-total-count" class="text-amber-400">0</span> 筆告示牌貼文)
+      <!-- 分頁頁碼導航列 (手機/電腦響應式防遮擋設計) -->
+      <div id="pagination-container" class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/95 p-3 sm:p-4 rounded-2xl border border-gray-800 text-xs shadow-xl backdrop-blur-md">
+        <div class="text-gray-300 font-bold text-center sm:text-left text-[11px] sm:text-xs">
+          頁次：<span id="page-current" class="text-indigo-300 font-black">1</span> / <span id="page-total" class="text-gray-200 font-black">1</span> 頁 (共 <span id="items-total-count" class="text-amber-400 font-black">0</span> 筆貼文)
         </div>
-        <div class="flex items-center gap-1 font-bold">
-          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">⏮ 第一頁</button>
-          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">◀ 上一頁</button>
-          <span id="page-numbers-span" class="px-2 font-black text-indigo-400"></span>
-          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">下一頁 ▶</button>
-          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">最後一頁 ⏭</button>
+        <div class="flex items-center justify-center gap-1.5 font-bold w-full sm:w-auto">
+          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">⏮ 首頁</button>
+          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">◀ 上一頁</button>
+          <span id="page-numbers-span" class="px-2 font-black text-indigo-400 text-xs shrink-0">1 / 1</span>
+          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">下一頁 ▶</button>
+          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold">末頁 ⏭</button>
         </div>
       </div>
 
@@ -553,15 +553,15 @@
       if (!container || !grid) return;
 
       const maxWMap = {
-        '1': 'max-w-xs',
+        '1': 'max-w-md',
         '2': 'max-w-xl',
         '3': 'max-w-3xl',
         '4': 'max-w-5xl',
         '5': 'max-w-7xl'
       };
 
-      container.className = `mx-auto ${maxWMap[cols] || 'max-w-xl'}`;
-      grid.className = `grid grid-cols-${cols} gap-3 sm:gap-4`;
+      container.className = `mx-auto ${maxWMap[cols] || 'max-w-md'}`;
+      grid.className = `grid grid-cols-${cols} gap-4`;
     }
 
     // 原生 HTML5 Canvas 圖片壓縮與 Supabase Storage 上傳邏輯
@@ -839,9 +839,12 @@
 
               <div class="space-y-2 pt-2 border-t border-gray-800/80">
                 ${safeContact ? `
-                  <div class="bg-indigo-950/40 border border-indigo-500/30 p-2 rounded-xl text-[11px] text-indigo-200 font-bold flex items-center gap-1.5">
-                    <i class="fa-solid fa-phone text-indigo-400 text-xs"></i>
-                    <span class="truncate">聯絡：${safeContact}</span>
+                  <div onclick="event.stopPropagation(); handleContactClick('${safeContact}')" class="bg-indigo-950/60 hover:bg-indigo-900/80 border border-indigo-500/40 p-2 rounded-xl text-[11px] text-indigo-200 font-bold flex items-center justify-between gap-1.5 transition active:scale-95 cursor-pointer" title="點擊一鍵複製聯絡方式">
+                    <div class="flex items-center gap-1.5 truncate">
+                      <i class="fa-solid fa-phone text-indigo-400 text-xs"></i>
+                      <span class="truncate">聯絡：${safeContact}</span>
+                    </div>
+                    <span class="text-[9px] bg-indigo-900 text-indigo-300 px-1.5 py-0.5 rounded shrink-0">點擊複製</span>
                   </div>
                 ` : ''}
 
@@ -879,6 +882,19 @@
       const imgElem = document.getElementById(`card-img-${itemId}`);
       if (imgElem) {
         imgElem.src = photos[index];
+      }
+    }
+
+    
+    function handleContactClick(contactStr) {
+      if (!contactStr) return;
+      // Extract numbers for tel dialing if available
+      const phoneMatch = contactStr.match(/(分機\s*\d+|\d{4,8})/);
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(contactStr);
+        showNotification(`📋 已為您複製聯絡資訊：${contactStr}`, 'success');
+      } else {
+        showNotification(`📞 聯絡資訊：${contactStr}`, 'info');
       }
     }
 
@@ -1525,7 +1541,7 @@
     loadAnnouncement();
     
     // Apply saved grid columns
-    const initialCols = localStorage.getItem('pega_grid_cols') || (window.innerWidth < 640 ? '2' : '4');
+    const initialCols = localStorage.getItem('pega_grid_cols') || (window.innerWidth < 640 ? '1' : '4');
     const gridSelect = document.getElementById('grid-layout-select');
     if (gridSelect) gridSelect.value = initialCols;
     applyGridLayout(initialCols);
