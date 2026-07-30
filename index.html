@@ -632,7 +632,7 @@
         if (searchVal) {
           const matchTitle = (item.title || '').toLowerCase().includes(searchVal);
           const matchDesc = (item.description || '').toLowerCase().includes(searchVal);
-          const matchContact = (item.contact || '').toLowerCase().includes(searchVal);
+          const matchContact = (item.contact_info || item.contact || '').toLowerCase().includes(searchVal);
           return matchTitle || matchDesc || matchContact;
         }
         return true;
@@ -654,7 +654,8 @@
         const isPinned = globalPinnedIds.includes(item.id);
         const safeTitle = (item.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const safeDesc = (item.description || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const safeContact = (item.contact || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const contactStr = item.contact_info || item.contact || '';
+        const safeContact = contactStr.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
         const typeBadge = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🎁 免費送</span>' :
                           item.type === 'buy' ? '<span class="bg-amber-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🔍 想買</span>' :
@@ -665,7 +666,7 @@
             ${isPinned ? '<div class="bg-amber-500 text-gray-950 text-[10px] font-black px-2 py-0.5 text-center">📌 官方置頂商品</div>' : ''}
             
             <div class="relative aspect-video bg-gray-950 overflow-hidden flex items-center justify-center">
-              <img src="${item.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <img src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
             </div>
 
@@ -720,7 +721,7 @@
       if (titleElem) titleElem.innerText = item.title || '無標題';
       if (priceElem) priceElem.innerText = item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`;
       if (timeElem) timeElem.innerText = timeAgo(item.created_at);
-      if (contactText) contactText.innerText = item.contact || '刊登者未特別留言聯絡方式';
+      if (contactText) contactText.innerText = item.contact_info || item.contact || '刊登者未特別留言聯絡方式';
       if (descElem) descElem.innerText = item.description || '無詳細補充描述';
       if (nickElem) nickElem.innerText = item.nickname || '匿名同仁';
 
@@ -732,8 +733,9 @@
 
       // Render up to 2 photos with 100% complete view (object-contain)
       if (photosContainer) {
-        const p1 = item.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
-        const p2 = item.image_url2 || '';
+        const photos = (item.image_url || '').split('|||');
+        const p1 = photos[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
+        const p2 = photos[1] || item.image_url2 || '';
 
         if (p2) {
           photosContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-gray-950/90 border border-gray-700/60 p-2";
@@ -807,7 +809,7 @@
     function openCreateModal() { document.getElementById('create-modal').classList.remove('hidden'); }
     function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
 
-        async function submitCreateItem() {
+            async function submitCreateItem() {
       const errorBox = document.getElementById('create-modal-error');
       const errorText = document.getElementById('create-modal-error-text');
       const submitBtn = document.getElementById('submit-create-btn');
@@ -843,6 +845,19 @@
       }
 
       const defaultImg = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
+      const mainImg = imgUrl1 || defaultImg;
+      const finalImgUrl = imgUrl2 ? `${mainImg}|||${imgUrl2}` : mainImg;
+
+      const payload = {
+        title: title,
+        description: desc,
+        price: (postType === 'free') ? 0 : price,
+        type: postType,
+        image_url: finalImgUrl,
+        nickname: nickname,
+        device_id: deviceId,
+        contact_info: contact
+      };
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/items`, {
@@ -850,20 +865,10 @@
           headers: {
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
           },
-          body: JSON.stringify({
-            title: title,
-            description: desc,
-            price: (postType === 'free') ? 0 : price,
-            type: postType,
-            category: '其他',
-            image_url: imgUrl1 || defaultImg,
-            image_url2: imgUrl2 || '',
-            nickname: nickname,
-            device_id: deviceId,
-            contact: contact
-          })
+          body: JSON.stringify(payload)
         });
 
         if (res.ok) {
@@ -898,7 +903,7 @@
             errorText.innerText = '⚠️ 刊登失敗：' + (errData || '連線錯誤');
             errorBox.classList.remove('hidden');
           }
-          showNotification('⚠️ 刊登失敗，請檢查網路連線', 'warning');
+          showNotification('⚠️ 刊登失敗，請檢查輸入內容與連線', 'warning');
         }
       } catch(e) {
         console.error('Create item error:', e);
