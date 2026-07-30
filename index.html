@@ -876,7 +876,7 @@
       }
     }
 
-    async function loadItems() {
+    async function loadItems(itemIdToOpen) {
       await loadItemsPerPageSetting();
       await loadGlobalPinnedIds();
       try {
@@ -885,7 +885,35 @@
         });
         if (res.ok) {
           allItems = await res.json();
-          renderItems();
+          filterItems(); // 確保重新整理後獲取最新的 filtered 列表與排序
+
+          // 刊登成功後自動跳轉與展開詳情
+          if (itemIdToOpen) {
+            const index = filtered.findIndex(item => item.id === itemIdToOpen);
+            if (index !== -1) {
+              const itemPage = Math.floor(index / itemsPerPage) + 1;
+              currentPage = itemPage;
+              renderItems(); // 重新渲染該分頁
+
+              // 自動開啟詳情彈窗
+              openDetailModal(itemIdToOpen);
+
+              // 平滑滾動定位到該卡片並閃爍藍光提示
+              setTimeout(() => {
+                const cardImg = document.getElementById(`card-img-${itemIdToOpen}`);
+                if (cardImg) {
+                  const cardElement = cardImg.closest('.group') || cardImg.closest('[onclick*="openDetailModal"]');
+                  if (cardElement) {
+                    cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    cardElement.classList.add('ring-4', 'ring-indigo-500', 'ring-offset-2', 'ring-offset-gray-950');
+                    setTimeout(() => {
+                      cardElement.classList.remove('ring-4', 'ring-indigo-500', 'ring-offset-2', 'ring-offset-gray-950');
+                    }, 3000);
+                  }
+                }
+              }, 150);
+            }
+          }
         }
       } catch(e) {
         console.error('Load items error:', e);
@@ -1438,9 +1466,10 @@
         });
 
         if (postRes.ok) {
+          let newItemId = null;
           const createdItems = await postRes.json();
           if (createdItems && createdItems.length > 0) {
-            const newItemId = createdItems[0].id;
+            newItemId = createdItems[0].id;
             let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
             myItems.push(newItemId);
             localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
@@ -1469,7 +1498,7 @@
           const previewsGrid = document.getElementById('upload-previews-grid');
           if (previewsGrid) previewsGrid.classList.add('hidden');
 
-          loadItems();
+          loadItems(newItemId);
         } else {
           const errData = await postRes.text();
           if (errorBox && errorText) {
@@ -2295,8 +2324,13 @@
     function updateGridLayoutOptions() {
       const selectElem = document.getElementById('grid-layout-select');
       if (!selectElem) return;
-      const isMobile = window.innerWidth < 640;
-      const curVal = selectElem.value || initialCols;
+      
+      // 避免視窗初始寬度回報為 0 的 race condition
+      const isMobile = window.innerWidth > 0 && window.innerWidth < 640;
+      
+      // 優先讀取快取值，若無才讀取當前下拉選單值或預設為 '2'
+      const savedCols = localStorage.getItem('pega_grid_cols');
+      const curVal = savedCols || selectElem.value || initialCols || '2';
 
       const allOptions = [
         { value: '1', text: '單排 1 卡 (大圖)' },
@@ -2316,15 +2350,14 @@
         return `<option value="${opt.value}">${opt.text}</option>`;
       }).join('');
 
-      // Restore value if available in filtered options, otherwise default to '2'
+      // Restore value if available in filtered options, otherwise default to '2' (but do NOT overwrite cache!)
       const hasVal = filteredOptions.some(opt => opt.value === curVal);
       if (hasVal) {
         selectElem.value = curVal;
+        applyGridLayout(curVal); // 這裡必須執行，才能在載入時成功載入快取的排版！
       } else {
         selectElem.value = '2';
-        localStorage.setItem('pega_grid_cols', '2');
         applyGridLayout('2');
-        renderItems();
       }
     }
 
