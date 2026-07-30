@@ -1201,7 +1201,7 @@
 
     function closeIssueModal() { document.getElementById('issue-modal').classList.add('hidden'); }
 
-            async function loadAndRenderIssues() {
+                async function loadAndRenderIssues() {
       const container = document.getElementById('issue-list-container');
       const badge = document.getElementById('issue-count-badge');
       if (!container) return;
@@ -1216,7 +1216,7 @@
           if (badge) badge.innerText = issues.length;
 
           if (issues.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何留言歷史紀錄</p>';
+            container.innerHTML = '<p class="text-gray-400 text-center py-12 text-sm font-bold">💬 尚無任何留言歷史紀錄</p>';
             return;
           }
 
@@ -1233,27 +1233,27 @@
             const safeContent = rawContent.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             return `
-              <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-70 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
-                <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-200 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-user text-amber-400"></i> ${iss.sender_name || '熱心同仁'} 
+              <div class="p-4 ${isResolved ? 'bg-gray-950/70 opacity-75 border-gray-800/70' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-3 transition">
+                <div class="flex items-center justify-between text-xs sm:text-sm">
+                  <span class="font-black text-gray-200 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-user text-amber-400 text-sm sm:text-base"></i> ${iss.sender_name || '熱心同仁'} 
                     ${isResolved ? 
-                      '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md">✅ 已修復 / 已開發完成 (已沉底)</span>' : 
-                      '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
+                      '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-xs font-black px-2.5 py-0.5 rounded-md">✅ 已修復 / 已開發完成 (已沉底)</span>' : 
+                      '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-xs font-black px-2.5 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
                   </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(iss.created_at)}</span>
+                  <span class="text-xs text-gray-400 font-medium">${timeAgo(iss.created_at)}</span>
                 </div>
 
-                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/30 p-3 rounded-xl border border-white/5 whitespace-pre-line">
+                <div class="text-xs sm:text-base text-gray-100 leading-relaxed font-bold bg-black/40 p-3.5 rounded-xl border border-white/10 whitespace-pre-line">
                   ${safeContent}
                 </div>
 
                 ${isAdmin ? `
-                  <div class="flex justify-end gap-1.5 pt-1">
-                    <button onclick="toggleResolveIssue('${iss.id}', ${isResolved})" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 text-amber-300' : 'bg-emerald-900/60 text-emerald-300'} text-[10px] font-bold rounded-lg transition">
+                  <div class="flex justify-end gap-2 pt-1">
+                    <button onclick="toggleResolveIssue('${iss.id}', ${isResolved})" class="px-3 py-1.5 ${isResolved ? 'bg-amber-900/60 text-amber-300' : 'bg-emerald-900/60 text-emerald-300'} text-xs font-black rounded-xl transition">
                       ${isResolved ? '↩️ 恢復為處理中' : '✅ 標記為已修復 (沉底)'}
                     </button>
-                    <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2 py-1 bg-red-900/60 text-red-300 text-[10px] font-bold rounded-lg transition">
+                    <button onclick="deleteIssueAdmin('${iss.id}')" class="px-3 py-1.5 bg-red-900/60 text-red-300 text-xs font-black rounded-xl transition">
                       🗑️ 刪除留言
                     </button>
                   </div>
