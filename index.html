@@ -137,19 +137,20 @@
   </main>
 
   <!-- 🔍 商品詳情放大 Modal (完整相片展示，100%不裁切) -->
-  <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gradient-to-b from-gray-900 via-gray-900 to-indigo-950 border border-indigo-500/40 w-full max-w-2xl rounded-3xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col max-h-[92vh] animate-fadeIn">
-      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-
-        <!-- 全站動態字體大小調整按鈕 (文 A⁻ / A / A⁺ / A⁺⁺) -->
-        <div class="flex items-center gap-1 bg-gray-950/80 p-1 rounded-xl border border-gray-800 shrink-0">
-          <span class="text-[10px] text-gray-400 font-bold px-1.5 hidden sm:inline">字體:</span>
-          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
-          <button onclick="setFontSize('base')" id="font-btn-base" class="px-2 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow" title="標準字體 (A)">A</button>
-          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
-          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+  <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-2.5 pt-8 sm:p-4">
+    <div class="bg-gradient-to-b from-gray-900 via-gray-900 to-indigo-950 border border-indigo-500/40 w-full max-w-2xl rounded-3xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+      <!-- 頂部列：右側圓形紅底白字 X 關閉按鈕絕對固定顯示 (任何長標題皆不推擠) -->
+      <div class="px-4 py-3.5 bg-gray-950/90 border-b border-indigo-500/30 flex items-center justify-between shrink-0 gap-2">
+        <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
+          <span id="detail-type-badge" class="shrink-0"></span>
+          <h3 id="detail-title" class="font-black text-sm sm:text-xl text-gray-100 truncate"></h3>
         </div>
+        
+        <!-- 手機專屬醒目圓形紅底白字 X 關閉按鈕 (保證不被覆蓋也不被推擠) -->
+        <button onclick="closeDetailModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-xl flex items-center justify-center border-2 border-white/30 transition active:scale-90 shrink-0 cursor-pointer z-30 ml-1" title="按下關閉視窗">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
 
           <span id="detail-type-badge"></span>
           <h3 id="detail-title" class="font-bold text-sm sm:text-base text-gray-100 truncate">商品詳情</h3>
@@ -982,15 +983,23 @@
 
     // 100% 完整全照片展覽 (使用 object-contain + 黑色背景高質感，防任何圖片裁切)
     
-    function switchCardPhoto(itemId, index) {
+        function switchCardPhoto(itemId, dir) {
       const item = allItems.find(i => i.id === itemId);
-      if (!item) return;
-      const photos = (item.image_url || '').split('|||');
-      if (photos.length <= index) return;
+      if (!item || !item.image_url) return;
+      const photos = (item.image_url || '').split('|||').filter(Boolean);
+      if (photos.length <= 1) return;
+
       const imgElem = document.getElementById(`card-img-${itemId}`);
-      if (imgElem) {
-        imgElem.src = photos[index];
-      }
+      if (!imgElem) return;
+
+      let curIdx = parseInt(imgElem.getAttribute('data-photo-idx') || '0', 10);
+      if (isNaN(curIdx) || curIdx < 0 || curIdx >= photos.length) curIdx = 0;
+
+      // 無縫無限循環計算 (Looping)
+      let nextIdx = (dir === 1) ? (curIdx + 1) % photos.length : (curIdx - 1 + photos.length) % photos.length;
+
+      imgElem.src = photos[nextIdx];
+      imgElem.setAttribute('data-photo-idx', nextIdx);
     }
 
     
