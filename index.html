@@ -50,7 +50,7 @@
   <!-- 全站置頂顯眼公告欄 (位在 Header 正下方) -->
   <div id="announcement-bar" class="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-indigo-100 px-4 py-3 text-xs font-bold flex items-center justify-between shadow-lg border-b border-indigo-500/40">
     <div class="flex items-center gap-2 max-w-5xl mx-auto truncate">
-      <span class="bg-amber-400 text-gray-950 px-2 py-0.5 rounded-md text-[10px] font-black uppercase shrink-0 animate-pulse">📢 全站公告</span>
+      <span class="bg-amber-400 text-gray-950 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase shrink-0">📢 全站使用須知</span>
       <span id="announcement-text" class="truncate font-medium text-gray-100">📢 歡迎來到 PEGAPEGA 告示牌交易系統！同仁免登入匿名刊登買賣送，填寫分機/LINE私下聯繫最便捷安全！</span>
     </div>
     <button onclick="closeAnnouncementBar()" class="text-indigo-300 hover:text-white shrink-0 ml-2 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
@@ -334,8 +334,8 @@
 
 
           <div class="space-y-2">
-            <label class="block text-xs font-bold text-gray-300">📢 發布全站廣播公告：</label>
-            <textarea id="admin-announcement-input" rows="3" placeholder="請輸入全站公告內容..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
+            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-amber-400"></i> 📢 編輯全站使用須知 (永久顯示於全站頂部)：</label>
+            <textarea id="admin-announcement-input" rows="3" placeholder="例如：請多善加利用電話/分機聯繫；刊登物品請詳實填寫..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
             <div class="flex justify-end gap-2">
               <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl transition">清除公告</button>
               <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">💾 儲存公告</button>
@@ -1350,7 +1350,17 @@
       }
     }
 
-                async function loadAnnouncement() {
+                    async function loadAnnouncement() {
+      const defaultNotice = '📢 歡迎使用 PEGAPEGA 告示牌！同仁免登入匿名刊登，交易請多善加利用電話/分機/LINE私下聯繫，保障個人交易權益！';
+      const textSpan = document.getElementById('announcement-text');
+      const adminInput = document.getElementById('admin-announcement-input');
+      const bar = document.getElementById('announcement-bar');
+
+      // 預設先展示全站使用須知
+      if (textSpan) textSpan.innerText = defaultNotice;
+      if (adminInput && !adminInput.value) adminInput.value = defaultNotice;
+      if (bar) bar.classList.remove('hidden');
+
       try {
         const cacheBuster = Date.now();
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&_t=${cacheBuster}`, {
@@ -1358,22 +1368,15 @@
         });
         if (res.ok) {
           const data = await res.json();
-          const textSpan = document.getElementById('announcement-text');
-          const adminInput = document.getElementById('admin-announcement-input');
-          const bar = document.getElementById('announcement-bar');
-
           if (data && data.length > 0 && data[0].content) {
-            const currentText = data[0].content;
-            if (textSpan) textSpan.innerText = currentText;
-            if (adminInput) adminInput.value = currentText;
-            if (bar) bar.classList.remove('hidden');
-          } else {
-            if (textSpan) textSpan.innerText = '';
-            if (adminInput) adminInput.value = '';
-            if (bar) bar.classList.add('hidden');
+            const customText = data[0].content;
+            if (textSpan) textSpan.innerText = customText;
+            if (adminInput) adminInput.value = customText;
           }
         }
-      } catch(e) { console.error('Announcement error:', e); }
+      } catch(e) { 
+        console.error('Fetch notice error:', e); 
+      }
     }
 
     async function saveAnnouncement() {
