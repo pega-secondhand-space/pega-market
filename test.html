@@ -142,12 +142,12 @@
 
   <!-- 🔍 商品詳情放大 Modal (完整相片展示，100%不裁切) -->
   <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-2.5 pt-8 sm:p-4">
-    <div class="bg-gradient-to-b from-gray-900 via-gray-900 to-indigo-950 border border-indigo-500/40 w-full max-w-2xl rounded-3xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+    <div class="bg-white border border-slate-200 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
       <!-- 頂部列：右側圓形紅底白字 X 關閉按鈕絕對固定顯示 (任何長標題皆不推擠) -->
-      <div class="px-4 py-3.5 bg-gray-950/90 border-b border-indigo-500/30 flex items-center justify-between shrink-0 gap-2">
+      <div class="px-4 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 gap-2">
         <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
           <span id="detail-type-badge" class="shrink-0"></span>
-          <h3 id="detail-title" class="font-black text-sm sm:text-xl text-gray-100 truncate"></h3>
+          <h3 id="detail-title" class="font-black text-sm sm:text-xl text-slate-800 truncate"></h3>
         </div>
         
         <!-- 手機專屬醒目圓形紅底白字 X 關閉按鈕 (保證不被覆蓋也不被推擠) -->
@@ -158,55 +158,55 @@
 
       <div class="p-5 overflow-y-auto space-y-4">
         <!-- 照片完整顯示區 (100% object-contain 完整全圖展示，防裁切) -->
-        <div id="detail-photos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-gray-950/80 border border-gray-700/60 p-2">
+        <div id="detail-photos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 p-2">
           <!-- 動態照片 -->
         </div>
 
         <!-- 價格與時間 -->
         <div class="flex items-center justify-between">
-          <span id="detail-price" class="text-xl font-black text-indigo-400"></span>
-          <span id="detail-time" class="text-xs text-gray-400"></span>
+          <span id="detail-price" class="text-xl font-black text-indigo-600"></span>
+          <span id="detail-time" class="text-xs text-slate-500"></span>
         </div>
 
         <!-- 聯絡資訊方塊 -->
-        <div id="detail-contact-box" class="bg-indigo-950/60 border border-indigo-500/40 p-3.5 rounded-xl space-y-1">
-          <p class="text-xs font-bold text-indigo-300 flex items-center gap-1.5">
-            <i class="fa-solid fa-phone text-indigo-400"></i> 聯絡資訊：
+        <div id="detail-contact-box" class="bg-indigo-50 border border-indigo-100 p-3.5 rounded-xl space-y-1">
+          <p class="text-xs font-bold text-indigo-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-phone text-indigo-500"></i> 聯絡資訊：
           </p>
-          <p id="detail-contact-text" class="text-xs text-gray-100 font-bold break-all"></p>
+          <p id="detail-contact-text" class="text-xs text-indigo-950 font-bold break-all"></p>
         </div>
 
         <!-- 詳細描述 -->
         <div class="space-y-1">
-          <p class="text-xs font-bold text-gray-300">物品詳細描述：</p>
-          <div id="detail-desc" class="text-xs text-gray-200 leading-relaxed font-medium bg-gray-900/90 p-3.5 rounded-xl border border-gray-700/80 whitespace-pre-line"></div>
+          <p class="text-xs font-bold text-slate-600">物品詳細描述：</p>
+          <div id="detail-desc" class="text-xs text-slate-800 leading-relaxed font-medium bg-slate-50 p-3.5 rounded-xl border border-slate-200 whitespace-pre-line"></div>
         </div>
 
         <!-- 刊登者 -->
         
         <!-- 刊登者本人下架區域 (方案 A) -->
-        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-gray-700/80">
-          <button id="detail-owner-delete-btn" onclick="" class="w-full py-2.5 bg-gradient-to-r from-red-800 to-red-900 hover:from-red-700 hover:to-red-800 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-slate-100">
+          <button id="detail-owner-delete-btn" onclick="" class="w-full py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
             <i class="fa-solid fa-trash-can text-sm"></i>
             <span>我是發布者：下架此貼文 (已售出 / 結案)</span>
           </button>
         </div>
 
         <!-- 管理員操作區域 -->
-        <div id="detail-admin-action-box" class="hidden pt-2 border-t border-gray-700/80 flex gap-2">
-          <button id="detail-admin-pin-btn" onclick="" class="flex-1 py-2.5 bg-gray-900 border border-amber-500/40 text-amber-300 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
-            <i class="fa-solid fa-thumbtack text-amber-400"></i>
+        <div id="detail-admin-action-box" class="hidden pt-2 border-t border-slate-100 flex gap-2">
+          <button id="detail-admin-pin-btn" onclick="" class="flex-1 py-2.5 bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-thumbtack text-amber-600"></i>
             <span id="detail-admin-pin-text">置頂</span>
           </button>
-          <button id="detail-admin-delete-btn" onclick="" class="px-5 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-700/60 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+          <button id="detail-admin-delete-btn" onclick="" class="px-5 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
             <i class="fa-solid fa-trash-can text-sm"></i>
             <span>刪除貼文</span>
           </button>
         </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-gray-700 text-xs text-gray-400">
-          <span>發布者：<strong id="detail-nickname" class="text-gray-200"></strong></span>
-          <span id="detail-expiration"></span>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+          <span>發布者：<strong id="detail-nickname" class="text-slate-700"></strong></span>
+          <span id="detail-expiration" class="font-bold"></span>
         </div>
       </div>
     </div>
@@ -2281,25 +2281,36 @@
     
     // Apply saved grid columns
     const initialCols = localStorage.getItem('pega_grid_cols') || '2';
-    const gridSelect = document.getElementById('grid-layout-select');
-    if (gridSelect) gridSelect.value = initialCols;
-    applyGridLayout(initialCols);
 
     function updateGridLayoutOptions() {
       const selectElem = document.getElementById('grid-layout-select');
       if (!selectElem) return;
       const isMobile = window.innerWidth < 640;
-      
-      // Disable options 3, 4, 5 on mobile devices
-      for (let i = 0; i < selectElem.options.length; i++) {
-        const val = parseInt(selectElem.options[i].value, 10);
-        if (val > 2) {
-          selectElem.options[i].disabled = isMobile;
-        }
-      }
+      const curVal = selectElem.value || initialCols;
 
-      // If mobile and currently selected layout is > 2 columns, reset to 2 columns
-      if (isMobile && parseInt(selectElem.value, 10) > 2) {
+      const allOptions = [
+        { value: '1', text: '單排 1 卡 (大圖)' },
+        { value: '2', text: '雙排 2 卡 (預設)' },
+        { value: '3', text: '三排 3 卡' },
+        { value: '4', text: '四排 4 卡 (電腦)' },
+        { value: '5', text: '五排 5 卡 (寬屏)' }
+      ];
+
+      // Mobile only gets 1 and 2
+      const filteredOptions = isMobile 
+        ? allOptions.filter(opt => parseInt(opt.value, 10) <= 2)
+        : allOptions;
+
+      // Rebuild options HTML to physically exclude options > 2 on mobile (fixes iOS Safari selection bug)
+      selectElem.innerHTML = filteredOptions.map(opt => {
+        return `<option value="${opt.value}">${opt.text}</option>`;
+      }).join('');
+
+      // Restore value if available in filtered options, otherwise default to '2'
+      const hasVal = filteredOptions.some(opt => opt.value === curVal);
+      if (hasVal) {
+        selectElem.value = curVal;
+      } else {
         selectElem.value = '2';
         localStorage.setItem('pega_grid_cols', '2');
         applyGridLayout('2');
@@ -2307,6 +2318,7 @@
       }
     }
 
+    // Run layout option checks immediately
     updateGridLayoutOptions();
     window.addEventListener('resize', updateGridLayoutOptions);
 
