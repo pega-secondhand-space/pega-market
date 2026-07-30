@@ -432,9 +432,151 @@
         return;
       }
       localStorage.setItem('pega_site_name', newName);
+  
+    // ==========================================
+    // 🔑 身份持久化與專屬復原碼 Logic
+    // ==========================================
+    function getRecoveryCode(devId) {
+      if (!devId) return 'PEGA-8888';
+      let hash = 0;
+      for (let i = 0; i < devId.length; i++) {
+        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
+        hash |= 0;
+      }
+      const codeNum = Math.abs(hash % 9000) + 1000;
+      return `PEGA-${codeNum}`;
+    }
+
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        const recCode = getRecoveryCode(deviceId);
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
+      }
+    }
+
+    function copyRecoveryCode() {
+      const recCode = getRecoveryCode(deviceId);
+      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
+      }).catch(() => {
+        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
+      });
+    }
+
+    function promptRestoreIdentity() {
+      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
+      if (!code || !code.trim()) return;
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode.startsWith('PEGA-')) {
+        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
+        return;
+      }
+
+      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
+      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
+
+      localStorage.setItem('pega_device_id', restoredDevId);
+      localStorage.setItem('pega_nickname', restoredNick);
+      deviceId = restoredDevId;
+      nickname = restoredNick;
+
       updateIdentityDisplay();
+      refreshPageData();
+      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
+    }
+
+    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
+    async function sendTestMessage() {
+      const testMsgs = [
+        '你好！請問這個商品還在嗎？',
+        '方便約在公司大廳面交嗎？',
+        '功能測試：訊息連線正常發送！',
+        '收到，謝謝回覆！'
+      ];
+      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = randomMsg;
+        sendMessage();
+      }
+    }
+
+    updateIdentityDisplay();
       loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
+    }
+
+
+    // ==========================================
+    // 🔑 身份持久化與專屬復原碼 Logic
+    // ==========================================
+    function getRecoveryCode(devId) {
+      if (!devId) return 'PEGA-8888';
+      let hash = 0;
+      for (let i = 0; i < devId.length; i++) {
+        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
+        hash |= 0;
+      }
+      const codeNum = Math.abs(hash % 9000) + 1000;
+      return `PEGA-${codeNum}`;
+    }
+
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        const recCode = getRecoveryCode(deviceId);
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
+      }
+    }
+
+    function copyRecoveryCode() {
+      const recCode = getRecoveryCode(deviceId);
+      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
+      }).catch(() => {
+        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
+      });
+    }
+
+    function promptRestoreIdentity() {
+      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
+      if (!code || !code.trim()) return;
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode.startsWith('PEGA-')) {
+        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
+        return;
+      }
+
+      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
+      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
+
+      localStorage.setItem('pega_device_id', restoredDevId);
+      localStorage.setItem('pega_nickname', restoredNick);
+      deviceId = restoredDevId;
+      nickname = restoredNick;
+
+      updateIdentityDisplay();
+      refreshPageData();
+      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
+    }
+
+    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
+    async function sendTestMessage() {
+      const testMsgs = [
+        '你好！請問這個商品還在嗎？',
+        '方便約在公司大廳面交嗎？',
+        '功能測試：訊息連線正常發送！',
+        '收到，謝謝回覆！'
+      ];
+      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = randomMsg;
+        sendMessage();
+      }
     }
 
     updateIdentityDisplay();
@@ -765,9 +907,151 @@
         return;
       }
       localStorage.setItem('pega_site_name', newName);
+  
+    // ==========================================
+    // 🔑 身份持久化與專屬復原碼 Logic
+    // ==========================================
+    function getRecoveryCode(devId) {
+      if (!devId) return 'PEGA-8888';
+      let hash = 0;
+      for (let i = 0; i < devId.length; i++) {
+        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
+        hash |= 0;
+      }
+      const codeNum = Math.abs(hash % 9000) + 1000;
+      return `PEGA-${codeNum}`;
+    }
+
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        const recCode = getRecoveryCode(deviceId);
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
+      }
+    }
+
+    function copyRecoveryCode() {
+      const recCode = getRecoveryCode(deviceId);
+      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
+      }).catch(() => {
+        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
+      });
+    }
+
+    function promptRestoreIdentity() {
+      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
+      if (!code || !code.trim()) return;
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode.startsWith('PEGA-')) {
+        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
+        return;
+      }
+
+      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
+      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
+
+      localStorage.setItem('pega_device_id', restoredDevId);
+      localStorage.setItem('pega_nickname', restoredNick);
+      deviceId = restoredDevId;
+      nickname = restoredNick;
+
       updateIdentityDisplay();
+      refreshPageData();
+      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
+    }
+
+    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
+    async function sendTestMessage() {
+      const testMsgs = [
+        '你好！請問這個商品還在嗎？',
+        '方便約在公司大廳面交嗎？',
+        '功能測試：訊息連線正常發送！',
+        '收到，謝謝回覆！'
+      ];
+      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = randomMsg;
+        sendMessage();
+      }
+    }
+
+    updateIdentityDisplay();
       loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
+    }
+
+
+    // ==========================================
+    // 🔑 身份持久化與專屬復原碼 Logic
+    // ==========================================
+    function getRecoveryCode(devId) {
+      if (!devId) return 'PEGA-8888';
+      let hash = 0;
+      for (let i = 0; i < devId.length; i++) {
+        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
+        hash |= 0;
+      }
+      const codeNum = Math.abs(hash % 9000) + 1000;
+      return `PEGA-${codeNum}`;
+    }
+
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        const recCode = getRecoveryCode(deviceId);
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
+      }
+    }
+
+    function copyRecoveryCode() {
+      const recCode = getRecoveryCode(deviceId);
+      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
+      }).catch(() => {
+        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
+      });
+    }
+
+    function promptRestoreIdentity() {
+      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
+      if (!code || !code.trim()) return;
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode.startsWith('PEGA-')) {
+        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
+        return;
+      }
+
+      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
+      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
+
+      localStorage.setItem('pega_device_id', restoredDevId);
+      localStorage.setItem('pega_nickname', restoredNick);
+      deviceId = restoredDevId;
+      nickname = restoredNick;
+
+      updateIdentityDisplay();
+      refreshPageData();
+      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
+    }
+
+    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
+    async function sendTestMessage() {
+      const testMsgs = [
+        '你好！請問這個商品還在嗎？',
+        '方便約在公司大廳面交嗎？',
+        '功能測試：訊息連線正常發送！',
+        '收到，謝謝回覆！'
+      ];
+      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = randomMsg;
+        sendMessage();
+      }
     }
 
     updateIdentityDisplay();
@@ -1507,9 +1791,151 @@
         return;
       }
       localStorage.setItem('pega_site_name', newName);
+  
+    // ==========================================
+    // 🔑 身份持久化與專屬復原碼 Logic
+    // ==========================================
+    function getRecoveryCode(devId) {
+      if (!devId) return 'PEGA-8888';
+      let hash = 0;
+      for (let i = 0; i < devId.length; i++) {
+        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
+        hash |= 0;
+      }
+      const codeNum = Math.abs(hash % 9000) + 1000;
+      return `PEGA-${codeNum}`;
+    }
+
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        const recCode = getRecoveryCode(deviceId);
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
+      }
+    }
+
+    function copyRecoveryCode() {
+      const recCode = getRecoveryCode(deviceId);
+      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
+      }).catch(() => {
+        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
+      });
+    }
+
+    function promptRestoreIdentity() {
+      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
+      if (!code || !code.trim()) return;
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode.startsWith('PEGA-')) {
+        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
+        return;
+      }
+
+      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
+      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
+
+      localStorage.setItem('pega_device_id', restoredDevId);
+      localStorage.setItem('pega_nickname', restoredNick);
+      deviceId = restoredDevId;
+      nickname = restoredNick;
+
       updateIdentityDisplay();
+      refreshPageData();
+      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
+    }
+
+    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
+    async function sendTestMessage() {
+      const testMsgs = [
+        '你好！請問這個商品還在嗎？',
+        '方便約在公司大廳面交嗎？',
+        '功能測試：訊息連線正常發送！',
+        '收到，謝謝回覆！'
+      ];
+      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = randomMsg;
+        sendMessage();
+      }
+    }
+
+    updateIdentityDisplay();
       loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
+    }
+
+
+    // ==========================================
+    // 🔑 身份持久化與專屬復原碼 Logic
+    // ==========================================
+    function getRecoveryCode(devId) {
+      if (!devId) return 'PEGA-8888';
+      let hash = 0;
+      for (let i = 0; i < devId.length; i++) {
+        hash = ((hash << 5) - hash) + devId.charCodeAt(i);
+        hash |= 0;
+      }
+      const codeNum = Math.abs(hash % 9000) + 1000;
+      return `PEGA-${codeNum}`;
+    }
+
+    function updateIdentityDisplay() {
+      const display = document.getElementById('user-identity-display');
+      if (display) {
+        const recCode = getRecoveryCode(deviceId);
+        display.innerHTML = `<i class="fa-solid fa-user-secret text-indigo-400"></i> 身分: <strong class="text-white">${nickname}</strong> <span class="text-amber-400 font-mono">(${recCode})</span>`;
+      }
+    }
+
+    function copyRecoveryCode() {
+      const recCode = getRecoveryCode(deviceId);
+      const copyText = `【PEGA二手交易身分碼】${recCode} (代號: ${nickname})`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        showNotification(`📋 已複製身分還原碼：${recCode}！請記下此碼可於任何手機電腦切換還原紀錄。`, 'success');
+      }).catch(() => {
+        prompt('您的專屬身分還原碼如下，請複製保存：', recCode);
+      });
+    }
+
+    function promptRestoreIdentity() {
+      const code = prompt('請輸入您先前保存的【專屬身分還原碼】(例如 PEGA-9303)：');
+      if (!code || !code.trim()) return;
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode.startsWith('PEGA-')) {
+        showNotification('⚠️ 身分碼格式不正確，應為 PEGA-數字 (例如 PEGA-9303)', 'warning');
+        return;
+      }
+
+      const restoredDevId = 'usr_restored_' + cleanCode.replace('-', '_').toLowerCase();
+      const restoredNick = 'PEGA同仁#' + cleanCode.split('-')[1];
+
+      localStorage.setItem('pega_device_id', restoredDevId);
+      localStorage.setItem('pega_nickname', restoredNick);
+      deviceId = restoredDevId;
+      nickname = restoredNick;
+
+      updateIdentityDisplay();
+      refreshPageData();
+      showNotification(`✅ 身分已成功還原為：${restoredNick} (${cleanCode})！全站紀錄已同步切換。`, 'success');
+    }
+
+    // 🧪 測試發送對話按鈕 (方便測試手機與電腦訊息功能)
+    async function sendTestMessage() {
+      const testMsgs = [
+        '你好！請問這個商品還在嗎？',
+        '方便約在公司大廳面交嗎？',
+        '功能測試：訊息連線正常發送！',
+        '收到，謝謝回覆！'
+      ];
+      const randomMsg = testMsgs[Math.floor(Math.random() * testMsgs.length)];
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = randomMsg;
+        sendMessage();
+      }
     }
 
     updateIdentityDisplay();
