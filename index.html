@@ -23,14 +23,7 @@
   <!-- 浮動 Notification Toast 提示框 -->
   <div id="toast-container" class="fixed top-20 right-6 z-[9999] flex flex-col gap-2 pointer-events-none max-w-sm"></div>
 
-  <!-- 全站置頂公告欄 -->
-  <div id="announcement-bar" class="hidden bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-indigo-100 px-4 py-2.5 text-xs font-bold flex items-center justify-between shadow-lg border-b border-indigo-500/30">
-    <div class="flex items-center gap-2 max-w-4xl mx-auto truncate">
-      <span class="bg-amber-400 text-gray-950 px-2 py-0.5 rounded-md text-[10px] font-black uppercase shrink-0">📢 全站公告</span>
-      <span id="announcement-text" class="truncate"></span>
-    </div>
-    <button onclick="closeAnnouncementBar()" class="text-indigo-300 hover:text-white shrink-0 ml-2"><i class="fa-solid fa-xmark"></i></button>
-  </div>
+
 
   <!-- 頂部導航欄 (Navbar) -->
   <header class="bg-gray-900/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-40">
@@ -53,6 +46,14 @@
       </div>
     </div>
   </header>
+  <!-- 全站置頂顯眼公告欄 (位在 Header 正下方) -->
+  <div id="announcement-bar" class="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-indigo-100 px-4 py-3 text-xs font-bold flex items-center justify-between shadow-lg border-b border-indigo-500/40">
+    <div class="flex items-center gap-2 max-w-5xl mx-auto truncate">
+      <span class="bg-amber-400 text-gray-950 px-2 py-0.5 rounded-md text-[10px] font-black uppercase shrink-0 animate-pulse">📢 全站公告</span>
+      <span id="announcement-text" class="truncate font-medium text-gray-100">📢 歡迎來到 PEGAPEGA 告示牌交易系統！同仁免登入匿名刊登買賣送，填寫分機/LINE私下聯繫最便捷安全！</span>
+    </div>
+    <button onclick="closeAnnouncementBar()" class="text-indigo-300 hover:text-white shrink-0 ml-2 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
+  </div>
 
   <!-- 主內容區 -->
   <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
@@ -88,7 +89,22 @@
     <div id="grid-container" class="mx-auto max-w-xl">
       <div id="item-grid" class="grid grid-cols-2 gap-3 sm:gap-4">
         <!-- 動態刊登項目 -->
+      
+      <!-- 分頁頁碼導航列 -->
+      <div id="pagination-container" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/80 p-3.5 rounded-2xl border border-gray-800 text-xs">
+        <div class="text-gray-400 font-bold">
+          頁次：<span id="page-current" class="text-indigo-300">1</span> / <span id="page-total" class="text-gray-200">1</span> 頁 (共 <span id="items-total-count" class="text-amber-400">0</span> 筆告示牌貼文)
+        </div>
+        <div class="flex items-center gap-1 font-bold">
+          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">⏮ 第一頁</button>
+          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">◀ 上一頁</button>
+          <span id="page-numbers-span" class="px-2 font-black text-indigo-400"></span>
+          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">下一頁 ▶</button>
+          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition disabled:opacity-40">最後一頁 ⏭</button>
+        </div>
       </div>
+
+    </div>
     </div>
 
   </main>
@@ -302,6 +318,21 @@
           </div>
 
           <!-- 全站公告設定 -->
+          
+          <!-- 版主自訂每頁數量設定 -->
+          <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
+            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-file-lines text-indigo-400"></i> 每頁分頁展示商品數量設定 (預設 40 筆)：
+            </label>
+            <div class="flex gap-2">
+              <input type="number" id="admin-perpage-input" min="5" max="200" placeholder="預設: 40" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+              <button onclick="saveItemsPerPage()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
+                💾 儲存每頁筆數
+              </button>
+            </div>
+          </div>
+
+
           <div class="space-y-2">
             <label class="block text-xs font-bold text-gray-300">📢 發布全站廣播公告：</label>
             <textarea id="admin-announcement-input" rows="3" placeholder="請輸入全站公告內容..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
@@ -428,6 +459,46 @@
       nickname = 'PEGA同仁#' + Math.floor(1000 + Math.random() * 9000);
       localStorage.setItem('pega_device_id', deviceId);
       localStorage.setItem('pega_nickname', nickname);
+    }
+
+    
+    let currentPage = 1;
+    let itemsPerPage = parseInt(localStorage.getItem('pega_items_per_page') || '40', 10);
+
+    function loadItemsPerPageSetting() {
+      itemsPerPage = parseInt(localStorage.getItem('pega_items_per_page') || '40', 10);
+      const input = document.getElementById('admin-perpage-input');
+      if (input) input.value = itemsPerPage;
+    }
+
+    function saveItemsPerPage() {
+      const input = document.getElementById('admin-perpage-input');
+      const val = parseInt(input?.value, 10);
+      if (!val || val < 1) return showNotification('⚠️ 每頁數量必須大於 0', 'warning');
+      localStorage.setItem('pega_items_per_page', val.toString());
+      itemsPerPage = val;
+      currentPage = 1;
+      showNotification(`✅ 每頁商品展示筆數已設定為：${val} 筆！`, 'success');
+      renderItems();
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      renderItems();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPage(p) {
+      currentPage = p;
+      renderItems();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToLastPage() {
+      const totalPages = Math.ceil(filteredTotalCount / itemsPerPage) || 1;
+      currentPage = totalPages;
+      renderItems();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     let allItems = [];
@@ -658,13 +729,15 @@
       }
     }
 
+        let filteredTotalCount = 0;
+
     function renderItems() {
       const grid = document.getElementById('item-grid');
       if (!grid) return;
 
       const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
 
-            const filtered = allItems.filter(item => {
+      const filtered = allItems.filter(item => {
         if (item.id === '00000000-0000-0000-0000-000000000002' || item.title === 'SYSTEM_ISSUE_BOARD') return false;
         const itemExp = getItemExpiration(item);
         if (itemExp) {
@@ -688,12 +761,41 @@
         return bPinned - aPinned;
       });
 
+      filteredTotalCount = filtered.length;
+      const totalPages = Math.ceil(filteredTotalCount / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      // Update Pagination UI
+      const curElem = document.getElementById('page-current');
+      const totElem = document.getElementById('page-total');
+      const cntElem = document.getElementById('items-total-count');
+      const numSpan = document.getElementById('page-numbers-span');
+      const btnFirst = document.getElementById('btn-page-first');
+      const btnPrev = document.getElementById('btn-page-prev');
+      const btnNext = document.getElementById('btn-page-next');
+      const btnLast = document.getElementById('btn-page-last');
+
+      if (curElem) curElem.innerText = currentPage;
+      if (totElem) totElem.innerText = totalPages;
+      if (cntElem) cntElem.innerText = filteredTotalCount;
+      if (numSpan) numSpan.innerText = `${currentPage} / ${totalPages}`;
+
+      if (btnFirst) btnFirst.disabled = currentPage === 1;
+      if (btnPrev) btnPrev.disabled = currentPage === 1;
+      if (btnNext) btnNext.disabled = currentPage === totalPages;
+      if (btnLast) btnLast.disabled = currentPage === totalPages;
+
       if (filtered.length === 0) {
         grid.innerHTML = '<p class="col-span-full text-gray-400 text-center py-12 text-sm">尚無相符的刊登貼文</p>';
         return;
       }
 
-      grid.innerHTML = filtered.map(item => {
+      // Slice items for current page
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const pageItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+      grid.innerHTML = pageItems.map(item => {
         const isPinned = globalPinnedIds.includes(item.id);
         const safeTitle = (item.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const cleanDescText = getCleanDescription(item.description);
@@ -743,8 +845,6 @@
                   </div>
                 ` : ''}
 
-
-
                 <div class="flex items-center justify-between text-[10px] text-gray-500">
                   <span>${item.nickname || '匿名同仁'}</span>
                   <span>${getExpirationCountdown(getItemExpiration(item))}</span>
@@ -755,8 +855,6 @@
                     <i class="fa-solid fa-trash-can"></i> 下架我的貼文 (已售出)
                   </button>
                 ` : ''}
-
-
 
                 ${isAdmin ? `
                   <div class="flex gap-1 pt-1" onclick="event.stopPropagation()">
