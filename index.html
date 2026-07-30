@@ -1634,7 +1634,29 @@
     }
 
     async function deleteMyItem(itemId) {
-      if (!confirm('確定要將您的貼文下架刪除嗎？(下架後將不再展示於告示牌)')) return;
+      const item = allItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const isSold = isItemSold(item);
+
+      if (!isSold) {
+        // 若貼文未標記已售出，詢問是否因為售出而下架
+        const becauseSold = confirm('這件商品是因為「已售出 / 已送出」而要下架的嗎？\n\n【確定】是，已成交（將會自動記入歷史成交紀錄後下架）\n【取消】否，只是想直接刪除/取消貼文');
+        if (becauseSold) {
+          const soldTimeStr = new Date().toISOString();
+          await saveTransactionLog(item, soldTimeStr);
+        } else {
+          // 第二次確認以防誤刪
+          if (!confirm('您確定要直接刪除此貼文嗎？（此操作無法恢復，且不會計入歷史成交紀錄）')) {
+            return;
+          }
+        }
+      } else {
+        // 已標記售出，一般確認下架即可
+        if (!confirm('此貼文已標記為售出，您確定要立即將其下架刪除嗎？')) {
+          return;
+        }
+      }
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${itemId}`, {
@@ -1774,7 +1796,27 @@
     }
 
     async function deleteItemAdmin(id) {
-      if (!confirm('確定要下架刪除此貼文嗎？')) return;
+      const item = allItems.find(i => i.id === id);
+      if (!item) return;
+
+      const isSold = isItemSold(item);
+
+      if (!isSold) {
+        const becauseSold = confirm('版主下架確認：這件商品是因為「已售出 / 已送出」而要下架的嗎？\n\n【確定】是，已成交（將會自動記入歷史成交紀錄後下架）\n【取消】否，強制刪除貼文（不計入歷史成交紀錄）');
+        if (becauseSold) {
+          const soldTimeStr = new Date().toISOString();
+          await saveTransactionLog(item, soldTimeStr);
+        } else {
+          if (!confirm('您確定要直接「強制刪除」此貼文嗎？（此操作無法恢復，且不會計入歷史成交紀錄）')) {
+            return;
+          }
+        }
+      } else {
+        if (!confirm('此貼文已標記為售出，您確定要立即將其刪除下架嗎？')) {
+          return;
+        }
+      }
+
       try {
         await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${id}`, {
           method: 'DELETE',
