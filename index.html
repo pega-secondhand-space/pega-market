@@ -466,21 +466,71 @@
     let currentPage = 1;
     let itemsPerPage = parseInt(localStorage.getItem('pega_items_per_page') || '40', 10);
 
-    function loadItemsPerPageSetting() {
-      itemsPerPage = parseInt(localStorage.getItem('pega_items_per_page') || '40', 10);
+        async function loadItemsPerPageSetting() {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PER_PAGE&select=*`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0 && data[0].content) {
+            const sysVal = parseInt(data[0].content, 10);
+            if (sysVal > 0) {
+              itemsPerPage = sysVal;
+              localStorage.setItem('pega_items_per_page', sysVal.toString());
+            }
+          }
+        }
+      } catch(e) {
+        console.error('Fetch per page error:', e);
+      }
+
       const input = document.getElementById('admin-perpage-input');
       if (input) input.value = itemsPerPage;
     }
 
-    function saveItemsPerPage() {
+        async function saveItemsPerPage() {
       const input = document.getElementById('admin-perpage-input');
       const val = parseInt(input?.value, 10);
       if (!val || val < 1) return showNotification('⚠️ 每頁數量必須大於 0', 'warning');
-      localStorage.setItem('pega_items_per_page', val.toString());
+
       itemsPerPage = val;
+      localStorage.setItem('pega_items_per_page', val.toString());
       currentPage = 1;
-      showNotification(`✅ 每頁商品展示筆數已設定為：${val} 筆！`, 'success');
-      renderItems();
+
+      try {
+        // Check if record exists in Supabase
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PER_PAGE&select=id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        const existing = await checkRes.json();
+
+        if (existing && existing.length > 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PER_PAGE`, {
+            method: 'PATCH',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: val.toString() })
+          });
+        } else {
+          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              item_id: 'SYSTEM_PER_PAGE',
+              sender_id: deviceId,
+              sender_name: 'ADMIN',
+              content: val.toString()
+            })
+          });
+        }
+
+        showNotification(`🎉 全站每頁商品展示筆數已永久設定為：${val} 筆！`, 'success');
+        renderItems();
+      } catch(e) {
+        console.error('Save per page error:', e);
+        showNotification(`✅ 已於本機儲存每頁筆數為：${val} 筆！`, 'success');
+        renderItems();
+      }
     }
 
     function changePage(delta) {
@@ -716,6 +766,7 @@
     }
 
     async function loadItems() {
+      await loadItemsPerPageSetting();
       await loadGlobalPinnedIds();
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=*&order=created_at.desc`, {
@@ -1208,6 +1259,7 @@
 
     function openAdminModal() {
       loadAnnouncement();
+      loadItemsPerPageSetting();
       document.getElementById('admin-modal').classList.remove('hidden');
       if (isAdmin) {
         document.getElementById('admin-login-view').classList.add('hidden');
