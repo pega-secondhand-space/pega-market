@@ -1296,7 +1296,14 @@
             </div>
 
             <div class="p-2.5 sm:p-3 pt-0 space-y-1.5">
-              <button onclick="openChat('${item.id}', '${safeTitle}')" class="w-full bg-gray-700/60 hover:bg-gray-700 text-indigo-300 text-xs py-1.5 rounded-xl font-bold border border-gray-600/50 transition">
+              <div class="grid grid-cols-2 gap-1.5 w-full">
+                <button onclick="openSellerUpdateModal('${item.id}', '${safeTitle}')" class="bg-amber-900/40 hover:bg-amber-900/60 text-amber-200 text-xs py-1.5 rounded-xl font-bold border border-amber-500/30 transition flex items-center justify-center gap-1">
+                  📢 賣家更新
+                </button>
+                <button onclick="openPublicQAModal('${item.id}', '${safeTitle}')" class="bg-indigo-900/40 hover:bg-indigo-900/60 text-indigo-200 text-xs py-1.5 rounded-xl font-bold border border-indigo-500/30 transition flex items-center justify-center gap-1">
+                  💬 公開問答
+                </button>
+              </div>
                 私訊聯繫
               </button>
 
@@ -2095,6 +2102,59 @@
 
       </div>
 
+    </div>
+  </div>
+
+
+  <!-- 📢 賣家補充更新 Modal -->
+  <div id="seller-update-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-fadeIn">
+      <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 text-lg">📢</span>
+          <h3 id="seller-update-title" class="font-bold text-sm text-gray-100">新增賣家補充說明</h3>
+        </div>
+        <button onclick="closeSellerUpdateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">補充更新內容 (例如：降價至$300 / 已預訂)：</label>
+          <textarea id="seller-update-content" rows="3" placeholder="例如：今日優惠降價 200 元！有需要的同仁請打分機 45555 聯繫。" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-amber-500 font-medium"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">4位數發布密碼 (或版主密碼驗證)：</label>
+          <input type="password" id="seller-update-passcode" placeholder="請輸入刊登時設定的密碼或版主密碼" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-amber-500 font-bold">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeSellerUpdateModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-bold rounded-xl transition">取消</button>
+          <button onclick="submitSellerUpdate()" class="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95">💾 發布補充更新</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💬 公開問答 Modal -->
+  <div id="public-qa-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85dvh] sm:h-[550px] animate-fadeIn">
+      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-indigo-400 text-lg">💬</span>
+          <h3 id="public-qa-title" class="font-bold text-sm text-gray-100 truncate">商品公開問答</h3>
+        </div>
+        <button onclick="closePublicQAModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div id="public-qa-list" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-950/40">
+        <!-- 公開問答列表 -->
+      </div>
+      <form onsubmit="event.preventDefault(); submitPublicQA();" class="p-3 bg-gray-900 border-t border-gray-700 flex gap-2 items-center shrink-0">
+        <input type="text" id="public-qa-input" placeholder="公開留言詢問賣家 (所有人可見)..." autocomplete="off" class="flex-1 px-3.5 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-medium">
+        <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold text-xs rounded-xl transition shadow flex items-center gap-1 shrink-0">
+          <span>留言</span>
+          <i class="fa-solid fa-paper-plane text-xs"></i>
+        </button>
+      </form>
     </div>
   </div>
 
