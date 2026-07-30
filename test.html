@@ -793,7 +793,7 @@
       const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
 
       const filtered = allItems.filter(item => {
-        if (item.id === '00000000-0000-0000-0000-000000000002' || item.title === 'SYSTEM_ISSUE_BOARD') return false;
+        if (item.id === '00000000-0000-0000-0000-000000000001' || item.id === '00000000-0000-0000-0000-000000000002' || item.title === 'SYSTEM_ANNOUNCEMENT_BOARD' || item.title === 'SYSTEM_ISSUE_BOARD') return false;
         const itemExp = getItemExpiration(item);
         if (itemExp) {
           const expDate = new Date(itemExp);
@@ -1350,40 +1350,45 @@
       }
     }
 
-            async function loadAnnouncement() {
+                async function loadAnnouncement() {
       try {
         const cacheBuster = Date.now();
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=*&_t=${cacheBuster}`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&_t=${cacheBuster}`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         if (res.ok) {
           const data = await res.json();
-          const defaultAnn = '📢 歡迎來到 PEGAPEGA 告示牌交易系統！同仁免登入匿名刊登買賣送，填寫分機/LINE私下聯繫最便捷安全！';
-          const currentText = (data && data.length > 0 && data[0].content) ? data[0].content : defaultAnn;
-          
           const textSpan = document.getElementById('announcement-text');
           const adminInput = document.getElementById('admin-announcement-input');
-          
-          if (textSpan) textSpan.innerText = currentText;
-          if (adminInput) adminInput.value = currentText;
-          document.getElementById('announcement-bar').classList.remove('hidden');
+          const bar = document.getElementById('announcement-bar');
+
+          if (data && data.length > 0 && data[0].content) {
+            const currentText = data[0].content;
+            if (textSpan) textSpan.innerText = currentText;
+            if (adminInput) adminInput.value = currentText;
+            if (bar) bar.classList.remove('hidden');
+          } else {
+            if (textSpan) textSpan.innerText = '';
+            if (adminInput) adminInput.value = '';
+            if (bar) bar.classList.add('hidden');
+          }
         }
       } catch(e) { console.error('Announcement error:', e); }
     }
 
-        async function saveAnnouncement() {
+    async function saveAnnouncement() {
       const input = document.getElementById('admin-announcement-input');
       const text = (input?.value || '').trim();
       if (!text) return showNotification('請輸入公告內容', 'warning');
 
-      // 即時同步前端畫面 (完全不用重新整理頁面！)
+      // 即時顯示於前端畫面
       const textSpan = document.getElementById('announcement-text');
       if (textSpan) textSpan.innerText = text;
       const bar = document.getElementById('announcement-bar');
       if (bar) bar.classList.remove('hidden');
 
       try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=id`, {
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         const existing = await checkRes.json();
@@ -1398,31 +1403,41 @@
           await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
             method: 'POST',
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ item_id: 'SYSTEM_ANNOUNCEMENT', sender_id: 'ADMIN', sender_name: 'ADMIN', content: text })
+            body: JSON.stringify({ item_id: '00000000-0000-0000-0000-000000000001', sender_id: 'ADMIN', sender_name: 'ADMIN', content: text })
           });
         }
-        showNotification('🎉 全站公告已即時發布生效！', 'success');
+        showNotification('🎉 全站公告已成功發布並永久儲存！', 'success');
         await loadAnnouncement();
       } catch(e) { 
         console.error('Save announcement error:', e); 
-        showNotification('⚠️ 公告線上儲存發生連線異常', 'warning');
+        showNotification('⚠️ 公告儲存發生異常', 'warning');
       }
     }
 
     async function clearAnnouncement() {
       try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=id`, {
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         const existing = await checkRes.json();
         if (existing && existing.length > 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
-            method: 'DELETE',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-          });
+          for (const item of existing) {
+            await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+              method: 'DELETE',
+              headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+            });
+          }
         }
-        document.getElementById('announcement-bar').classList.add('hidden');
-        showNotification('📢 已清除全站公告', 'info');
+        
+        const textSpan = document.getElementById('announcement-text');
+        const adminInput = document.getElementById('admin-announcement-input');
+        const bar = document.getElementById('announcement-bar');
+
+        if (textSpan) textSpan.innerText = '';
+        if (adminInput) adminInput.value = '';
+        if (bar) bar.classList.add('hidden');
+
+        showNotification('🗑️ 全站公告已從資料庫與畫面完全清除！', 'info');
       } catch(e) { console.error('Clear announcement error:', e); }
     }
 
