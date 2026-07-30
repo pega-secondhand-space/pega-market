@@ -75,10 +75,10 @@
     </div>
   </header>
   <!-- 全站置頂顯眼公告欄 (位在 Header 正下方) -->
-  <div id="announcement-bar" class="bg-gradient-to-r from-indigo-950 via-purple-900 to-indigo-950 text-indigo-100 px-3.5 py-3 text-xs sm:text-sm font-bold flex items-start sm:items-center justify-between shadow-xl border-b border-indigo-500/40">
-    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 max-w-5xl mx-auto w-full">
-      <span class="bg-amber-400 text-gray-950 px-2.5 py-0.5 rounded-md text-xs font-black uppercase shrink-0">📢 全站使用須知</span>
-      <span id="announcement-text" class="whitespace-normal break-words leading-relaxed font-medium text-gray-100 text-xs sm:text-sm"></span>
+  <div id="announcement-bar" class="bg-gradient-to-r from-indigo-950 via-purple-900 to-indigo-950 text-indigo-100 px-3.5 py-3 text-xs sm:text-sm font-bold flex items-start justify-between shadow-xl border-b border-indigo-500/40">
+    <div class="flex flex-col sm:flex-row items-start gap-2 max-w-5xl mx-auto w-full">
+      <span class="bg-amber-400 text-gray-950 px-2.5 py-0.5 rounded-md text-xs font-black uppercase shrink-0 mt-0.5">📢 全站使用須知</span>
+      <span id="announcement-text" class="whitespace-pre-line break-words leading-relaxed font-medium text-gray-100 text-xs sm:text-sm"></span>
     </div>
     <button onclick="closeAnnouncementBar()" class="text-indigo-300 hover:text-white shrink-0 ml-2 p-1"><i class="fa-solid fa-xmark text-base"></i></button>
   </div>
@@ -323,8 +323,13 @@
         <!-- 未登入介面 -->
         <div id="admin-login-view" class="space-y-4 max-w-xs mx-auto text-center py-6">
           <p class="text-xs text-gray-300 font-bold">請輸入版主管理密碼：</p>
-          <input type="password" id="admin-pwd-input" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="請輸入版主密碼" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 text-center font-bold focus:outline-none focus:border-indigo-500">
-          <button onclick="checkAdminPassword()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">登入控制台</button>
+          <div class="relative w-full">
+            <input type="password" id="admin-pwd-input" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="請輸入版主密碼" class="w-full pl-4 pr-10 py-3 bg-gray-900 border border-gray-700 rounded-xl text-base text-gray-100 font-bold focus:outline-none focus:border-indigo-500 transition shadow-inner">
+            <button type="button" onclick="toggleAdminPasswordVisibility()" class="absolute right-3 top-3.5 text-gray-400 hover:text-white transition">
+              <i id="admin-pwd-eye-icon" class="fa-solid fa-eye-slash text-sm"></i>
+            </button>
+          </div>
+          <button onclick="checkAdminPassword()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95">登入控制台</button>
         </div>
 
         <!-- 已登入介面 -->
@@ -468,7 +473,7 @@
     }
 
     const SUPABASE_URL = 'https://llnnbanqtmnccfvtwooo.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTI5MTkyNiwiZXhwIjoyMTAwODY3OTI2fQ.RTdMtKEw9tD3N2KSO3mY7M2Z4ZVB1ZY24SPv-yzL0Hk';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTI9MTkyNiwiZXhwIjoyMTAwODY3OTI2fQ.RTdMtKEw9tD3N2KSO3mY7M2Z4ZVB1ZY24SPv-yzL0Hk';
 
     var db = null;
     try {
@@ -1362,6 +1367,19 @@
       setFontSize(savedLevel);
     }
 
+    function toggleAdminPasswordVisibility() {
+      const input = document.getElementById('admin-pwd-input');
+      const icon = document.getElementById('admin-pwd-eye-icon');
+      if (!input || !icon) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye text-sm';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye-slash text-sm';
+      }
+    }
+
     function checkAdminPassword() {
       const input = document.getElementById('admin-pwd-input');
       const pwd = (input?.value || '').trim();
@@ -1371,7 +1389,7 @@
 
       if (validPasswords.includes(pwd)) {
         isAdmin = true;
-        const pwdView = document.getElementById('admin-pwd-view');
+        const pwdView = document.getElementById('admin-login-view');
         const dashView = document.getElementById('admin-dashboard-view');
         const btnText = document.getElementById('admin-btn-text');
 
@@ -1381,8 +1399,8 @@
 
         showNotification('🔑 版主身份驗證成功！已進入管理後台', 'success');
 
-        // 即時預填當前畫面公告內文
-        const liveAnnText = document.getElementById('announcement-text')?.innerText || '';
+        // 即時預填當前畫面公告內文 (優先讀取帶斷行的快取資料)
+        const liveAnnText = localStorage.getItem('pega_custom_announcement') || document.getElementById('announcement-text')?.innerText || '';
         const annInput = document.getElementById('admin-announcement-input');
         if (annInput && liveAnnText) {
           annInput.value = liveAnnText;
