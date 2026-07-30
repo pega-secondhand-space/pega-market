@@ -138,7 +138,7 @@
 
   <!-- 🔍 商品詳情放大 Modal (完整相片展示，100%不裁切) -->
   <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] animate-fadeIn">
+    <div class="bg-gradient-to-b from-gray-900 via-gray-900 to-indigo-950 border border-indigo-500/40 w-full max-w-2xl rounded-3xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col max-h-[92vh] animate-fadeIn">
       <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
 
@@ -920,7 +920,7 @@
             ${isPinned ? '<div class="bg-amber-500 text-gray-950 text-xs sm:text-sm font-black px-3 py-1 text-center">📌 官方置頂商品</div>' : ''}
             
             <div class="relative aspect-video bg-gray-950 overflow-hidden flex items-center justify-center">
-              <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300">
               <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
               
               ${(item.image_url || '').includes('|||') ? `
