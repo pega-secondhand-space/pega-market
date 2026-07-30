@@ -1119,6 +1119,7 @@
     }
 
     async function loadItems() {
+      await loadGlobalPinnedIds();
       const grid = document.getElementById('item-grid');
       if (!db) {
         if (grid) grid.innerHTML = '<p class="col-span-full text-red-400 text-center py-8">⚠️ 資料庫連線失敗，請檢查網路狀態。</p>';
