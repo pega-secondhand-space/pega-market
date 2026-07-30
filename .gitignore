@@ -1,0 +1,5 @@
+.env
+website.txt
+*.py
+*.zip
+*.js
