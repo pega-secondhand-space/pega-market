@@ -1148,7 +1148,7 @@
     function openCreateModal() { document.getElementById('create-modal').classList.remove('hidden'); }
     function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
 
-                    async function submitCreateItem() {
+                        async function submitCreateItem() {
       const errorBox = document.getElementById('create-modal-error');
       const errorText = document.getElementById('create-modal-error-text');
       const submitBtn = document.getElementById('submit-create-btn');
@@ -1159,11 +1159,13 @@
       let title = (titleInput?.value || '').trim();
       const desc = (document.getElementById('post-desc')?.value || '').trim();
       const price = parseFloat(document.getElementById('post-price')?.value) || 0;
-      const contact = (document.getElementById('post-contact')?.value || '').trim();
+      const contactInput = document.getElementById('post-contact');
+      const contact = (contactInput?.value || '').trim();
       const imgUrl1 = (document.getElementById('post-img1-url')?.value || '').trim();
       const imgUrl2 = (document.getElementById('post-img2-url')?.value || '').trim();
       const expDays = document.getElementById('item-expiration')?.value || 'none';
 
+      // 1. 檢查物品標題
       if (!title) {
         if (titleInput) {
           titleInput.classList.add('border-red-500');
@@ -1179,6 +1181,7 @@
         titleInput.classList.remove('border-red-500');
       }
 
+      // 2. 檢查照片上傳 (至少 1 張)
       if (!imgUrl1) {
         if (errorBox && errorText) {
           errorText.innerText = '⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！';
@@ -1186,6 +1189,22 @@
         }
         showNotification('⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！', 'warning');
         return;
+      }
+
+      // 3. 檢查聯絡方式 (必填欄位)
+      if (!contact) {
+        if (contactInput) {
+          contactInput.classList.add('border-red-500');
+          contactInput.focus();
+        }
+        if (errorBox && errorText) {
+          errorText.innerText = '⚠️ 請填寫聯絡方式 (例如：分機 45555 / LINE ID / Teams)！';
+          errorBox.classList.remove('hidden');
+        }
+        showNotification('⚠️ 請填寫聯絡方式 (例如：分機 45555 / LINE / Teams)！', 'warning');
+        return;
+      } else if (contactInput) {
+        contactInput.classList.remove('border-red-500');
       }
 
       if (submitBtn) {
@@ -1215,7 +1234,11 @@
       };
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/items`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001`, {
+          // Send request
+        });
+
+        const postRes = await fetch(`${SUPABASE_URL}/rest/v1/items`, {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
@@ -1226,8 +1249,8 @@
           body: JSON.stringify(payload)
         });
 
-        if (res.ok) {
-          const createdItems = await res.json();
+        if (postRes.ok) {
+          const createdItems = await postRes.json();
           if (createdItems && createdItems.length > 0) {
             const newItemId = createdItems[0].id;
             let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
@@ -1243,7 +1266,6 @@
           if (descInput) descInput.value = '';
           const priceInput = document.getElementById('post-price');
           if (priceInput) priceInput.value = '';
-          const contactInput = document.getElementById('post-contact');
           if (contactInput) contactInput.value = '';
           
           const hidden1 = document.getElementById('post-img1-url');
@@ -1261,7 +1283,7 @@
 
           loadItems();
         } else {
-          const errData = await res.text();
+          const errData = await postRes.text();
           if (errorBox && errorText) {
             errorText.innerText = '⚠️ 刊登失敗：' + (errData || '連線錯誤');
             errorBox.classList.remove('hidden');

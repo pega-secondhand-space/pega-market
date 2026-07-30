@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEGA二手匿名交易空間</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      transition: background-image 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body id="main-body" class="bg-gray-900 text-gray-100 min-h-screen pb-24 font-sans">
+
+  <!-- 頂部導覽列 -->
+  <header class="bg-gray-800/85 backdrop-blur-md border-b border-gray-700/80 p-4 sticky top-0 z-20 shadow-lg">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-2">
+      <div>
+        <h1 class="text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">PEGA 二手匿名交易空間</h1>
+        <p id="user-display" class="text-[11px] text-gray-400 mt-0.5"></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="openAdminModal()" class="text-xs bg-indigo-600/80 hover:bg-indigo-600 text-white px-3 py-1.5 rounded-full border border-indigo-500/50 transition flex items-center gap-1.5 shadow">
+          <i class="fa-solid fa-sliders"></i> <span id="admin-btn-text">後台管理</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主內容區域 -->
+  <main class="max-w-7xl mx-auto p-3 sm:p-5 space-y-4">
+
+    <!-- 告示板 (公告欄) -->
+    <div id="announcement-bar" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-3 rounded-xl text-xs flex items-start gap-2.5 shadow-sm backdrop-blur-sm max-w-2xl mx-auto">
+      <i class="fa-solid fa-bullhorn text-amber-400 mt-0.5 text-sm shrink-0"></i>
+      <p id="announcement-text" class="leading-relaxed flex-1"></p>
+    </div>
+
+    <!-- 搜尋與分類篩選列 -->
+    <div class="max-w-xl mx-auto space-y-2.5">
+      <div class="flex gap-2">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
+          <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品名稱、求購或描述..." 
+                 class="w-full pl-10 pr-4 py-2.5 bg-gray-800/90 text-gray-100 rounded-xl text-sm border border-gray-700 focus:outline-none focus:border-indigo-500 shadow-inner placeholder-gray-500 backdrop-blur-sm">
+        </div>
+
+        <!-- 👁️ 使用者自訂每行顯示數量選單 -->
+        <div class="relative flex items-center">
+          <select id="grid-layout-select" onchange="changeGridLayout(this.value)" class="bg-gray-800/90 text-gray-200 border border-gray-700 rounded-xl text-xs px-2.5 py-2.5 focus:outline-none focus:border-indigo-500 backdrop-blur-sm font-medium">
+            <option value="1">單排 1 卡</option>
+            <option value="2">單排 2 卡</option>
+            <option value="3">單排 3 卡</option>
+            <option value="4">單排 4 卡</option>
+            <option value="5">單排 5 卡</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-4 gap-1.5 text-xs font-medium">
+        <button onclick="setFilter('all')" id="btn-all" class="py-2 rounded-xl bg-indigo-600 text-white font-bold shadow-md transition">全部</button>
+        <button onclick="setFilter('sell')" id="btn-sell" class="py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm">💰 想賣</button>
+        <button onclick="setFilter('buy')" id="btn-buy" class="py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm">🔍 想買</button>
+        <button onclick="setFilter('free')" id="btn-free" class="py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm">🎁 免費送</button>
+      </div>
+    </div>
+
+    <!-- 商品大廳外層容器：動態控制 maxWidth 與置中 -->
+    <div id="grid-container" class="mx-auto transition-all duration-300">
+      <!-- 商品大廳：動態網格 -->
+      <div id="item-grid" class="grid gap-3 sm:gap-4 transition-all duration-300">
+        <p class="col-span-full text-gray-500 text-center py-12 text-sm">載入資料中...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 右下角懸浮刊登按鈕 -->
+  <button onclick="openPostModal()" class="fixed right-4 bottom-6 bg-indigo-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl hover:bg-indigo-500 active:scale-95 transition flex items-center gap-2 z-30 border border-indigo-400/30">
+    <i class="fa-solid fa-plus text-lg"></i>
+    <span class="text-sm">我要刊登</span>
+  </button>
+
+  <!-- 大圖與詳細內容 Modal -->
+  <div id="image-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4" onclick="closeImageModal()">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[85vh]" onclick="event.stopPropagation()">
+      <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-gray-900/80 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg z-10 hover:bg-gray-700 transition">&times;</button>
+
+      <div id="modal-img-box" class="w-full bg-black flex items-center justify-center min-h-[200px] max-h-[350px] overflow-hidden"></div>
+
+      <div class="p-4 space-y-3 overflow-y-auto">
+        <div class="flex items-center justify-between">
+          <span id="modal-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full"></span>
+          <span id="modal-time" class="text-xs text-gray-400"></span>
+        </div>
+        <h3 id="modal-title" class="text-lg font-bold text-gray-100"></h3>
+        <p id="modal-price" class="text-xl font-black text-indigo-400"></p>
+        <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-700/50">
+          <p class="text-xs text-gray-400 mb-1">詳細說明：</p>
+          <p id="modal-desc" class="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed"></p>
+        </div>
+        <p id="modal-seller" class="text-xs text-gray-500"></p>
+
+        <button id="modal-chat-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
+          <i class="fa-regular fa-comments"></i> 私訊聯繫
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 多功能管理員後台 Modal -->
+  <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+        <h3 class="font-bold text-base text-gray-100 flex items-center gap-2">
+          <i class="fa-solid fa-user-shield text-indigo-400"></i> 管理員控制台
+        </h3>
+        <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+
+      <!-- 登入區域 -->
+      <div id="admin-login-box" class="space-y-3">
+        <p class="text-xs text-gray-400">請輸入管理員密碼（預設：<code class="text-indigo-300">admin123</code>）：</p>
+        <input type="password" id="admin-password" placeholder="輸入密碼" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-gray-100">
+        <button onclick="checkAdminPassword()" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-500 transition">登入後台 (將自動記住狀態)</button>
+      </div>
+
+      <!-- 後台管理控制面板 -->
+      <div id="admin-panel" class="hidden space-y-4 text-xs">
+        <div class="flex justify-between items-center bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-800/40 text-indigo-300">
+          <span>✅ 管理員已登入 (自動保持狀態)</span>
+          <button onclick="logoutAdmin()" class="bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded-lg font-bold">登出</button>
+        </div>
+
+        <div class="bg-gray-900/80 p-3 rounded-xl border border-gray-700 grid grid-cols-3 gap-2 text-center">
+          <div>
+            <p class="text-gray-400 text-[10px]">總刊登數</p>
+            <p id="stat-total" class="text-base font-bold text-indigo-400">0</p>
+          </div>
+          <div>
+            <p class="text-gray-400 text-[10px]">求購數量</p>
+            <p id="stat-buy" class="text-base font-bold text-amber-400">0</p>
+          </div>
+          <div>
+            <p class="text-gray-400 text-[10px]">免費贈送</p>
+            <p id="stat-free" class="text-base font-bold text-emerald-400">0</p>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 border-t border-gray-700 pt-3">
+          <label class="font-bold text-gray-200 block">📢 頂部告示板公告修改：</label>
+          <textarea id="admin-announcement-input" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-200 h-16 placeholder-gray-500" placeholder="寫下新的公告..."></textarea>
+          <button onclick="updateAnnouncement()" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-1.5 rounded-xl font-bold transition">更新全站公告</button>
+        </div>
+
+        <div class="space-y-1.5 border-t border-gray-700 pt-3">
+          <label class="font-bold text-gray-200 block">🖼️ 換全站桌面背景圖 (網址 URL)：</label>
+          <div class="flex gap-2">
+            <input type="text" id="bg-url-input" placeholder="貼上圖片 URL (留空還原預設)" class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-100">
+            <button onclick="changeBgImage()" class="bg-indigo-600 text-white px-3 rounded-xl font-bold hover:bg-indigo-500 transition">儲存背景</button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 border-t border-gray-700 pt-3">
+          <label class="font-bold text-gray-200 block">🔑 更換管理員密碼：</label>
+          <div class="flex gap-2">
+            <input type="password" id="new-admin-pwd" placeholder="新密碼" class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-100">
+            <button onclick="changeAdminPassword()" class="bg-emerald-600 text-white px-3 rounded-xl font-bold hover:bg-emerald-500 transition">修改密碼</button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 border-t border-gray-700 pt-3">
+          <label class="font-bold text-gray-200 block">🚫 敏感詞 / 禁詞過濾 (用逗號隔開)：</label>
+          <input type="text" id="banned-words-input" placeholder="例如: 賭博,槍枝,黃牛" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-xl text-gray-100">
+          <button onclick="saveBannedWords()" class="w-full bg-gray-700 hover:bg-gray-600 text-gray-200 py-1.5 rounded-xl font-bold transition">儲存敏感詞設定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 刊登 / 編輯 Modal -->
+  <div id="post-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-md max-h-[90vh] rounded-t-2xl sm:rounded-2xl flex flex-col overflow-hidden">
+      <div class="p-4 bg-gray-750 border-b border-gray-700 flex justify-between items-center">
+        <h3 id="post-modal-title" class="font-bold text-base text-gray-100">刊登物品 / 發布求購</h3>
+        <button onclick="closePostModal()" class="text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+      
+      <form id="post-form" class="p-4 overflow-y-auto space-y-3.5 text-sm">
+        <input type="hidden" id="editing-item-id" value="">
+
+        <div>
+          <label class="block text-xs font-medium text-gray-400 mb-1">刊登類型</label>
+          <select id="type" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100" onchange="togglePriceInput()">
+            <option value="sell">💰 我想賣 (出售物品)</option>
+            <option value="buy">🔍 我想買 (徵求/求購物品)</option>
+            <option value="free">🎁 免費送 (贈送物品)</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-xs font-medium text-gray-400">物品參考照片 (選填/留空保留原圖)</label>
+            <span id="img-dimension-badge" class="text-[10px] text-indigo-400 hidden font-mono"></span>
+          </div>
+          <input type="file" id="image-input" accept="image/*" onchange="previewImageDimension(this)" class="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-900/50 file:text-indigo-300 hover:file:bg-indigo-800">
+        </div>
+
+        <div>
+          <input type="text" id="title" placeholder="標題 (例: 徵二手 iPhone 13 / 售9成新滑鼠)" required class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500">
+        </div>
+
+        <div id="price-container">
+          <input type="text" id="price" placeholder="預售金額 / 徵求預算 ($)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500">
+        </div>
+
+        <div>
+          <textarea id="description" placeholder="補充描述 (如物品狀況、面交地點、預算範圍等)..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500 h-20"></textarea>
+        </div>
+
+        <div>
+          <input type="text" id="contact" placeholder="(選填) Teams / LINE 聯絡方式" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500">
+        </div>
+
+        <button type="submit" id="submit-btn" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-500 transition shadow-lg">確認發布</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 聊天室 Modal -->
+  <div id="chat-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-end sm:items-center justify-center z-50">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-md h-[85vh] rounded-t-2xl sm:rounded-2xl flex flex-col overflow-hidden">
+      <div class="p-4 bg-gray-750 border-b border-gray-700 flex justify-between items-center">
+        <h3 id="chat-title" class="font-bold text-sm truncate text-gray-100">對話區</h3>
+        <button onclick="closeChat()" class="text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+      <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-2.5 bg-gray-900 text-sm"></div>
+      <div class="p-3 border-t border-gray-700 flex gap-2 bg-gray-800">
+        <input type="text" id="chat-input" placeholder="輸入匿名訊息..." class="flex-1 p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-gray-100 focus:outline-none focus:border-indigo-500 placeholder-gray-500">
+        <button onclick="sendMessage()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-500 transition">發送</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://llnnbanqtmnccfvtwooo.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_zLB9PBofh-rrS-mFr1CIWg_K8wUiSVk';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let adminPassword = localStorage.getItem('pega_admin_pwd') || 'admin123';
+    let isAdmin = localStorage.getItem('pega_is_admin') === 'true'; 
+
+    let deviceId = localStorage.getItem('user_device_id');
+    let nickname = localStorage.getItem('user_nickname');
+    if (!deviceId) {
+      deviceId = 'usr_' + Math.random().toString(36).substr(2, 9);
+      nickname = 'PEGA同仁#' + Math.floor(1000 + Math.random() * 9000);
+      localStorage.setItem('user_device_id', deviceId);
+      localStorage.setItem('user_nickname', nickname);
+    }
+    document.getElementById('user-display').innerText = '你的代號：' + nickname;
+
+    if (isAdmin) {
+      document.getElementById('admin-btn-text').innerText = '後台管理 (已登入)';
+    }
+
+    const savedBg = localStorage.getItem('pega_bg_url');
+    if (savedBg) {
+      document.getElementById('main-body').style.backgroundImage = `url('${savedBg}')`;
+      document.getElementById('bg-url-input').value = savedBg;
+    }
+
+    // 🎯 讀取使用者偏好欄數 (手機預設 2 欄，PC 預設 4 欄)
+    const isMobile = window.innerWidth < 640;
+    let savedCols = localStorage.getItem('pega_grid_cols');
+    if (!savedCols) {
+      savedCols = isMobile ? '2' : '4';
+    }
+    
+    // 初始化選單狀態與 Grid 寬度限制
+    document.getElementById('grid-layout-select').value = savedCols;
+    applyGridLayout(savedCols);
+
+    function changeGridLayout(cols) {
+      localStorage.setItem('pega_grid_cols', cols);
+      applyGridLayout(cols);
+    }
+
+    function applyGridLayout(cols) {
+      const container = document.getElementById('grid-container');
+      const grid = document.getElementById('item-grid');
+      
+      // 清除原本的動態寬度與 grid-cols 類別
+      container.className = container.className.replace(/max-w-[^\s]+/g, '').trim();
+      grid.className = grid.className.replace(/grid-cols-\d+/g, '').trim();
+
+      // 針對不同的欄位設定「完美的容器最大寬度限制」，確保卡片維持固定的精緻尺寸 (單張寬度約 260px~280px)
+      const maxWMap = {
+        '1': 'max-w-xs',       // ~320px
+        '2': 'max-w-xl',       // ~576px
+        '3': 'max-w-3xl',      // ~768px
+        '4': 'max-w-5xl',      // ~1024px
+        '5': 'max-w-7xl'       // ~1280px
+      };
+
+      const containerWidth = maxWMap[cols] || 'max-w-5xl';
+      container.classList.add(containerWidth);
+      grid.classList.add(`grid-cols-${cols}`);
+    }
+
+    let allItems = [];
+    let currentFilter = 'all';
+    let currentItemId = null;
+    let chatSubscription = null;
+
+    function openAdminModal() {
+      document.getElementById('admin-modal').classList.remove('hidden');
+      if (isAdmin) {
+        document.getElementById('admin-login-box').classList.add('hidden');
+        document.getElementById('admin-panel').classList.remove('hidden');
+        document.getElementById('banned-words-input').value = localStorage.getItem('pega_banned_words') || '';
+        updateStats();
+      }
+    }
+    function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+    function checkAdminPassword() {
+      const pwd = document.getElementById('admin-password').value;
+      if (pwd === adminPassword) {
+        isAdmin = true;
+        localStorage.setItem('pega_is_admin', 'true');
+        document.getElementById('admin-btn-text').innerText = '後台管理 (已登入)';
+        document.getElementById('admin-login-box').classList.add('hidden');
+        document.getElementById('admin-panel').classList.remove('hidden');
+        document.getElementById('banned-words-input').value = localStorage.getItem('pega_banned_words') || '';
+        updateStats();
+        renderItems();
+      } else {
+        alert('密碼錯誤！');
+      }
+    }
+
+    function logoutAdmin() {
+      isAdmin = false;
+      localStorage.removeItem('pega_is_admin');
+      document.getElementById('admin-btn-text').innerText = '後台管理';
+      document.getElementById('admin-login-box').classList.remove('hidden');
+      document.getElementById('admin-panel').classList.add('hidden');
+      document.getElementById('admin-password').value = '';
+      renderItems();
+    }
+
+    function changeAdminPassword() {
+      const newPwd = document.getElementById('new-admin-pwd').value.trim();
+      if (!newPwd) return alert('請輸入新密碼！');
+      adminPassword = newPwd;
+      localStorage.setItem('pega_admin_pwd', newPwd);
+      alert('🔑 後台密碼已修改成功！下次登入請使用新密碼。');
+      document.getElementById('new-admin-pwd').value = '';
+    }
+
+    function changeBgImage() {
+      const url = document.getElementById('bg-url-input').value.trim();
+      if (url) {
+        localStorage.setItem('pega_bg_url', url);
+        document.getElementById('main-body').style.backgroundImage = `url('${url}')`;
+      } else {
+        localStorage.removeItem('pega_bg_url');
+        document.getElementById('main-body').style.backgroundImage = 'none';
+      }
+      alert('🖼️ 桌面背景圖更換成功！');
+    }
+
+    function saveBannedWords() {
+      const words = document.getElementById('banned-words-input').value.trim();
+      localStorage.setItem('pega_banned_words', words);
+      alert('🚫 禁詞庫設定成功！');
+    }
+
+    function updateStats() {
+      document.getElementById('stat-total').innerText = allItems.length;
+      document.getElementById('stat-buy').innerText = allItems.filter(i => i.type === 'buy').length;
+      document.getElementById('stat-free').innerText = allItems.filter(i => i.type === 'free').length;
+    }
+
+    async function updateAnnouncement() {
+      const content = document.getElementById('admin-announcement-input').value.trim();
+      if (!content) return alert('請輸入內容！');
+
+      const { error } = await db.from('announcements').insert([{ content: content, is_active: true }]);
+      if (error) {
+        alert('更新失敗：' + error.message);
+      } else {
+        alert('🎉 告示板更新成功！');
+        document.getElementById('admin-announcement-input').value = '';
+        loadAnnouncement();
+        closeAdminModal();
+      }
+    }
+
+    async function deleteItem(id, title) {
+      if (!confirm(`確定要下架刪除「${title}」嗎？此操作無法復原！`)) return;
+
+      const { error } = await db.from('items').delete().eq('id', id);
+      if (error) {
+        alert('刪除失敗：' + error.message);
+      } else {
+        alert('🗑️ 已成功刪除該刊登項目！');
+        loadItems();
+      }
+    }
+
+    function openEditModal(id) {
+      const item = allItems.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById('editing-item-id').value = item.id;
+      document.getElementById('post-modal-title').innerText = '編輯刊登內容';
+      document.getElementById('type').value = item.type || 'sell';
+      document.getElementById('title').value = item.title;
+      document.getElementById('price').value = item.price;
+      document.getElementById('description').value = item.description || '';
+      document.getElementById('contact').value = item.contact_info || '';
+      document.getElementById('submit-btn').innerText = '儲存修改';
+
+      togglePriceInput();
+      openPostModal();
+    }
+
+    async function loadAnnouncement() {
+      const { data } = await db.from('announcements').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(1);
+      if (data && data.length > 0) {
+        document.getElementById('announcement-text').innerText = data[0].content;
+        document.getElementById('announcement-bar').classList.remove('hidden');
+      }
+    }
+
+    function previewImageDimension(input) {
+      const badge = document.getElementById('img-dimension-badge');
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+          badge.innerText = `尺寸: ${img.width} × ${img.height} px`;
+          badge.classList.remove('hidden');
+        };
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    async function loadItems() {
+      const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
+      if (error) {
+        document.getElementById('item-grid').innerHTML = '<p class="col-span-full text-red-400 text-center py-8">載入失敗，請稍後重試。</p>';
+        return;
+      }
+      allItems = data || [];
+      if (isAdmin) updateStats();
+      renderItems();
+    }
+
+    function timeAgo(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const seconds = Math.floor((now - date) / 1000);
+      if (seconds < 60) return '剛剛';
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes}分鐘前`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}小時前`;
+      return `${Math.floor(hours / 24)}天前`;
+    }
+
+    function renderItems() {
+      const searchKey = document.getElementById('search-input').value.toLowerCase();
+      const grid = document.getElementById('item-grid');
+
+      const filtered = allItems.filter(item => {
+        const itemType = item.type || 'sell';
+        const matchesFilter = currentFilter === 'all' || itemType === currentFilter;
+        const matchesSearch = item.title.toLowerCase().includes(searchKey) || (item.description && item.description.toLowerCase().includes(searchKey));
+        return matchesFilter && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-gray-500 text-center py-12 text-sm">目前沒有相關刊登內容</p>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        const itemType = item.type || 'sell';
+        const isOwner = item.device_id === deviceId;
+
+        let badgeClass = 'bg-indigo-600/90 text-white';
+        let badgeText = '想賣';
+        let priceText = '$' + item.price;
+
+        if (itemType === 'buy') {
+          badgeClass = 'bg-amber-600/90 text-white';
+          badgeText = '求購中';
+          priceText = item.price ? '預算 $' + item.price : '面議/求贈';
+        } else if (itemType === 'free') {
+          badgeClass = 'bg-emerald-600/90 text-white';
+          badgeText = '免費送';
+          priceText = '免費';
+        }
+
+        return `
+          <div class="w-full max-w-[320px] mx-auto bg-gray-800/90 backdrop-blur-md rounded-2xl border ${isOwner ? 'border-indigo-500/60 ring-1 ring-indigo-500/30' : 'border-gray-700/80'} overflow-hidden flex flex-col justify-between shadow-md hover:border-gray-600 transition group relative">
+            
+            ${isOwner ? `<span class="absolute top-2 right-2 bg-indigo-900/90 text-indigo-200 text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-indigo-500/30 z-10">我的貼文</span>` : ''}
+
+            <div onclick="openImageModal('${item.id}')" class="cursor-pointer">
+              <div class="relative w-full h-32 sm:h-36 bg-gray-900 flex items-center justify-center overflow-hidden">
+                ${item.image_url 
+                  ? `<img src="${item.image_url}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">` 
+                  : `<i class="fa-solid ${itemType === 'buy' ? 'fa-magnifying-glass' : 'fa-box-open'} text-3xl text-gray-700"></i>`
+                }
+                <span class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass} shadow">
+                  ${badgeText}
+                </span>
+                <span class="absolute bottom-2 right-2 text-[9px] bg-black/60 text-gray-300 px-1.5 py-0.5 rounded-md backdrop-blur-sm">
+                  ${timeAgo(item.created_at)}
+                </span>
+              </div>
+              <div class="p-2.5 sm:p-3">
+                <h3 class="font-bold text-xs sm:text-sm text-gray-100 line-clamp-1">${item.title}</h3>
+                <p class="text-[11px] text-gray-400 mt-1 line-clamp-1">${item.description || '無詳細說明'}</p>
+                <p class="text-xs sm:text-sm font-black text-indigo-400 mt-2">${priceText}</p>
+              </div>
+            </div>
+
+            <div class="p-2.5 sm:p-3 pt-0 space-y-1.5">
+              <button onclick="openChat('${item.id}', '${item.title}')" class="w-full bg-gray-700/60 hover:bg-gray-700 text-indigo-300 text-xs py-1.5 rounded-xl font-bold border border-gray-600/50 transition">
+                私訊聯繫
+              </button>
+
+              ${(isOwner || isAdmin) ? `
+                <div class="flex gap-1">
+                  ${isOwner ? `
+                    <button onclick="openEditModal('${item.id}')" class="flex-1 bg-amber-600/80 hover:bg-amber-600 text-white text-[10px] sm:text-[11px] py-1 rounded-lg font-bold transition">
+                      ✏️ 編輯
+                    </button>
+                  ` : ''}
+                  <button onclick="deleteItem('${item.id}', '${item.title}')" class="${isOwner ? 'flex-1' : 'w-full'} bg-red-600/80 hover:bg-red-600 text-white text-[10px] sm:text-[11px] py-1 rounded-lg font-bold transition">
+                    🗑️ 刪除
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openImageModal(id) {
+      const item = allItems.find(i => i.id === id);
+      if (!item) return;
+
+      const itemType = item.type || 'sell';
+      const imgBox = document.getElementById('modal-img-box');
+      if (item.image_url) {
+        imgBox.innerHTML = `<img src="${item.image_url}" class="w-full h-full object-contain max-h-[350px]">`;
+      } else {
+        imgBox.innerHTML = `<div class="p-8 text-center text-gray-600"><i class="fa-solid ${itemType === 'buy' ? 'fa-magnifying-glass' : 'fa-image'} text-5xl mb-2"></i><p class="text-xs">刊登者未上傳圖片</p></div>`;
+      }
+
+      const badge = document.getElementById('modal-badge');
+      if (itemType === 'buy') {
+        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30';
+        badge.innerText = '🔍 想買/求購';
+      } else if (itemType === 'free') {
+        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        badge.innerText = '🎁 免費贈送';
+      } else {
+        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30';
+        badge.innerText = '💰 我想賣';
+      }
+
+      document.getElementById('modal-title').innerText = item.title;
+      document.getElementById('modal-price').innerText = itemType === 'free' ? '免費' : (itemType === 'buy' ? '預算: $' + (item.price || '面議') : '$' + item.price);
+      document.getElementById('modal-desc').innerText = item.description || '無詳細說明。';
+      document.getElementById('modal-time').innerText = timeAgo(item.created_at);
+      document.getElementById('modal-seller').innerText = '發布者：' + item.nickname;
+
+      document.getElementById('modal-chat-btn').onclick = () => {
+        closeImageModal();
+        openChat(item.id, item.title);
+      };
+
+      document.getElementById('image-modal').classList.remove('hidden');
+    }
+
+    function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      ['all', 'sell', 'buy', 'free'].forEach(f => {
+        const btn = document.getElementById('btn-' + f);
+        if (f === filter) {
+          btn.className = 'py-2 rounded-xl bg-indigo-600 text-white font-bold shadow-md transition';
+        } else {
+          btn.className = 'py-2 rounded-xl bg-gray-800/80 text-gray-300 border border-gray-700 hover:bg-gray-750 transition backdrop-blur-sm';
+        }
+      });
+      renderItems();
+    }
+
+    function togglePriceInput() {
+      const type = document.getElementById('type').value;
+      const priceInput = document.getElementById('price');
+      if (type === 'free') {
+        priceInput.value = '0';
+        priceInput.placeholder = '免費贈送 (無需填寫價格)';
+        priceInput.disabled = true;
+      } else if (type === 'buy') {
+        priceInput.disabled = false;
+        priceInput.placeholder = '徵求預算 ($)';
+      } else {
+        priceInput.disabled = false;
+        priceInput.placeholder = '預售金額 ($)';
+      }
+    }
+
+    function filterItems() { renderItems(); }
+    
+    function openPostModal() { 
+      document.getElementById('post-modal').classList.remove('hidden'); 
+    }
+    
+    function closePostModal() { 
+      document.getElementById('post-modal').classList.add('hidden'); 
+      document.getElementById('editing-item-id').value = '';
+      document.getElementById('post-modal-title').innerText = '刊登物品 / 發布求購';
+      document.getElementById('submit-btn').innerText = '確認發布';
+      document.getElementById('post-form').reset();
+      document.getElementById('img-dimension-badge').classList.add('hidden');
+    }
+
+    function compressImage(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxWidth = 800;
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth) {
+              height = (maxWidth / width) * height;
+              width = maxWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7);
+          };
+        };
+      });
+    }
+
+    document.getElementById('post-form').onsubmit = async (e) => {
+      e.preventDefault();
+
+      const editingId = document.getElementById('editing-item-id').value;
+      const isEditing = Boolean(editingId);
+
+      if (!isEditing) {
+        const userItems = allItems.filter(i => i.device_id === deviceId);
+        if (userItems.length >= 5) {
+          alert('⚠️ 刊登數量已達上限！為了避免洗板，每位同仁最多只能同時刊登 5 項物品。');
+          return;
+        }
+      }
+
+      const title = document.getElementById('title').value;
+      const desc = document.getElementById('description').value;
+
+      const bannedWordsStr = localStorage.getItem('pega_banned_words');
+      if (bannedWordsStr) {
+        const bannedWords = bannedWordsStr.split(',').map(w => w.trim()).filter(Boolean);
+        for (let word of bannedWords) {
+          if (title.includes(word) || desc.includes(word)) {
+            alert(`🚫 刊登內容包含敏感詞「${word}」，請修改後再發布！`);
+            return;
+          }
+        }
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.innerText = isEditing ? '儲存中...' : '發布中...';
+      btn.disabled = true;
+
+      let imageUrl = null;
+      const fileInput = document.getElementById('image-input');
+      
+      if (fileInput.files.length > 0) {
+        const rawFile = fileInput.files[0];
+        const compressedBlob = await compressImage(rawFile);
+        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 5)}.jpg`;
+
+        const { error: uploadError } = await db.storage
+          .from('item-images')
+          .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
+
+        if (uploadError) {
+          alert('圖片上傳失敗：' + uploadError.message);
+          btn.innerText = isEditing ? '儲存修改' : '確認發布';
+          btn.disabled = false;
+          return;
+        }
+
+        const { data: publicUrlData } = db.storage.from('item-images').getPublicUrl(fileName);
+        imageUrl = publicUrlData.publicUrl;
+      }
+
+      const payload = {
+        title: title,
+        price: document.getElementById('price').value || '0',
+        description: desc,
+        type: document.getElementById('type').value,
+        contact_info: document.getElementById('contact').value,
+      };
+
+      if (imageUrl) payload.image_url = imageUrl;
+
+      let error = null;
+
+      if (isEditing) {
+        const res = await db.from('items').update(payload).eq('id', editingId);
+        error = res.error;
+      } else {
+        payload.device_id = deviceId;
+        payload.nickname = nickname;
+        const res = await db.from('items').insert([payload]);
+        error = res.error;
+      }
+
+      if (error) {
+        alert((isEditing ? '修改' : '發布') + '失敗：' + error.message);
+      } else {
+        alert(isEditing ? '🎉 貼文更新成功！' : '🎉 刊登成功！');
+        closePostModal();
+        loadItems();
+      }
+
+      btn.innerText = '確認發布';
+      btn.disabled = false;
+    };
+
+    async function openChat(itemId, title) {
+      currentItemId = itemId;
+      document.getElementById('chat-title').innerText = '對話：' + title;
+      document.getElementById('chat-modal').classList.remove('hidden');
+      loadMessages();
+
+      if (chatSubscription) db.removeChannel(chatSubscription);
+      chatSubscription = db.channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `item_id=eq.${itemId}` }, payload => {
+          appendMessage(payload.new);
+        })
+        .subscribe();
+    }
+
+    function closeChat() { document.getElementById('chat-modal').classList.add('hidden'); }
+
+    async function loadMessages() {
+      const { data } = await db.from('messages').select('*').eq('item_id', currentItemId).order('created_at', { ascending: true });
+      const msgBox = document.getElementById('chat-messages');
+      msgBox.innerHTML = '';
+      if (data) data.forEach(appendMessage);
+    }
+
+    function appendMessage(msg) {
+      const msgBox = document.getElementById('chat-messages');
+      const isMe = msg.sender_id === deviceId;
+      const div = document.createElement('div');
+      div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+      div.innerHTML = `
+        <span class="text-[10px] text-gray-500 mb-0.5">${msg.sender_name}</span>
+        <div class="px-3.5 py-2 rounded-2xl max-w-[80%] text-sm ${isMe ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-200 border border-gray-700'}">
+          ${msg.content}
+        </div>
+      `;
+      msgBox.appendChild(div);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const content = input.value.trim();
+      if (!content) return;
+      input.value = '';
+
+      await db.from('messages').insert([{
+        item_id: currentItemId,
+        sender_id: deviceId,
+        sender_name: nickname,
+        content: content
+      }]);
+    }
+
+    loadAnnouncement();
+    loadItems();
+  </script>
+</body>
+</html>
