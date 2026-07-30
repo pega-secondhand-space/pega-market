@@ -15,21 +15,476 @@
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
   
     
-    
-    /* 全站統一動態字體大小控管 (A⁻, A, A⁺, A⁺⁺ 全面同步影響首頁卡片、詳細彈窗、留言板與後台) */
+    /* 全站動態字體大小控管 (PC 與 手機響應式獨立放大) */
     html.font-level-sm { font-size: 14px; }
     html.font-level-base { font-size: 16px; }
     html.font-level-lg { font-size: 18px; }
     html.font-level-xl { font-size: 20px; }
 
-    /* 手機版 (寬度 < 640px) 全站統一獨立加倍放大 */
+    /* 手機版 (寬度 < 640px) 超大字體強效放大 */
     @media (max-width: 639px) {
-      html.font-level-sm { font-size: 17px; }
-      html.font-level-base { font-size: 19px; }
+      html.font-level-sm { font-size: 18px; }
+      html.font-level-base { font-size: 20px; }
       html.font-level-lg { font-size: 22px; }
-      html.font-level-xl { font-size: 25px; } /* 手機特大字體全站一律直升 25px */
+      html.font-level-xl { font-size: 25px; } /* 手機特大字體直升 25px */
     }
- catch(e) {
+
+
+  </style>
+</head>
+<body id="main-body" class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans transition-all duration-300 bg-cover bg-center bg-fixed">
+
+  <!-- 除錯與系統錯誤提示框 -->
+  <div id="debug-error-box" class="hidden bg-red-600/90 text-white text-xs font-bold px-4 py-2 text-center sticky top-0 z-50 shadow-md"></div>
+
+  <!-- 浮動 Notification Toast 提示框 -->
+  <div id="toast-container" class="fixed top-20 right-6 z-[9999] flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+
+
+  <!-- 頂部導航欄 (Navbar) -->
+  <header class="bg-gray-900/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-40 shadow-xl">
+    <div class="max-w-6xl mx-auto px-4 py-3 space-y-2">
+      <!-- 置頂最上面一行：網站平台名稱 (大器突出) -->
+      <div class="flex items-center justify-between">
+        <h1 onclick="refreshPageData()" title="點擊一鍵重新整理資料" class="text-xl sm:text-2xl font-black bg-gradient-to-r from-indigo-400 via-purple-300 to-amber-300 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition flex items-center gap-2">
+          <span id="site-title-text">PEGAPEGA</span>
+          <i class="fa-solid fa-rotate-right text-xs text-indigo-400"></i>
+        </h1>
+
+        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+
+        <!-- 全站動態字體大小調整按鈕 (文 A⁻ / A / A⁺ / A⁺⁺) -->
+        <div class="flex items-center gap-1 bg-gray-950/80 p-1 rounded-xl border border-gray-800 shrink-0">
+          <span class="text-[10px] text-gray-400 font-bold px-1.5 hidden sm:inline">字體:</span>
+          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
+          <button onclick="setFontSize('base')" id="font-btn-base" class="px-2 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow" title="標準字體 (A)">A</button>
+          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
+          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+        </div>
+
+          <button onclick="openIssueModal()" class="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
+            <i class="fa-solid fa-bug text-amber-400"></i> <span class="hidden sm:inline">回報問題與建議</span>
+          </button>
+
+          <button onclick="openAdminModal()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-indigo-300 border border-indigo-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
+            <i class="fa-solid fa-user-shield text-indigo-400"></i> <span id="admin-btn-text">後台管理</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- 全站置頂顯眼公告欄 (位在 Header 正下方) -->
+  <div id="announcement-bar" class="bg-gradient-to-r from-indigo-950 via-purple-900 to-indigo-950 text-indigo-100 px-3.5 py-3 text-xs sm:text-sm font-bold flex items-start sm:items-center justify-between shadow-xl border-b border-indigo-500/40">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 max-w-5xl mx-auto w-full">
+      <span class="bg-amber-400 text-gray-950 px-2.5 py-0.5 rounded-md text-xs font-black uppercase shrink-0">📢 全站使用須知</span>
+      <span id="announcement-text" class="whitespace-normal break-words leading-relaxed font-medium text-gray-100 text-xs sm:text-sm"></span>
+    </div>
+    <button onclick="closeAnnouncementBar()" class="text-indigo-300 hover:text-white shrink-0 ml-2 p-1"><i class="fa-solid fa-xmark text-base"></i></button>
+  </div>
+
+  <!-- 主內容區 -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6 space-y-5 pb-28 sm:pb-12">
+
+    <!-- 搜尋列、排列切換與篩選 Tab -->
+    <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <div class="relative flex-1 sm:w-72">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+          <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品標題、描述或聯絡資訊..." class="w-full pl-9 pr-4 py-2 bg-gray-900/90 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition shadow-inner">
+        </div>
+
+        <!-- 排列欄數選擇器 (1至5排) -->
+        <select id="grid-layout-select" onchange="changeGridLayout(this.value)" class="py-2 px-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-indigo-300 font-bold focus:outline-none focus:border-indigo-500 shrink-0">
+          <option value="1">單排 1 卡 (大圖)</option>
+          <option value="2" selected>雙排 2 卡 (預設)</option>
+          <option value="3">三排 3 卡</option>
+          <option value="4">四排 4 卡 (電腦)</option>
+          <option value="5">五排 5 卡 (寬屏)</option>
+        </select>
+      </div>
+
+      <!-- 分類 Tab -->
+      <div class="flex gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 text-xs font-bold">
+        <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-xl bg-indigo-600 text-white transition shadow active:scale-95 shrink-0">全部</button>
+        <button onclick="setFilter('sell')" id="filter-sell" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">💰 想賣</button>
+        <button onclick="setFilter('buy')" id="filter-buy" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🔍 想買</button>
+        <button onclick="setFilter('free')" id="filter-free" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🎁 免費送</button>
+      </div>
+    </div>
+
+    <!-- 告示牌貼文清單 (動態卡片網格，點擊卡片可放大查看詳情) -->
+    <div id="grid-container" class="mx-auto max-w-xl">
+      <div id="item-grid" class="grid grid-cols-2 gap-3 sm:gap-4">
+        <!-- 動態刊登項目 -->
+      </div>
+
+      <!-- 分頁頁碼導航列 (獨立在 grid 外，防擦除/防遮擋設計) -->
+      <div id="pagination-container" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/95 p-3.5 sm:p-4 rounded-2xl border border-gray-800 text-xs shadow-2xl backdrop-blur-md relative z-20">
+        <div class="text-gray-300 font-bold text-center sm:text-left text-[11px] sm:text-xs">
+          頁次：<span id="page-current" class="text-indigo-300 font-black">1</span> / <span id="page-total" class="text-gray-200 font-black">1</span> 頁 (共 <span id="items-total-count" class="text-amber-400 font-black">0</span> 筆貼文)
+        </div>
+        <div class="flex items-center justify-center gap-1.5 font-bold w-full sm:w-auto overflow-x-auto py-1">
+          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">⏮ 首頁</button>
+          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">◀ 上一頁</button>
+          <span id="page-numbers-span" class="px-2 font-black text-indigo-400 text-xs flex gap-1 items-center shrink-0">1 / 1</span>
+          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">下一頁 ▶</button>
+          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">末頁 ⏭</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 🔍 商品詳情放大 Modal (完整相片展示，100%不裁切) -->
+  <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gradient-to-b from-gray-900 via-gray-900 to-indigo-950 border border-indigo-500/40 w-full max-w-2xl rounded-3xl shadow-2xl shadow-indigo-500/20 overflow-hidden flex flex-col max-h-[92vh] animate-fadeIn">
+      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+
+        <!-- 全站動態字體大小調整按鈕 (文 A⁻ / A / A⁺ / A⁺⁺) -->
+        <div class="flex items-center gap-1 bg-gray-950/80 p-1 rounded-xl border border-gray-800 shrink-0">
+          <span class="text-[10px] text-gray-400 font-bold px-1.5 hidden sm:inline">字體:</span>
+          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
+          <button onclick="setFontSize('base')" id="font-btn-base" class="px-2 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow" title="標準字體 (A)">A</button>
+          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
+          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+        </div>
+
+          <span id="detail-type-badge"></span>
+          <h3 id="detail-title" class="font-bold text-sm sm:text-base text-gray-100 truncate">商品詳情</h3>
+        </div>
+        <!-- 醒目圓形紅底白字 X 關閉按鈕 -->
+        <button onclick="closeDetailModal()" class="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 ml-2" title="按下關閉視窗">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4">
+        <!-- 照片完整顯示區 (100% object-contain 完整全圖展示，防裁切) -->
+        <div id="detail-photos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-gray-950/80 border border-gray-700/60 p-2">
+          <!-- 動態照片 -->
+        </div>
+
+        <!-- 價格與時間 -->
+        <div class="flex items-center justify-between">
+          <span id="detail-price" class="text-xl font-black text-indigo-400"></span>
+          <span id="detail-time" class="text-xs text-gray-400"></span>
+        </div>
+
+        <!-- 聯絡資訊方塊 -->
+        <div id="detail-contact-box" class="bg-indigo-950/60 border border-indigo-500/40 p-3.5 rounded-xl space-y-1">
+          <p class="text-xs font-bold text-indigo-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-phone text-indigo-400"></i> 聯絡資訊：
+          </p>
+          <p id="detail-contact-text" class="text-xs text-gray-100 font-bold break-all"></p>
+        </div>
+
+        <!-- 詳細描述 -->
+        <div class="space-y-1">
+          <p class="text-xs font-bold text-gray-300">物品詳細描述：</p>
+          <div id="detail-desc" class="text-xs text-gray-200 leading-relaxed font-medium bg-gray-900/90 p-3.5 rounded-xl border border-gray-700/80 whitespace-pre-line"></div>
+        </div>
+
+        <!-- 刊登者 -->
+        
+        <!-- 刊登者本人下架區域 (方案 A) -->
+        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-gray-700/80">
+          <button id="detail-owner-delete-btn" onclick="" class="w-full py-2.5 bg-gradient-to-r from-red-800 to-red-900 hover:from-red-700 hover:to-red-800 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-trash-can text-sm"></i>
+            <span>我是發布者：下架此貼文 (已售出 / 結案)</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-gray-700 text-xs text-gray-400">
+          <span>發布者：<strong id="detail-nickname" class="text-gray-200"></strong></span>
+          <span id="detail-expiration"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浮動刊登按鈕 (FAB) -->
+  <button onclick="openCreateModal()" class="fixed right-5 bottom-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 z-30 border border-indigo-400/40">
+    <i class="fa-solid fa-plus text-base"></i>
+    <span class="text-xs sm:text-sm">我要刊登</span>
+  </button>
+
+  <!-- 刊登物品 Modal (支援原生選擇照片檔案自動壓縮上傳資料庫) -->
+  <div id="create-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+      <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle text-indigo-400"></i> 我要發布告示牌貼文
+        </h3>
+        <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5 overflow-y-auto space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs">💰 想賣</button>
+            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs">🔍 想買</button>
+            <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs">🎁 免費送</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">物品名稱/標題 <span class="text-amber-400">*</span>：</label>
+          <input type="text" id="post-title" placeholder="例如：精美單眼鏡頭清潔組 / 求購二手電風扇" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">價格 (NT$)：</label>
+          <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">📞 聯絡方式 (分機 / LINE / Teams / 面交地點)：</label>
+          <input type="text" id="post-contact" placeholder="例如：分機 45555 / LINE: pega123 / A棟大廳面交" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">物品描述：</label>
+          <textarea id="post-desc" rows="3" placeholder="請詳細說明物品狀況、規格或交易地點..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
+        </div>
+
+        <!-- 原生選擇照片檔案上傳資料庫 (最多 2 張照片，自動壓縮) -->
+        <div class="space-y-3 bg-gray-900/60 p-3.5 rounded-2xl border border-gray-700/80">
+          <label class="block text-xs font-bold text-gray-200 flex items-center justify-between">
+            <span>📷 上傳物品照片 (最多選擇 2 張照片，自動上傳資料庫並壓縮展示)：</span>
+          </label>
+          
+          <!-- 上傳按鈕區 -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="upload-file-1" class="cursor-pointer bg-gray-800 hover:bg-gray-700 border border-dashed border-indigo-500/60 hover:border-indigo-400 p-3 rounded-xl flex flex-col items-center justify-center text-center transition">
+                <i class="fa-solid fa-cloud-arrow-up text-indigo-400 text-lg mb-1"></i>
+                <span class="text-[11px] font-bold text-indigo-200">選擇照片 1</span>
+                <span id="file1-status" class="text-[9px] text-gray-400">點擊上傳圖檔</span>
+              </label>
+              <input type="file" id="upload-file-1" accept="image/*" onchange="handleImageSelect(1, event)" class="hidden">
+              <input type="hidden" id="post-img1-url">
+            </div>
+
+            <div>
+              <label for="upload-file-2" class="cursor-pointer bg-gray-800 hover:bg-gray-700 border border-dashed border-gray-600 hover:border-indigo-400 p-3 rounded-xl flex flex-col items-center justify-center text-center transition">
+                <i class="fa-solid fa-cloud-arrow-up text-gray-400 text-lg mb-1"></i>
+                <span class="text-[11px] font-bold text-gray-300">選擇照片 2 (選填)</span>
+                <span id="file2-status" class="text-[9px] text-gray-400">點擊上傳第二張</span>
+              </label>
+              <input type="file" id="upload-file-2" accept="image/*" onchange="handleImageSelect(2, event)" class="hidden">
+              <input type="hidden" id="post-img2-url">
+            </div>
+          </div>
+
+          <!-- 縮圖預覽區 -->
+          <div id="upload-previews-grid" class="hidden grid grid-cols-2 gap-2 pt-2">
+            <div id="preview-box-1" class="relative rounded-lg overflow-hidden border border-gray-700 bg-black aspect-video hidden">
+              <img id="preview-img-1" class="w-full h-full object-cover">
+              <span class="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded">照片 1</span>
+            </div>
+            <div id="preview-box-2" class="relative rounded-lg overflow-hidden border border-gray-700 bg-black aspect-video hidden">
+              <img id="preview-img-2" class="w-full h-full object-cover">
+              <span class="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded">照片 2</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">⏳ 自動下架截止日設定：</label>
+          <select id="item-expiration" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 font-medium focus:outline-none focus:border-indigo-500">
+            <option value="none" selected>無限制 (預設永久展示直至手動下架)</option>
+            <option value="7">7 天後自動下架 (1 週刊登)</option>
+            <option value="14">14 天後自動下架 (2 週刊登)</option>
+            <option value="30">30 天後自動下架 (1 個月)</option>
+            <option value="60">60 天後自動下架 (2 個月)</option>
+          </select>
+        </div>
+
+        
+        <!-- 即時表單錯誤提醒區域 -->
+        <div id="create-modal-error" class="hidden bg-red-900/80 border border-red-500 text-red-100 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-red-400 text-sm"></i>
+          <span id="create-modal-error-text"></span>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeCreateModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-bold rounded-xl transition">取消</button>
+          <button id="submit-create-btn" onclick="submitCreateItem()" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 disabled:opacity-50">🎉 發布貼文</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 後台管理 Modal -->
+  <div id="admin-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[520px] animate-fadeIn">
+      <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
+          <i class="fa-solid fa-user-shield text-indigo-400"></i> 版主管理控制台
+        </h3>
+        <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-5 flex-1 overflow-y-auto space-y-4">
+        <!-- 未登入介面 -->
+        <div id="admin-login-view" class="space-y-4 max-w-xs mx-auto text-center py-6">
+          <p class="text-xs text-gray-300 font-bold">請輸入版主管理密碼：</p>
+          <input type="password" id="admin-pwd-input" onkeydown="if(event.key==='Enter'){checkAdminPassword();}" placeholder="請輸入版主密碼" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 text-center font-bold focus:outline-none focus:border-indigo-500">
+          <button onclick="checkAdminPassword()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">登入控制台</button>
+        </div>
+
+        <!-- 已登入介面 -->
+        <div id="admin-dashboard-view" class="hidden space-y-4">
+          <div class="flex items-center justify-between bg-gray-900 p-3 rounded-xl border border-gray-700 text-xs">
+            <span class="font-bold text-emerald-400">✅ 版主身份已驗證權限解鎖</span>
+            <button onclick="logoutAdmin()" class="px-3 py-1 bg-red-900/60 text-red-300 hover:bg-red-800 rounded-lg font-bold">登出版主</button>
+          </div>
+
+          <!-- 網站平台名稱設定 -->
+          <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
+            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-heading text-indigo-400"></i> 網站平台名稱設定 (即時生效)：
+            </label>
+            <div class="flex gap-2">
+              <input type="text" id="admin-sitename-input" placeholder="例如：PEGAPEGA" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+              <button onclick="saveSiteName()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
+                💾 儲存名稱
+              </button>
+            </div>
+          </div>
+
+          <!-- 全站公告設定 -->
+          
+          <!-- 版主自訂每頁數量設定 -->
+          <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
+            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-file-lines text-indigo-400"></i> 每頁分頁展示商品數量設定 (預設 40 筆)：
+            </label>
+            <div class="flex gap-2">
+              <input type="number" id="admin-perpage-input" min="5" max="200" placeholder="預設: 40" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+              <button onclick="saveItemsPerPage()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
+                💾 儲存每頁筆數
+              </button>
+            </div>
+          </div>
+
+
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-amber-400"></i> 📢 編輯全站使用須知 (永久顯示於全站頂部)：</label>
+            <textarea id="admin-announcement-input" rows="3" placeholder="例如：請多善加利用電話/分機聯繫；刊登物品請詳實填寫..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
+            <div class="flex justify-end gap-2">
+              <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl transition">清除公告</button>
+              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow">💾 儲存公告</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- 🐛 回報網站問題與建議留言板 Modal -->
+  <div id="issue-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[580px] animate-fadeIn">
+      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-base">
+            🐛
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-gray-100">回報網站問題與建議留言板</h3>
+            <p class="text-[10px] text-gray-400">匿名提出除錯反饋與改善建議</p>
+          </div>
+        </div>
+        <!-- 醒目圓形紅底白字 X 關閉按鈕 -->
+        <button onclick="closeIssueModal()" class="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 ml-2" title="按下關閉視窗">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 切換按鈕 Tab: 提出留言 vs 查看歷史 -->
+      <div class="px-5 py-2.5 bg-gray-900/60 border-b border-gray-700/80 flex gap-2 shrink-0">
+        <button onclick="switchIssueTab('form')" id="issue-tab-form" class="px-4 py-2.5 rounded-xl bg-amber-600 text-white font-black text-xs sm:text-sm transition shadow flex items-center gap-2 active:scale-95">
+          <i class="fa-solid fa-pen-to-square"></i> 我要提出問題或建議
+        </button>
+        <button onclick="switchIssueTab('list')" id="issue-tab-list" class="px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 hover:text-white border border-gray-700 font-black text-xs sm:text-sm transition flex items-center gap-2 active:scale-95">
+          <i class="fa-solid fa-list-ul"></i> 查看留言紀錄 <span id="issue-count-badge" class="bg-amber-900/80 text-amber-300 text-[10px] px-1.5 py-0.2 rounded-md">0</span>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-5 flex-1 overflow-y-auto">
+        <!-- 分頁 1: 填寫資料表單 -->
+        <div id="issue-view-form" class="space-y-4">
+          <div class="bg-gray-900/90 p-4 rounded-2xl border border-gray-700/80 space-y-3 shadow-inner">
+            <h4 class="font-bold text-xs text-amber-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-comment-dots"></i> 請輸入您遇到的問題或改善建議：
+            </h4>
+            <textarea id="issue-content" rows="4" placeholder="例如：手機版卡片數量無法切換 / 建議新增... (將由版主統一審核回覆)" class="w-full p-3.5 bg-gray-950 border border-gray-700 rounded-xl text-xs sm:text-base text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 resize-none font-bold leading-relaxed"></textarea>
+            
+            <div id="issue-form-error" class="hidden bg-red-900/80 border border-red-500 text-red-100 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-red-400"></i>
+              <span id="issue-form-error-text"></span>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <button onclick="switchIssueTab('list')" class="text-xs text-indigo-400 hover:underline font-bold flex items-center gap-1">
+                <i class="fa-solid fa-list-ul"></i> 去看歷史留言清單 »
+              </button>
+              <button id="submit-issue-btn" onclick="submitNewIssue()" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs sm:text-sm rounded-xl transition shadow-lg active:scale-95 flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i> 送出問題單
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分頁 2: 查看留言紀錄列表 (已修復項目自動沉底) -->
+        <div id="issue-view-list" class="hidden space-y-3">
+          <div id="issue-list-container" class="space-y-3">
+            <!-- 動態載入問題清單 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- JavaScript 腳本 (支援原生圖片壓縮上傳資料庫與全視圖展覽) -->
+  <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      var errBox = document.getElementById('debug-error-box');
+      if (errBox) {
+        errBox.classList.remove('hidden');
+        errBox.innerHTML = '<strong>⚠️ 系統載入提示：</strong> ' + msg + ' (Line: ' + lineNo + ')';
+      }
+      return false;
+    };
+
+    function showNotification(msg, type) {
+      const container = document.getElementById('toast-container');
+      if (!container) {
+        alert(msg);
+        return;
+      }
+      const toast = document.createElement('div');
+      const bg = type === 'success' ? 'bg-emerald-600 border border-emerald-400/50 shadow-emerald-900/40' : 
+                 type === 'warning' ? 'bg-amber-600 border border-amber-400/50 shadow-amber-900/40' : 
+                 'bg-indigo-600 border border-indigo-400/50 shadow-indigo-900/40';
+      toast.className = `${bg} text-white px-4 py-3 rounded-2xl text-xs font-black shadow-2xl flex items-center gap-2.5 pointer-events-auto animate-fadeIn backdrop-blur-md`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-info'} text-sm"></i><span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.remove(); }, 3500);
+    }
+
+    const SUPABASE_URL = 'https://llnnbanqtmnccfvtwooo.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTI5MTkyNiwiZXhwIjoyMTAwODY3OTI2fQ.RTdMtKEw9tD3N2KSO3mY7M2Z4ZVB1ZY24SPv-yzL0Hk';
+
+    var db = null;
+    try {
+      if (typeof supabase !== 'undefined' && supabase.createClient) {
+        db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
+    } catch(e) {
       console.error('Supabase init error:', e);
     }
 
@@ -1339,4 +1794,3 @@
   </script>
 </body>
 </html>
-<!-- Build refresh: 1785398676.8591716 -->
