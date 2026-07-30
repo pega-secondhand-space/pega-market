@@ -704,7 +704,10 @@
     }
 
     function changeGridLayout(cols) {
-      localStorage.setItem('pega_grid_cols', cols);
+      const isMobile = window.innerWidth < 640;
+      const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
+      localStorage.setItem(storageKey, cols);
+      localStorage.setItem('pega_grid_cols', cols); // Keep the general one as fallback
       applyGridLayout(cols);
       renderItems(); // Re-render to update divider line positions dynamically
     }
@@ -1066,7 +1069,9 @@
         }
 
         // Calculate dynamic dividers based on current grid columns
-        const colsNum = parseInt(localStorage.getItem('pega_grid_cols') || '2', 10);
+        const isMobile = window.innerWidth < 640;
+        const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
+        const colsNum = parseInt(localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || '2', 10);
         const isEndOfRow = ((idx + 1) % colsNum === 0);
         const dividerHtml = (isEndOfRow && idx < pageItems.length - 1) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
 
@@ -2328,8 +2333,9 @@
       // 避免視窗初始寬度回報為 0 的 race condition
       const isMobile = window.innerWidth > 0 && window.innerWidth < 640;
       
-      // 優先讀取快取值，若無才讀取當前下拉選單值或預設為 '2'
-      const savedCols = localStorage.getItem('pega_grid_cols');
+      // 依裝置讀取對應的快取設定，若無才讀取 general 快取或預設
+      const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
+      const savedCols = localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols');
       const curVal = savedCols || selectElem.value || initialCols || '2';
 
       const allOptions = [
@@ -2350,14 +2356,15 @@
         return `<option value="${opt.value}">${opt.text}</option>`;
       }).join('');
 
-      // Restore value if available in filtered options, otherwise default to '2' (but do NOT overwrite cache!)
+      // Restore value if available in filtered options, otherwise default to '2' on mobile (but do NOT overwrite cache!)
       const hasVal = filteredOptions.some(opt => opt.value === curVal);
       if (hasVal) {
         selectElem.value = curVal;
         applyGridLayout(curVal); // 這裡必須執行，才能在載入時成功載入快取的排版！
       } else {
-        selectElem.value = '2';
-        applyGridLayout('2');
+        const fallback = isMobile ? '2' : '2';
+        selectElem.value = fallback;
+        applyGridLayout(fallback);
       }
     }
 
