@@ -315,12 +315,12 @@
     </div>
   </div>
 
-  <!-- 🐛 回報網站問題與建議留言板 Modal -->
-  <div id="issue-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
-      <div class="px-5 py-4 bg-gray-900/90 border-b border-gray-700 flex items-center justify-between shrink-0">
+    <!-- 🐛 回報網站問題與建議留言板 Modal -->
+  <div id="issue-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[580px] animate-fadeIn">
+      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-lg">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-base">
             🐛
           </div>
           <div>
@@ -333,24 +333,50 @@
         </button>
       </div>
 
-      <div class="p-4 sm:p-5 flex-1 overflow-y-auto space-y-4">
-        <div class="bg-gray-900/90 p-3.5 rounded-2xl border border-gray-700/80 space-y-3">
-          <h4 class="font-bold text-xs text-amber-300 flex items-center gap-1.5">
-            <i class="fa-solid fa-pen-to-square"></i> 我要提出問題或建議：
-          </h4>
-          <textarea id="issue-content" rows="2" placeholder="請詳細描述遇到的問題或功能建議..." class="w-full p-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 resize-none font-medium"></textarea>
-          <div class="flex justify-end">
-            <button onclick="submitNewIssue()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">
-              <i class="fa-solid fa-paper-plane"></i> 送出問題單
-            </button>
+      <!-- 切換按鈕 Tab: 提出留言 vs 查看歷史 -->
+      <div class="px-5 py-2.5 bg-gray-900/60 border-b border-gray-700/80 flex gap-2 shrink-0">
+        <button onclick="switchIssueTab('form')" id="issue-tab-form" class="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs transition shadow flex items-center gap-1.5">
+          <i class="fa-solid fa-pen-to-square"></i> 我要提出問題或建議
+        </button>
+        <button onclick="switchIssueTab('list')" id="issue-tab-list" class="px-4 py-2 rounded-xl bg-gray-800 text-gray-300 hover:text-white border border-gray-700 font-bold text-xs transition flex items-center gap-1.5">
+          <i class="fa-solid fa-list-ul"></i> 查看留言紀錄 <span id="issue-count-badge" class="bg-amber-900/80 text-amber-300 text-[10px] px-1.5 py-0.2 rounded-md">0</span>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-5 flex-1 overflow-y-auto">
+        <!-- 分頁 1: 填寫資料表單 -->
+        <div id="issue-view-form" class="space-y-4">
+          <div class="bg-gray-900/90 p-4 rounded-2xl border border-gray-700/80 space-y-3 shadow-inner">
+            <h4 class="font-bold text-xs text-amber-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-comment-dots"></i> 請輸入您遇到的問題或改善建議：
+            </h4>
+            <textarea id="issue-content" rows="4" placeholder="例如：手機版卡片數量無法切換 / 建議新增... (將由版主統一審核回覆)" class="w-full p-3 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 resize-none font-medium leading-relaxed"></textarea>
+            
+            <div id="issue-form-error" class="hidden bg-red-900/80 border border-red-500 text-red-100 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-red-400"></i>
+              <span id="issue-form-error-text"></span>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <button onclick="switchIssueTab('list')" class="text-xs text-indigo-400 hover:underline font-bold flex items-center gap-1">
+                <i class="fa-solid fa-list-ul"></i> 去看歷史留言清單 »
+              </button>
+              <button id="submit-issue-btn" onclick="submitNewIssue()" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane"></i> 送出問題單
+              </button>
+            </div>
           </div>
         </div>
 
-        <div id="issue-list-container" class="space-y-3">
-          <!-- 動態載入問題清單 -->
+        <!-- 分頁 2: 查看留言紀錄列表 (已修復項目自動沉底) -->
+        <div id="issue-view-list" class="hidden space-y-3">
+          <div id="issue-list-container" class="space-y-3">
+            <!-- 動態載入問題清單 -->
+          </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- JavaScript 腳本 (支援原生圖片壓縮上傳資料庫與全視圖展覽) -->
@@ -1189,6 +1215,66 @@
 
     function closeAnnouncementBar() { document.getElementById('announcement-bar').classList.add('hidden'); }
 
+    
+    function switchIssueTab(tab) {
+      const formView = document.getElementById('issue-view-form');
+      const listView = document.getElementById('issue-view-list');
+      const formTabBtn = document.getElementById('issue-tab-form');
+      const listTabBtn = document.getElementById('issue-tab-list');
+
+      if (tab === 'form') {
+        if (formView) formView.classList.remove('hidden');
+        if (listView) listView.classList.add('hidden');
+        if (formTabBtn) formTabBtn.className = 'px-4 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs transition shadow flex items-center gap-1.5';
+        if (listTabBtn) listTabBtn.className = 'px-4 py-2 rounded-xl bg-gray-800 text-gray-300 hover:text-white border border-gray-700 font-bold text-xs transition flex items-center gap-1.5';
+      } else {
+        if (formView) formView.classList.add('hidden');
+        if (listView) listView.classList.remove('hidden');
+        if (formTabBtn) formTabBtn.className = 'px-4 py-2 rounded-xl bg-gray-800 text-gray-300 hover:text-white border border-gray-700 font-bold text-xs transition flex items-center gap-1.5';
+        if (listTabBtn) listTabBtn.className = 'px-4 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs transition shadow flex items-center gap-1.5';
+        loadAndRenderIssues();
+      }
+    }
+
+    async function toggleResolveIssue(issueId, currentStatus) {
+      if (!isAdmin) return showNotification('⚠️ 只有版主可以變更處理狀態', 'warning');
+      const newStatus = currentStatus === 'ISSUE_RESOLVED' ? 'ISSUE_OPEN' : 'ISSUE_RESOLVED';
+      
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ item_id: newStatus })
+        });
+
+        if (res.ok) {
+          showNotification(newStatus === 'ISSUE_RESOLVED' ? '✅ 已標記為【已修復/已開發完成】並自動沉底！' : '⚡ 已標記為處理中', 'success');
+          loadAndRenderIssues();
+        }
+      } catch(e) {
+        console.error('Resolve issue error:', e);
+      }
+    }
+
+    async function deleteIssueAdmin(issueId) {
+      if (!isAdmin) return;
+      if (!confirm('確定要刪除這筆留言紀錄嗎？')) return;
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        showNotification('🗑️ 留言紀錄已刪除', 'info');
+        loadAndRenderIssues();
+      } catch(e) {
+        console.error('Delete issue error:', e);
+      }
+    }
+
     function openIssueModal() {
       document.getElementById('issue-modal').classList.remove('hidden');
       loadAndRenderIssues();
@@ -1196,40 +1282,91 @@
 
     function closeIssueModal() { document.getElementById('issue-modal').classList.add('hidden'); }
 
-    async function loadAndRenderIssues() {
+        async function loadAndRenderIssues() {
       const container = document.getElementById('issue-list-container');
+      const badge = document.getElementById('issue-count-badge');
       if (!container) return;
+
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=in.(ISSUE_OPEN,ISSUE_RESOLVED)&order=created_at.desc`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
+
         if (res.ok) {
           const issues = await res.json();
+          if (badge) badge.innerText = issues.length;
+
           if (issues.length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-center py-6 text-xs">尚無任何問題或反饋留言紀錄</p>';
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何留言歷史紀錄</p>';
             return;
           }
+
+          // 處理中(ISSUE_OPEN) 排在前面，已修復(ISSUE_RESOLVED) 沉底在最後面
+          issues.sort((a, b) => {
+            const aResolved = a.item_id === 'ISSUE_RESOLVED' ? 1 : 0;
+            const bResolved = b.item_id === 'ISSUE_RESOLVED' ? 1 : 0;
+            return aResolved - bResolved;
+          });
 
           container.innerHTML = issues.map(iss => {
             const isResolved = iss.item_id === 'ISSUE_RESOLVED';
             const safeContent = (iss.content || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
             return `
-              <div class="p-3 bg-gray-900 border border-gray-800 rounded-xl space-y-1.5">
+              <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-70 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
                 <div class="flex items-center justify-between text-[11px]">
-                  <span class="font-bold text-gray-200">${iss.sender_name || '熱心同仁'} ${isResolved ? '<span class="text-emerald-400 font-bold">✅ 已解決</span>' : '<span class="text-amber-400 font-bold">⚡ 處理中</span>'}</span>
+                  <span class="font-bold text-gray-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-user text-amber-400"></i> ${iss.sender_name || '熱心同仁'} 
+                    ${isResolved ? 
+                      '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md">✅ 已修復 / 已開發完成 (已沉底)</span>' : 
+                      '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
+                  </span>
                   <span class="text-[10px] text-gray-500">${timeAgo(iss.created_at)}</span>
                 </div>
-                <p class="text-xs text-gray-300 font-medium bg-black/20 p-2 rounded-lg">${safeContent}</p>
+
+                <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/30 p-3 rounded-xl border border-white/5 whitespace-pre-line">
+                  ${safeContent}
+                </div>
+
+                ${isAdmin ? `
+                  <div class="flex justify-end gap-1.5 pt-1">
+                    <button onclick="toggleResolveIssue('${iss.id}', '${iss.item_id}')" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 text-amber-300' : 'bg-emerald-900/60 text-emerald-300'} text-[10px] font-bold rounded-lg transition">
+                      ${isResolved ? '↩️ 恢復為處理中' : '✅ 標記為已修復 (沉底)'}
+                    </button>
+                    <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2 py-1 bg-red-900/60 text-red-300 text-[10px] font-bold rounded-lg transition">
+                      🗑️ 刪除留言
+                    </button>
+                  </div>
+                ` : ''}
               </div>
             `;
           }).join('');
         }
-      } catch(e) { console.error('Load issues error:', e); }
+      } catch(e) {
+        console.error('Load issues error:', e);
+      }
     }
 
-    async function submitNewIssue() {
+        async function submitNewIssue() {
+      const errBox = document.getElementById('issue-form-error');
+      const errText = document.getElementById('issue-form-error-text');
+      const submitBtn = document.getElementById('submit-issue-btn');
+      if (errBox) errBox.classList.add('hidden');
+
       const content = (document.getElementById('issue-content')?.value || '').trim();
-      if (!content) return showNotification('⚠️ 請輸入問題或建議內容', 'warning');
+      if (!content) {
+        if (errBox && errText) {
+          errText.innerText = '⚠️ 請填寫問題或建議內容！';
+          errBox.classList.remove('hidden');
+        }
+        showNotification('⚠️ 請輸入問題或建議內容', 'warning');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 送出中...';
+      }
 
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
@@ -1244,11 +1381,29 @@
         });
 
         if (res.ok) {
-          showNotification('🎉 已收到您的問題單，謝謝寶貴建議！', 'success');
+          showNotification('🎉 已收到您的問題單，感謝寶貴建議！', 'success');
           document.getElementById('issue-content').value = '';
-          loadAndRenderIssues();
+          switchIssueTab('list');
+        } else {
+          const errData = await res.text();
+          if (errBox && errText) {
+            errText.innerText = '⚠️ 送出失敗：' + (errData || '連線異常');
+            errBox.classList.remove('hidden');
+          }
+          showNotification('⚠️ 送出失敗，請檢查連線', 'warning');
         }
-      } catch(e) { console.error('Submit issue error:', e); }
+      } catch(e) {
+        console.error('Submit issue error:', e);
+        if (errBox && errText) {
+          errText.innerText = '⚠️ 送出發生錯誤：' + e.message;
+          errBox.classList.remove('hidden');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 送出問題單';
+        }
+      }
     }
 
     // 初始載入
