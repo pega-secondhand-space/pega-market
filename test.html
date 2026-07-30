@@ -1271,7 +1271,7 @@
 
     function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-        async function checkAdminPassword() {
+            async function checkAdminPassword() {
       const pwd = (document.getElementById('admin-pwd-input')?.value || '').trim();
       if (pwd === adminPassword || pwd === 'pega2026' || pwd === 'admin123') {
         isAdmin = true;
@@ -1280,15 +1280,16 @@
         document.getElementById('admin-btn-text').innerText = '管理面板 (已登入)';
         showNotification('🔑 版主身份驗證成功！已進入管理後台', 'success');
         
-        // 登入成功後，即時加載公告與每頁筆數設定並填入輸入框
+        // 即時將畫面上現有公告內文帶入輸入框
+        const liveAnnText = document.getElementById('announcement-text')?.innerText || '';
+        const annInput = document.getElementById('admin-announcement-input');
+        if (annInput && liveAnnText) {
+          annInput.value = liveAnnText;
+        }
+
+        // 雲端同步更新公告與分頁筆數
         await loadAnnouncement();
         await loadItemsPerPageSetting();
-
-        const currentAnn = document.getElementById('announcement-text')?.innerText || '';
-        const annInput = document.getElementById('admin-announcement-input');
-        if (annInput && currentAnn) {
-          annInput.value = currentAnn;
-        }
 
         renderItems();
       } else {
@@ -1349,9 +1350,10 @@
       }
     }
 
-        async function loadAnnouncement() {
+            async function loadAnnouncement() {
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=*`, {
+        const cacheBuster = Date.now();
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=*&_t=${cacheBuster}`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         if (res.ok) {
@@ -1369,9 +1371,16 @@
       } catch(e) { console.error('Announcement error:', e); }
     }
 
-    async function saveAnnouncement() {
-      const text = (document.getElementById('admin-announcement-input')?.value || '').trim();
+        async function saveAnnouncement() {
+      const input = document.getElementById('admin-announcement-input');
+      const text = (input?.value || '').trim();
       if (!text) return showNotification('請輸入公告內容', 'warning');
+
+      // 即時同步前端畫面 (完全不用重新整理頁面！)
+      const textSpan = document.getElementById('announcement-text');
+      if (textSpan) textSpan.innerText = text;
+      const bar = document.getElementById('announcement-bar');
+      if (bar) bar.classList.remove('hidden');
 
       try {
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_ANNOUNCEMENT&select=id`, {
@@ -1392,9 +1401,12 @@
             body: JSON.stringify({ item_id: 'SYSTEM_ANNOUNCEMENT', sender_id: 'ADMIN', sender_name: 'ADMIN', content: text })
           });
         }
-        showNotification('📢 全站公告已成功更新！', 'success');
-        loadAnnouncement();
-      } catch(e) { console.error('Save announcement error:', e); }
+        showNotification('🎉 全站公告已即時發布生效！', 'success');
+        await loadAnnouncement();
+      } catch(e) { 
+        console.error('Save announcement error:', e); 
+        showNotification('⚠️ 公告線上儲存發生連線異常', 'warning');
+      }
     }
 
     async function clearAnnouncement() {
