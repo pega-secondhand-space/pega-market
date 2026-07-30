@@ -705,6 +705,7 @@
     function changeGridLayout(cols) {
       localStorage.setItem('pega_grid_cols', cols);
       applyGridLayout(cols);
+      renderItems(); // Re-render to update divider line positions dynamically
     }
 
     function applyGridLayout(cols) {
@@ -713,15 +714,15 @@
       if (!container || !grid) return;
 
       const maxWMap = {
-        '1': 'max-w-md',
-        '2': 'max-w-xl',
-        '3': 'max-w-3xl',
-        '4': 'max-w-5xl',
+        '1': 'max-w-xl',  // Wider for clean single column feed style
+        '2': 'max-w-2xl',
+        '3': 'max-w-4xl',
+        '4': 'max-w-6xl',
         '5': 'max-w-7xl'
       };
 
-      container.className = `mx-auto ${maxWMap[cols] || 'max-w-md'}`;
-      grid.className = `grid grid-cols-${cols} gap-4`;
+      container.className = `mx-auto ${maxWMap[cols] || 'max-w-xl'}`;
+      grid.className = `grid grid-cols-${cols} gap-6`;
     }
 
     // 原生 HTML5 Canvas 圖片壓縮與 Supabase Storage 上傳邏輯
@@ -1035,15 +1036,18 @@
           expCountdownHtml = getExpirationCountdown(getItemExpiration(item));
         }
 
-        const isLast = (idx === pageItems.length - 1);
-        const dividerHtml = isLast ? '' : `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>`;
+        // Calculate dynamic dividers based on current grid columns
+        const colsNum = parseInt(localStorage.getItem('pega_grid_cols') || (window.innerWidth < 640 ? '1' : '4'), 10);
+        const isEndOfRow = ((idx + 1) % colsNum === 0);
+        const dividerHtml = (isEndOfRow && idx < pageItems.length - 1) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
 
         const cardHtml = `
           <div onclick="openDetailModal('${item.id}')" class="bg-gray-900/95 border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800'} rounded-2xl overflow-hidden flex flex-col transition ${isSold ? '' : 'hover:border-indigo-500/60 group'} cursor-pointer">
             ${(isPinned && !isSold) ? '<div class="bg-amber-500 text-gray-950 text-xs sm:text-sm font-black px-3 py-1 text-center">📌 官方置頂商品</div>' : ''}
             
             <div class="relative aspect-video bg-gray-950 overflow-hidden flex items-center justify-center">
-              <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="max-w-full max-h-full object-contain ${isSold ? '' : 'group-hover:scale-105'} transition-transform duration-300">
+              <!-- w-full h-full object-cover 強迫橫顯示，防止圖片出現 1x1 變形與黑邊 -->
+              <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover ${isSold ? '' : 'group-hover:scale-105'} transition-transform duration-300">
               <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
               
               <!-- 已售出打勾按鈕 -->
