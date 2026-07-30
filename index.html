@@ -432,11 +432,13 @@
         return;
       }
       localStorage.setItem('pega_site_name', newName);
+      updateIdentityDisplay();
       loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
     }
 
-    loadSiteName();
+    updateIdentityDisplay();
+      loadSiteName();
       loadAnnouncement();
       loadAndRenderIssues();
       loadItems();
@@ -540,6 +542,20 @@
       listContainer.innerHTML = filtered.map(item => {
         const isPinned = pinnedIds.includes(item.id);
         const itemType = item.type || 'sell';
+        
+        // Expiration check
+        let isExpired = false;
+        let daysLeftStr = '';
+        if (item.expires_at) {
+          const expDate = new Date(item.expires_at);
+          const now = new Date();
+          const diffDays = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+          if (diffDays <= 0) {
+            isExpired = true;
+          } else {
+            daysLeftStr = `⏳ 剩 ${diffDays} 天`;
+          }
+        }
         let typeBadge = '<span class="bg-indigo-900/90 text-indigo-200 border border-indigo-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold">💰 想賣</span>';
         if (itemType === 'buy') typeBadge = '<span class="bg-amber-900/90 text-amber-200 border border-amber-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold">🔍 想買</span>';
         if (itemType === 'free') typeBadge = '<span class="bg-emerald-900/90 text-emerald-200 border border-emerald-500/30 px-2 py-0.5 rounded-md text-[11px] font-bold">🎁 免費送</span>';
@@ -749,11 +765,13 @@
         return;
       }
       localStorage.setItem('pega_site_name', newName);
+      updateIdentityDisplay();
       loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
     }
 
-    loadSiteName();
+    updateIdentityDisplay();
+      loadSiteName();
       loadAnnouncement();
       loadAndRenderIssues();
         closeAdminModal();
@@ -1489,11 +1507,13 @@
         return;
       }
       localStorage.setItem('pega_site_name', newName);
+      updateIdentityDisplay();
       loadSiteName();
       showNotification(`✅ 網站名稱已成功更新為：${newName}`, 'success');
     }
 
-    loadSiteName();
+    updateIdentityDisplay();
+      loadSiteName();
       loadAnnouncement();
     loadAndRenderIssues();
     loadItems();
