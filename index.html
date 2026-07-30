@@ -628,6 +628,10 @@
       const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
 
       const filtered = allItems.filter(item => {
+        if (item.expires_at) {
+          const expDate = new Date(item.expires_at);
+          if (expDate < new Date()) return false; // Filter out expired items
+        }
         if (currentFilter !== 'all' && item.type !== currentFilter) return false;
         if (searchVal) {
           const matchTitle = (item.title || '').toLowerCase().includes(searchVal);
@@ -685,10 +689,12 @@
                   </div>
                 ` : ''}
 
+
                 <div class="flex items-center justify-between text-[10px] text-gray-500">
                   <span>${item.nickname || '匿名同仁'}</span>
-                  <span>${timeAgo(item.created_at)}</span>
+                  <span>${getExpirationCountdown(item.expires_at)}</span>
                 </div>
+
 
                 ${isAdmin ? `
                   <div class="flex gap-1 pt-1" onclick="event.stopPropagation()">
@@ -724,6 +730,8 @@
       if (contactText) contactText.innerText = item.contact_info || item.contact || '刊登者未特別留言聯絡方式';
       if (descElem) descElem.innerText = item.description || '無詳細補充描述';
       if (nickElem) nickElem.innerText = item.nickname || '匿名同仁';
+      const expElem = document.getElementById('detail-expiration');
+      if (expElem) expElem.innerHTML = getExpirationCountdown(item.expires_at);
 
       if (typeBadge) {
         typeBadge.innerHTML = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🎁 免費送</span>' :
@@ -763,6 +771,25 @@
     function closeDetailModal() {
       const modal = document.getElementById('detail-modal');
       if (modal) modal.classList.add('hidden');
+    }
+
+    
+    function getExpirationCountdown(expiresAt) {
+      if (!expiresAt) return '<span class="text-gray-400">⏳ 永久展示</span>';
+      const now = new Date();
+      const exp = new Date(expiresAt);
+      const diffMs = exp - now;
+      if (diffMs <= 0) return '<span class="text-red-400 font-bold">⚠️ 已到期下架</span>';
+
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffHours / 24);
+      const remHours = diffHours % 24;
+
+      if (diffDays > 0) {
+        return `<span class="text-amber-400 font-bold">⏳ 剩餘 ${diffDays} 天 ${remHours} 小時下架</span>`;
+      } else {
+        return `<span class="text-red-400 font-bold animate-pulse">⏳ 剩餘 ${diffHours} 小時下架</span>`;
+      }
     }
 
     function timeAgo(dateStr) {
@@ -809,7 +836,7 @@
     function openCreateModal() { document.getElementById('create-modal').classList.remove('hidden'); }
     function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
 
-            async function submitCreateItem() {
+                async function submitCreateItem() {
       const errorBox = document.getElementById('create-modal-error');
       const errorText = document.getElementById('create-modal-error-text');
       const submitBtn = document.getElementById('submit-create-btn');
@@ -823,6 +850,7 @@
       const contact = (document.getElementById('post-contact')?.value || '').trim();
       const imgUrl1 = (document.getElementById('post-img1-url')?.value || '').trim();
       const imgUrl2 = (document.getElementById('post-img2-url')?.value || '').trim();
+      const expDays = document.getElementById('item-expiration')?.value || 'none';
 
       if (!title) {
         if (titleInput) {
@@ -839,14 +867,30 @@
         titleInput.classList.remove('border-red-500');
       }
 
+      // 檢查是否上傳至少 1 張照片
+      if (!imgUrl1) {
+        if (errorBox && errorText) {
+          errorText.innerText = '⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！';
+          errorBox.classList.remove('hidden');
+        }
+        showNotification('⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！', 'warning');
+        return;
+      }
+
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 發布中...';
       }
 
-      const defaultImg = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
-      const mainImg = imgUrl1 || defaultImg;
-      const finalImgUrl = imgUrl2 ? `${mainImg}|||${imgUrl2}` : mainImg;
+      const finalImgUrl = imgUrl2 ? `${imgUrl1}|||${imgUrl2}` : imgUrl1;
+
+      // 計算自動下架截止時間 (ISO timestamp string)
+      let expiresAt = null;
+      if (expDays !== 'none') {
+        const d = new Date();
+        d.setDate(d.getDate() + parseInt(expDays, 10));
+        expiresAt = d.toISOString();
+      }
 
       const payload = {
         title: title,
@@ -856,7 +900,8 @@
         image_url: finalImgUrl,
         nickname: nickname,
         device_id: deviceId,
-        contact_info: contact
+        contact_info: contact,
+        expires_at: expiresAt
       };
 
       try {
