@@ -1037,7 +1037,7 @@
         }
 
         // Calculate dynamic dividers based on current grid columns
-        const colsNum = parseInt(localStorage.getItem('pega_grid_cols') || (window.innerWidth < 640 ? '1' : '4'), 10);
+        const colsNum = parseInt(localStorage.getItem('pega_grid_cols') || '2', 10);
         const isEndOfRow = ((idx + 1) % colsNum === 0);
         const dividerHtml = (isEndOfRow && idx < pageItems.length - 1) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
 
@@ -2267,7 +2267,7 @@
     loadAnnouncement();
     
     // Apply saved grid columns
-    const initialCols = localStorage.getItem('pega_grid_cols') || (window.innerWidth < 640 ? '1' : '4');
+    const initialCols = localStorage.getItem('pega_grid_cols') || '2';
     const gridSelect = document.getElementById('grid-layout-select');
     if (gridSelect) gridSelect.value = initialCols;
     applyGridLayout(initialCols);
