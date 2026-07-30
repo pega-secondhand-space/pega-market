@@ -133,6 +133,15 @@
         </div>
 
         <!-- 刊登者 -->
+        
+        <!-- 刊登者本人下架區域 (方案 A) -->
+        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-gray-700/80">
+          <button id="detail-owner-delete-btn" onclick="" class="w-full py-2.5 bg-gradient-to-r from-red-800 to-red-900 hover:from-red-700 hover:to-red-800 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-trash-can text-sm"></i>
+            <span>我是發布者：下架此貼文 (已售出 / 結案)</span>
+          </button>
+        </div>
+
         <div class="flex items-center justify-between pt-2 border-t border-gray-700 text-xs text-gray-400">
           <span>發布者：<strong id="detail-nickname" class="text-gray-200"></strong></span>
           <span id="detail-expiration"></span>
@@ -690,10 +699,18 @@
                 ` : ''}
 
 
+
                 <div class="flex items-center justify-between text-[10px] text-gray-500">
                   <span>${item.nickname || '匿名同仁'}</span>
                   <span>${getExpirationCountdown(item.expires_at)}</span>
                 </div>
+
+                ${(item.device_id === deviceId || (JSON.parse(localStorage.getItem('my_created_item_ids') || '[]')).includes(item.id)) ? `
+                  <button onclick="event.stopPropagation(); deleteMyItem('${item.id}')" class="w-full bg-red-950/70 hover:bg-red-900 text-red-300 border border-red-700/60 text-[11px] py-1.5 rounded-xl font-bold transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> 下架我的貼文 (已售出)
+                  </button>
+                ` : ''}
+
 
 
                 ${isAdmin ? `
@@ -762,6 +779,22 @@
               <img src="${p1}" class="max-h-80 w-full object-contain rounded-lg">
             </div>
           `;
+        }
+      }
+
+      
+      // Check if current device is owner (Option A)
+      const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+      const isOwner = (item.device_id === deviceId) || myItems.includes(item.id);
+      const ownerBox = document.getElementById('detail-owner-action-box');
+      const ownerBtn = document.getElementById('detail-owner-delete-btn');
+
+      if (ownerBox && ownerBtn) {
+        if (isOwner) {
+          ownerBox.classList.remove('hidden');
+          ownerBtn.onclick = function() { deleteMyItem(item.id); };
+        } else {
+          ownerBox.classList.add('hidden');
         }
       }
 
@@ -917,6 +950,13 @@
         });
 
         if (res.ok) {
+          const createdItems = await res.json();
+          if (createdItems && createdItems.length > 0) {
+            const newItemId = createdItems[0].id;
+            let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+            myItems.push(newItemId);
+            localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
+          }
           showNotification('🎉 刊登成功！貼文已即時發布至告示牌。', 'success');
           closeCreateModal();
           // Reset form
@@ -1000,6 +1040,37 @@
       closeAdminModal();
       showNotification('已登出版主權限', 'info');
       renderItems();
+    }
+
+    async 
+    async function deleteMyItem(itemId) {
+      if (!confirm('確定要將您的貼文下架刪除嗎？(下架後將不再展示於告示牌)')) return;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${itemId}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          // Remove from my_created_item_ids
+          let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+          myItems = myItems.filter(id => id !== itemId);
+          localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
+
+          showNotification('🗑️ 您的貼文已成功下架！', 'success');
+          closeDetailModal();
+          loadItems();
+        } else {
+          showNotification('⚠️ 下架失敗，請稍後再試', 'warning');
+        }
+      } catch(e) {
+        console.error('Delete my item error:', e);
+        showNotification('⚠️ 下架發生錯誤：' + e.message, 'warning');
+      }
     }
 
     async function deleteItemAdmin(id) {
