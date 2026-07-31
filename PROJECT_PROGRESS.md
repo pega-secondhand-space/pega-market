@@ -1,7 +1,7 @@
 # 📌 PEGAPEGA 二手交換與免費贈送告示牌 - 專案開發進度與功能清單
 
-**最後更新時間**：2026-07-30  
-**專案版本**：`v2.6.0-Production`  
+**最後更新時間**：2026-07-31  
+**專案版本**：`v1.00-Production` ("完成版了")  
 **正式部署網址**：[https://tinyurl.com/pega-market-official](https://tinyurl.com/pega-market-official)  
 **🧪 測試沙盒網址**：[https://pega-secondhand-space.github.io/pega-market/test.html](https://pega-secondhand-space.github.io/pega-market/test.html)  
 **GitHub 備份倉庫**：[https://github.com/pega-secondhand-space/pega-market](https://github.com/pega-secondhand-space/pega-market) (`JOVIANpega`)
