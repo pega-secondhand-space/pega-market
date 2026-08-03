@@ -560,7 +560,7 @@
       console.error('Supabase init error:', e);
     }
 
-    let adminPassword = localStorage.getItem('pega_admin_pwd') || 'pega2026';
+    let adminPassword = localStorage.getItem('pega_admin_pwd') || 'imjo177415';
     let isAdmin = localStorage.getItem('pega_is_admin') === 'true';
 
     let deviceId = localStorage.getItem('pega_device_id');
@@ -1593,10 +1593,7 @@
       const input = document.getElementById('admin-pwd-input');
       const pwd = (input?.value || '').trim();
 
-      // 完全防錯同步判斷，不依賴任何網路請求，100% 瞬間解鎖！
-      const validPasswords = ['admin123', 'pega2026', 'pega123', 'admin', '1234', 'PEGA2026', 'ADMIN123'];
-
-      if (validPasswords.includes(pwd)) {
+      if (pwd === 'imjo177415') {
         isAdmin = true;
         const pwdView = document.getElementById('admin-login-view');
         const dashView = document.getElementById('admin-dashboard-view');
