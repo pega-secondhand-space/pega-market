@@ -2198,10 +2198,18 @@
     }
 
     // -------------------------------------------------------------------------
-    // 🟢 在線人數與心跳計時服務 (Presence Heartbeat Service)
+    // 🟢 在線人數與心跳計時服務 (Presence Heartbeat Service - 超精準即時離線與單一裝置去重)
     // -------------------------------------------------------------------------
     async function sendPresenceHeartbeat() {
+      if (!deviceId) return;
       try {
+        // 先刪除該裝置舊心跳，確保雲端資料庫該裝置永遠只有一筆最新紀錄
+        await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000012&sender_id=eq.${deviceId}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+
+        // 寫入當前最新心跳
         await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
           method: 'POST',
           headers: {
@@ -2212,7 +2220,7 @@
           },
           body: JSON.stringify({
             item_id: '00000000-0000-0000-0000-000000000012',
-            sender_id: deviceId || 'ANON',
+            sender_id: deviceId,
             sender_name: nickname || '訪客',
             content: 'HEARTBEAT'
           })
@@ -2225,8 +2233,9 @@
 
     async function fetchOnlineUsers() {
       try {
-        const twoMinsAgo = new Date(Date.now() - 120 * 1000).toISOString();
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000012&created_at=gte.${twoMinsAgo}&select=sender_id`, {
+        // 精準 35 秒內的活躍心跳判定 (過期即判定為離線)
+        const thirtySecsAgo = new Date(Date.now() - 35 * 1000).toISOString();
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000012&created_at=gte.${thirtySecsAgo}&select=sender_id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
 
@@ -2259,9 +2268,19 @@
       }
     }
 
+    // 分頁/視窗關閉時即時發送離線訊號，瞬間扣除人數
+    window.addEventListener('beforeunload', () => {
+      if (deviceId) {
+        navigator.sendBeacon(
+          `${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000012&sender_id=eq.${deviceId}`,
+          null
+        );
+      }
+    });
+
     sendPresenceHeartbeat();
-    setInterval(sendPresenceHeartbeat, 45000);
-    setInterval(fetchOnlineUsers, 15000);
+    setInterval(sendPresenceHeartbeat, 15000); // 每 15 秒同步心跳
+    setInterval(fetchOnlineUsers, 10000);       // 每 10 秒刷新人數
 
     async function loadAnnouncement() {
       // 預設的使用須知，帶有漂亮的斷行
