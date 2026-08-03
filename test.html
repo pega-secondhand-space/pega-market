@@ -63,6 +63,14 @@
           <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-white hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
         </div>
 
+          <div id="online-users-badge" class="px-2.5 py-1 bg-emerald-950/80 hover:bg-emerald-900/90 border border-emerald-500/40 text-emerald-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 shadow-sm shrink-0 cursor-default" title="即時在線連線人數">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span id="online-count-display">此刻線上: 1 人</span>
+          </div>
+
           <button onclick="openArchiveModal()" class="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-xl font-bold text-xs transition flex items-center gap-1">
             <i class="fa-solid fa-handshake text-emerald-400"></i> <span class="hidden sm:inline">成交紀錄</span>
           </button>
@@ -353,6 +361,34 @@
           <div class="flex items-center justify-between bg-gray-900 p-3 rounded-xl border border-gray-700 text-xs">
             <span class="font-bold text-emerald-400">✅ 版主身份已驗證權限解鎖</span>
             <button onclick="logoutAdmin()" class="px-3 py-1 bg-red-900/60 text-red-300 hover:bg-red-800 rounded-lg font-bold">登出版主</button>
+          </div>
+
+          <!-- 在線人數實時監控與歷史統計 -->
+          <div class="bg-gray-900/90 p-3.5 border border-emerald-500/40 rounded-2xl space-y-2 shadow-inner">
+            <label class="block text-xs font-bold text-emerald-300 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-emerald-400"></i> 全站即時連線人數儀表板：</span>
+              <span id="admin-presence-refresh-time" class="text-[10px] text-gray-400 font-normal">秒級實時同步</span>
+            </label>
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700/80 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-base shrink-0">
+                  🟢
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 font-bold">當前在線人數</div>
+                  <div id="admin-online-current" class="text-lg font-black text-emerald-300">1 人</div>
+                </div>
+              </div>
+              <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700/80 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-base shrink-0">
+                  🏆
+                </div>
+                <div>
+                  <div class="text-[10px] text-gray-400 font-bold">歷史最高同時在線</div>
+                  <div id="admin-online-peak" class="text-lg font-black text-amber-300">1 人</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- 網站平台名稱設定 -->
@@ -990,7 +1026,7 @@
       const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
 
       const filtered = allItems.filter(item => {
-        if (item.id === '00000000-0000-0000-0000-000000000001' || item.id === '00000000-0000-0000-0000-000000000002' || item.title === 'SYSTEM_ANNOUNCEMENT_BOARD' || item.title === 'SYSTEM_ISSUE_BOARD') return false;
+        if (item.device_id === 'SYSTEM' || (item.title && item.title.startsWith('SYSTEM_')) || (item.id && item.id.startsWith('00000000-0000-0000-0000-'))) return false;
 
         // Auto-delete sold items after 2 days (48 hours)
         if (isItemSold(item)) {
@@ -1534,7 +1570,7 @@
             localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
           }
 
-          showNotification('🎉 刊登成功！貼文已即時發布至告示牌。', 'success');
+          showNotification('🎉 刊登成功！貼文已即時發布至最上方。', 'success');
           closeCreateModal();
           // Reset form
           if (titleInput) titleInput.value = '';
@@ -1557,7 +1593,23 @@
           const previewsGrid = document.getElementById('upload-previews-grid');
           if (previewsGrid) previewsGrid.classList.add('hidden');
 
-          loadItems(newItemId);
+          await loadItems();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          if (newItemId) {
+            setTimeout(() => {
+              const cardImg = document.getElementById(`card-img-${newItemId}`);
+              if (cardImg) {
+                const cardElement = cardImg.closest('.group') || cardImg.parentElement;
+                if (cardElement) {
+                  cardElement.classList.add('ring-4', 'ring-emerald-500', 'ring-offset-2', 'ring-offset-gray-950', 'animate-pulse');
+                  setTimeout(() => {
+                    cardElement.classList.remove('ring-4', 'ring-emerald-500', 'ring-offset-2', 'ring-offset-gray-950', 'animate-pulse');
+                  }, 4000);
+                }
+              }
+            }, 300);
+          }
         } else {
           const errData = await postRes.text();
           if (errorBox && errorText) {
@@ -2140,8 +2192,71 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      showNotification('📥 歷史成交紀錄文字檔已成功下載！', 'success');
+    // -------------------------------------------------------------------------
+    // 🟢 在線人數與心跳計時服務 (Presence Heartbeat Service)
+    // -------------------------------------------------------------------------
+    async function sendPresenceHeartbeat() {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify({
+            item_id: '00000000-0000-0000-0000-000000000012',
+            sender_id: deviceId || 'ANON',
+            sender_name: nickname || '訪客',
+            content: 'HEARTBEAT'
+          })
+        });
+      } catch(e) {
+        console.error('Heartbeat ping error:', e);
+      }
+      fetchOnlineUsers();
     }
+
+    async function fetchOnlineUsers() {
+      try {
+        const twoMinsAgo = new Date(Date.now() - 120 * 1000).toISOString();
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000012&created_at=gte.${twoMinsAgo}&select=sender_id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+
+        if (res.ok) {
+          const records = await res.json();
+          if (records && Array.isArray(records)) {
+            const uniqueSenders = new Set(records.map(r => r.sender_id).filter(Boolean));
+            const count = Math.max(1, uniqueSenders.size);
+
+            const headerDisplay = document.getElementById('online-count-display');
+            if (headerDisplay) headerDisplay.innerText = `此刻線上: ${count} 人`;
+
+            const adminCurrent = document.getElementById('admin-online-current');
+            if (adminCurrent) adminCurrent.innerText = `${count} 人`;
+
+            let peak = parseInt(localStorage.getItem('pega_peak_online') || '1', 10);
+            if (count > peak) {
+              peak = count;
+              localStorage.setItem('pega_peak_online', peak.toString());
+            }
+            const adminPeak = document.getElementById('admin-online-peak');
+            if (adminPeak) adminPeak.innerText = `${peak} 人`;
+
+            const adminTime = document.getElementById('admin-presence-refresh-time');
+            if (adminTime) adminTime.innerText = `最後更新：${new Date().toLocaleTimeString('zh-TW', { hour12: false })}`;
+          }
+        }
+      } catch(e) {
+        console.error('Fetch online users error:', e);
+      }
+    }
+
+    sendPresenceHeartbeat();
+    setInterval(sendPresenceHeartbeat, 45000);
+    setInterval(fetchOnlineUsers, 15000);
 
     async function loadAnnouncement() {
       // 預設的使用須知，帶有漂亮的斷行
