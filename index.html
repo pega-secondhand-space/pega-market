@@ -386,12 +386,11 @@
 
           <div class="space-y-2">
             <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-amber-400"></i> 📢 編輯全站使用須知 (永久顯示於全站頂部)：</label>
-            <textarea id="admin-announcement-input" rows="3" placeholder="例如：請多善加利用電話/分機聯繫；刊登物品請詳實填寫..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
+            <textarea id="admin-announcement-input" rows="3" placeholder="請在此輸入全站公告/使用須知內容..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
             <div class="flex flex-wrap justify-end gap-2">
-              <button onclick="setDefaultAnnouncementTemplate()" class="px-3 py-1.5 bg-amber-950/80 hover:bg-amber-900 border border-amber-500/40 text-amber-300 text-xs rounded-xl font-bold transition flex items-center gap-1">⭐ 設為預設範本</button>
-              <button onclick="fillDefaultAnnouncement()" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs rounded-xl font-bold transition flex items-center gap-1">📋 填入預設須知</button>
+              <button onclick="fillDefaultAnnouncement()" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs rounded-xl font-bold transition flex items-center gap-1">📋 填入預設須知並發布</button>
               <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl font-bold transition flex items-center gap-1">🗑️ 清除公告</button>
-              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">💾 儲存公告</button>
+              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">💾 儲存並發布全站公告</button>
             </div>
           </div>
         </div>
