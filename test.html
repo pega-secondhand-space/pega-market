@@ -1589,12 +1589,39 @@
       }
     }
 
-    function checkAdminPassword() {
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkAdminPassword() {
       const input = document.getElementById('admin-pwd-input');
       const pwd = (input?.value || '').trim();
 
-      if (pwd === 'imjo177415') {
+      if (!pwd) {
+        showNotification('⚠️ 請輸入版主密碼', 'warning');
+        return;
+      }
+
+      const inputHash = await sha256(pwd);
+
+      let validHash = '0dc04207f940ca26a7ac3ac9a7a9c18e60cef8d60b5fb05a614d506d37f891b1';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000009&select=*`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0 && data[0].content) {
+            validHash = data[0].content;
+          }
+        }
+      } catch(e) { console.error('Cloud pwd sync error:', e); }
+
+      if (inputHash === validHash) {
         isAdmin = true;
+        localStorage.setItem('pega_is_admin', 'true');
         const pwdView = document.getElementById('admin-login-view');
         const dashView = document.getElementById('admin-dashboard-view');
         const btnText = document.getElementById('admin-btn-text');
@@ -1605,14 +1632,12 @@
 
         showNotification('🔑 版主身份驗證成功！已進入管理後台', 'success');
 
-        // 即時預填當前畫面公告內文 (優先讀取帶斷行的快取資料)
         const liveAnnText = localStorage.getItem('pega_custom_announcement') || document.getElementById('announcement-text')?.innerText || '';
         const annInput = document.getElementById('admin-announcement-input');
         if (annInput && liveAnnText) {
           annInput.value = liveAnnText;
         }
 
-        // 背景非同步進行雲端同步，完全不阻礙登入操作
         setTimeout(() => {
           loadAnnouncement().catch(e => console.error(e));
           loadItemsPerPageSetting().catch(e => console.error(e));
