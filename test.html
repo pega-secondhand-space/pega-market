@@ -576,9 +576,9 @@
     let currentPage = 1;
     let itemsPerPage = parseInt(localStorage.getItem('pega_items_per_page') || '40', 10);
 
-        async function loadItemsPerPageSetting() {
+    async function loadItemsPerPageSetting() {
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PER_PAGE&select=*`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000011&select=*`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         if (res.ok) {
@@ -599,7 +599,7 @@
       if (input) input.value = itemsPerPage;
     }
 
-        async function saveItemsPerPage() {
+    async function saveItemsPerPage() {
       const input = document.getElementById('admin-perpage-input');
       const val = parseInt(input?.value, 10);
       if (!val || val < 1) return showNotification('⚠️ 每頁數量必須大於 0', 'warning');
@@ -609,30 +609,31 @@
       currentPage = 1;
 
       try {
-        // Check if record exists in Supabase
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PER_PAGE&select=id`, {
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000011&select=id`, {
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
-        const existing = await checkRes.json();
-
-        if (existing && existing.length > 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PER_PAGE`, {
-            method: 'PATCH',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: val.toString() })
-          });
-        } else {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              item_id: 'SYSTEM_PER_PAGE',
-              sender_id: deviceId,
-              sender_name: 'ADMIN',
-              content: val.toString()
-            })
-          });
+        if (checkRes.ok) {
+          const existing = await checkRes.json();
+          if (existing && existing.length > 0) {
+            for (const item of existing) {
+              await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+                method: 'DELETE',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+              });
+            }
+          }
         }
+
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            item_id: '00000000-0000-0000-0000-000000000011',
+            sender_id: deviceId || 'ADMIN',
+            sender_name: 'ADMIN',
+            content: val.toString()
+          })
+        });
 
         showNotification(`🎉 全站每頁商品展示筆數已永久設定為：${val} 筆！`, 'success');
         renderItems();
@@ -675,24 +676,77 @@
       }
     }
 
-    function loadSiteName() {
-      const savedName = localStorage.getItem('pega_site_name') || 'PEGAPEGA';
+    async function loadSiteName() {
+      const defaultName = localStorage.getItem('pega_site_name') || 'PEGAPEGA';
+      let nameToUse = defaultName;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=*&order=created_at.desc&limit=1`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0 && data[0].content) {
+            nameToUse = data[0].content;
+            localStorage.setItem('pega_site_name', nameToUse);
+          }
+        }
+      } catch(e) { console.error('Fetch sitename error:', e); }
+
       const titleSpan = document.getElementById('site-title-text');
       const input = document.getElementById('admin-sitename-input');
       const docTitle = document.getElementById('doc-site-title');
-      if (titleSpan) titleSpan.innerText = savedName;
-      if (input) input.value = savedName;
-      if (docTitle) docTitle.innerText = savedName;
-      document.title = savedName;
+      if (titleSpan) titleSpan.innerText = nameToUse;
+      if (input) input.value = nameToUse;
+      if (docTitle) docTitle.innerText = nameToUse;
+      document.title = nameToUse;
     }
 
-    function saveSiteName() {
+    async function saveSiteName() {
       const input = document.getElementById('admin-sitename-input');
       const newName = (input?.value || '').trim();
       if (!newName) return showNotification('⚠️ 網站名稱不可為空', 'warning');
+      
       localStorage.setItem('pega_site_name', newName);
-      loadSiteName();
-      showNotification(`✅ 網站名稱已更新為：${newName}`, 'success');
+      
+      const titleSpan = document.getElementById('site-title-text');
+      const docTitle = document.getElementById('doc-site-title');
+      if (titleSpan) titleSpan.innerText = newName;
+      if (docTitle) docTitle.innerText = newName;
+      document.title = newName;
+
+      try {
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (checkRes.ok) {
+          const existing = await checkRes.json();
+          if (existing && existing.length > 0) {
+            for (const item of existing) {
+              await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+                method: 'DELETE',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+              });
+            }
+          }
+        }
+
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            item_id: '00000000-0000-0000-0000-000000000008',
+            sender_id: deviceId || 'ADMIN',
+            sender_name: 'ADMIN',
+            content: newName
+          })
+        });
+
+        showNotification(`✅ 網站名稱已永久寫入雲端並更新為：${newName}`, 'success');
+      } catch(e) {
+        console.error('Save site name error:', e);
+        showNotification(`✅ 已於本機更新網站名稱為：${newName}`, 'success');
+      }
     }
 
     function refreshPageData() {
