@@ -387,10 +387,11 @@
           <div class="space-y-2">
             <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-amber-400"></i> 📢 編輯全站使用須知 (永久顯示於全站頂部)：</label>
             <textarea id="admin-announcement-input" rows="3" placeholder="例如：請多善加利用電話/分機聯繫；刊登物品請詳實填寫..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
-            <div class="flex justify-end gap-2">
-              <button onclick="fillDefaultAnnouncement()" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs rounded-xl font-bold transition">填入預設須知</button>
-              <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl font-bold transition">清除公告</button>
-              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95">💾 儲存公告</button>
+            <div class="flex flex-wrap justify-end gap-2">
+              <button onclick="setDefaultAnnouncementTemplate()" class="px-3 py-1.5 bg-amber-950/80 hover:bg-amber-900 border border-amber-500/40 text-amber-300 text-xs rounded-xl font-bold transition flex items-center gap-1">⭐ 設為預設範本</button>
+              <button onclick="fillDefaultAnnouncement()" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs rounded-xl font-bold transition flex items-center gap-1">📋 填入預設須知</button>
+              <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl font-bold transition flex items-center gap-1">🗑️ 清除公告</button>
+              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">💾 儲存公告</button>
             </div>
           </div>
         </div>
@@ -2188,12 +2189,83 @@
       }
     }
 
-    function fillDefaultAnnouncement() {
+    // 設為預設須知範本
+    async function setDefaultAnnouncementTemplate() {
       const adminInput = document.getElementById('admin-announcement-input');
-      const defaultNotice = '歡迎使用 PEGAPEGA 告示牌！\n1. 本平台免登入即可發布買賣與贈送\n2. 請務必填寫真實分機或 LINE 以利聯繫\n3. 交易完成請點擊卡片『下架我的貼文』以防騷擾\n4. 歡迎同仁善加利用免費贈送專區！';
-      if (adminInput) {
-        adminInput.value = defaultNotice;
-        showNotification('已填入預設須知文字，請點擊「儲存公告」寫入雲端生效！', 'info');
+      const text = (adminInput?.value || '').trim();
+      if (!text) {
+        showNotification('⚠️ 請輸入欲設定為預設範本的須知內容', 'warning');
+        return;
+      }
+
+      localStorage.setItem('pega_saved_default_announcement', text);
+
+      try {
+        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000010&select=id`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (checkRes.ok) {
+          const existing = await checkRes.json();
+          if (existing && existing.length > 0) {
+            for (const item of existing) {
+              await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
+                method: 'DELETE',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+              });
+            }
+          }
+        }
+
+        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify({
+            item_id: '00000000-0000-0000-0000-000000000010',
+            sender_id: 'SYS_NOTICE_TEMPLATE',
+            sender_name: 'SYS_NOTICE_TEMPLATE',
+            content: text
+          })
+        });
+
+        showNotification('⭐ 已成功儲存為您的專屬預設須知範本！以後點擊「填入預設須知」將自動填入。', 'success');
+      } catch(e) {
+        console.error('Save template error:', e);
+        showNotification('⭐ 已儲存為本機預設須知範本！', 'success');
+      }
+    }
+
+    async function fillDefaultAnnouncement() {
+      const adminInput = document.getElementById('admin-announcement-input');
+      if (!adminInput) return;
+
+      const systemDefaultNotice = '歡迎使用 PEGAPEGA 告示牌！\n1. 本平台免登入即可發布買賣與贈送\n2. 請務必填寫真實分機或 LINE 以利聯繫\n3. 交易完成請點擊卡片『下架我的貼文』以防騷擾\n4. 歡迎同仁善加利用免費贈送專區！';
+      let customTemplate = localStorage.getItem('pega_saved_default_announcement');
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000010&select=*&order=created_at.desc&limit=1`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0 && data[0].content) {
+            customTemplate = data[0].content;
+            localStorage.setItem('pega_saved_default_announcement', customTemplate);
+          }
+        }
+      } catch(e) { console.error('Fetch notice template error:', e); }
+
+      const noticeToUse = customTemplate || systemDefaultNotice;
+      adminInput.value = noticeToUse;
+
+      if (customTemplate) {
+        showNotification('📋 已載入您自訂的預設須知範本，請點擊「儲存公告」生效！', 'info');
+      } else {
+        showNotification('📋 已載入系統預設須知文字，請點擊「儲存公告」生效！', 'info');
       }
     }
 
