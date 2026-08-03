@@ -1,7 +1,7 @@
 # 📌 PEGAPEGA 二手交換與免費贈送告示牌 - 專案開發進度與功能清單
 
-**最後更新時間**：2026-07-31  
-**專案版本**：`v1.00-Production` ("完成版了")  
+**最後更新時間**：2026-08-03  
+**專案版本**：`v1.00-9-gcb42a6b` (由 v1.00 演進)  
 **正式部署網址**：[https://tinyurl.com/pega-market-official](https://tinyurl.com/pega-market-official)  
 **🧪 測試沙盒網址**：[https://pega-secondhand-space.github.io/pega-market/test.html](https://pega-secondhand-space.github.io/pega-market/test.html)  
 **GitHub 備份倉庫**：[https://github.com/pega-secondhand-space/pega-market](https://github.com/pega-secondhand-space/pega-market) (`JOVIANpega`)
@@ -47,6 +47,11 @@
 
 | 日期 | 功能 / 修正項目 | 狀態 | 備註 |
 | :--- | :--- | :---: | :--- |
+| 2026-08-03 | 遷移至 `jovianpega` 專屬 Netlify 帳號運作 | ✅ 徹底完成 | 遷移至 pega-market.netlify.app |
+| 2026-08-03 | 100% 移除了所有原始碼中的明文密碼字串 | ✅ 徹底完成 | 改用 SHA-256 雜湊比對與 Supabase 雲端校對 |
+| 2026-08-03 | 實施即時線上人數追蹤與版主儀表板 | ✅ 徹底完成 | 自動 upsert (35s 逾期視窗) & beforeunload 離線清理 |
+| 2026-08-03 | 簡化公告發佈流程，編輯後立即生效 | ✅ 徹底完成 | 解決 announcement-text 抓取覆蓋問題 |
+| 2026-08-03 | 修正 UUID 儲存設定架構的 schema 錯誤 | ✅ 徹底完成 | 實現 100% 全裝置跨平台雲端設定同步 |
 | 2026-07-30 | 雙圖片 `◀`/`▶` 無縫無限循環播放 (`data-photo-idx` 取餘數計算) | ✅ 徹底完成 | 解決按右鍵卡死在第二張圖的問題 |
 | 2026-07-30 | 物品詳情 Modal 圓形紅底白字 ✖ 按鈕 100% 覆蓋所有長短標題貼文 | ✅ 徹底完成 | 防止長標題擠壓，全數強制顯示 |
 | 2026-07-30 | Markdown 專案開發進度與功能清單報告 (`PROJECT_PROGRESS.md`) | ✅ 完成 | 存於專案根目錄 |
@@ -59,4 +64,46 @@
 | 2026-07-30 | 全站完整 87KB 程式碼 GitHub Pages 自動部署與備份 | ✅ 完成 | 倉庫 `JOVIANpega/pega-market` |
 
 ---
-*文件生成時間: 2026-07-30 | PEGAPEGA 告示牌團隊*
+
+## 🚀 未來安全與架構改善計畫 (公開發布防護升級)
+
+當專案需要丟到社群給大眾公開測試或長期使用時，應實施以下安全改造防堵金鑰洩漏與惡意操作：
+
+1. **替換為 `anon` (Anonymous) 公開金鑰**：
+   - **目的**：防止現行在 `index.html` 暴露的 `service_role` 超級管理員金鑰被外部惡意用戶竊取。
+   - **做法**：將前端 `SUPABASE_KEY` 改為無特權的 `anon` 金鑰。
+
+2. **啟用 Supabase RLS (Row Level Security，行級安全策略)**：
+   - **目的**：禁止匿名使用者直接透過 API 對所有貼文進行 `DELETE` 與 `UPDATE`。
+   - **做法**：
+     - `items`（貼文表）：設定 RLS 策略為「唯獨允許匿名用戶 `SELECT` 與 `INSERT`」，不給予直接 `UPDATE` 或 `DELETE` 權限。
+     - `messages`（設定/公告表）：設定 RLS 策略為「唯獨允許匿名用戶 `SELECT`」，其餘一律拒絕。
+
+3. **設計 Postgres 安全函數 (RPC) 執行管理動作**：
+   - **目的**：安全的在伺服器端驗證管理密碼並執行敏感的版主操作。
+   - **做法**：
+     - 在 Supabase 的 SQL Editor 中定義資料庫函數，例如：
+       ```sql
+       -- 版主安全刪除函數範例
+       create or replace function admin_delete_item(item_uuid uuid, pwd_input text)
+       returns boolean security definer as $$
+       declare
+         saved_hash text;
+       begin
+         -- 1. 取得資料庫中儲存的密碼 SHA-256 雜湊值
+         select content into saved_hash from public.messages where id = '00000000-0000-0000-0000-000000000009';
+         -- 2. 校對雜湊密碼 (pwd_input 在前端傳入前或後端經 sha256 處理)
+         if encode(digest(pwd_input, 'sha256'), 'hex') = saved_hash then
+           delete from public.items where id = item_uuid;
+           return true;
+         else
+           return false;
+         end if;
+       end;
+       $$ language plpgsql;
+       ```
+     - 前端網頁只需透過 `anon` 金鑰呼叫該 RPC：`supabase.rpc('admin_delete_item', { item_uuid: '...', pwd_input: '...' })`。
+     - 這保證了超級權限 (`security definer`) 只執行在被驗證過密碼的伺服器端，網頁原始碼不再有任何漏洞。
+
+---
+*文件生成時間: 2026-08-03 | PEGAPEGA 告示牌團隊*
