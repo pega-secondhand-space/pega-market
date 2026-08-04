@@ -30,6 +30,62 @@
     }
 
 
+    /* Premium Hover Glow Effect */
+    .premium-card {
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .premium-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      border-color: rgba(99, 102, 241, 0.5) !important;
+      background-color: rgba(31, 41, 55, 0.9) !important;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+                  0 0 30px 0px rgba(99, 102, 241, 0.15) !important;
+    }
+    
+    .premium-card-sell:hover {
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+                  0 0 30px 0px rgba(99, 102, 241, 0.2) !important;
+      border-color: rgba(99, 102, 241, 0.6) !important;
+    }
+    .premium-card-buy:hover {
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+                  0 0 30px 0px rgba(245, 158, 11, 0.15) !important;
+      border-color: rgba(245, 158, 11, 0.5) !important;
+    }
+    .premium-card-free:hover {
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+                  0 0 30px 0px rgba(16, 185, 129, 0.15) !important;
+      border-color: rgba(16, 185, 129, 0.5) !important;
+    }
+    .premium-card-lucky:hover {
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+                  0 0 30px 0px rgba(244, 63, 94, 0.25) !important;
+      border-color: rgba(244, 63, 94, 0.65) !important;
+    }
+
+    .premium-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 30%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(25deg);
+      transition: all 0.7s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .premium-card:hover::after {
+      left: 120%;
+      opacity: 1;
+      transition: all 0.7s ease;
+    }
   </style>
 </head>
 <body id="main-body" class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans transition-all duration-300 bg-cover bg-center bg-fixed">
@@ -122,6 +178,7 @@
         <button onclick="setFilter('sell')" id="filter-sell" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">💰 想賣</button>
         <button onclick="setFilter('buy')" id="filter-buy" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🔍 想買</button>
         <button onclick="setFilter('free')" id="filter-free" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🎁 免費送</button>
+        <button onclick="setFilter('lucky')" id="filter-lucky" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:bg-gray-800 transition active:scale-95 shrink-0">🎉 尾牙獎品</button>
       </div>
     </div>
 
@@ -220,15 +277,26 @@
     </div>
   </div>
 
-  <!-- 浮動刊登按鈕 (FAB) -->
-  <button onclick="openCreateModal()" class="fixed right-5 bottom-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 z-30 border border-indigo-400/40">
-    <i class="fa-solid fa-plus text-base"></i>
-    <span class="text-xs sm:text-sm">我要刊登</span>
-  </button>
+  <!-- 浮動控制面板 (FAB + 快速捲動箭頭) -->
+  <div class="fixed right-5 bottom-6 flex flex-col gap-2.5 items-end z-30">
+    <!-- 爬到最上面一筆資料 -->
+    <button onclick="scrollToTopItem()" class="bg-gray-900/90 hover:bg-gray-800 border border-gray-700 text-gray-300 w-10 h-10 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center active:scale-95 border-indigo-400/20" title="爬到最上面一筆資料">
+      <i class="fa-solid fa-arrow-up text-sm text-indigo-400"></i>
+    </button>
+    <!-- 爬到最下面一筆資料 -->
+    <button onclick="scrollToBottomItem()" class="bg-gray-900/90 hover:bg-gray-800 border border-gray-700 text-gray-300 w-10 h-10 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center active:scale-95 border-indigo-400/20" title="爬到最下面一筆資料">
+      <i class="fa-solid fa-arrow-down text-sm text-indigo-400"></i>
+    </button>
+    <!-- 我要刊登按鈕 -->
+    <button onclick="openCreateModal()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 border border-indigo-400/40">
+      <i class="fa-solid fa-plus text-base"></i>
+      <span class="text-xs sm:text-sm">我要刊登</span>
+    </button>
+  </div>
 
-  <!-- 刊登物品 Modal (支援原生選擇照片檔案自動壓縮上傳資料庫) -->
+  <!-- 刊登物品 Modal (支援二欄式排版與自適應大小) -->
   <div id="create-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] animate-fadeIn">
       <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
         <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
           <i class="fa-solid fa-plus-circle text-indigo-400"></i> 我要發布告示牌貼文
@@ -238,10 +306,11 @@
       <div class="p-5 overflow-y-auto space-y-4">
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
-          <div class="grid grid-cols-3 gap-2">
-            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs">💰 想賣</button>
-            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs">🔍 想買</button>
-            <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs">🎁 免費送</button>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm">💰 想賣</button>
+            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm">🔍 想買</button>
+            <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm">🎁 免費送</button>
+            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm">✨ 尾牙全新</button>
           </div>
         </div>
 
@@ -251,8 +320,31 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">價格 (NT$)：</label>
-          <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+          <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+            <label class="block text-xs sm:text-sm font-bold text-gray-300">價格 (NT$) / 交易設定：</label>
+            <label class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-400 cursor-pointer relative group">
+              <input type="checkbox" id="post-swap-check" onchange="toggleSwapMode(this.checked)" class="rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500">
+              <span>🔄 我要以物易物</span>
+              <i class="fa-solid fa-circle-info text-[10px] text-indigo-400/80"></i>
+              <div class="absolute bottom-full right-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+                不收現金，直接用實物與同仁交換等值好物。例如：空氣清淨機換咖啡機。
+              </div>
+            </label>
+          </div>
+          <div id="price-input-container">
+            <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+            <div class="mt-2.5 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-400 font-bold relative group">
+              <span>🎫 禮券折價助手 (點選折價) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：</span>
+              <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+                點選折數按鈕（如 95折），系統會自動計算折後價格，並自動在物品標題末尾加上標註！
+              </div>
+              <button type="button" onclick="applyCouponDiscount(0.9)" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-lg font-black transition">9 折</button>
+              <button type="button" onclick="applyCouponDiscount(0.95)" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-lg font-black transition">95 折</button>
+            </div>
+          </div>
+          <div id="swap-input-container" class="hidden">
+            <input type="text" id="post-swap-item" placeholder="例如：想換百貨禮券 / 電風扇 / 吹風機" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
+          </div>
         </div>
 
         <div>
@@ -333,9 +425,9 @@
     </div>
   </div>
 
-  <!-- 後台管理 Modal -->
+  <!-- 後台管理 Modal (支援大寬度與二欄式排版) -->
   <div id="admin-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[520px] animate-fadeIn">
+    <div class="bg-gray-800 border border-gray-700 w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] h-auto lg:h-[620px] animate-fadeIn">
       <div class="px-5 py-4 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
         <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
           <i class="fa-solid fa-user-shield text-indigo-400"></i> 版主管理控制台
@@ -363,70 +455,77 @@
             <button onclick="logoutAdmin()" class="px-3 py-1 bg-red-900/60 text-red-300 hover:bg-red-800 rounded-lg font-bold">登出版主</button>
           </div>
 
-          <!-- 在線人數實時監控與歷史統計 -->
-          <div class="bg-gray-900/90 p-3.5 border border-emerald-500/40 rounded-2xl space-y-2 shadow-inner">
-            <label class="block text-xs font-bold text-emerald-300 flex items-center justify-between">
-              <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-emerald-400"></i> 全站即時連線人數儀表板：</span>
-              <span id="admin-presence-refresh-time" class="text-[10px] text-gray-400 font-normal">秒級實時同步</span>
-            </label>
-            <div class="grid grid-cols-2 gap-3 pt-1">
-              <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700/80 flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-base shrink-0">
-                  🟢
-                </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 font-bold">當前在線人數</div>
-                  <div id="admin-online-current" class="text-lg font-black text-emerald-300">1 人</div>
+          <!-- 版主管理二欄式網格 (PC雙欄、手機單欄) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- 左側管理項目 -->
+            <div class="space-y-4 flex flex-col justify-between">
+              <!-- 在線人數實時監控與歷史統計 -->
+              <div class="bg-gray-900/90 p-3.5 border border-emerald-500/40 rounded-2xl space-y-2 shadow-inner">
+                <label class="block text-xs font-bold text-emerald-300 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-emerald-400"></i> 全站即時連線人數儀表板：</span>
+                  <span id="admin-presence-refresh-time" class="text-[10px] text-gray-400 font-normal">秒級實時同步</span>
+                </label>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                  <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700/80 flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-base shrink-0">
+                      🟢
+                    </div>
+                    <div>
+                      <div class="text-[10px] text-gray-400 font-bold">當前在線人數</div>
+                      <div id="admin-online-current" class="text-lg font-black text-emerald-300">1 人</div>
+                    </div>
+                  </div>
+                  <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700/80 flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-base shrink-0">
+                      🏆
+                    </div>
+                    <div>
+                      <div class="text-[10px] text-gray-400 font-bold">歷史最高同時在線</div>
+                      <div id="admin-online-peak" class="text-lg font-black text-amber-300">1 人</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="bg-gray-800/80 p-3 rounded-xl border border-gray-700/80 flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-base shrink-0">
-                  🏆
+
+              <!-- 網站平台名稱設定 -->
+              <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
+                <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
+                  <i class="fa-solid fa-heading text-indigo-400"></i> 網站平台名稱設定 (即時生效)：
+                </label>
+                <div class="flex gap-2">
+                  <input type="text" id="admin-sitename-input" placeholder="例如：PEGAPEGA" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+                  <button onclick="saveSiteName()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
+                    💾 儲存名稱
+                  </button>
                 </div>
-                <div>
-                  <div class="text-[10px] text-gray-400 font-bold">歷史最高同時在線</div>
-                  <div id="admin-online-peak" class="text-lg font-black text-amber-300">1 人</div>
+              </div>
+
+              <!-- 版主自訂每頁數量設定 -->
+              <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
+                <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-lines text-indigo-400"></i> 每頁分頁展示商品數量設定 (預設 40 筆)：
+                </label>
+                <div class="flex gap-2">
+                  <input type="number" id="admin-perpage-input" min="5" max="200" placeholder="預設: 40" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
+                  <button onclick="saveItemsPerPage()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
+                    💾 儲存每頁筆數
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- 網站平台名稱設定 -->
-          <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
-            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
-              <i class="fa-solid fa-heading text-indigo-400"></i> 網站平台名稱設定 (即時生效)：
-            </label>
-            <div class="flex gap-2">
-              <input type="text" id="admin-sitename-input" placeholder="例如：PEGAPEGA" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
-              <button onclick="saveSiteName()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
-                💾 儲存名稱
-              </button>
-            </div>
-          </div>
-
-          <!-- 全站公告設定 -->
-          
-          <!-- 版主自訂每頁數量設定 -->
-          <div class="bg-gray-900/80 p-3.5 border border-gray-700/80 rounded-2xl space-y-2 shadow-inner">
-            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5">
-              <i class="fa-solid fa-file-lines text-indigo-400"></i> 每頁分頁展示商品數量設定 (預設 40 筆)：
-            </label>
-            <div class="flex gap-2">
-              <input type="number" id="admin-perpage-input" min="5" max="200" placeholder="預設: 40" class="flex-1 p-2.5 bg-gray-800 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
-              <button onclick="saveItemsPerPage()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 shrink-0 flex items-center gap-1">
-                💾 儲存每頁筆數
-              </button>
-            </div>
-          </div>
-
-
-          <div class="space-y-2">
-            <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-amber-400"></i> 📢 編輯全站使用須知 (永久顯示於全站頂部)：</label>
-            <textarea id="admin-announcement-input" rows="3" placeholder="請在此輸入全站公告/使用須知內容..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
-            <div class="flex flex-wrap justify-end gap-2">
-              <button onclick="fillDefaultAnnouncement()" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs rounded-xl font-bold transition flex items-center gap-1">📋 填入預設須知並發布</button>
-              <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl font-bold transition flex items-center gap-1">🗑️ 清除公告</button>
-              <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">💾 儲存並發布全站公告</button>
+            <!-- 右側公告設定 -->
+            <div class="space-y-3 flex flex-col justify-between">
+              <div class="space-y-2 flex-1 flex flex-col">
+                <label class="block text-xs font-bold text-gray-200 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-amber-400"></i> 📢 編輯全站使用須知 (永久顯示於全站頂部)：</label>
+                <textarea id="admin-announcement-input" class="w-full flex-1 p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium min-h-[150px] lg:min-h-0" placeholder="請在此輸入全站公告/使用須知內容..."></textarea>
+              </div>
+              <div class="flex flex-wrap justify-end gap-2 shrink-0">
+                <button onclick="fillDefaultAnnouncement()" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs rounded-xl font-bold transition flex items-center gap-1" title="填入您的自訂預設範本文字">📋 填入預設</button>
+                <button onclick="setDefaultAnnouncementTemplate()" class="px-3 py-1.5 bg-amber-950/80 hover:bg-amber-900 border border-amber-500/40 text-amber-300 text-xs rounded-xl font-bold transition flex items-center gap-1" title="將目前的輸入內容存為自訂預設範本">⭐ 儲存為預設</button>
+                <button onclick="clearAnnouncement()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs rounded-xl font-bold transition flex items-center gap-1">🗑️ 清除公告</button>
+                <button onclick="saveAnnouncement()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center gap-1">💾 儲存並發布全站公告</button>
+              </div>
             </div>
           </div>
         </div>
@@ -559,6 +658,94 @@
 
   <!-- JavaScript 腳本 (支援原生圖片壓縮上傳資料庫與全視圖展覽) -->
   <script>
+    function scrollToTopItem() {
+      const grid = document.getElementById('item-grid');
+      if (grid) {
+        const firstCard = grid.firstElementChild;
+        if (firstCard) {
+          firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          showNotification('⬆️ 已捲動至最上方的一筆資料！', 'info');
+        } else {
+          grid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }
+
+    function scrollToBottomItem() {
+      const grid = document.getElementById('item-grid');
+      if (grid) {
+        const lastCard = grid.lastElementChild;
+        if (lastCard) {
+          lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          showNotification('⬇️ 已捲動至最下方的一筆資料！', 'info');
+        } else {
+          grid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }
+
+    function toggleSwapMode(isSwap) {
+      const priceContainer = document.getElementById('price-input-container');
+      const swapContainer = document.getElementById('swap-input-container');
+      const priceInput = document.getElementById('post-price');
+      const swapInput = document.getElementById('post-swap-item');
+
+      if (isSwap) {
+        if (priceContainer) priceContainer.classList.add('hidden');
+        if (swapContainer) swapContainer.classList.remove('hidden');
+        if (priceInput) priceInput.value = '';
+      } else {
+        if (priceContainer) priceContainer.classList.remove('hidden');
+        if (swapContainer) swapContainer.classList.add('hidden');
+        if (swapInput) swapInput.value = '';
+      }
+    }
+
+    function applyCouponDiscount(pct) {
+      const priceInput = document.getElementById('post-price');
+      const titleInput = document.getElementById('post-title');
+      if (!priceInput) return;
+      const originalVal = parseFloat(priceInput.value);
+      if (isNaN(originalVal) || originalVal <= 0) {
+        showNotification('⚠️ 請先輸入商品價格/面額，才能進行折價計算！', 'warning');
+        return;
+      }
+      const discounted = Math.round(originalVal * pct);
+      priceInput.value = discounted;
+      
+      const pctText = pct === 0.9 ? '9折' : '95折';
+      showNotification(`🎉 禮券已自動打${pctText}！折價後價格為 NT$ ${discounted}`, 'success');
+
+      if (titleInput) {
+        let title = titleInput.value.trim();
+        if (title && !title.includes(pctText)) {
+          title = title.replace(/\((9折|95折)\)/g, '').trim();
+          titleInput.value = `${title} (${pctText})`;
+        }
+      }
+    }
+
+    async function deleteStorageFilesForItem(item) {
+      if (!item || !item.image_url) return;
+      const urls = item.image_url.split('|||');
+      for (const url of urls) {
+        if (!url || !url.includes('/item-images/')) continue;
+        const filename = url.split('/item-images/')[1];
+        if (!filename) continue;
+        try {
+          await fetch(`${SUPABASE_URL}/storage/v1/object/item-images/${filename}`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+          });
+        } catch(e) {
+          console.error('Failed to delete storage file:', filename, e);
+        }
+      }
+    }
+
     window.onerror = function(msg, url, lineNo, columnNo, error) {
       var errBox = document.getElementById('debug-error-box');
       if (errBox) {
@@ -585,7 +772,7 @@
     }
 
     const SUPABASE_URL = 'https://llnnbanqtmnccfvtwooo.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTI5MTkyNiwiZXhwIjoyMTAwODY3OTI2fQ.RTdMtKEw9tD3N2KSO3mY7M2Z4ZVB1ZY24SPv-yzL0Hk';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyOTE5MjYsImV4cCI6MjEwMDg2NzkyNn0.ljcpgFCejH4OmUWZTp80RZ8nVsKtg5gbB1AYfNfoSDI';
 
     var db = null;
     try {
@@ -644,34 +831,18 @@
       currentPage = 1;
 
       try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000011&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-        });
-        if (checkRes.ok) {
-          const existing = await checkRes.json();
-          if (existing && existing.length > 0) {
-            for (const item of existing) {
-              await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
-                method: 'DELETE',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-              });
-            }
-          }
-        }
-
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/save_perpage_admin`, {
           method: 'POST',
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            item_id: '00000000-0000-0000-0000-000000000011',
-            sender_id: deviceId || 'ADMIN',
-            sender_name: 'ADMIN',
-            content: val.toString()
-          })
+          body: JSON.stringify({ val_input: val.toString(), pwd_input: pwdHash })
         });
-
-        showNotification(`🎉 全站每頁商品展示筆數已永久設定為：${val} 筆！`, 'success');
-        renderItems();
+        if (res.ok) {
+          showNotification(`🎉 全站每頁商品展示筆數已永久設定為：${val} 筆！`, 'success');
+          renderItems();
+        } else {
+          showNotification('⚠️ 儲存失敗，密碼已失效，請重新登入版主', 'warning');
+        }
       } catch(e) {
         console.error('Save per page error:', e);
         showNotification(`✅ 已於本機儲存每頁筆數為：${val} 筆！`, 'success');
@@ -751,33 +922,17 @@
       document.title = newName;
 
       try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-        });
-        if (checkRes.ok) {
-          const existing = await checkRes.json();
-          if (existing && existing.length > 0) {
-            for (const item of existing) {
-              await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
-                method: 'DELETE',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-              });
-            }
-          }
-        }
-
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/save_sitename_admin`, {
           method: 'POST',
           headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            item_id: '00000000-0000-0000-0000-000000000008',
-            sender_id: deviceId || 'ADMIN',
-            sender_name: 'ADMIN',
-            content: newName
-          })
+          body: JSON.stringify({ new_name: newName, pwd_input: pwdHash })
         });
-
-        showNotification(`✅ 網站名稱已永久寫入雲端並更新為：${newName}`, 'success');
+        if (res.ok) {
+          showNotification(`✅ 網站名稱已永久寫入雲端並更新為：${newName}`, 'success');
+        } else {
+          showNotification('⚠️ 儲存失敗，密碼已失效，請重新登入版主', 'warning');
+        }
       } catch(e) {
         console.error('Save site name error:', e);
         showNotification(`✅ 已於本機更新網站名稱為：${newName}`, 'success');
@@ -947,22 +1102,14 @@
       renderItems();
 
       try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.SYSTEM_PINNED_IDS&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_pin_item_admin`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pinned_ids_json: JSON.stringify(pinned), pwd_input: pwdHash })
         });
-        const existing = await checkRes.json();
-        if (existing && existing.length > 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
-            method: 'PATCH',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: JSON.stringify(pinned) })
-          });
-        } else {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-            method: 'POST',
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ item_id: 'SYSTEM_PINNED_IDS', sender_id: 'ADMIN', sender_name: 'ADMIN', content: JSON.stringify(pinned) })
-          });
+        if (!res.ok) {
+          showNotification('⚠️ 儲存置頂失敗，版主密碼失效，請重新登入', 'warning');
         }
       } catch(e) {
         console.error('Save pinned error:', e);
@@ -974,11 +1121,17 @@
       await loadGlobalPinnedIds();
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=*&order=created_at.desc`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         });
         if (res.ok) {
           allItems = await res.json();
           filterItems(); // 確保重新整理後獲取最新的 filtered 列表與排序
+          refreshAnnouncementDisplay();
 
           // 刊登成功後自動跳轉與展開詳情
           if (itemIdToOpen) {
@@ -1136,7 +1289,18 @@
 
         const typeBadge = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-3 py-1 rounded-lg text-xs sm:text-sm shadow-md">🎁 免費送</span>' :
                           item.type === 'buy' ? '<span class="bg-amber-500 text-gray-950 font-black px-3 py-1 rounded-lg text-xs sm:text-sm shadow-md">🔍 想買</span>' :
+                          item.type === 'lucky' ? '<span class="bg-rose-500 text-white font-black px-3 py-1 rounded-lg text-xs sm:text-sm shadow-md">🎁 全新尾牙貨</span>' :
                           '<span class="bg-indigo-500 text-white font-black px-3 py-1 rounded-lg text-xs sm:text-sm shadow-md">💰 想賣</span>';
+        let priceDisplay = '';
+        if (item.price && String(item.price).startsWith('swap:')) {
+          const swapVal = String(item.price).replace('swap:', '');
+          priceDisplay = `<span class="text-rose-400 font-black flex items-center gap-1"><i class="fa-solid fa-arrows-rotate text-xs"></i> 以物易物 (想換：${swapVal || '未指定'})</span>`;
+        } else if (item.type === 'free') {
+          priceDisplay = 'NT$ 0 (免費親自取件)';
+        } else {
+          const numPrice = parseFloat(item.price);
+          priceDisplay = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
+        }
 
         let expCountdownHtml = '';
         if (isSold) {
@@ -1201,16 +1365,16 @@
 
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
-                <h3 class="font-black text-base sm:text-lg text-gray-100 line-clamp-1 mb-1.5 ${isSold ? '' : 'group-hover:text-indigo-300'} transition leading-snug">${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}</h3>
-                <p class="text-base sm:text-lg text-indigo-400 font-black">${item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`}</p>
+                <h3 class="font-black text-base sm:text-lg text-gray-100 mb-1.5 ${isSold ? '' : 'group-hover:text-indigo-300'} transition leading-snug break-words whitespace-normal">${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}</h3>
+                <p class="text-base sm:text-lg text-indigo-400 font-black">${priceDisplay}</p>
               </div>
 
               <div class="space-y-2.5 pt-2.5 border-t border-gray-800/80">
                 ${(safeContact && !isSold) ? `
                   <div onclick="event.stopPropagation(); handleContactClick('${safeContact}')" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 p-2.5 rounded-xl text-xs sm:text-base text-indigo-200 font-bold flex items-center justify-between gap-2 transition active:scale-95 cursor-pointer shadow-sm" title="點擊一鍵複製聯絡方式">
-                    <div class="flex items-center gap-1.5 truncate">
-                      <i class="fa-solid fa-phone text-indigo-400 text-xs sm:text-sm"></i>
-                      <span class="truncate">聯絡：${safeContact}</span>
+                    <div class="flex items-center gap-1.5 min-w-0 flex-1 break-words">
+                      <i class="fa-solid fa-phone text-indigo-400 text-xs sm:text-sm shrink-0 mt-0.5"></i>
+                      <span class="break-words whitespace-normal text-left">聯絡：${safeContact}</span>
                     </div>
                     <span class="text-xs sm:text-sm bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded-md shrink-0 font-bold">點擊複製</span>
                   </div>
@@ -1277,7 +1441,23 @@
       const photosContainer = document.getElementById('detail-photos-container');
 
       if (titleElem) titleElem.innerText = item.title || '無標題';
-      if (priceElem) priceElem.innerText = item.type === 'free' ? 'NT$ 0 (免費親自取件)' : `NT$ ${(item.price || 0).toLocaleString()}`;
+      if (priceElem) {
+        let priceDisplay = '';
+        if (item.price && String(item.price).startsWith('swap:')) {
+          const swapVal = String(item.price).replace('swap:', '');
+          priceDisplay = `🔄 以物易物 (想換：${swapVal || '未指定'})`;
+          priceElem.className = "text-xl font-black text-rose-500 flex items-center gap-1";
+        } else {
+          priceElem.className = "text-xl font-black text-indigo-600";
+          if (item.type === 'free') {
+            priceDisplay = 'NT$ 0 (免費親自取件)';
+          } else {
+            const numPrice = parseFloat(item.price);
+            priceDisplay = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
+          }
+        }
+        priceElem.innerText = priceDisplay;
+      }
       if (timeElem) timeElem.innerText = timeAgo(item.created_at);
       if (contactText) contactText.innerText = item.contact_info || item.contact || '刊登者未特別留言聯絡方式';
       if (descElem) descElem.innerText = getCleanDescription(item.description) || '無詳細補充描述';
@@ -1288,6 +1468,7 @@
       if (typeBadge) {
         typeBadge.innerHTML = item.type === 'free' ? '<span class="bg-emerald-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🎁 免費送</span>' :
                               item.type === 'buy' ? '<span class="bg-amber-500 text-gray-950 font-black px-2 py-0.5 rounded-md text-[10px]">🔍 想買</span>' :
+                              item.type === 'lucky' ? '<span class="bg-rose-500 text-white font-black px-2 py-0.5 rounded-md text-[10px]">🎁 全新尾牙貨</span>' :
                               '<span class="bg-indigo-500 text-white font-black px-2 py-0.5 rounded-md text-[10px]">💰 想賣</span>';
       }
 
@@ -1427,7 +1608,7 @@
 
     function setFilter(f) {
       currentFilter = f;
-      ['all', 'sell', 'buy', 'free'].forEach(type => {
+      ['all', 'sell', 'buy', 'free', 'lucky'].forEach(type => {
         const btn = document.getElementById(`filter-${type}`);
         if (btn) {
           if (type === f) {
@@ -1444,7 +1625,7 @@
 
     function setPostType(t) {
       postType = t;
-      ['sell', 'buy', 'free'].forEach(type => {
+      ['sell', 'buy', 'free', 'lucky'].forEach(type => {
         const btn = document.getElementById(`post-type-${type}`);
         if (btn) {
           if (type === t) {
@@ -1469,7 +1650,17 @@
       const titleInput = document.getElementById('post-title');
       let title = (titleInput?.value || '').trim();
       const desc = (document.getElementById('post-desc')?.value || '').trim();
-      const price = parseFloat(document.getElementById('post-price')?.value) || 0;
+      const isSwap = document.getElementById('post-swap-check')?.checked;
+      let finalPrice = '';
+      if (isSwap) {
+        const swapItem = (document.getElementById('post-swap-item')?.value || '').trim();
+        finalPrice = `swap:${swapItem || '以物易物'}`;
+      } else if (postType === 'free') {
+        finalPrice = '0';
+      } else {
+        const pVal = (document.getElementById('post-price')?.value || '').trim();
+        finalPrice = pVal || '0';
+      }
       const contactInput = document.getElementById('post-contact');
       const contact = (contactInput?.value || '').trim();
       const imgUrl1 = (document.getElementById('post-img1-url')?.value || '').trim();
@@ -1536,7 +1727,7 @@
       const payload = {
         title: title,
         description: finalDesc,
-        price: (postType === 'free') ? 0 : price,
+        price: finalPrice,
         type: postType,
         image_url: finalImgUrl,
         nickname: nickname,
@@ -1579,6 +1770,13 @@
           const priceInput = document.getElementById('post-price');
           if (priceInput) priceInput.value = '';
           if (contactInput) contactInput.value = '';
+          const swapCheck = document.getElementById('post-swap-check');
+          if (swapCheck) {
+            swapCheck.checked = false;
+            toggleSwapMode(false);
+          }
+          const swapInput = document.getElementById('post-swap-item');
+          if (swapInput) swapInput.value = '';
           
           const hidden1 = document.getElementById('post-img1-url');
           if (hidden1) hidden1.value = '';
@@ -1710,48 +1908,50 @@
 
       const inputHash = await sha256(pwd);
 
-      // 安全 SHA-256 雜湊值 (無法從 HTML/JS 原始碼逆向得出明文)
-      let validHash = '0dc04207f940ca26a7ac3ac9a7a9c18e60cef8d60b5fb05a614d506d37f891b1';
-
-      // 自 Supabase 雲端資料庫同步校對
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000009&select=*`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/check_admin_login`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ pwd_input: inputHash })
         });
         if (res.ok) {
-          const data = await res.json();
-          if (data && data.length > 0 && data[0].content) {
-            validHash = data[0].content;
+          const pass = await res.json();
+          if (pass === true) {
+            isAdmin = true;
+            localStorage.setItem('pega_is_admin', 'true');
+            localStorage.setItem('pega_admin_hash', inputHash);
+            const pwdView = document.getElementById('admin-login-view');
+            const dashView = document.getElementById('admin-dashboard-view');
+            const btnText = document.getElementById('admin-btn-text');
+
+            if (pwdView) pwdView.classList.add('hidden');
+            if (dashView) dashView.classList.remove('hidden');
+            if (btnText) btnText.innerText = '管理面板 (已登入)';
+
+            showNotification('🔑 版主身份驗證成功！已進入管理後台', 'success');
+
+            const liveAnnText = localStorage.getItem('pega_custom_announcement') || document.getElementById('announcement-text')?.innerText || '';
+            const annInput = document.getElementById('admin-announcement-input');
+            if (annInput && liveAnnText) {
+              annInput.value = liveAnnText;
+            }
+
+            setTimeout(() => {
+              loadAnnouncement().catch(e => console.error(e));
+              loadItemsPerPageSetting().catch(e => console.error(e));
+              renderItems();
+            }, 50);
+            return;
           }
         }
-      } catch(e) { console.error('Cloud pwd sync error:', e); }
-
-      if (inputHash === validHash) {
-        isAdmin = true;
-        localStorage.setItem('pega_is_admin', 'true');
-        const pwdView = document.getElementById('admin-login-view');
-        const dashView = document.getElementById('admin-dashboard-view');
-        const btnText = document.getElementById('admin-btn-text');
-
-        if (pwdView) pwdView.classList.add('hidden');
-        if (dashView) dashView.classList.remove('hidden');
-        if (btnText) btnText.innerText = '管理面板 (已登入)';
-
-        showNotification('🔑 版主身份驗證成功！已進入管理後台', 'success');
-
-        const liveAnnText = localStorage.getItem('pega_custom_announcement') || document.getElementById('announcement-text')?.innerText || '';
-        const annInput = document.getElementById('admin-announcement-input');
-        if (annInput && liveAnnText) {
-          annInput.value = liveAnnText;
-        }
-
-        setTimeout(() => {
-          loadAnnouncement().catch(e => console.error(e));
-          loadItemsPerPageSetting().catch(e => console.error(e));
-          renderItems();
-        }, 50);
-      } else {
         showNotification('⚠️ 密碼不符，請重新輸入', 'warning');
+      } catch(e) {
+        console.error('Cloud login error:', e);
+        showNotification('⚠️ 連線驗證發生錯誤，請稍後再試', 'warning');
       }
     }
 
@@ -1759,6 +1959,7 @@
     function logoutAdmin() {
       isAdmin = false;
       localStorage.setItem('pega_is_admin', 'false');
+      localStorage.removeItem('pega_admin_hash');
       document.getElementById('admin-btn-text').innerText = '後台管理';
       closeAdminModal();
       showNotification('已登出版主權限', 'info');
@@ -1772,42 +1973,53 @@
       const isSold = isItemSold(item);
 
       if (!isSold) {
-        // 若貼文未標記已售出，詢問是否因為售出而下架
         const becauseSold = confirm('這件商品是因為「已售出 / 已送出」而要下架的嗎？\n\n【確定】是，已成交（將會自動記入歷史成交紀錄後下架）\n【取消】否，只是想直接刪除/取消貼文');
         if (becauseSold) {
           const soldTimeStr = new Date().toISOString();
-          await saveTransactionLog(item, soldTimeStr);
+          // Server trigger trigger_log_transaction will write the log when marked sold.
+          // Let's mark it as sold locally/db first, then delete.
+          const newDesc = `${item.description || ''}\n[SOLD_AT:${soldTimeStr}]`;
+          await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_item_sold_own`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_uuid: itemId, dev_id: deviceId, new_desc: newDesc })
+          });
         } else {
-          // 第二次確認以防誤刪
           if (!confirm('您確定要直接刪除此貼文嗎？（此操作無法恢復，且不會計入歷史成交紀錄）')) {
             return;
           }
         }
       } else {
-        // 已標記售出，一般確認下架即可
         if (!confirm('此貼文已標記為售出，您確定要立即將其下架刪除嗎？')) {
           return;
         }
       }
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${itemId}`, {
-          method: 'DELETE',
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_own_item`, {
+          method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ item_uuid: itemId, dev_id: deviceId })
         });
 
         if (res.ok) {
-          // Remove from my_created_item_ids
-          let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
-          myItems = myItems.filter(id => id !== itemId);
-          localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
+          const success = await res.json();
+          if (success) {
+            let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+            myItems = myItems.filter(id => id !== itemId);
+            localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
 
-          showNotification('🗑️ 您的貼文已成功下架！', 'success');
-          closeDetailModal();
-          loadItems();
+            deleteStorageFilesForItem(item);
+            showNotification('🗑️ 您的貼文已成功下架！', 'success');
+            closeDetailModal();
+            loadItems();
+          } else {
+            showNotification('⚠️ 下架失敗：此貼文非本裝置所刊登，您無權下架。', 'warning');
+          }
         } else {
           showNotification('⚠️ 下架失敗，請稍後再試', 'warning');
         }
@@ -1836,7 +2048,8 @@
       if (!item) return;
 
       const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
-      const hasPermission = (item.device_id === deviceId) || myItems.includes(item.id) || isAdmin;
+      const isOwner = (item.device_id === deviceId) || myItems.includes(item.id);
+      const hasPermission = isOwner || isAdmin;
 
       if (!hasPermission) {
         return showNotification('⚠️ 只有該貼文的發布同仁或版主可以標記「已售出」喔！', 'warning');
@@ -1846,85 +2059,43 @@
       let newDesc = item.description || '';
 
       if (isSold) {
-        // Unmark as sold
         newDesc = newDesc.replace(/\[SOLD_AT:.*?\]/g, '').trim();
         showNotification('🔄 已取消「已售出」標記，物品重新上架！', 'info');
       } else {
-        // Mark as sold
         const soldTimeStr = new Date().toISOString();
         newDesc = `${newDesc}\n[SOLD_AT:${soldTimeStr}]`;
         showNotification('✅ 成功標記為「已售出」，將於 2 天後自動下架！', 'success');
-
-        // Save transaction log in background
-        saveTransactionLog(item, soldTimeStr);
       }
 
-      // Update locally immediately
       item.description = newDesc;
       renderItems();
 
-      // Update in Supabase database
       try {
-        await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${itemId}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ description: newDesc })
-        });
+        let res;
+        if (isOwner) {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_item_sold_own`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_uuid: itemId, dev_id: deviceId, new_desc: newDesc })
+          });
+        } else {
+          const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+          res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_item_sold_admin`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_uuid: itemId, new_desc: newDesc, pwd_input: pwdHash })
+          });
+        }
+        if (!res.ok) {
+          console.error('Update description db error');
+        }
       } catch(e) {
         console.error('Update description error:', e);
       }
     }
 
     async function saveTransactionLog(item, soldTimeStr) {
-      const logPayload = {
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        type: item.type,
-        sold_at: soldTimeStr,
-        created_at: item.created_at,
-        nickname: item.nickname
-      };
-
-      try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000003&sender_id=eq.${item.id}&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-        });
-        const existing = await checkRes.json();
-
-        if (existing && existing.length > 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${existing[0].id}`, {
-            method: 'PATCH',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ content: JSON.stringify(logPayload) })
-          });
-        } else {
-          await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
-            method: 'POST',
-            headers: {
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              item_id: '00000000-0000-0000-0000-000000000003',
-              sender_id: item.id,
-              sender_name: 'TRANSACTION',
-              content: JSON.stringify(logPayload)
-            })
-          });
-        }
-      } catch(e) {
-        console.error('Save transaction log error:', e);
-      }
+      // Automatic transaction logging is now handled by the database trigger: trigger_log_transaction
     }
 
     async function deleteItemAdmin(id) {
@@ -1932,12 +2103,18 @@
       if (!item) return;
 
       const isSold = isItemSold(item);
+      const pwdHash = localStorage.getItem('pega_admin_hash') || '';
 
       if (!isSold) {
         const becauseSold = confirm('版主下架確認：這件商品是因為「已售出 / 已送出」而要下架的嗎？\n\n【確定】是，已成交（將會自動記入歷史成交紀錄後下架）\n【取消】否，強制刪除貼文（不計入歷史成交紀錄）');
         if (becauseSold) {
           const soldTimeStr = new Date().toISOString();
-          await saveTransactionLog(item, soldTimeStr);
+          const newDesc = `${item.description || ''}\n[SOLD_AT:${soldTimeStr}]`;
+          await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_item_sold_admin`, {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_uuid: id, new_desc: newDesc, pwd_input: pwdHash })
+          });
         } else {
           if (!confirm('您確定要直接「強制刪除」此貼文嗎？（此操作無法恢復，且不會計入歷史成交紀錄）')) {
             return;
@@ -1950,12 +2127,18 @@
       }
 
       try {
-        await fetch(`${SUPABASE_URL}/rest/v1/items?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_item_admin`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_uuid: id, pwd_input: pwdHash })
         });
-        showNotification('🗑️ 貼文已成功下架', 'info');
-        loadItems();
+        if (res.ok) {
+          deleteStorageFilesForItem(item);
+          showNotification('🗑️ 貼文已成功下架', 'info');
+          loadItems();
+        } else {
+          showNotification('⚠️ 刪除失敗，密碼已失效或過期，請重新登入版主', 'warning');
+        }
       } catch(e) {
         console.error('Delete error:', e);
       }
@@ -1980,15 +2163,18 @@
       }
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${dbId}`, {
-          method: 'DELETE',
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_archive_log_admin`, {
+          method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          }
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ log_uuid: dbId, pwd_input: pwdHash })
         });
 
-        if (!res.ok) throw new Error('刪除失敗');
+        if (!res.ok) throw new Error('刪除失敗，密碼已失效，請重新登入版主');
 
         showNotification('🗑️ 歷史存檔紀錄已成功刪除！', 'success');
         await loadArchiveLogs();
@@ -2282,9 +2468,29 @@
     setInterval(sendPresenceHeartbeat, 15000); // 每 15 秒同步心跳
     setInterval(fetchOnlineUsers, 10000);       // 每 10 秒刷新人數
 
+    let currentRawNotice = '';
+
+    function refreshAnnouncementDisplay() {
+      const textSpan = document.getElementById('announcement-text');
+      if (!textSpan) return;
+      
+      const count = typeof filteredTotalCount !== 'undefined' ? filteredTotalCount : 0;
+      const countText = `\n📊 目前刊登物品共 ${count} 件`;
+      
+      let noticeToDisplay = currentRawNotice;
+      if (noticeToDisplay) {
+        // Robust cleanup: split by lines, remove lines that contain "目前刊登物品共"
+        const lines = noticeToDisplay.split('\n');
+        const filteredLines = lines.filter(line => !line.includes('目前刊登物品共'));
+        noticeToDisplay = filteredLines.join('\n').trim();
+        
+        textSpan.innerText = noticeToDisplay + countText;
+      }
+    }
+
     async function loadAnnouncement() {
       // 預設的使用須知，帶有漂亮的斷行
-      const defaultNotice = '歡迎使用 PEGAPEGA 告示牌！\n1. 本平台免登入即可發布買賣與贈送\n2. 請務必填寫真實分機或 LINE 以利聯繫\n3. 交易完成請點擊卡片『下架我的貼文』以防騷擾\n4. 歡迎同仁善加利用免費贈送專區！';
+      const defaultNotice = '歡迎使用 PEGA 告示牌！匿名二手與尾牙獎品交換平台：\n💡 免登入直接刊登：支援「想買、想賣、免費送」，全新推出「尾牙全新專區」與「以物易物」功能！\n📞 填寫正確聯絡管道：請務必提供分機 或 Teams，方便同仁一鍵複製快速聯繫。\n🤝 成交請及時下架：交易完成後，請務必點選卡片「已售出」或「下架貼文」，讓版面保持乾淨。';
       const textSpan = document.getElementById('announcement-text');
       const adminInput = document.getElementById('admin-announcement-input');
       const bar = document.getElementById('announcement-bar');
@@ -2293,20 +2499,27 @@
       const cachedNotice = localStorage.getItem('pega_custom_announcement');
       const initialNotice = cachedNotice || defaultNotice;
 
-      if (textSpan) textSpan.innerText = initialNotice;
+      currentRawNotice = initialNotice;
+      refreshAnnouncementDisplay();
+
       if (adminInput && !adminInput.value) adminInput.value = initialNotice;
       if (bar) bar.classList.remove('hidden');
 
       try {
-        const cacheBuster = Date.now();
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&limit=1&_t=${cacheBuster}`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&limit=1`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         });
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0 && data[0].content) {
             const dbText = data[0].content;
-            if (textSpan) textSpan.innerText = dbText;
+            currentRawNotice = dbText;
+            refreshAnnouncementDisplay();
             if (adminInput) adminInput.value = dbText;
             localStorage.setItem('pega_custom_announcement', dbText);
           }
@@ -2322,56 +2535,33 @@
       if (!text) return showNotification('請輸入公告內容', 'warning');
 
       try {
-        // 1. 查詢 Supabase 資料庫已有紀錄
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/save_announcement_admin`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text_input: text, pwd_input: pwdHash })
         });
-        if (!checkRes.ok) throw new Error('連線失敗，無法取得公告紀錄。');
-        const existing = await checkRes.json();
 
-        if (existing && existing.length > 0) {
-          // 更新所有匹配到的公告紀錄
-          for (const item of existing) {
-            const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
-              method: 'PATCH',
-              headers: { 
-                'apikey': SUPABASE_KEY, 
-                'Authorization': `Bearer ${SUPABASE_KEY}`, 
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-              },
-              body: JSON.stringify({ content: text })
-            });
-            if (!patchRes.ok) throw new Error('雲端公告修改失敗。');
-          }
-        } else {
-          // 插入新紀錄
-          const postRes = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+        if (res.ok) {
+          localStorage.setItem('pega_custom_announcement', text);
+          localStorage.setItem('pega_saved_default_announcement', text);
+
+          // Save default template as well
+          await fetch(`${SUPABASE_URL}/rest/v1/rpc/set_default_announcement_admin`, {
             method: 'POST',
-            headers: { 
-              'apikey': SUPABASE_KEY, 
-              'Authorization': `Bearer ${SUPABASE_KEY}`, 
-              'Content-Type': 'application/json',
-              'Prefer': 'return=representation'
-            },
-            body: JSON.stringify({ 
-              item_id: '00000000-0000-0000-0000-000000000001', 
-              sender_id: 'ADMIN', 
-              sender_name: 'ADMIN', 
-              content: text 
-            })
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text_input: text, pwd_input: pwdHash })
           });
-          if (!postRes.ok) throw new Error('雲端公告寫入失敗。');
+
+          currentRawNotice = text;
+          refreshAnnouncementDisplay();
+          const bar = document.getElementById('announcement-bar');
+          if (bar) bar.classList.remove('hidden');
+
+          showNotification('🎉 全站公告已發布並儲存為預設範本！', 'success');
+        } else {
+          showNotification('⚠️ 儲存公告失敗，密碼已失效，請重新登入版主', 'warning');
         }
-
-        // 2. 確定寫入雲端成功後，即時寫入 localStorage 與前端 DOM 畫面
-        localStorage.setItem('pega_custom_announcement', text);
-        const textSpan = document.getElementById('announcement-text');
-        if (textSpan) textSpan.innerText = text;
-        const bar = document.getElementById('announcement-bar');
-        if (bar) bar.classList.remove('hidden');
-
-        showNotification('🎉 全站使用須知已成功寫入雲端資料庫！', 'success');
       } catch(e) { 
         console.error('Save announcement error:', e); 
         showNotification(`❌ 儲存公告失敗：${e.message}`, 'error');
@@ -2390,38 +2580,18 @@
       localStorage.setItem('pega_saved_default_announcement', text);
 
       try {
-        const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000010&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-        });
-        if (checkRes.ok) {
-          const existing = await checkRes.json();
-          if (existing && existing.length > 0) {
-            for (const item of existing) {
-              await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${item.id}`, {
-                method: 'DELETE',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-              });
-            }
-          }
-        }
-
-        await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/set_default_announcement_admin`, {
           method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify({
-            item_id: '00000000-0000-0000-0000-000000000010',
-            sender_id: 'SYS_NOTICE_TEMPLATE',
-            sender_name: 'SYS_NOTICE_TEMPLATE',
-            content: text
-          })
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text_input: text, pwd_input: pwdHash })
         });
 
-        showNotification('⭐ 已成功儲存為您的專屬預設須知範本！以後點擊「填入預設須知」將自動填入。', 'success');
+        if (res.ok) {
+          showNotification('⭐ 已成功儲存為您的專屬預設須知範本！以後點擊「填入預設須知」將自動填入。', 'success');
+        } else {
+          showNotification('⚠️ 儲存範本失敗，密碼已失效，請重新登入版主', 'warning');
+        }
       } catch(e) {
         console.error('Save template error:', e);
         showNotification('⭐ 已儲存為本機預設須知範本！', 'success');
@@ -2432,7 +2602,7 @@
       const adminInput = document.getElementById('admin-announcement-input');
       if (!adminInput) return;
 
-      const systemDefaultNotice = '歡迎使用 PEGAPEGA 告示牌！\n1. 本平台免登入即可發布買賣與贈送\n2. 請務必填寫真實分機或 LINE 以利聯繫\n3. 交易完成請點擊卡片『下架我的貼文』以防騷擾\n4. 歡迎同仁善加利用免費贈送專區！';
+      const systemDefaultNotice = '歡迎使用 PEGA 告示牌！匿名二手與尾牙獎品交換平台：\n💡 免登入直接刊登：支援「想買、想賣、免費送」，全新推出「尾牙全新專區」與「以物易物」功能！\n📞 填寫正確聯絡管道：請務必提供分機 或 Teams，方便同仁一鍵複製快速聯繫。\n🤝 成交請及時下架：交易完成後，請務必點選卡片「已售出」或「下架貼文」，讓版面保持乾淨。';
       let customTemplate = localStorage.getItem('pega_saved_default_announcement');
 
       try {
@@ -2518,6 +2688,7 @@
 
         async function toggleResolveIssue(issueId, isCurrentlyResolved) {
       if (!isAdmin) return showNotification('⚠️ 只有版主可以變更處理狀態', 'warning');
+      const pwdHash = localStorage.getItem('pega_admin_hash') || '';
       
       try {
         // Fetch original content
@@ -2534,14 +2705,14 @@
           content = `${content.replace(/\[RESOLVED\]/g, '').trim()}\n[RESOLVED]`;
         }
 
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
-          method: 'PATCH',
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/resolve_issue_admin`, {
+          method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ content: content })
+          body: JSON.stringify({ issue_id: issueId, new_content: content, pwd_input: pwdHash })
         });
 
         if (res.ok) {
@@ -2557,12 +2728,18 @@
       if (!isAdmin) return;
       if (!confirm('確定要刪除這筆留言紀錄嗎？')) return;
       try {
-        await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}`, {
-          method: 'DELETE',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_issue_admin`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ issue_id: issueId, pwd_input: pwdHash })
         });
-        showNotification('🗑️ 留言紀錄已刪除', 'info');
-        loadAndRenderIssues();
+        if (res.ok) {
+          showNotification('🗑️ 留言紀錄已刪除', 'info');
+          loadAndRenderIssues();
+        } else {
+          showNotification('⚠️ 刪除留言失敗，密碼已失效，請重新登入版主', 'warning');
+        }
       } catch(e) {
         console.error('Delete issue error:', e);
       }
