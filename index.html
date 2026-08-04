@@ -1689,6 +1689,19 @@
       });
     }
 
+    function showCreateError(msg) {
+      const errorBox = document.getElementById('create-modal-error');
+      const errorText = document.getElementById('create-modal-error-text');
+      if (errorText) errorText.innerText = msg;
+      if (errorBox) errorBox.classList.remove('hidden');
+      showNotification(msg, 'warning');
+    }
+
+    function hideCreateError() {
+      const errorBox = document.getElementById('create-modal-error');
+      if (errorBox) errorBox.classList.add('hidden');
+    }
+
     function openCreateModal() {
       editingItemId = null;
       tempEditPassword = "";
