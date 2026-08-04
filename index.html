@@ -249,11 +249,15 @@
 
         <!-- 刊登者 -->
         
-        <!-- 刊登者本人下架區域 (方案 A) -->
-        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-slate-100">
-          <button id="detail-owner-delete-btn" onclick="" class="w-full py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-trash-can text-sm"></i>
-            <span>我是發布者：下架此貼文 (已售出 / 結案)</span>
+        <!-- 刊登者本人編輯與下架區域 -->
+        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-slate-100 flex gap-2">
+          <button id="detail-owner-edit-btn" onclick="" class="flex-1 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-pen-to-square text-indigo-600"></i>
+            <span>修改貼文</span>
+          </button>
+          <button id="detail-owner-delete-btn" onclick="" class="flex-1 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-trash-can text-red-600"></i>
+            <span>下架貼文 (售出/結案)</span>
           </button>
         </div>
 
@@ -874,6 +878,8 @@
     let currentFilter = 'all';
     let postType = 'sell';
     let globalPinnedIds = [];
+    let editingItemId = null;
+    let tempEditPassword = "";
 
     function updateIdentityDisplay() {
       const display = document.getElementById('user-identity-display');
@@ -1499,18 +1505,35 @@
       }
 
       
-      // Check if current device is owner (Option A)
-      const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
-      const isOwner = (item.device_id === deviceId) || myItems.includes(item.id);
+      // Check if current device is owner (Option A & Password Auth)
       const ownerBox = document.getElementById('detail-owner-action-box');
-      const ownerBtn = document.getElementById('detail-owner-delete-btn');
+      const ownerEditBtn = document.getElementById('detail-owner-edit-btn');
+      const ownerDeleteBtn = document.getElementById('detail-owner-delete-btn');
 
-      if (ownerBox && ownerBtn) {
-        if (isOwner) {
-          ownerBox.classList.remove('hidden');
-          ownerBtn.onclick = function() { deleteMyItem(item.id); };
-        } else {
-          ownerBox.classList.add('hidden');
+      if (ownerBox) {
+        ownerBox.classList.remove('hidden');
+        
+        const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+        const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+        const hasPasswordSaved = myPasswords[item.id] !== undefined;
+        const isRealOwner = (item.device_id === deviceId) || myItems.includes(item.id) || hasPasswordSaved;
+
+        if (ownerEditBtn) {
+          if (isRealOwner || isAdmin) {
+            ownerEditBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> <span>修改貼文</span>';
+          } else {
+            ownerEditBtn.innerHTML = '<i class="fa-solid fa-lock"></i> <span>修改貼文 (輸入密碼)</span>';
+          }
+          ownerEditBtn.onclick = function() { editMyItem(item.id); };
+        }
+
+        if (ownerDeleteBtn) {
+          if (isRealOwner || isAdmin) {
+            ownerDeleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i> <span>下架貼文 (售出/結案)</span>';
+          } else {
+            ownerDeleteBtn.innerHTML = '<i class="fa-solid fa-lock"></i> <span>下架貼文 (輸入密碼)</span>';
+          }
+          ownerDeleteBtn.onclick = function() { deleteMyItem(item.id); };
         }
       }
 
@@ -1637,10 +1660,154 @@
       });
     }
 
-    function openCreateModal() { document.getElementById('create-modal').classList.remove('hidden'); }
+    function openCreateModal() {
+      editingItemId = null;
+      tempEditPassword = "";
+
+      // Reset text fields
+      document.getElementById('post-title').value = "";
+      document.getElementById('post-contact').value = "";
+      document.getElementById('post-desc').value = "";
+      document.getElementById('post-price').value = "";
+      document.getElementById('post-swap-item').value = "";
+      
+      const swapCheckbox = document.getElementById('post-swap-check');
+      if (swapCheckbox) {
+        swapCheckbox.checked = false;
+        toggleSwapMode(false);
+      }
+
+      document.getElementById('item-expiration').value = "none";
+      
+      // Reset image URLs
+      document.getElementById('post-img1-url').value = "";
+      document.getElementById('post-img2-url').value = "";
+      
+      // Reset image preview boxes
+      const preview1 = document.getElementById('preview-box-1');
+      const preview2 = document.getElementById('preview-box-2');
+      const previewsGrid = document.getElementById('upload-previews-grid');
+      if (preview1) preview1.classList.add('hidden');
+      if (preview2) preview2.classList.add('hidden');
+      if (previewsGrid) previewsGrid.classList.add('hidden');
+      
+      document.getElementById('file1-status').innerText = '點擊上傳圖檔';
+      document.getElementById('file2-status').innerText = '點擊上傳第二張';
+
+      // Reset type to sell
+      setPostType('sell');
+
+      // Generate random 4-digit code
+      const randPwd = Math.floor(1000 + Math.random() * 9000).toString();
+      document.getElementById('post-edit-password').value = randPwd;
+
+      // Adjust Modal Title & Button
+      document.querySelector('#create-modal h3').innerHTML = `<i class="fa-solid fa-plus-circle text-indigo-400"></i> 我要發布告示牌貼文`;
+      document.getElementById('submit-create-btn').innerText = `🎉 發布貼文`;
+
+      // Clear errors
+      hideCreateError();
+
+      document.getElementById('create-modal').classList.remove('hidden');
+    }
     function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
 
-                        async function submitCreateItem() {
+                            async function editMyItem(itemId) {
+      const item = allItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      // 1. Determine permission
+      const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+      const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+      const cachedPwd = myPasswords[itemId] || "";
+      
+      const isOwner = (item.device_id === deviceId) || myItems.includes(itemId) || (cachedPwd !== "");
+      
+      let finalPwd = cachedPwd;
+
+      // If they are on a different device and not admin, prompt for post password
+      if (!isOwner && !isAdmin) {
+        const userPwd = prompt('本裝置無管理此貼文的憑證。\n請輸入該貼文的 4 位數密碼以進行修改：');
+        if (!userPwd) return; // user cancelled
+        finalPwd = userPwd.trim();
+      }
+
+      // Open the Create Modal in editing mode
+      editingItemId = itemId;
+      tempEditPassword = finalPwd;
+
+      // Pre-fill fields
+      document.getElementById('post-title').value = item.title || "";
+      document.getElementById('post-contact').value = item.contact_info || "";
+      document.getElementById('post-desc').value = item.description || "";
+      document.getElementById('post-edit-password').value = item.edit_password || finalPwd;
+
+      // Set transaction type
+      setPostType(item.type);
+
+      // Handle price / barter mode
+      const isBarter = item.price && item.price.startsWith('swap:');
+      const swapCheckbox = document.getElementById('post-swap-check');
+      if (swapCheckbox) {
+        swapCheckbox.checked = isBarter;
+        toggleSwapMode(isBarter);
+      }
+      if (isBarter) {
+        document.getElementById('post-swap-item').value = item.price.replace('swap:', '');
+        document.getElementById('post-price').value = "";
+      } else {
+        document.getElementById('post-price').value = item.price || "";
+        document.getElementById('post-swap-item').value = "";
+      }
+
+      // Handle Expiration
+      document.getElementById('item-expiration').value = "none";
+
+      // Pre-fill images
+      document.getElementById('post-img1-url').value = "";
+      document.getElementById('post-img2-url').value = "";
+      
+      const preview1 = document.getElementById('preview-box-1');
+      const preview2 = document.getElementById('preview-box-2');
+      const previewImg1 = document.getElementById('preview-img-1');
+      const previewImg2 = document.getElementById('preview-img-2');
+      const previewsGrid = document.getElementById('upload-previews-grid');
+
+      if (preview1) preview1.classList.add('hidden');
+      if (preview2) preview2.classList.add('hidden');
+      if (previewsGrid) previewsGrid.classList.add('hidden');
+
+      if (item.image_url) {
+        const urls = item.image_url.split(',').filter(Boolean);
+        if (urls[0]) {
+          document.getElementById('post-img1-url').value = urls[0];
+          if (previewImg1 && preview1) {
+            previewImg1.src = urls[0];
+            preview1.classList.remove('hidden');
+            if (previewsGrid) previewsGrid.classList.remove('hidden');
+          }
+          document.getElementById('file1-status').innerText = "📷 已保留原有照片 1";
+        }
+        if (urls[1]) {
+          document.getElementById('post-img2-url').value = urls[1];
+          if (previewImg2 && preview2) {
+            previewImg2.src = urls[1];
+            preview2.classList.remove('hidden');
+            if (previewsGrid) previewsGrid.classList.remove('hidden');
+          }
+          document.getElementById('file2-status').innerText = "📷 已保留原有照片 2";
+        }
+      }
+
+      // Adjust UI Title and Buttons
+      document.querySelector('#create-modal h3').innerHTML = `<i class="fa-solid fa-pen-to-square text-indigo-400"></i> 修改告示牌貼文`;
+      document.getElementById('submit-create-btn').innerText = `💾 儲存修改`;
+
+      // Open Modal
+      document.getElementById('create-modal').classList.remove('hidden');
+    }
+
+    async function submitCreateItem() {
       const errorBox = document.getElementById('create-modal-error');
       const errorText = document.getElementById('create-modal-error-text');
       const submitBtn = document.getElementById('submit-create-btn');
@@ -1972,18 +2139,44 @@
 
       const isSold = isItemSold(item);
 
+      // Determine ownership/authorization
+      const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+      const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+      const cachedPwd = myPasswords[itemId] || "";
+      const isOwner = (item.device_id === deviceId) || myItems.includes(itemId) || (cachedPwd !== "");
+
+      let finalPwd = cachedPwd;
+
+      // Prompt if not owner and not admin
+      if (!isOwner && !isAdmin) {
+        const userPwd = prompt('本裝置無此貼文的下架憑證。\n請輸入該貼文的 4 位數密碼（或版主管理密碼）：');
+        if (!userPwd) return; // user cancelled
+        finalPwd = userPwd.trim();
+      }
+
+      // Check confirm
       if (!isSold) {
         const becauseSold = confirm('這件商品是因為「已售出 / 已送出」而要下架的嗎？\n\n【確定】是，已成交（將會自動記入歷史成交紀錄後下架）\n【取消】否，只是想直接刪除/取消貼文');
         if (becauseSold) {
           const soldTimeStr = new Date().toISOString();
-          // Server trigger trigger_log_transaction will write the log when marked sold.
-          // Let's mark it as sold locally/db first, then delete.
           const newDesc = `${item.description || ''}\n[SOLD_AT:${soldTimeStr}]`;
-          await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_item_sold_own`, {
+          
+          const resSold = await fetch(`${SUPABASE_URL}/rest/v1/rpc/toggle_item_sold_secured`, {
             method: 'POST',
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ item_uuid: itemId, dev_id: deviceId, new_desc: newDesc })
+            body: JSON.stringify({
+              item_uuid: itemId,
+              dev_id: deviceId,
+              new_desc: newDesc,
+              pwd_input: finalPwd
+            })
           });
+          
+          if (!resSold.ok) {
+            const err = await resSold.json();
+            showNotification('⚠️ 標記售出失敗：' + (err.message || '權限不足'), 'warning');
+            return;
+          }
         } else {
           if (!confirm('您確定要直接刪除此貼文嗎？（此操作無法恢復，且不會計入歷史成交紀錄）')) {
             return;
@@ -1996,14 +2189,18 @@
       }
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_own_item`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_item_secured`, {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ item_uuid: itemId, dev_id: deviceId })
+          body: JSON.stringify({
+            item_uuid: itemId,
+            dev_id: deviceId,
+            pwd_input: finalPwd
+          })
         });
 
         if (res.ok) {
@@ -2013,12 +2210,16 @@
             myItems = myItems.filter(id => id !== itemId);
             localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
 
+            const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+            delete myPasswords[itemId];
+            localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
+
             deleteStorageFilesForItem(item);
             showNotification('🗑️ 您的貼文已成功下架！', 'success');
             closeDetailModal();
             loadItems();
           } else {
-            showNotification('⚠️ 下架失敗：此貼文非本裝置所刊登，您無權下架。', 'warning');
+            showNotification('⚠️ 下架失敗：憑證或密碼不正確，您無權下架。', 'warning');
           }
         } else {
           showNotification('⚠️ 下架失敗，請稍後再試', 'warning');
