@@ -1155,7 +1155,7 @@
       await loadItemsPerPageSetting();
       await loadGlobalPinnedIds();
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=*&order=created_at.desc`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=id,created_at,title,description,price,type,image_url,nickname,device_id,contact_info&order=created_at.desc`, {
           headers: {
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -1782,7 +1782,7 @@
       document.getElementById('post-title').value = item.title || "";
       document.getElementById('post-contact').value = item.contact_info || "";
       document.getElementById('post-desc').value = item.description || "";
-      document.getElementById('post-edit-password').value = item.edit_password || finalPwd;
+      document.getElementById('post-edit-password').value = finalPwd;
 
       // Set transaction type
       setPostType(item.type);
