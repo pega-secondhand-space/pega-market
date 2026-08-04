@@ -1875,6 +1875,7 @@
       const imgUrl1 = (document.getElementById('post-img1-url')?.value || '').trim();
       const imgUrl2 = (document.getElementById('post-img2-url')?.value || '').trim();
       const expDays = document.getElementById('item-expiration')?.value || 'none';
+      const editPasswordVal = (document.getElementById('post-edit-password')?.value || '').trim();
 
       // 1. 檢查物品標題
       if (!title) {
@@ -1882,11 +1883,7 @@
           titleInput.classList.add('border-red-500');
           titleInput.focus();
         }
-        if (errorBox && errorText) {
-          errorText.innerText = '⚠️ 請填寫物品名稱/標題！';
-          errorBox.classList.remove('hidden');
-        }
-        showNotification('⚠️ 請填寫物品名稱/標題！', 'warning');
+        showCreateError('⚠️ 請填寫物品名稱/標題！');
         return;
       } else if (titleInput) {
         titleInput.classList.remove('border-red-500');
@@ -1894,11 +1891,7 @@
 
       // 2. 檢查照片上傳 (至少 1 張)
       if (!imgUrl1) {
-        if (errorBox && errorText) {
-          errorText.innerText = '⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！';
-          errorBox.classList.remove('hidden');
-        }
-        showNotification('⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！', 'warning');
+        showCreateError('⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！');
         return;
       }
 
@@ -1908,137 +1901,182 @@
           contactInput.classList.add('border-red-500');
           contactInput.focus();
         }
-        if (errorBox && errorText) {
-          errorText.innerText = '⚠️ 請填寫聯絡方式 (例如：分機 45555 / LINE ID / Teams)！';
-          errorBox.classList.remove('hidden');
-        }
-        showNotification('⚠️ 請填寫聯絡方式 (例如：分機 45555 / LINE / Teams)！', 'warning');
+        showCreateError('⚠️ 請填寫聯絡方式 (例如：分機 45555 / LINE / Teams)！');
         return;
       } else if (contactInput) {
         contactInput.classList.remove('border-red-500');
       }
 
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 發布中...';
+      // 4. 檢查編輯密碼
+      if (!editPasswordVal) {
+        showCreateError('⚠️ 請輸入管理/編輯密碼，以便更換電腦時編輯或下架貼文！');
+        return;
       }
 
-      const finalImgUrl = imgUrl2 ? `${imgUrl1}|||${imgUrl2}` : imgUrl1;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 處理中...';
+      }
+
+      const finalImgUrl = imgUrl2 ? `${imgUrl1},${imgUrl2}` : imgUrl1;
 
       // 如果有設定下架天數，將到期時間戳標記編碼於說明中
       let finalDesc = desc;
-      if (expDays !== 'none') {
+      if (expDays !== 'none' && !editingItemId) {
         const d = new Date();
         d.setDate(d.getDate() + parseInt(expDays, 10));
         finalDesc = `${desc}\n[EXP:${d.toISOString()}]`;
       }
 
-      const payload = {
-        title: title,
-        description: finalDesc,
-        price: finalPrice,
-        type: postType,
-        image_url: finalImgUrl,
-        nickname: nickname,
-        device_id: deviceId,
-        contact_info: contact
-      };
-
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001`, {
-          // Send request
-        });
+        if (editingItemId) {
+          // UPDATE MODE
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/update_item_secured`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              item_id: editingItemId,
+              new_title: title,
+              new_price: finalPrice,
+              new_type: postType,
+              new_contact_info: contact,
+              new_description: finalDesc,
+              new_image_url: finalImgUrl,
+              device_id_input: deviceId,
+              pwd_input: editPasswordVal,
+              admin_pwd_input: localStorage.getItem('pega_admin_hash') || ''
+            })
+          });
 
-        const postRes = await fetch(`${SUPABASE_URL}/rest/v1/items`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify(payload)
-        });
+          if (res.ok) {
+            const success = await res.json();
+            if (success) {
+              // Cache password locally
+              const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+              myPasswords[editingItemId] = editPasswordVal;
+              localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
 
-        if (postRes.ok) {
-          let newItemId = null;
-          const createdItems = await postRes.json();
-          if (createdItems && createdItems.length > 0) {
-            newItemId = createdItems[0].id;
-            let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
-            myItems.push(newItemId);
-            localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
-          }
-
-          showNotification('🎉 刊登成功！貼文已即時發布至最上方。', 'success');
-          closeCreateModal();
-          // Reset form
-          if (titleInput) titleInput.value = '';
-          const descInput = document.getElementById('post-desc');
-          if (descInput) descInput.value = '';
-          const priceInput = document.getElementById('post-price');
-          if (priceInput) priceInput.value = '';
-          if (contactInput) contactInput.value = '';
-          const swapCheck = document.getElementById('post-swap-check');
-          if (swapCheck) {
-            swapCheck.checked = false;
-            toggleSwapMode(false);
-          }
-          const swapInput = document.getElementById('post-swap-item');
-          if (swapInput) swapInput.value = '';
-          
-          const hidden1 = document.getElementById('post-img1-url');
-          if (hidden1) hidden1.value = '';
-          const hidden2 = document.getElementById('post-img2-url');
-          if (hidden2) hidden2.value = '';
-
-          const status1 = document.getElementById('file1-status');
-          if (status1) status1.innerText = '點擊上傳圖檔';
-          const status2 = document.getElementById('file2-status');
-          if (status2) status2.innerText = '點擊上傳第二張';
-
-          const previewsGrid = document.getElementById('upload-previews-grid');
-          if (previewsGrid) previewsGrid.classList.add('hidden');
-
-          await loadItems();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-
-          if (newItemId) {
-            setTimeout(() => {
-              const cardImg = document.getElementById(`card-img-${newItemId}`);
-              if (cardImg) {
-                const cardElement = cardImg.closest('.group') || cardImg.parentElement;
-                if (cardElement) {
-                  cardElement.classList.add('ring-4', 'ring-emerald-500', 'ring-offset-2', 'ring-offset-gray-950', 'animate-pulse');
-                  setTimeout(() => {
-                    cardElement.classList.remove('ring-4', 'ring-emerald-500', 'ring-offset-2', 'ring-offset-gray-950', 'animate-pulse');
-                  }, 4000);
-                }
-              }
-            }, 300);
+              showNotification('✏️ 貼文已成功儲存更新！', 'success');
+              closeCreateModal();
+              closeDetailModal();
+              await loadItems();
+            } else {
+              showCreateError('⚠️ 修改失敗：密碼驗證錯誤，您無權修改此貼文。');
+            }
+          } else {
+            const err = await res.json();
+            showCreateError('⚠️ 修改發生錯誤：' + (err.message || '伺服器拒絕更新'));
           }
         } else {
-          const errData = await postRes.text();
-          if (errorBox && errorText) {
-            errorText.innerText = '⚠️ 刊登失敗：' + (errData || '連線錯誤');
-            errorBox.classList.remove('hidden');
+          // CREATE MODE
+          const payload = {
+            title: title,
+            description: finalDesc,
+            price: finalPrice,
+            type: postType,
+            image_url: finalImgUrl,
+            nickname: nickname,
+            device_id: deviceId,
+            contact_info: contact,
+            edit_password: editPasswordVal
+          };
+
+          const postRes = await fetch(`${SUPABASE_URL}/rest/v1/items?select=id`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (postRes.ok) {
+            let newItemId = null;
+            const createdItems = await postRes.json();
+            if (createdItems && createdItems.length > 0) {
+              newItemId = createdItems[0].id;
+              let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
+              myItems.push(newItemId);
+              localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
+
+              const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+              myPasswords[newItemId] = editPasswordVal;
+              localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
+
+              alert(`🎉 貼文發布成功！\n\n您的 4 位數「編輯與下架密碼」為：${editPasswordVal}\n\n（本機已自動為您記住此密碼。若日後更換電腦或手機，請憑此密碼修改或下架貼文，建議將其妥善保存喔！）`);
+            }
+
+            showNotification('🎉 刊登成功！貼文已即時發布。', 'success');
+            closeCreateModal();
+            
+            // Reset form
+            if (titleInput) titleInput.value = '';
+            const descInput = document.getElementById('post-desc');
+            if (descInput) descInput.value = '';
+            const priceInput = document.getElementById('post-price');
+            if (priceInput) priceInput.value = '';
+            if (contactInput) contactInput.value = '';
+            const swapCheck = document.getElementById('post-swap-check');
+            if (swapCheck) {
+              swapCheck.checked = false;
+              toggleSwapMode(false);
+            }
+            const swapInput = document.getElementById('post-swap-item');
+            if (swapInput) swapInput.value = '';
+            
+            const hidden1 = document.getElementById('post-img1-url');
+            if (hidden1) hidden1.value = '';
+            const hidden2 = document.getElementById('post-img2-url');
+            if (hidden2) hidden2.value = '';
+
+            const status1 = document.getElementById('file1-status');
+            if (status1) status1.innerText = '點擊上傳圖檔';
+            const status2 = document.getElementById('file2-status');
+            if (status2) status2.innerText = '點擊上傳第二張';
+
+            const previewsGrid = document.getElementById('upload-previews-grid');
+            if (previewsGrid) previewsGrid.classList.add('hidden');
+
+            await loadItems();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (newItemId) {
+              setTimeout(() => {
+                const cardImg = document.getElementById(`card-img-${newItemId}`);
+                if (cardImg) {
+                  const cardElement = cardImg.closest('.group') || cardImg.closest('[onclick*="openDetailModal"]');
+                  if (cardElement) {
+                    cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    cardElement.classList.add('ring-4', 'ring-indigo-500', 'ring-offset-2', 'ring-offset-gray-950');
+                    setTimeout(() => {
+                      cardElement.classList.remove('ring-4', 'ring-indigo-500', 'ring-offset-2', 'ring-offset-gray-950');
+                    }, 3000);
+                  }
+                }
+              }, 150);
+            }
+          } else {
+            const err = await postRes.json();
+            showCreateError('⚠️ 發布失敗：' + (err.message || '伺服器拒絕此貼文'));
           }
-          showNotification('⚠️ 刊登失敗，請檢查輸入內容與連線', 'warning');
         }
       } catch(e) {
-        console.error('Create item error:', e);
-        if (errorBox && errorText) {
-          errorText.innerText = '⚠️ 刊登發生錯誤：' + e.message;
-          errorBox.classList.remove('hidden');
-        }
-        showNotification('⚠️ 刊登發生錯誤：' + e.message, 'warning');
+        console.error('Submit item error:', e);
+        showCreateError('⚠️ 網路連線錯誤，請稍後再試：' + e.message);
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '🎉 發布貼文';
+          submitBtn.innerText = editingItemId ? '💾 儲存修改' : '🎉 發布貼文';
         }
       }
     }
+
 
     function openAdminModal() {
       loadAnnouncement();
