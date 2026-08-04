@@ -315,10 +315,10 @@
             <div>
               <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm transition-all duration-300">💰 想賣<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-48 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">自訂合理的出清價，將閒置物品折現賣給有需要的同仁。</div></button>
-            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🔍 想買<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-48 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">發布您目前需要的物品與徵求預算，向其他同仁求購。</div></button>
-            <button type="button" onclick="setPostType('free')" id="post-type-free" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🎁 免費送<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-48 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">將閒置好物免費送給同仁，資源循環，環保、省空間又溫暖！</div></button>
-            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">✨ 尾牙全新<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-48 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">尾牙或春酒抽到但用不到的全新獎品，打折折現或拿來物物交換！</div></button>
+            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm transition-all duration-300">💰 想賣<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">自訂合理的出清價，將閒置物品折現賣給有需要的同仁。</div></button>
+            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🔍 想買<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">發布您目前需要的物品與徵求預算，向其他同仁求購。</div></button>
+            <button type="button" onclick="setPostType('free')" id="post-type-free" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🎁 免費送<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">將閒置好物免費送給同仁，資源循環，環保、省空間又溫暖！</div></button>
+            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">✨ 尾牙全新<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">尾牙或春酒抽到但用不到的全新獎品，打折折現或拿來物物交換！</div></button>
           </div>
         </div>
 
@@ -334,7 +334,7 @@
               <input type="checkbox" id="post-swap-check" onchange="toggleSwapMode(this.checked)" class="rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500">
               <span>🔄 我要以物易物</span>
               <i class="fa-solid fa-circle-info text-[10px] text-indigo-400/80"></i>
-              <div class="absolute bottom-full right-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+              <div class="absolute top-full right-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
                 不收現金，直接用實物與同仁交換等值好物。例如：空氣清淨機換咖啡機。
               </div>
             </label>
@@ -343,7 +343,7 @@
             <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
             <div class="mt-2.5 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-400 font-bold relative group">
               <span>🎫 禮券折價助手 (點選折價) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：</span>
-              <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
                 點選折數按鈕（如 95折），系統會自動計算折後價格，並自動在物品標題末尾加上標註！
               </div>
               <button type="button" onclick="applyCouponDiscount(0.9)" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-lg font-black transition">9 折</button>
@@ -373,7 +373,7 @@
         <div class="space-y-3 bg-gray-900/60 p-3.5 rounded-2xl border border-gray-700/80">
           <label class="block text-xs font-bold text-gray-200 flex items-center justify-between relative group cursor-pointer w-fit">
             <span>📷 上傳物品照片 (最多 2 張) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：</span>
-            <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               建議至少上傳一張清楚的主圖。若是尾牙全新商品，可附上外盒與封條照片證明。
             </div>
           </label>
@@ -417,7 +417,7 @@
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
             ⏳ 自動下架截止日設定 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               設定貼文自動截止期限，時間到後系統會安全自動下架，防止過期訊息持續被打擾。
             </div>
           </label>
@@ -434,7 +434,7 @@
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
             🔑 貼文管理/編輯密碼 (跨裝置修改或下架憑證) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               系統已自動隨機產生一個 4 位數密碼，您也可以自訂。若更換電腦，可憑此密碼修改或下架此貼文。
             </div>
           </label>
