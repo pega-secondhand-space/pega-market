@@ -1681,9 +1681,9 @@
         const btn = document.getElementById(`post-type-${type}`);
         if (btn) {
           if (type === t) {
-            btn.className = 'py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs';
+            btn.className = 'relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs transition-all duration-300';
           } else {
-            btn.className = 'py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs';
+            btn.className = 'relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs transition-all duration-300';
           }
         }
       });
