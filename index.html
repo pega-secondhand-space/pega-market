@@ -308,8 +308,12 @@
         <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5 overflow-y-auto space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
+        <!-- 二欄式響應式網格 (PC雙欄、手機單欄) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- 左側欄位 -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm">💰 想賣</button>
             <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm">🔍 想買</button>
@@ -355,6 +359,10 @@
           <label class="block text-xs font-bold text-gray-300 mb-1">📞 聯絡方式 (分機 / LINE / Teams / 面交地點)：</label>
           <input type="text" id="post-contact" placeholder="例如：分機 45555 / LINE: pega123 / A棟大廳面交" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
         </div>
+      </div> <!-- 結束左側欄位 -->
+
+      <!-- 右側欄位 -->
+      <div class="space-y-4">
 
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1">物品描述：</label>
@@ -363,8 +371,11 @@
 
         <!-- 原生選擇照片檔案上傳資料庫 (最多 2 張照片，自動壓縮) -->
         <div class="space-y-3 bg-gray-900/60 p-3.5 rounded-2xl border border-gray-700/80">
-          <label class="block text-xs font-bold text-gray-200 flex items-center justify-between">
-            <span>📷 上傳物品照片 (最多選擇 2 張照片，自動上傳資料庫並壓縮展示)：</span>
+          <label class="block text-xs font-bold text-gray-200 flex items-center justify-between relative group cursor-pointer w-fit">
+            <span>📷 上傳物品照片 (最多 2 張) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：</span>
+            <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+              建議至少上傳一張清楚的主圖。若是尾牙全新商品，可附上外盒與封條照片證明。
+            </div>
           </label>
           
           <!-- 上傳按鈕區 -->
@@ -404,7 +415,12 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">⏳ 自動下架截止日設定：</label>
+          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
+            ⏳ 自動下架截止日設定 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
+            <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+              設定貼文自動截止期限，時間到後系統會安全自動下架，防止過期訊息持續被打擾。
+            </div>
+          </label>
           <select id="item-expiration" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 font-medium focus:outline-none focus:border-indigo-500">
             <option value="none" selected>無限制 (預設永久展示直至手動下架)</option>
             <option value="7">7 天後自動下架 (1 週刊登)</option>
@@ -413,6 +429,19 @@
             <option value="60">60 天後自動下架 (2 個月)</option>
           </select>
         </div>
+
+        <!-- 🔑 貼文管理/編輯密碼 -->
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
+            🔑 貼文管理/編輯密碼 (跨裝置修改或下架憑證) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
+            <div class="absolute bottom-full left-0 mb-2 w-56 hidden group-hover:block bg-gray-950/95 border border-indigo-500/30 text-gray-200 text-[11px] p-2.5 rounded-xl shadow-2xl pointer-events-none z-50 text-left font-medium leading-relaxed backdrop-blur-md">
+              系統已自動隨機產生一個 4 位數密碼，您也可以自訂。若更換電腦，可憑此密碼修改或下架此貼文。
+            </div>
+          </label>
+          <input type="text" id="post-edit-password" maxlength="10" placeholder="例如：1234" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 font-bold focus:outline-none focus:border-indigo-500">
+        </div>
+      </div> <!-- 結束右側欄位 -->
+    </div> <!-- 結束網格 -->
 
         
         <!-- 即時表單錯誤提醒區域 -->
