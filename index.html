@@ -323,13 +323,23 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">物品名稱/標題 <span class="text-amber-400">*</span>：</label>
+          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
+            物品名稱/標題 <span class="text-amber-400">*</span> <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+              💡 填寫小撇步：建議寫明品牌與型號，例如「【全新】象印保溫杯 500ml」。標題精確能讓同仁更快速搜尋到您的好物！
+            </div>
+          </label>
           <input type="text" id="post-title" placeholder="例如：精美單眼鏡頭清潔組 / 求購二手電風扇" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
         </div>
 
         <div>
           <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
-            <label class="block text-xs sm:text-sm font-bold text-gray-300">價格 (NT$) / 交易設定：</label>
+            <label class="block text-xs sm:text-sm font-bold text-gray-300 relative group cursor-pointer w-fit">
+              價格 (NT$) / 交易設定 <i class="fa-solid fa-circle-info text-[10px] text-indigo-400/50"></i>：
+              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+                💰 價格說明：請輸入預期交易的台幣金額。免費送請填 0；想徵求物品請填寫您的求購預算。
+              </div>
+            </label>
             <label class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-400 cursor-pointer relative group">
               <input type="checkbox" id="post-swap-check" onchange="toggleSwapMode(this.checked)" class="rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500">
               <span>🔄 我要以物易物</span>
@@ -356,7 +366,12 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">📞 聯絡方式 (分機 / LINE / Teams / 面交地點)：</label>
+          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
+            📞 聯絡方式 (分機/LINE/Teams/面交點) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+              📞 隱私保護提醒：建議填寫分機、Teams 帳號、LINE 或面交大廳，避免公開個人手機號碼或敏感隱私資訊。
+            </div>
+          </label>
           <input type="text" id="post-contact" placeholder="例如：分機 45555 / LINE: pega123 / A棟大廳面交" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
         </div>
       </div> <!-- 結束左側欄位 -->
@@ -365,7 +380,12 @@
       <div class="space-y-4">
 
         <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1">物品描述：</label>
+          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
+            物品描述 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+              📝 規格說明：建議寫明使用狀況（全新/九成新）、保固期限、使用次數，能大幅減少同仁來回詢問的時間喔！
+            </div>
+          </label>
           <textarea id="post-desc" rows="3" placeholder="請詳細說明物品狀況、規格或交易地點..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
         </div>
 
