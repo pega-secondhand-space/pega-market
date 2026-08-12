@@ -2430,6 +2430,18 @@
       }
 
       const isSold = isItemSold(item);
+
+      // ⚠️ Toggling Confirmation Prompt
+      if (isSold) {
+        if (!confirm('您確定要取消「已售出」標記，將商品重新上架嗎？')) {
+          return;
+        }
+      } else {
+        if (!confirm('您確定要將此商品標記為【已售出】嗎？\n\n（標記後，系統將於 2 天後安全自動下架，避免打擾喔！）')) {
+          return;
+        }
+      }
+
       let newDesc = item.description || '';
 
       if (isSold) {
