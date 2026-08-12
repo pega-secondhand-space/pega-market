@@ -1169,7 +1169,9 @@
           body: JSON.stringify({ pinned_ids_json: JSON.stringify(pinned), pwd_input: pwdHash })
         });
         if (!res.ok) {
-          showNotification('⚠️ 儲存置頂失敗，版主密碼失效，請重新登入', 'warning');
+          const errMsg = await res.text();
+          console.error('Save pinned API error:', res.status, errMsg);
+          showNotification(`⚠️ 儲存置頂失敗 (狀態碼: ${res.status})：${errMsg || '版主密碼失效'}`, 'warning');
         }
       } catch(e) {
         console.error('Save pinned error:', e);
