@@ -2270,6 +2270,7 @@
       if (inputHash === validHash) {
         isAdmin = true;
         localStorage.setItem('pega_is_admin', 'true');
+        localStorage.setItem('pega_admin_hash', inputHash);
         const pwdView = document.getElementById('admin-login-view');
         const dashView = document.getElementById('admin-dashboard-view');
         const btnText = document.getElementById('admin-btn-text');
