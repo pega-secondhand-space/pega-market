@@ -313,7 +313,12 @@
           <!-- 左側欄位 -->
           <div class="space-y-4">
             <div>
-              <label class="block text-xs font-bold text-gray-300 mb-1">交易類型：</label>
+              <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
+            交易類型 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md font-sans">
+              💡 交易分類選擇：請挑選最符合您物品屬性的交易類型，以便同仁在首頁能精準篩選到您的貼文喔！
+            </div>
+          </label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm transition-all duration-300">💰 想賣<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">自訂合理的出清價，將閒置物品折現賣給有需要的同仁。</div></button>
             <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🔍 想買<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">發布您目前需要的物品與徵求預算，向其他同仁求購。</div></button>
