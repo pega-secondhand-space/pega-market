@@ -1767,11 +1767,54 @@
       
       let finalPwd = cachedPwd;
 
-      // If they are on a different device and not admin, prompt for post password
+      // If they are on a different device and not admin, prompt and verify password
       if (!isOwner && !isAdmin) {
         const userPwd = prompt('本裝置無管理此貼文的憑證。\n請輸入該貼文的 4 位數密碼以進行修改：');
         if (!userPwd) return; // user cancelled
-        finalPwd = userPwd.trim();
+        
+        const pwdTrim = userPwd.trim();
+        
+        // Show loading notification
+        showNotification('🔑 正在驗證密碼...', 'info');
+        
+        try {
+          const verifyRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/verify_post_password`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              item_uuid: itemId,
+              dev_id: deviceId,
+              pwd_input: pwdTrim
+            })
+          });
+          
+          if (verifyRes.ok) {
+            const isAuthorized = await verifyRes.json();
+            if (isAuthorized) {
+              finalPwd = pwdTrim;
+              // Cache password locally since it's verified
+              const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
+              myPasswords[itemId] = pwdTrim;
+              localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
+              showNotification('✅ 密碼驗證成功！已開啟編輯。', 'success');
+            } else {
+              showNotification('⚠️ 密碼錯誤，您無權修改此貼文！', 'warning');
+              alert('⚠️ 密碼錯誤，您無權修改此貼文！');
+              return;
+            }
+          } else {
+            showNotification('⚠️ 驗證連線失敗，請稍後再試', 'warning');
+            return;
+          }
+        } catch (e) {
+          console.error('Verify password error:', e);
+          showNotification('⚠️ 驗證發生錯誤：' + e.message, 'warning');
+          return;
+        }
       }
 
       // Open the Create Modal in editing mode
@@ -1848,6 +1891,7 @@
       // Open Modal
       document.getElementById('create-modal').classList.remove('hidden');
     }
+
 
     async function submitCreateItem() {
       const errorBox = document.getElementById('create-modal-error');
