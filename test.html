@@ -190,15 +190,15 @@
 
       <!-- 分頁頁碼導航列 (獨立在 grid 外，防擦除/防遮擋設計) -->
       <div id="pagination-container" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/95 p-3.5 sm:p-4 rounded-2xl border border-gray-800 text-xs shadow-2xl backdrop-blur-md relative z-20">
-        <div class="text-gray-300 font-bold text-center sm:text-left text-[11px] sm:text-xs">
+        <div class="text-gray-300 font-bold text-center sm:text-left text-xs sm:text-xs">
           頁次：<span id="page-current" class="text-indigo-300 font-black">1</span> / <span id="page-total" class="text-gray-200 font-black">1</span> 頁 (共 <span id="items-total-count" class="text-amber-400 font-black">0</span> 筆貼文)
         </div>
         <div class="flex items-center justify-center gap-1.5 font-bold w-full sm:w-auto overflow-x-auto py-1">
-          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">⏮ 首頁</button>
-          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">◀ 上一頁</button>
+          <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">⏮ 首頁</button>
+          <button onclick="changePage(-1)" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">◀ 上一頁</button>
           <span id="page-numbers-span" class="px-2 font-black text-indigo-400 text-xs flex gap-1 items-center shrink-0">1 / 1</span>
-          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">下一頁 ▶</button>
-          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-[11px] font-bold shrink-0">末頁 ⏭</button>
+          <button onclick="changePage(1)" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">下一頁 ▶</button>
+          <button onclick="goToLastPage()" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">末頁 ⏭</button>
         </div>
       </div>
     </div>
@@ -314,23 +314,23 @@
           <div class="space-y-4">
             <div>
               <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            交易類型 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md font-sans">
+            交易類型 <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md font-sans">
               💡 交易分類選擇：請挑選最符合您物品屬性的交易類型，以便同仁在首頁能精準篩選到您的貼文喔！
             </div>
           </label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm transition-all duration-300">💰 想賣<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">自訂合理的出清價，將閒置物品折現賣給有需要的同仁。</div></button>
-            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🔍 想買<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">發布您目前需要的物品與徵求預算，向其他同仁求購。</div></button>
-            <button type="button" onclick="setPostType('free')" id="post-type-free" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🎁 免費送<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">將閒置好物免費送給同仁，資源循環，環保、省空間又溫暖！</div></button>
-            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">✨ 尾牙全新<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">尾牙或春酒抽到但用不到的全新獎品，打折折現或拿來物物交換！</div></button>
+            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm transition-all duration-300">💰 想賣<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">自訂合理的出清價，將閒置物品折現賣給有需要的同仁。</div></button>
+            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🔍 想買<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">發布您目前需要的物品與徵求預算，向其他同仁求購。</div></button>
+            <button type="button" onclick="setPostType('free')" id="post-type-free" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🎁 免費送<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">將閒置好物免費送給同仁，資源循環，環保、省空間又溫暖！</div></button>
+            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">✨ 尾牙全新<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">尾牙或春酒抽到但用不到的全新獎品，打折折現或拿來物物交換！</div></button>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            物品名稱/標題 <span class="text-amber-400">*</span> <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+            物品名稱/標題 <span class="text-amber-400">*</span> <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               💡 填寫小撇步：建議寫明品牌與型號，例如「【全新】象印保溫杯 500ml」。標題精確能讓同仁更快速搜尋到您的好物！
             </div>
           </label>
@@ -340,16 +340,16 @@
         <div>
           <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
             <label class="block text-xs sm:text-sm font-bold text-gray-300 relative group cursor-pointer w-fit">
-              價格 (NT$) / 交易設定 <i class="fa-solid fa-circle-info text-[10px] text-indigo-400/50"></i>：
-              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+              價格 (NT$) / 交易設定 <i class="fa-solid fa-circle-info text-xs text-indigo-400/50"></i>：
+              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
                 💰 價格說明：請輸入預期交易的台幣金額。免費送請填 0；想徵求物品請填寫您的求購預算。
               </div>
             </label>
             <label class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-400 cursor-pointer relative group">
               <input type="checkbox" id="post-swap-check" onchange="toggleSwapMode(this.checked)" class="rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500">
               <span>🔄 我要以物易物</span>
-              <i class="fa-solid fa-circle-info text-[10px] text-indigo-400/80"></i>
-              <div class="absolute top-full right-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+              <i class="fa-solid fa-circle-info text-xs text-indigo-400/80"></i>
+              <div class="absolute top-full right-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
                 不收現金，直接用實物與同仁交換等值好物。例如：空氣清淨機換咖啡機。
               </div>
             </label>
@@ -357,8 +357,8 @@
           <div id="price-input-container">
             <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
             <div class="mt-2.5 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-400 font-bold relative group">
-              <span>🎫 禮券折價助手 (點選折價) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：</span>
-              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+              <span>🎫 禮券折價助手 (點選折價) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：</span>
+              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
                 點選折數按鈕（如 95折），系統會自動計算折後價格，並自動在物品標題末尾加上標註！
               </div>
               <button type="button" onclick="applyCouponDiscount(0.9)" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-lg font-black transition">9 折</button>
@@ -372,8 +372,8 @@
 
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            📞 聯絡方式 (分機/LINE/Teams/面交點) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+            📞 聯絡方式 (分機/LINE/Teams/面交點) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               📞 隱私保護提醒：建議填寫分機、Teams 帳號、LINE 或面交大廳，避免公開個人手機號碼或敏感隱私資訊。
             </div>
           </label>
@@ -386,8 +386,8 @@
 
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            物品描述 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+            物品描述 <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               📝 規格說明：建議寫明使用狀況（全新/九成新）、保固期限、使用次數，能大幅減少同仁來回詢問的時間喔！
             </div>
           </label>
@@ -397,8 +397,8 @@
         <!-- 原生選擇照片檔案上傳資料庫 (最多 2 張照片，自動壓縮) -->
         <div class="space-y-3 bg-gray-900/60 p-3.5 rounded-2xl border border-gray-700/80">
           <label class="block text-xs font-bold text-gray-200 flex items-center justify-between relative group cursor-pointer w-fit">
-            <span>📷 上傳物品照片 (最多 2 張) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：</span>
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+            <span>📷 上傳物品照片 (最多 2 張) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：</span>
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               建議至少上傳一張清楚的主圖。若是尾牙全新商品，可附上外盒與封條照片證明。
             </div>
           </label>
@@ -408,7 +408,7 @@
             <div>
               <label for="upload-file-1" class="cursor-pointer bg-gray-800 hover:bg-gray-700 border border-dashed border-indigo-500/60 hover:border-indigo-400 p-3 rounded-xl flex flex-col items-center justify-center text-center transition">
                 <i class="fa-solid fa-cloud-arrow-up text-indigo-400 text-lg mb-1"></i>
-                <span class="text-[11px] font-bold text-indigo-200">選擇照片 1</span>
+                <span class="text-xs font-bold text-indigo-200">選擇照片 1</span>
                 <span id="file1-status" class="text-[9px] text-gray-400">點擊上傳圖檔</span>
               </label>
               <input type="file" id="upload-file-1" accept="image/*" onchange="handleImageSelect(1, event)" class="hidden">
@@ -418,7 +418,7 @@
             <div>
               <label for="upload-file-2" class="cursor-pointer bg-gray-800 hover:bg-gray-700 border border-dashed border-gray-600 hover:border-indigo-400 p-3 rounded-xl flex flex-col items-center justify-center text-center transition">
                 <i class="fa-solid fa-cloud-arrow-up text-gray-400 text-lg mb-1"></i>
-                <span class="text-[11px] font-bold text-gray-300">選擇照片 2 (選填)</span>
+                <span class="text-xs font-bold text-gray-300">選擇照片 2 (選填)</span>
                 <span id="file2-status" class="text-[9px] text-gray-400">點擊上傳第二張</span>
               </label>
               <input type="file" id="upload-file-2" accept="image/*" onchange="handleImageSelect(2, event)" class="hidden">
@@ -441,8 +441,8 @@
 
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            ⏳ 自動下架截止日設定 <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+            ⏳ 自動下架截止日設定 <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               設定貼文自動截止期限，時間到後系統會安全自動下架，防止過期訊息持續被打擾。
             </div>
           </label>
@@ -458,8 +458,8 @@
         <!-- 🔑 貼文管理/編輯密碼 -->
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            🔑 貼文管理/編輯密碼 (跨裝置修改或下架憑證) <i class="fa-solid fa-circle-info text-[10px] text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-[11px] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
+            🔑 貼文管理/編輯密碼 (跨裝置修改或下架憑證) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
+            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-slate-900 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
               系統已自動隨機產生一個 4 位數密碼，您也可以自訂。若更換電腦，可憑此密碼修改或下架此貼文。
             </div>
           </label>
@@ -676,7 +676,7 @@
 
       <!-- 統計方塊與工具列 -->
       <div class="px-5 py-3 bg-gray-900/60 border-b border-gray-700/80 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 font-sans">
-        <div class="flex flex-wrap gap-2 text-[11px] font-bold text-gray-300">
+        <div class="flex flex-wrap gap-2 text-xs font-bold text-gray-300">
           <span class="bg-emerald-950 border border-emerald-800 text-emerald-300 px-2.5 py-1 rounded-lg">累計成交：<strong id="archive-stat-count" class="text-white">0</strong> 件</span>
           <span class="bg-indigo-950 border border-indigo-800 text-indigo-300 px-2.5 py-1 rounded-lg">交易總額：<strong id="archive-stat-sum" class="text-white">NT$ 0</strong></span>
           <span class="bg-purple-950 border border-purple-800 text-purple-300 px-2.5 py-1 rounded-lg">免費贈送：<strong id="archive-stat-free" class="text-white">0</strong> 件</span>
@@ -1397,6 +1397,20 @@
               <!-- w-full h-full object-cover 強迫橫顯示，防止圖片出現 1x1 變形與黑邊 -->
               <img id="card-img-${item.id}" src="${(item.image_url || '').split('|||')[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" class="w-full h-full object-cover ${isSold ? '' : 'group-hover:scale-105'} transition-transform duration-300">
               <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
+              
+              <!-- 滑鼠懸停顯示點擊後之詳細描述與刊登人 (Hover Preview) -->
+              ${!isSold ? `
+                <div class="absolute inset-0 bg-slate-950/95 hidden group-hover:flex flex-col justify-between p-3.5 z-10 transition-all duration-300 pointer-events-none border-b border-indigo-500/30">
+                  <div class="flex-1 overflow-y-auto space-y-1.5">
+                    <div class="font-black text-indigo-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-file-invoice text-indigo-300"></i> 物品詳細描述：</div>
+                    <div class="text-xs text-gray-200 font-semibold leading-relaxed break-words whitespace-pre-wrap">${safeDesc || '同仁未提供詳細描述。'}</div>
+                  </div>
+                  <div class="pt-2 border-t border-gray-800/80 text-xs text-gray-400 font-bold flex items-center justify-between">
+                    <span>👤 刊登人：${item.nickname || '同仁'}</span>
+                    <span class="text-indigo-400 font-black">點擊查看詳情 ➔</span>
+                  </div>
+                </div>
+              ` : ''}
               
               <!-- 已售出打勾按鈕 -->
               <div class="absolute top-2 right-2 z-20" onclick="event.stopPropagation()">
@@ -2608,9 +2622,9 @@
           totalSum += price;
         }
 
-        const typeBadge = log.type === 'free' ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded text-[11px]">🎁 送</span>' :
-                          log.type === 'buy' ? '<span class="bg-amber-950 text-amber-400 border border-amber-800 px-2 py-0.5 rounded text-[11px]">🔍 買</span>' :
-                          '<span class="bg-indigo-950 text-indigo-400 border border-indigo-800 px-2 py-0.5 rounded text-[11px]">💰 賣</span>';
+        const typeBadge = log.type === 'free' ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded text-xs">🎁 送</span>' :
+                          log.type === 'buy' ? '<span class="bg-amber-950 text-amber-400 border border-amber-800 px-2 py-0.5 rounded text-xs">🔍 買</span>' :
+                          '<span class="bg-indigo-950 text-indigo-400 border border-indigo-800 px-2 py-0.5 rounded text-xs">💰 賣</span>';
 
         const priceStr = log.type === 'free' ? '免費送' : `NT$ ${price.toLocaleString()}`;
         const soldDate = log.sold_at ? new Date(log.sold_at).toLocaleString('zh-TW', { hour12: false }) : '未知時間';
@@ -2629,7 +2643,7 @@
             <td class="px-3 py-3">${typeBadge}</td>
             <td class="px-3 py-3 font-black text-indigo-400">${priceStr}</td>
             <td class="px-3 py-3 text-gray-400">${nicknameSafe}</td>
-            <td class="px-4 py-3 text-gray-400 text-[11px]">${soldDate}</td>
+            <td class="px-4 py-3 text-gray-400 text-xs">${soldDate}</td>
             ${deleteBtnHtml}
           </tr>
         `;
@@ -3131,14 +3145,14 @@
 
             return `
               <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-70 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
-                <div class="flex items-center justify-between text-[11px]">
+                <div class="flex items-center justify-between text-xs">
                   <span class="font-bold text-gray-200 flex items-center gap-1.5">
                     <i class="fa-solid fa-circle-user text-amber-400"></i> ${iss.sender_name || '熱心同仁'} 
                     ${isResolved ? 
                       '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md">✅ 已修復 / 已開發完成 (已沉底)</span>' : 
                       '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
                   </span>
-                  <span class="text-[10px] text-gray-500">${timeAgo(iss.created_at)}</span>
+                  <span class="text-xs text-gray-500">${timeAgo(iss.created_at)}</span>
                 </div>
 
                 <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/30 p-3 rounded-xl border border-white/5 whitespace-pre-line">
