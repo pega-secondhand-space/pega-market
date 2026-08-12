@@ -678,7 +678,6 @@
       <div class="px-5 py-3 bg-gray-900/60 border-b border-gray-700/80 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 font-sans">
         <div class="flex flex-wrap gap-2 text-xs font-bold text-gray-300">
           <span class="bg-emerald-950 border border-emerald-800 text-emerald-300 px-2.5 py-1 rounded-lg">累計成交：<strong id="archive-stat-count" class="text-white">0</strong> 件</span>
-          <span class="bg-indigo-950 border border-indigo-800 text-indigo-300 px-2.5 py-1 rounded-lg">交易總額：<strong id="archive-stat-sum" class="text-white">NT$ 0</strong></span>
           <span class="bg-purple-950 border border-purple-800 text-purple-300 px-2.5 py-1 rounded-lg">免費贈送：<strong id="archive-stat-free" class="text-white">0</strong> 件</span>
         </div>
         <div class="flex gap-2 w-full sm:w-auto">
@@ -2712,7 +2711,7 @@
       if (logs.length === 0) {
         tbody.innerHTML = `<tr><td colspan="${colspan}" class="px-4 py-8 text-center text-gray-400 font-bold">尚無成交或下架存檔紀錄</td></tr>`;
         document.getElementById('archive-stat-count').innerText = '0';
-        document.getElementById('archive-stat-sum').innerText = 'NT$ 0';
+        
         document.getElementById('archive-stat-free').innerText = '0';
         return;
       }
@@ -3250,40 +3249,85 @@
             return;
           }
 
-          // 處理中排在前面，已修復([RESOLVED]) 沉底在最後面
-          issues.sort((a, b) => {
+          // 自動清理：回覆並修復超過 1 個月 (30天) 的留言自動進入歷史封存 (隱藏)
+          const activeIssues = issues.filter(iss => {
+            const cnt = iss.content || '';
+            if (cnt.includes('[RESOLVED_AT:')) {
+              const m = cnt.match(/\[RESOLVED_AT:(.*?)\]/);
+              if (m && m[1]) {
+                const resTime = new Date(m[1]);
+                const diffMs = new Date() - resTime;
+                if (diffMs > 30 * 24 * 60 * 60 * 1000) {
+                  return false; // 過期 1 個月自動封存過濾
+                }
+              }
+            }
+            return true;
+          });
+
+          if (badge) badge.innerText = activeIssues.length;
+
+          if (activeIssues.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無待處理的同仁留言反饋</p>';
+            return;
+          }
+
+          // 處理中排在前面，已修復沉底在最後面
+          activeIssues.sort((a, b) => {
             const aResolved = (a.content || '').includes('[RESOLVED]') ? 1 : 0;
             const bResolved = (b.content || '').includes('[RESOLVED]') ? 1 : 0;
             return aResolved - bResolved;
           });
 
-          container.innerHTML = issues.map(iss => {
+          container.innerHTML = activeIssues.map(iss => {
             const isResolved = (iss.content || '').includes('[RESOLVED]');
-            const rawContent = (iss.content || '').replace(/\[RESOLVED\]/g, '').trim();
-            const safeContent = rawContent.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const fullContent = iss.content || '';
+            
+            // 提取版主回覆
+            let replyText = '';
+            const replyMatch = fullContent.match(/\[ADMIN_REPLY:([\s\S]*?)\]/);
+            if (replyMatch && replyMatch[1]) {
+              replyText = replyMatch[1];
+            }
+
+            const cleanUserText = fullContent
+              .replace(/\[ADMIN_REPLY:[\s\S]*?\]/g, '')
+              .replace(/\[RESOLVED_AT:.*?\]/g, '')
+              .replace(/\[RESOLVED\]/g, '')
+              .trim();
+
+            const safeUserText = cleanUserText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const safeReplyText = replyText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             return `
-              <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-70 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
+              <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-80 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold text-gray-200 flex items-center gap-1.5">
                     <i class="fa-solid fa-circle-user text-amber-400"></i> ${iss.sender_name || '熱心同仁'} 
                     ${isResolved ? 
-                      '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md">✅ 已修復 / 已開發完成 (已沉底)</span>' : 
-                      '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
+                      '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-2 py-0.5 rounded-md">✅ 版主已回覆並處理完成 (滿1個月將自動歸檔)</span>' : 
+                      '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-xs font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
                   </span>
                   <span class="text-xs text-gray-500">${timeAgo(iss.created_at)}</span>
                 </div>
 
                 <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/30 p-3 rounded-xl border border-white/5 whitespace-pre-line">
-                  ${safeContent}
+                  ${safeUserText}
                 </div>
+
+                ${safeReplyText ? `
+                  <div class="mt-2 p-2.5 bg-indigo-950/80 border border-indigo-500/40 rounded-xl text-xs text-indigo-200 space-y-1">
+                    <div class="font-bold text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 版主回覆與處理說明：</div>
+                    <div class="whitespace-pre-line leading-relaxed font-medium text-gray-200">${safeReplyText}</div>
+                  </div>
+                ` : ''}
 
                 ${isAdmin ? `
                   <div class="flex justify-end gap-1.5 pt-1">
-                    <button onclick="toggleResolveIssue('${iss.id}', ${isResolved})" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 text-amber-300' : 'bg-emerald-900/60 text-emerald-300'} text-[10px] font-bold rounded-lg transition">
-                      ${isResolved ? '↩️ 恢復為處理中' : '✅ 標記為已修復 (沉底)'}
+                    <button onclick="toggleResolveIssue('${iss.id}', ${isResolved})" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 text-amber-300' : 'bg-emerald-900/60 text-emerald-300'} text-xs font-bold rounded-lg transition">
+                      ${isResolved ? '↩️ 重新編輯回覆/恢復處理中' : '✍️ 版主回覆並標記已處理'}
                     </button>
-                    <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2 py-1 bg-red-900/60 text-red-300 text-[10px] font-bold rounded-lg transition">
+                    <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2 py-1 bg-red-900/60 text-red-300 text-xs font-bold rounded-lg transition">
                       🗑️ 刪除留言
                     </button>
                   </div>
