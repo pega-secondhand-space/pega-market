@@ -47,6 +47,9 @@
 
 | 日期 | 功能 / 修正項目 | 狀態 | 備註 |
 | :--- | :--- | :---: | :--- |
+| 2026-08-15 | 全站 3,460 行巨石代碼解耦，完成 CSS / JS 模組化重構 | ✅ 徹底完成 | 拆分 css/ 與 7 個 js/ 獨立模組，零破壞相容 |
+| 2026-08-15 | 全面實施 XSS 安全防護 (通用 `escapeHtml`) | ✅ 徹底完成 | 卡片、詳情、留言板與代號全面安全跳脫 |
+| 2026-08-15 | 專案目錄整潔度維護，歷史暫存腳本全數歸檔 | ✅ 徹底完成 | 60+ 歷史腳本歸檔至 archive/scripts/ |
 | 2026-08-03 | 遷移至 `jovianpega` 專屬 Netlify 帳號運作 | ✅ 徹底完成 | 遷移至 pega-market.netlify.app |
 | 2026-08-03 | 100% 移除了所有原始碼中的明文密碼字串 | ✅ 徹底完成 | 改用 SHA-256 雜湊比對與 Supabase 雲端校對 |
 | 2026-08-03 | 實施即時線上人數追蹤與版主儀表板 | ✅ 徹底完成 | 自動 upsert (35s 逾期視窗) & beforeunload 離線清理 |
@@ -105,5 +108,43 @@
      - 前端網頁只需透過 `anon` 金鑰呼叫該 RPC：`supabase.rpc('admin_delete_item', { item_uuid: '...', pwd_input: '...' })`。
      - 這保證了超級權限 (`security definer`) 只執行在被驗證過密碼的伺服器端，網頁原始碼不再有任何漏洞。
 
+8. **📋 版主全站貼文批次管理 / 強制多選刪除 (Admin Batch Item Management)**：
+   - 版主後台新增專屬分頁 **「📋 貼文批次管理 / 強制刪除」**。
+   - 提供搜尋過濾、類型篩選（💰賣/🔍買/🎁送/🎁尾牙）、全選 Checkbox 與一鍵強制批次刪除 RPC 安全清理。
+   - 表格最右側支援單筆 📌 置頂切換與 🗑️ 即時刪除。
+
+9. **🖥️ 版主控制台滿版大工作區 & ⛶ 全螢幕切換**：
+   - 預設提供 `98vw` 滿版沉浸式工作區，大幅釋放桌面端大螢幕操作空間，單頁可同時檢視 15~20 筆貼文。
+   - 頂部支援 **「⛶ 全螢幕 / 視窗還原」** 一鍵切換。
+
+10. **🟢 全站即時在線監控儀表板 (Online Presence Modal)**：
+    - 點擊頂部 `🟢 此刻線上: X 人` 彈出即時在線連線儀表板。
+    - 透過 30 秒 Heartbeat 匿名廣播，準確統計全站即時活躍同仁數。
+
+11. **🛠️ 模組化架構重構 (Modular Refactoring)**：
+    - 將原本 3,464 行單一 HTML 解構為 7 大 ES6 模組 (`config.js`, `utils.js`, `api.js`, `ui.js`, `admin.js`, `issue-board.js`, `main.js`) 與 `css/style.css`。
+    - 全面導入 `closeAllModals()` 互斥彈窗機制與 `escapeHtml()` XSS 安全防護。
+    - 通過 44 項端到端自動化測試套件（100% PASS）。
+
 ---
-*文件生成時間: 2026-08-03 | PEGAPEGA 告示牌團隊*
+
+## 🌐 託管平台與帳號設定紀錄 (Netlify & Supabase)
+
+### 1. Netlify 帳號 1：`imjovian` (現行正式站)
+- **管理後台**：[https://app.netlify.com/projects/pega-market/overview](https://app.netlify.com/projects/pega-market/overview)
+- **正式網址**：[https://pega-market.netlify.app](https://pega-market.netlify.app)
+- **短網址**：[https://tinyurl.com/pega-market-official](https://tinyurl.com/pega-market-official)
+- **API Token**：`nfp_eGgrKsCuTaxKnWgj3cCnJGXck6D9JVXa80ab`
+
+### 2. Netlify 帳號 2：`jovianpega` (jovianpega's team - 舊/測試站)
+- **管理後台**：[https://app.netlify.com/projects/chipper-rolypoly-7c56c3/overview](https://app.netlify.com/projects/chipper-rolypoly-7c56c3/overview)
+- **站點網址**：[https://chipper-rolypoly-7c56c3.netlify.app/](https://chipper-rolypoly-7c56c3.netlify.app/)
+- **API Token**：`nfp_CUjzB56wkGYCREfpAWCQfc8aHtSCxs4Ga872` (有效期限: 2027-07-22)
+
+### 3. Supabase 雲端資料庫
+- **專案網址**：[https://supabase.com/dashboard/project/llnnbanqtmnccfvtwooo](https://supabase.com/dashboard/project/llnnbanqtmnccfvtwooo)
+- **API URL**：`https://llnnbanqtmnccfvtwooo.supabase.co`
+
+---
+*文件更新時間: 2026-08-15 | PEGAPEGA 告示牌團隊*
+

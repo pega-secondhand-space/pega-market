@@ -1,0 +1,305 @@
+/* ==========================================================================
+   PEGA 二手交換空間 - 自訂樣式與全站字體控制
+   ========================================================================== */
+
+/* 淡入與縮放動畫 */
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   全站動態字體與優雅排版系統 (兼顧中年清晰大字與現代 Threads 美感)
+   ========================================================================== */
+
+:root {
+  --text-scale: 1.0;
+}
+
+/* 5 級字體微調乘數 (僅放大文字內容，100% 保持外框、按鈕與間距的黃金比例) */
+html.font-level-sm { --text-scale: 0.92; font-size: 14.5px; }
+html.font-level-base { --text-scale: 1.08; font-size: 16px; }  /* 預設：清晰好讀 */
+html.font-level-lg { --text-scale: 1.22; font-size: 16.8px; }  /* 中年舒適大字 */
+html.font-level-xl { --text-scale: 1.38; font-size: 17.6px; }  /* 特大無障礙字體 */
+html.font-level-2xl { --text-scale: 1.55; font-size: 18.5px; } /* 超大尊爵字體 (A+++) */
+
+/* 📢 全站公告欄 / 使用須知動態字體聯動 */
+#announcement-bar {
+  font-size: calc(0.875rem * var(--text-scale)) !important;
+  line-height: 1.55 !important;
+}
+
+#announcement-text {
+  font-size: calc(0.875rem * var(--text-scale)) !important;
+  line-height: 1.6 !important;
+}
+
+/* 📱 手機端 Threads 串文專屬字體微調器 */
+.threads-title-font {
+  font-size: calc(1.05rem * var(--text-scale)) !important;
+  line-height: 1.42 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.threads-desc-font {
+  font-size: calc(0.88rem * var(--text-scale)) !important;
+  line-height: 1.62 !important;
+  letter-spacing: 0.005em !important;
+}
+
+.threads-meta-font {
+  font-size: calc(0.8rem * var(--text-scale)) !important;
+  line-height: 1.3 !important;
+}
+
+.threads-price-font {
+  font-size: calc(1.05rem * var(--text-scale)) !important;
+  line-height: 1.2 !important;
+}
+
+/* 🔍 刊登詳情彈窗專屬字體聯動系統 (隨 A⁻ / A / A⁺ / A⁺⁺ / A⁺⁺⁺ 同步放大縮小) */
+.detail-title-font {
+  font-size: calc(1.15rem * var(--text-scale)) !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.detail-desc-font {
+  font-size: calc(0.92rem * var(--text-scale)) !important;
+  line-height: 1.68 !important;
+  letter-spacing: 0.005em !important;
+}
+
+.detail-price-font {
+  font-size: calc(1.22rem * var(--text-scale)) !important;
+  line-height: 1.2 !important;
+}
+
+/* 🏷️ 分類選單按鈕 (全部 / 買 / 賣 / 送 / 尾牙) 動態字體聯動 */
+#filter-all,
+#filter-sell,
+#filter-buy,
+#filter-free,
+#filter-lucky,
+[id^="post-type-"],
+#grid-layout-select {
+  font-size: calc(0.88rem * var(--text-scale)) !important;
+}
+
+/* 🔍 搜尋框（主頁搜尋、懸浮搜尋、後台搜尋、成交庫搜尋）打字與提示文字動態字體放大 */
+#search-input,
+#overlay-search-input,
+#admin-items-search,
+#archive-search,
+input[type="text"],
+input[type="number"],
+input[type="password"],
+textarea {
+  font-size: calc(0.96rem * var(--text-scale)) !important;
+  line-height: 1.4 !important;
+}
+
+#search-input::placeholder,
+#overlay-search-input::placeholder,
+#admin-items-search::placeholder,
+#archive-search::placeholder,
+input::placeholder,
+textarea::placeholder {
+  font-size: calc(0.88rem * var(--text-scale)) !important;
+}
+
+/* 🏷️ 懸浮搜尋熱門關鍵字膠囊動態字體 */
+#sticky-search-overlay button,
+#sticky-search-overlay span {
+  font-size: calc(0.82rem * var(--text-scale)) !important;
+}
+
+/* 🏷️ 買/賣/送/尾牙 徽章連動全域字體放大 */
+.badge-dynamic-font,
+[class*="badge-dynamic"] {
+  font-size: calc(0.78rem * var(--text-scale)) !important;
+  line-height: 1.2 !important;
+}
+
+/* 🛡️ 後台管理控制台全域字體深度聯動 */
+#admin-modal,
+#admin-modal-card,
+#admin-modal-card table,
+#admin-modal-card th,
+#admin-modal-card td,
+#admin-modal-card input,
+#admin-modal-card select,
+#admin-modal-card button,
+#admin-modal-card textarea,
+#admin-announcement-input,
+#admin-items-search,
+#admin-items-type-filter {
+  font-size: calc(0.88rem * var(--text-scale)) !important;
+  line-height: 1.5 !important;
+}
+
+#admin-modal h2,
+#admin-modal h3,
+#admin-modal h4 {
+  font-size: calc(1.1rem * var(--text-scale)) !important;
+}
+
+/* 📋 全站彈窗內容區文字動態連動 (問題回報留言板、成交庫、刊登表單、線上同仁名冊) */
+#issue-modal,
+#issue-list-container,
+#archive-modal,
+#archive-items-table,
+#create-modal,
+#create-modal form,
+#create-modal form label,
+#create-modal form input,
+#create-modal form textarea,
+#create-modal form button,
+#online-users-modal {
+  font-size: calc(0.88rem * var(--text-scale)) !important;
+}
+
+/* Premium Hover Glow Effect */
+.premium-card {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  background-color: rgba(31, 41, 55, 0.9) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+              0 0 30px 0px rgba(99, 102, 241, 0.15) !important;
+}
+
+.premium-card-sell:hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+              0 0 30px 0px rgba(99, 102, 241, 0.2) !important;
+  border-color: rgba(99, 102, 241, 0.6) !important;
+}
+
+.premium-card-buy:hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+              0 0 30px 0px rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+.premium-card-free:hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+              0 0 30px 0px rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+.premium-card-lucky:hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+              0 0 30px 0px rgba(244, 63, 94, 0.25) !important;
+  border-color: rgba(244, 63, 94, 0.65) !important;
+}
+
+.premium-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  transition: all 0.7s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.premium-card:hover::after {
+  left: 120%;
+  opacity: 1;
+  transition: all 0.7s ease;
+}
+
+/* 手機觸控與滾動條優化 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 🏷️ 買/賣/送/尾牙 徽章連動全域字體放大 */
+.badge-dynamic-font {
+  font-size: 0.75rem !important;
+  line-height: 1.2 !important;
+}
+
+/* 🖼️ 手機卡片圖片 100% 絕對防塌陷與標準正方形比例 */
+.aspect-square {
+  aspect-ratio: 1 / 1 !important;
+  min-height: 150px !important;
+  width: 100% !important;
+  position: relative !important;
+  display: block !important;
+}
+
+.aspect-square img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* 📱 手機橫向 (Landscape) 極致流暢優化 (寬高比大且垂直空間較短) */
+@media (max-height: 550px) and (orientation: landscape) {
+  /* 1. 壓縮頂部導覽列垂直高度，留出 80% 空間看卡片 */
+  header.sticky {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  /* 2. 壓縮公告欄高度 */
+  #announcement-bar {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* 3. 所有彈窗視窗垂直自適應可滾動，100% 不被裁切 */
+  #detail-modal > div,
+  #create-modal > div,
+  #admin-modal-card,
+  #issue-modal > div,
+  #archive-modal > div,
+  #online-users-modal > div {
+    max-height: 94vh !important;
+    height: 94vh !important;
+  }
+
+  /* 4. 右下角浮動按鈕微縮，不擋住卡片 */
+  .fixed.right-4.bottom-20 {
+    right: 0.75rem !important;
+    bottom: 4.5rem !important;
+    gap: 0.35rem !important;
+  }
+}
+
+
+
+
