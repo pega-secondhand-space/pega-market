@@ -157,6 +157,15 @@ async function loadAndRenderIssues() {
         return aResolved - bResolved;
       });
 
+      const batchToolbar = document.getElementById('issue-admin-batch-toolbar');
+      if (batchToolbar) {
+        if (isAdmin) {
+          batchToolbar.classList.remove('hidden');
+        } else {
+          batchToolbar.classList.add('hidden');
+        }
+      }
+
       container.innerHTML = activeIssues.map(iss => {
         const isResolved = (iss.content || '').includes('[RESOLVED]');
         const fullContent = iss.content || '';
@@ -180,12 +189,15 @@ async function loadAndRenderIssues() {
         return `
           <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-80 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
             <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-gray-200 flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-user text-amber-400"></i> ${safeSenderName} 
-                ${isResolved ? 
-                  '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-2 py-0.5 rounded-md">✅ 版主已回覆並處理完成</span>' : 
-                  '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-xs font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
-              </span>
+              <div class="flex items-center gap-2">
+                ${isAdmin ? `<input type="checkbox" class="issue-select-chk w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-400 bg-gray-950 cursor-pointer" value="${iss.id}" onchange="updateIssueBatchUI()">` : ''}
+                <span class="font-bold text-gray-200 flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-user text-amber-400"></i> ${safeSenderName} 
+                  ${isResolved ? 
+                    '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-2 py-0.5 rounded-md">✅ 版主已回覆並處理完成</span>' : 
+                    '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-xs font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
+                </span>
+              </div>
               <span class="text-xs text-gray-500">${timeAgo(iss.created_at)}</span>
             </div>
 
@@ -213,9 +225,93 @@ async function loadAndRenderIssues() {
           </div>
         `;
       }).join('');
+      updateIssueBatchUI();
     }
   } catch(e) {
     console.error('Load issues error:', e);
+  }
+}
+
+/**
+ * 全選或取消全選留言
+ */
+function toggleSelectAllIssues(checked) {
+  const chks = document.querySelectorAll('.issue-select-chk');
+  chks.forEach(c => c.checked = checked);
+  updateIssueBatchUI();
+}
+
+/**
+ * 更新批次選取狀態與按鈕可用度
+ */
+function updateIssueBatchUI() {
+  const chks = document.querySelectorAll('.issue-select-chk:checked');
+  const count = chks.length;
+  const badge = document.getElementById('issue-selected-count-badge');
+  const btn = document.getElementById('issue-batch-delete-btn');
+  const selectAll = document.getElementById('issue-select-all-checkbox');
+
+  if (badge) badge.innerText = `已選 ${count} 則`;
+  if (btn) {
+    if (count > 0) {
+      btn.disabled = false;
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    } else {
+      btn.disabled = true;
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+  }
+
+  const allChks = document.querySelectorAll('.issue-select-chk');
+  if (selectAll && allChks.length > 0) {
+    selectAll.checked = (count === allChks.length);
+  }
+}
+
+/**
+ * 版主執行批次刪除留言
+ */
+async function deleteSelectedIssuesAdmin() {
+  if (!isAdmin) return showNotification('⚠️ 只有版主具備批次刪除權限', 'warning');
+  const checkedBoxes = Array.from(document.querySelectorAll('.issue-select-chk:checked'));
+  const ids = checkedBoxes.map(c => c.value);
+
+  if (ids.length === 0) {
+    showNotification('⚠️ 請先勾選要刪除的留言紀錄！', 'warning');
+    return;
+  }
+
+  if (!confirm(`⚠️ 確定要批次永久刪除選取的 ${ids.length} 則留言紀錄嗎？\n此操作無法復原！`)) return;
+
+  const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+  const btn = document.getElementById('issue-batch-delete-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 批次刪除中...';
+  }
+
+  try {
+    const results = await Promise.all(ids.map(id => {
+      return fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_issue_admin`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ issue_id: id, pwd_input: pwdHash })
+      });
+    }));
+
+    const successCount = results.filter(r => r.ok).length;
+    showNotification(`🗑️ 已成功批次刪除 ${successCount} 則留言紀錄！`, 'success');
+    await loadAndRenderIssues();
+  } catch(e) {
+    console.error('Batch delete issues error:', e);
+    showNotification('⚠️ 批次刪除發生異常：' + e.message, 'warning');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-trash-can"></i> 批次刪除選取';
+    }
+    const selectAll = document.getElementById('issue-select-all-checkbox');
+    if (selectAll) selectAll.checked = false;
   }
 }
 
@@ -289,3 +385,6 @@ window.toggleResolveIssue = toggleResolveIssue;
 window.deleteIssueAdmin = deleteIssueAdmin;
 window.loadAndRenderIssues = loadAndRenderIssues;
 window.submitNewIssue = submitNewIssue;
+window.toggleSelectAllIssues = toggleSelectAllIssues;
+window.updateIssueBatchUI = updateIssueBatchUI;
+window.deleteSelectedIssuesAdmin = deleteSelectedIssuesAdmin;

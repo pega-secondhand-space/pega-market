@@ -92,7 +92,9 @@ html.font-level-2xl { --text-scale: 1.55; font-size: 18.5px; } /* 超大尊爵�
 #filter-free,
 #filter-lucky,
 [id^="post-type-"],
-#grid-layout-select {
+#grid-layout-select,
+#online-users-badge,
+#online-count-display {
   font-size: calc(0.88rem * var(--text-scale)) !important;
 }
 
@@ -154,7 +156,6 @@ textarea::placeholder {
   font-size: calc(1.1rem * var(--text-scale)) !important;
 }
 
-/* 📋 全站彈窗內容區文字動態連動 (問題回報留言板、成交庫、刊登表單、線上同仁名冊) */
 #issue-modal,
 #issue-list-container,
 #archive-modal,
@@ -165,8 +166,33 @@ textarea::placeholder {
 #create-modal form input,
 #create-modal form textarea,
 #create-modal form button,
-#online-users-modal {
-  font-size: calc(0.88rem * var(--text-scale)) !important;
+#online-users-modal,
+#guide-modal,
+.guide-slide {
+  font-size: calc(0.92rem * var(--text-scale)) !important;
+}
+
+#guide-modal h3,
+#guide-modal h4,
+.guide-slide h3,
+.guide-slide h4 {
+  font-size: calc(1.12rem * var(--text-scale)) !important;
+  line-height: 1.4 !important;
+}
+
+#guide-modal p,
+#guide-modal li,
+.guide-slide p,
+.guide-slide li {
+  font-size: calc(0.92rem * var(--text-scale)) !important;
+  line-height: 1.62 !important;
+}
+
+#guide-modal span,
+#guide-modal button,
+.guide-slide span,
+.guide-slide button {
+  font-size: calc(0.85rem * var(--text-scale)) !important;
 }
 
 /* Premium Hover Glow Effect */

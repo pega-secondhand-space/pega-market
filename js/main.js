@@ -66,13 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
   updateGridLayoutOptions();
   window.addEventListener('resize', updateGridLayoutOptions);
 
-  // 5. 載入商品列表、啟動手機端無限滾動與詳情下滑關閉手勢
+  // 5. 載入商品列表、啟動手機端無限滾動與詳情/燈箱滑動手勢
   loadItems();
   if (typeof setupMobileInfiniteScroll === 'function') {
     setupMobileInfiniteScroll();
   }
   if (typeof initDetailModalGestures === 'function') {
     initDetailModalGestures();
+  }
+  if (typeof initLightboxGestures === 'function') {
+    initLightboxGestures();
   }
 
   // 6. 啟動在線心跳計時器

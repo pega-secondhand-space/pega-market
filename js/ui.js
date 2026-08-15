@@ -272,15 +272,22 @@ function renderItems() {
               ${p2 ? '<div class="inline-block text-[11px] text-gray-300 bg-gray-900 px-2.5 py-0.5 rounded-full border border-gray-800 font-bold">1/2 多圖</div>' : ''}
             </div>
 
-            <!-- 圖片區：若 2 張圖則並排（如截圖），若 1 張圖則全幅呈現 -->
+            <!-- 圖片區：若 2 張圖則並排，點擊照片直接全螢幕燈箱放大 -->
             ${p2 ? `
               <div class="grid grid-cols-2 gap-2 aspect-[4/3] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800/80">
-                <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover">
-                <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover">
+                <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第一張照片">
+                  <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                  <span class="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 sm:opacity-100 transition"><i class="fa-solid fa-expand"></i> 放大</span>
+                </div>
+                <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第二張照片">
+                  <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                  <span class="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 sm:opacity-100 transition"><i class="fa-solid fa-expand"></i> 放大</span>
+                </div>
               </div>
             ` : `
-              <div class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800/80">
-                <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block">
+              <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800/80 cursor-zoom-in group" title="點擊放大原圖">
+                <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
+                <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-md backdrop-blur-sm opacity-0 group-hover:opacity-100 sm:opacity-100 transition"><i class="fa-solid fa-expand"></i> 點擊放大原圖</span>
               </div>
             `}
 
@@ -520,18 +527,21 @@ function openDetailModal(itemId) {
     if (p2) {
       photosContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-gray-950/90 border border-gray-700/60 p-2";
       photosContainer.innerHTML = `
-        <div class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800">
+        <div onclick="openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
           <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (1/2)</span>
         </div>
-        <div class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800">
+        <div onclick="openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
           <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (2/2)</span>
         </div>
       `;
     } else {
       photosContainer.className = "grid grid-cols-1 gap-3 rounded-2xl overflow-hidden bg-gray-950/90 border border-gray-700/60 p-2";
       photosContainer.innerHTML = `
-        <div class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800">
+        <div onclick="openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
           <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-80 w-full object-contain rounded-lg">
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大原圖</span>
         </div>
       `;
     }
@@ -1106,7 +1116,7 @@ async function submitCreateItem() {
           alert(`🎉 貼文發布成功！\n\n您的 4 位數「編輯與下架密碼」為：${editPasswordVal}\n\n（本機已自動為您記住此密碼。若日後更換電腦或手機，請憑此密碼修改或下架貼文，建議將其妥善保存喔！）`);
         }
 
-        showNotification('🎉 刊登成功！貼文已即時發布。', 'success');
+        showNotification('🎉 刊登成功！貼文已排在第一位展示。', 'success');
         closeCreateModal();
         
         if (titleInput) titleInput.value = '';
@@ -1136,7 +1146,27 @@ async function submitCreateItem() {
         const previewsGrid = document.getElementById('upload-previews-grid');
         if (previewsGrid) previewsGrid.classList.add('hidden');
 
-        await loadItems(newItemId);
+        // 自動切換至全部好物分類與第一頁，清除搜尋過濾
+        currentFilter = 'all';
+        currentPage = 1;
+        mobileDisplayLimit = 30;
+        const mainSearch = document.getElementById('search-input');
+        if (mainSearch) mainSearch.value = '';
+        const overlaySearch = document.getElementById('overlay-search-input');
+        if (overlaySearch) overlaySearch.value = '';
+
+        ['all', 'sell', 'buy', 'free', 'lucky'].forEach(type => {
+          const btn = document.getElementById(`filter-${type}`);
+          if (btn) {
+            if (type === 'all') {
+              btn.className = 'px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 transition shadow-md shadow-amber-500/20 active:scale-95 shrink-0 font-black';
+            } else {
+              btn.className = 'px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:text-amber-300 hover:bg-gray-800 transition active:scale-95 shrink-0 font-bold';
+            }
+          }
+        });
+
+        await loadItems(newItemId, false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         const err = await postRes.json();
@@ -1369,6 +1399,187 @@ function initDetailModalGestures() {
   });
 }
 
+/**
+ * 📖 新手圖文使用指南彈窗邏輯
+ */
+let modalGuideCurrentStep = 1;
+const modalGuideTotalSteps = 5;
+
+function openGuideModal() {
+  const modal = document.getElementById('guide-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modalGuideCurrentStep = 1;
+    updateModalGuideUI();
+  }
+}
+
+function closeGuideModal() {
+  const modal = document.getElementById('guide-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function updateModalGuideUI() {
+  document.querySelectorAll('.modal-guide-slide').forEach(slide => {
+    const step = parseInt(slide.getAttribute('data-step'), 10);
+    if (step === modalGuideCurrentStep) {
+      slide.classList.remove('hidden');
+      slide.classList.add('block');
+    } else {
+      slide.classList.remove('block');
+      slide.classList.add('hidden');
+    }
+  });
+
+  const stepText = document.getElementById('modal-guide-step-text');
+  if (stepText) stepText.innerText = modalGuideCurrentStep;
+
+  const progressBar = document.getElementById('modal-guide-progress');
+  if (progressBar) {
+    progressBar.style.width = `${(modalGuideCurrentStep / modalGuideTotalSteps) * 100}%`;
+  }
+
+  const prevBtn = document.getElementById('modal-guide-btn-prev');
+  if (prevBtn) {
+    prevBtn.disabled = (modalGuideCurrentStep === 1);
+  }
+
+  const nextBtn = document.getElementById('modal-guide-btn-next');
+  if (nextBtn) {
+    if (modalGuideCurrentStep === modalGuideTotalSteps) {
+      nextBtn.innerHTML = `<span>開始體驗</span> <i class="fa-solid fa-arrow-right text-[9px]"></i>`;
+      nextBtn.onclick = finishModalGuide;
+    } else {
+      nextBtn.innerHTML = `<span>下一頁</span> <i class="fa-solid fa-chevron-right text-[9px]"></i>`;
+      nextBtn.onclick = nextModalGuideStep;
+    }
+  }
+
+  const dotsContainer = document.getElementById('modal-guide-dots');
+  if (dotsContainer) {
+    const dots = dotsContainer.querySelectorAll('span');
+    dots.forEach((dot, idx) => {
+      if (idx + 1 === modalGuideCurrentStep) {
+        dot.className = 'w-3 h-2 rounded-full bg-amber-400 shadow-md shadow-amber-400/50 transition-all';
+      } else {
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-gray-700 transition-all';
+      }
+    });
+  }
+}
+
+function nextModalGuideStep() {
+  if (modalGuideCurrentStep < modalGuideTotalSteps) {
+    modalGuideCurrentStep++;
+    updateModalGuideUI();
+  }
+}
+
+function prevModalGuideStep() {
+  if (modalGuideCurrentStep > 1) {
+    modalGuideCurrentStep--;
+    updateModalGuideUI();
+  }
+}
+
+function finishModalGuide() {
+  localStorage.setItem('pega_seen_guide', 'true');
+  closeGuideModal();
+}
+
+/**
+ * 🖼️ 全螢幕沉浸式圖片放大檢視 (Lightbox) 邏輯
+ */
+let currentLightboxImages = [];
+let currentLightboxIndex = 0;
+
+function openLightboxModal(images, startIndex = 0) {
+  if (typeof images === 'string') {
+    images = images.split('|||').map(s => s.trim()).filter(Boolean);
+  }
+  if (!images || images.length === 0) return;
+
+  currentLightboxImages = images;
+  currentLightboxIndex = (startIndex >= 0 && startIndex < images.length) ? startIndex : 0;
+  
+  const modal = document.getElementById('lightbox-modal');
+  const img = document.getElementById('lightbox-img');
+  const counter = document.getElementById('lightbox-counter');
+  const prevBtn = document.getElementById('lightbox-btn-prev');
+  const nextBtn = document.getElementById('lightbox-btn-next');
+
+  if (modal && img) {
+    img.src = currentLightboxImages[currentLightboxIndex];
+    modal.classList.remove('hidden');
+
+    if (currentLightboxImages.length > 1) {
+      if (counter) {
+        counter.classList.remove('hidden');
+        counter.innerText = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+      }
+      if (prevBtn) prevBtn.classList.remove('hidden');
+      if (nextBtn) nextBtn.classList.remove('hidden');
+    } else {
+      if (counter) counter.classList.add('hidden');
+      if (prevBtn) prevBtn.classList.add('hidden');
+      if (nextBtn) nextBtn.classList.add('hidden');
+    }
+  }
+}
+
+function closeLightboxModal() {
+  const modal = document.getElementById('lightbox-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function nextLightboxPhoto() {
+  if (currentLightboxImages.length <= 1) return;
+  currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxImages.length;
+  const img = document.getElementById('lightbox-img');
+  const counter = document.getElementById('lightbox-counter');
+  if (img) img.src = currentLightboxImages[currentLightboxIndex];
+  if (counter) counter.innerText = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+}
+
+function prevLightboxPhoto() {
+  if (currentLightboxImages.length <= 1) return;
+  currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxImages.length) % currentLightboxImages.length;
+  const img = document.getElementById('lightbox-img');
+  const counter = document.getElementById('lightbox-counter');
+  if (img) img.src = currentLightboxImages[currentLightboxIndex];
+  if (counter) counter.innerText = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+}
+
+// 綁定全螢幕大圖燈箱觸控滑動手勢與鍵盤切換
+function initLightboxGestures() {
+  const modal = document.getElementById('lightbox-modal');
+  if (!modal) return;
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  modal.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  modal.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 45) {
+      nextLightboxPhoto(); // 向左滑 -> 下一張
+    } else if (touchEndX - touchStartX > 45) {
+      prevLightboxPhoto(); // 向右滑 -> 上一張
+    }
+  }, { passive: true });
+
+  window.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('hidden')) {
+      if (e.key === 'Escape') closeLightboxModal();
+      if (e.key === 'ArrowRight') nextLightboxPhoto();
+      if (e.key === 'ArrowLeft') prevLightboxPhoto();
+    }
+  });
+}
+
 // 綁定全域以供 HTML 呼叫
 window.renderItems = renderItems;
 window.switchCardPhoto = switchCardPhoto;
@@ -1398,6 +1609,16 @@ window.closeSearchOverlay = closeSearchOverlay;
 window.syncOverlaySearch = syncOverlaySearch;
 window.clearOverlaySearch = clearOverlaySearch;
 window.applyQuickSearch = applyQuickSearch;
+window.openGuideModal = openGuideModal;
+window.closeGuideModal = closeGuideModal;
+window.nextModalGuideStep = nextModalGuideStep;
+window.prevModalGuideStep = prevModalGuideStep;
+window.finishModalGuide = finishModalGuide;
+window.openLightboxModal = openLightboxModal;
+window.closeLightboxModal = closeLightboxModal;
+window.nextLightboxPhoto = nextLightboxPhoto;
+window.prevLightboxPhoto = prevLightboxPhoto;
+window.initLightboxGestures = initLightboxGestures;
 window.setupMobileInfiniteScroll = setupMobileInfiniteScroll;
 window.initDetailModalGestures = initDetailModalGestures;
 

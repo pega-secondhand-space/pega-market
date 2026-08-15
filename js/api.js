@@ -88,7 +88,7 @@ async function togglePinItem(id) {
  * 載入全站所有商品清單
  * @param {string} [itemIdToOpen] 載入後自動聚焦並展開的商品 ID
  */
-async function loadItems(itemIdToOpen) {
+async function loadItems(highlightItemId, autoOpenModal = false) {
   await loadItemsPerPageSetting();
   await loadGlobalPinnedIds();
   try {
@@ -105,7 +105,7 @@ async function loadItems(itemIdToOpen) {
       filterItems();
       refreshAnnouncementDisplay();
 
-      if (itemIdToOpen) {
+      if (highlightItemId) {
         const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
         const filtered = allItems.filter(item => {
           if (item.device_id === 'SYSTEM' || (item.title && item.title.startsWith('SYSTEM_')) || (item.id && item.id.startsWith('00000000-0000-0000-0000-'))) return false;
@@ -119,27 +119,27 @@ async function loadItems(itemIdToOpen) {
           return true;
         });
 
-        const index = filtered.findIndex(item => item.id === itemIdToOpen);
+        const index = filtered.findIndex(item => item.id === highlightItemId);
         if (index !== -1) {
           const itemPage = Math.floor(index / itemsPerPage) + 1;
           currentPage = itemPage;
           renderItems();
 
-          openDetailModal(itemIdToOpen);
+          if (autoOpenModal) {
+            openDetailModal(highlightItemId);
+          }
 
           setTimeout(() => {
-            const cardImg = document.getElementById(`card-img-${itemIdToOpen}`);
-            if (cardImg) {
-              const cardElement = cardImg.closest('.group') || cardImg.closest('[onclick*="openDetailModal"]');
-              if (cardElement) {
-                cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                cardElement.classList.add('ring-4', 'ring-indigo-500', 'ring-offset-2', 'ring-offset-gray-950');
-                setTimeout(() => {
-                  cardElement.classList.remove('ring-4', 'ring-indigo-500', 'ring-offset-2', 'ring-offset-gray-950');
-                }, 3000);
-              }
+            const cardElement = document.querySelector(`[data-card-img-id="${highlightItemId}"]`)?.closest('.threads-card-item') ||
+                              document.querySelector(`[onclick*="openDetailModal('${highlightItemId}')"]`);
+            if (cardElement) {
+              cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              cardElement.classList.add('ring-4', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]', 'transition-all');
+              setTimeout(() => {
+                cardElement.classList.remove('ring-4', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
+              }, 3500);
             }
-          }, 150);
+          }, 200);
         }
       }
     }
@@ -426,7 +426,7 @@ async function fetchOnlineUsers() {
         const count = Math.max(1, uniqueSenders.size);
 
         const headerDisplay = document.getElementById('online-count-display');
-        if (headerDisplay) headerDisplay.innerText = `此刻線上: ${count} 人`;
+        if (headerDisplay) headerDisplay.innerText = `線上: ${count}人`;
 
         const adminCurrent = document.getElementById('admin-online-current');
         if (adminCurrent) adminCurrent.innerText = `${count} 人`;

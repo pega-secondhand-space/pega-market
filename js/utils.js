@@ -18,6 +18,21 @@ function escapeHtml(str) {
 }
 
 /**
+ * 嚴格 JavaScript 單引號字串安全跳脫 (防止 onclick 注入語法錯誤)
+ * @param {string|any} str 原始字串
+ * @returns {string} 跳脫後的安全字串
+ */
+function escapeJsStr(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '&quot;')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
+}
+
+/**
  * 關閉全站所有彈窗 (確保彈窗互斥，避免圖層遮擋或隱藏在下層)
  */
 function closeAllModals() {
@@ -542,6 +557,7 @@ function showCopyModal(text) {
 
 // 綁定全域以供 HTML 呼叫
 window.escapeHtml = escapeHtml;
+window.escapeJsStr = escapeJsStr;
 window.showNotification = showNotification;
 window.copyTextToClipboard = copyTextToClipboard;
 window.sha256 = sha256;

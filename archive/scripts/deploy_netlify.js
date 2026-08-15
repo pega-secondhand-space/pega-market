@@ -9,7 +9,7 @@ const ZIP_PATH = 'deploy.zip';
 
 console.log('📦 正在使用 Python 建立具備標準 POSIX Unix 路徑 (/) 之 deploy.zip ...');
 
-execSync(`python -c "import zipfile, os; zf = zipfile.ZipFile('deploy.zip', 'w', zipfile.ZIP_DEFLATED); zf.write('index.html', 'index.html'); [zf.write(os.path.join(r, f), os.path.join(r, f).replace(chr(92), '/')) for r, d, files in os.walk('css') for f in files]; [zf.write(os.path.join(r, f), os.path.join(r, f).replace(chr(92), '/')) for r, d, files in os.walk('js') for f in files]; zf.close()"`);
+execSync(`python -c "import zipfile, os; zf = zipfile.ZipFile('deploy.zip', 'w', zipfile.ZIP_DEFLATED); zf.write('index.html', 'index.html'); zf.write('guide.html', 'guide.html') if os.path.exists('guide.html') else None; [zf.write(os.path.join(r, f), os.path.join(r, f).replace(chr(92), '/')) for r, d, files in os.walk('css') for f in files]; [zf.write(os.path.join(r, f), os.path.join(r, f).replace(chr(92), '/')) for r, d, files in os.walk('js') for f in files]; zf.close()"`);
 
 console.log('🚀 開始透過 Netlify API 上傳發布 deploy.zip ...');
 

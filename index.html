@@ -24,46 +24,53 @@
 
   <!-- 頂部導航欄 (Navbar) - 質感琥珀流金風格 -->
   <header class="bg-gray-950/95 backdrop-blur-xl border-b-2 border-amber-500/50 sticky top-0 z-40 shadow-[0_4px_25px_rgba(245,158,11,0.12)]">
-    <div class="max-w-6xl mx-auto px-4 py-3 space-y-2">
-      <!-- 置頂最上面一行：網站平台名稱 + 字體切換 + 在線人數 (單行流暢排列，防折行) -->
-      <div class="flex items-center justify-between gap-2 overflow-hidden">
+    <div class="max-w-6xl mx-auto px-3 py-2 sm:px-4 sm:py-3 space-y-2">
+      <!-- 頂部第一行：網站標題 (左) ｜ 即時在線人數 (右) -->
+      <div class="flex items-center justify-between gap-2">
         <h1 onclick="refreshPageData()" title="點擊一鍵重新整理資料" class="text-base sm:text-2xl font-black bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition flex items-center gap-1.5 shrink-0 drop-shadow">
           <span id="site-title-text">PEGAPEGA</span>
           <i class="fa-solid fa-rotate-right text-[10px] sm:text-xs text-amber-400"></i>
         </h1>
 
-        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <!-- 全站動態字體大小調整按鈕 (A⁻ / A / A⁺ / A⁺⁺ / A⁺⁺⁺) -->
-          <div class="flex items-center gap-0.5 sm:gap-1 bg-gray-900/90 p-0.5 sm:p-1 rounded-xl border border-amber-500/30 shrink-0 shadow-inner">
-            <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-1.5 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
-            <button onclick="setFontSize('base')" id="font-btn-base" class="px-1.5 py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md" title="標準字體 (A)">A</button>
-            <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-1.5 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
-            <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-1.5 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
-            <button onclick="setFontSize('2xl')" id="font-btn-2xl" class="px-1.5 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="超大字體 (A⁺⁺⁺)">A⁺⁺⁺</button>
-          </div>
-
-          <button onclick="openOnlineUsersModal()" id="online-users-badge" class="px-2 py-1 sm:px-2.5 sm:py-1 bg-amber-950/80 hover:bg-amber-900 border border-amber-500/50 text-amber-300 rounded-xl font-bold text-[11px] sm:text-xs transition flex items-center gap-1 shadow-sm shrink-0 cursor-pointer active:scale-95" title="點擊查看全站即時在線監控">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-            </span>
-            <span id="online-count-display">線上 1人</span>
-          </button>
-        </div>
+        <!-- 右側：即時在線人數 (獨立不重疊) -->
+        <button onclick="openOnlineUsersModal()" id="online-users-badge" class="px-2.5 py-1 bg-amber-950/80 hover:bg-amber-900 border border-amber-500/50 text-amber-300 rounded-xl font-bold text-[11px] sm:text-xs transition flex items-center gap-1 shadow-sm shrink-0 cursor-pointer active:scale-95" title="點擊查看全站即時在線監控">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
+          <span id="online-count-display">線上: 1人</span>
+        </button>
       </div>
 
-      <div class="flex items-center justify-end gap-2">
-        <button onclick="openArchiveModal()" class="hidden sm:flex px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition items-center gap-1">
-          <i class="fa-solid fa-handshake text-amber-400"></i> <span>成交紀錄</span>
-        </button>
+      <!-- 頂部第二行：5 段動態字體調整 (左) ｜ 使用說明 + 電腦版功能選單 (右) -->
+      <div class="flex items-center justify-between gap-2 pt-0.5">
+        <div class="flex items-center gap-0.5 sm:gap-1 bg-gray-900/90 p-0.5 sm:p-1 rounded-xl border border-amber-500/30 shrink-0 shadow-inner">
+          <span class="text-[10px] sm:text-xs text-amber-400 font-black px-1 shrink-0">🔤 字體：</span>
+          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
+          <button onclick="setFontSize('base')" id="font-btn-base" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md" title="標準字體 (A)">A</button>
+          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
+          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+          <button onclick="setFontSize('2xl')" id="font-btn-2xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="超大字體 (A⁺⁺⁺)">A⁺⁺⁺</button>
+        </div>
 
-        <button onclick="openIssueModal()" class="hidden sm:flex px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition items-center gap-1">
-          <i class="fa-solid fa-bug text-amber-400"></i> <span>回報問題與建議</span>
-        </button>
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button onclick="openGuideModal()" class="px-2.5 py-1 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl font-bold text-[11px] sm:text-xs transition flex items-center gap-1 shadow-sm shrink-0 cursor-pointer active:scale-95" title="打開實用圖文教學">
+            <i class="fa-solid fa-book-open text-amber-400 text-[10px]"></i>
+            <span>使用說明</span>
+          </button>
 
-        <button onclick="openAdminModal()" class="hidden sm:flex px-3 py-1.5 bg-amber-950/60 hover:bg-amber-900/60 text-amber-300 border border-amber-500/40 rounded-xl font-bold text-xs transition items-center gap-1">
-          <i class="fa-solid fa-user-shield text-amber-400"></i> <span id="admin-btn-text">後台管理</span>
-        </button>
+          <button onclick="openArchiveModal()" class="hidden sm:flex px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition items-center gap-1">
+            <i class="fa-solid fa-handshake text-amber-400"></i> <span>成交紀錄</span>
+          </button>
+
+          <button onclick="openIssueModal()" class="hidden sm:flex px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl font-bold text-xs transition items-center gap-1">
+            <i class="fa-solid fa-bug text-amber-400"></i> <span>回報問題</span>
+          </button>
+
+          <button onclick="openAdminModal()" class="hidden sm:flex px-3 py-1 bg-amber-950/60 hover:bg-amber-900/60 text-amber-300 border border-amber-500/40 rounded-xl font-bold text-xs transition items-center gap-1">
+            <i class="fa-solid fa-user-shield text-amber-400"></i> <span id="admin-btn-text">後台管理</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -163,6 +170,14 @@
       </div>
     </div>
 
+    <!-- 🏷️ 頁尾資訊與日期時間版本號 (Date-Time Versioning) -->
+    <footer class="mt-12 mb-24 sm:mb-8 text-center text-[11px] text-gray-500 font-medium space-y-1 select-none">
+      <p>PEGA 二手物品匿名流通空間 · 讓資源延續美好</p>
+      <p class="text-[10px] text-gray-400 font-mono">
+        系統版本：<span class="text-amber-400 font-bold bg-gray-900 px-2 py-0.5 rounded-md border border-gray-800">v2026.08.15-2245</span>
+      </p>
+    </footer>
+
   </main>
 
   <!-- 📱 手機專屬底部固定導覽列 (Bottom Navigation Bar) - 暖黃琥珀主題 -->
@@ -185,10 +200,10 @@
         <i class="fa-solid fa-plus text-xl"></i>
       </button>
       
-      <!-- 🤝 成交紀錄 -->
-      <button onclick="openArchiveModal()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-400 active:scale-90 transition p-1">
-        <i class="fa-solid fa-handshake text-lg"></i>
-        <span class="text-[10px] font-bold">成交庫</span>
+      <!-- 💬 留言板 (問題回報與建議) -->
+      <button onclick="openIssueModal()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-400 active:scale-90 transition p-1" title="打開問題回報與建議留言板">
+        <i class="fa-regular fa-comment-dots text-lg"></i>
+        <span class="text-[10px] font-bold">留言板</span>
       </button>
       
       <!-- 🛡️ 後台管理 -->
@@ -496,7 +511,7 @@
           </div>
           <div>
             <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
-              版主管理控制台 <span class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded-md font-normal">滿版工作區</span>
+              版主管理控制台 <span class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded-md font-mono font-bold">v2026.08.15-2245</span>
             </h3>
             <p class="text-[10px] text-gray-400">全站系統廣播、排版設定與貼文批次管理中心</p>
           </div>
@@ -731,8 +746,20 @@
           </div>
         </div>
 
-        <!-- 分頁 2: 查看留言紀錄列表 (已修復項目自動沉底) -->
+        <!-- 分頁 2: 查看留言紀錄列表 (已修復項目自動沉底 ＋ 版主批次刪除) -->
         <div id="issue-view-list" class="hidden space-y-3">
+          <!-- 版主專屬批次操作列 (登入版主時自動顯示) -->
+          <div id="issue-admin-batch-toolbar" class="hidden p-2.5 bg-gray-900 border border-amber-500/40 rounded-xl flex items-center justify-between gap-2 shadow">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="issue-select-all-checkbox" onchange="toggleSelectAllIssues(this.checked)" class="w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-400 bg-gray-950 cursor-pointer">
+              <label for="issue-select-all-checkbox" class="text-xs text-amber-300 font-bold cursor-pointer select-none">全選留言</label>
+              <span id="issue-selected-count-badge" class="text-[11px] text-gray-400 font-bold bg-black/50 px-2 py-0.5 rounded-md">已選 0 則</span>
+            </div>
+            <button id="issue-batch-delete-btn" onclick="deleteSelectedIssuesAdmin()" class="px-3 py-1.5 bg-red-700 hover:bg-red-600 active:scale-95 text-white font-black text-xs rounded-lg transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-trash-can"></i> 批次刪除選取
+            </button>
+          </div>
+
           <div id="issue-list-container" class="space-y-3">
             <!-- 動態載入問題清單 -->
           </div>
@@ -847,8 +874,270 @@
     </div>
   </div>
 
-  <!-- JavaScript 腳本 (支援原生圖片壓縮上傳資料庫與全視圖展覽) -->
-<!-- 模組化 JavaScript 腳本 -->
+  <!-- 🖼️ 全螢幕沉浸式圖片放大檢視燈箱 (Lightbox Modal) -->
+  <div id="lightbox-modal" class="hidden fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex flex-col justify-between p-3 sm:p-6 animate-fadeIn" onclick="closeLightboxModal()">
+    <!-- 頂部控制列 -->
+    <div class="flex items-center justify-between z-10" onclick="event.stopPropagation()">
+      <div class="flex items-center gap-2">
+        <span class="bg-amber-500 text-gray-950 text-xs font-black px-2.5 py-1 rounded-lg">🔍 大圖檢視</span>
+        <span id="lightbox-counter" class="text-xs text-gray-300 font-bold hidden bg-gray-900 px-2 py-0.5 rounded-lg border border-gray-800">1 / 2</span>
+      </div>
+      <button onclick="closeLightboxModal()" class="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-md flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0" title="關閉大圖">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- 中間大圖展示區 -->
+    <div class="flex-1 flex items-center justify-center relative overflow-hidden my-auto" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="放大預覽" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.9)] transition-transform duration-200 select-none">
+      
+      <!-- 左右切換按鈕 -->
+      <button onclick="prevLightboxPhoto()" id="lightbox-btn-prev" class="hidden absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/75 hover:bg-black text-white border border-white/30 flex items-center justify-center text-sm transition active:scale-90 shadow-lg">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button onclick="nextLightboxPhoto()" id="lightbox-btn-next" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/75 hover:bg-black text-white border border-white/30 flex items-center justify-center text-sm transition active:scale-90 shadow-lg">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- 底部提示文字 -->
+    <div class="text-center text-[11px] text-gray-400 font-bold py-1 select-none pointer-events-none">
+      💡 點擊背景任意處或按 ✕ 即可關閉大圖
+    </div>
+  </div>
+
+  <!-- 📖 互動式新手圖文使用指南 Modal -->
+  <div id="guide-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+    <div class="bg-gray-900 border-2 border-amber-500/50 w-full max-w-lg rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[92vh]">
+      
+      <!-- 頂部 Header -->
+      <div class="px-5 py-3.5 bg-gray-950 border-b border-gray-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-sm">
+            📖
+          </div>
+          <div>
+            <h3 class="font-black text-sm text-gray-100">實用功能圖文教學</h3>
+            <p class="text-[10px] text-amber-400">章節 <span id="modal-guide-step-text">1</span> / 5</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a href="guide.html" target="_blank" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] font-bold rounded-xl border border-gray-700 transition" title="新分頁打開完整指南">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> 獨立頁
+          </a>
+          <button onclick="closeGuideModal()" class="w-8 h-8 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-sm shadow-md flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0" title="關閉指南">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 進度條 -->
+      <div class="w-full bg-gray-950 h-1 overflow-hidden shrink-0">
+        <div id="modal-guide-progress" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 h-full transition-all duration-300 w-1/5"></div>
+      </div>
+
+      <!-- 內容區 (可捲動) -->
+      <div class="p-4 sm:p-6 flex-1 overflow-y-auto space-y-4">
+        
+        <!-- Chapter 1 -->
+        <div class="modal-guide-slide block space-y-3" data-step="1">
+          <div class="rounded-2xl bg-gradient-to-br from-indigo-950/70 via-gray-950 to-amber-950/40 border border-amber-500/40 p-4 shadow-inner">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-gray-950 text-lg font-black shadow">🏷️</div>
+                <div>
+                  <h4 class="text-sm font-black text-gray-100">四大好物分類專區</h4>
+                  <p class="text-[10px] text-amber-400 font-bold">按需求點選分類標籤快速篩選</p>
+                </div>
+              </div>
+              <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-lg font-bold">靈活交換</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 pt-1 text-[11px] font-bold text-gray-200">
+              <div class="bg-gray-900/90 p-2 rounded-xl border border-indigo-500/30 flex items-center gap-1.5">
+                <span class="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[10px]">💰想賣</span> <span>出清二手良品</span>
+              </div>
+              <div class="bg-gray-900/90 p-2 rounded-xl border border-amber-500/30 flex items-center gap-1.5">
+                <span class="bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded text-[10px]">🔍想買</span> <span>徵求急需好物</span>
+              </div>
+              <div class="bg-gray-900/90 p-2 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
+                <span class="bg-emerald-500 text-gray-950 px-1.5 py-0.5 rounded text-[10px]">🎁免費</span> <span>同仁愛心分享</span>
+              </div>
+              <div class="bg-gray-900/90 p-2 rounded-xl border border-rose-500/30 flex items-center gap-1.5">
+                <span class="bg-rose-500 text-white px-1.5 py-0.5 rounded text-[10px]">🎉尾牙</span> <span>全新以物易物</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-gray-300 leading-relaxed">
+            <div class="flex items-center gap-1.5 font-bold text-gray-100 text-xs">
+              <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.5 rounded">CH 1</span>
+              <span>四大好物分類 ＆ 以物易物玩法</span>
+            </div>
+            <p>點擊頂部分類膠囊即可快速切換對應商品；尾牙專區更支援<b>「以物易物」</b>，可直接標註想換的物品（如 <code>換 Switch 遊戲</code> 或 <code>換禮券</code>）！</p>
+          </div>
+        </div>
+
+        <!-- Chapter 2 -->
+        <div class="modal-guide-slide hidden space-y-3" data-step="2">
+          <div class="rounded-2xl bg-gray-950 border border-amber-500/40 p-3.5 space-y-2 text-xs">
+            <div class="text-[11px] font-black text-amber-300 flex items-center justify-between pb-1 border-b border-gray-800">
+              <span>➕ 刊登好物表單結構拆解</span>
+              <span class="text-gray-400 text-[10px]">30 秒極速完成</span>
+            </div>
+            <div class="space-y-1.5 text-[11px]">
+              <div class="bg-gray-900 p-2 rounded-xl border border-gray-800 flex items-center justify-between">
+                <span><b>1. 標題與描述</b>：輸入名稱、規格、新舊狀態</span>
+                <span class="text-emerald-400 text-[9px] font-bold">必填</span>
+              </div>
+              <div class="bg-gray-900 p-2 rounded-xl border border-gray-800 flex items-center justify-between">
+                <span><b>2. 售價/交換</b>：填金額或填想換的物品</span>
+                <span class="text-amber-400 text-[9px] font-bold">靈活定價</span>
+              </div>
+              <div class="bg-gray-900 p-2 rounded-xl border border-gray-800 flex items-center justify-between">
+                <span><b>3. 聯絡方式</b>：建議填分機或 Teams</span>
+                <span class="text-indigo-300 text-[9px] font-bold">一鍵複製</span>
+              </div>
+              <div class="bg-amber-950/50 p-2 rounded-xl border border-amber-500/40 text-amber-200 flex items-center justify-between font-bold">
+                <span><b>4. 自訂 4 位密碼</b>：如 <code>1234</code> 供修改自刪</span>
+                <span class="text-amber-400 text-[9px] font-black">🔑 核心金鑰</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-gray-300 leading-relaxed">
+            <div class="flex items-center gap-1.5 font-bold text-gray-100 text-xs">
+              <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.5 rounded">CH 2</span>
+              <span>發布好物流程 ＆ 密碼保護機制</span>
+            </div>
+            <p>點擊底部金色 <b>➕ 我要刊登</b>，可上傳 1~2 張清晰照片。務必記住自行設定的 <b>4 位數密碼</b>，未來編輯與提早下架全靠它！</p>
+          </div>
+        </div>
+
+        <!-- Chapter 3 -->
+        <div class="modal-guide-slide hidden space-y-3" data-step="3">
+          <div class="rounded-2xl bg-gray-950 border border-amber-500/40 p-3.5 space-y-2">
+            <div class="text-[11px] font-black text-amber-300 flex items-center justify-between pb-1 border-b border-gray-800">
+              <span>📱 Threads 1:1 原生串文卡片</span>
+              <span class="text-gray-400 text-[10px]">標題 100% 完整無截斷</span>
+            </div>
+            <div class="bg-gray-900/90 p-3 rounded-xl border border-gray-800 flex gap-2.5 text-left text-xs">
+              <div class="w-7 flex flex-col items-center shrink-0">
+                <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white text-[10px] font-black">同</div>
+                <div class="w-0.5 bg-gray-700 flex-1 my-1 rounded-full min-h-[20px]"></div>
+              </div>
+              <div class="flex-1 min-w-0 space-y-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-black text-gray-200 truncate">同仁_8820 <span class="text-indigo-400">› 想賣</span></span>
+                  <span class="text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded text-[9px] font-bold">✓ 售出勾選</span>
+                </div>
+                <h5 class="text-[11px] font-black text-gray-100">象印 不鏽鋼真空保溫杯 480ml 全新未拆</h5>
+                <div class="flex items-center justify-between pt-1">
+                  <span class="text-indigo-300 font-black text-[11px]">NT$ 550</span>
+                  <span class="bg-indigo-950 border border-indigo-500/50 text-indigo-200 px-2 py-0.5 rounded text-[9px] font-bold">聯絡複製</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-gray-300 leading-relaxed">
+            <div class="flex items-center gap-1.5 font-bold text-gray-100 text-xs">
+              <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.5 rounded">CH 3</span>
+              <span>手機與電腦版型差異說明</span>
+            </div>
+            <p>手機端預設單排 Threads 資訊流，標題絕不截斷；電腦端支援 1~5 排網格自由切換，滑鼠懸停更可透過卡通對話氣泡即時預覽描述！</p>
+          </div>
+        </div>
+
+        <!-- Chapter 4 -->
+        <div class="modal-guide-slide hidden space-y-3" data-step="4">
+          <div class="rounded-2xl bg-gray-950 border border-amber-500/40 p-3.5 space-y-2 text-xs">
+            <div class="flex items-center justify-between bg-gray-900 p-2 rounded-xl border border-gray-800 text-[11px]">
+              <span class="font-bold text-gray-300">🔤 5 級動態字級：</span>
+              <div class="flex gap-1 bg-gray-950 p-1 rounded-lg border border-amber-500/30 text-[10px] font-bold">
+                <span class="px-1 text-gray-400">A⁻</span>
+                <span class="px-1 text-gray-400">A</span>
+                <span class="px-1 text-gray-400">A⁺</span>
+                <span class="px-1.5 bg-amber-400 text-gray-950 rounded font-black">A⁺⁺ (特大)</span>
+                <span class="px-1 text-gray-400">A⁺⁺⁺</span>
+              </div>
+            </div>
+            <div class="bg-gray-900 p-2.5 rounded-xl border border-amber-500/30 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-gray-200 text-[11px]">
+                <i class="fa-solid fa-magnifying-glass text-amber-400"></i> <span>0 跳轉懸浮搜尋列 (點擊底部搜尋直接滑出)</span>
+              </div>
+              <div class="flex gap-1 overflow-x-auto text-[10px] font-bold text-gray-300">
+                <span class="text-amber-400">熱門：</span>
+                <span class="px-1.5 py-0.5 bg-gray-950 rounded border border-gray-800">🎫 禮券</span>
+                <span class="px-1.5 py-0.5 bg-gray-950 rounded border border-gray-800">💨 吹風機</span>
+                <span class="px-1.5 py-0.5 bg-gray-950 rounded border border-gray-800">☕ 保溫杯</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-gray-300 leading-relaxed">
+            <div class="flex items-center gap-1.5 font-bold text-gray-100 text-xs">
+              <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.5 rounded">CH 4</span>
+              <span>護眼 5 段大字體 ＆ 頂部懸浮零跳動搜尋</span>
+            </div>
+            <p>支援 5 段字級隨選即換，全站深度聯動；點擊底部搜尋時畫面完全不捲動，頂部直接滑出搜尋框，打字與熱門膠囊同步放大超清晰！</p>
+          </div>
+        </div>
+
+        <!-- Chapter 5 -->
+        <div class="modal-guide-slide hidden space-y-3" data-step="5">
+          <div class="rounded-2xl bg-gray-950 border border-amber-500/40 p-3.5 space-y-2 text-xs">
+            <div class="bg-gray-900 p-2.5 rounded-xl border border-indigo-500/40 space-y-1">
+              <div class="flex items-center justify-between text-indigo-300 font-bold text-[11px]">
+                <span>📋 剪貼簿一鍵複製格式：</span>
+                <span class="text-emerald-400 font-black">✓ 已複製</span>
+              </div>
+              <div class="text-amber-300 font-mono text-[10px] leading-relaxed">
+                【二手商品】象印 不鏽鋼真空保溫杯 480ml<br>
+                【聯絡方式】Teams: Chris (分機 12345)
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+              <div class="bg-gray-900 p-2 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]">✓</span>
+                <div><b>右上角打勾</b>：標記售出</div>
+              </div>
+              <div class="bg-gray-900 p-2 rounded-xl border border-amber-500/30 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-amber-500 text-gray-950 flex items-center justify-center font-bold text-[10px]">🔑</span>
+                <div><b>輸入 4 位密碼</b>：自刪下架</div>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-gray-300 leading-relaxed">
+            <div class="flex items-center gap-1.5 font-bold text-gray-100 text-xs">
+              <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.5 rounded">CH 5</span>
+              <span>一鍵聯絡複製 ＆ 成交管理與自刪下架</span>
+            </div>
+            <p>點擊「聯絡複製」可直接在 LINE / Teams 貼上發送；成交後點擊打勾標記【已售出】，48 小時後自動移入歷史成交庫保持版面乾淨！</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 底部控制器 (Prev / Dots / Next) -->
+      <div class="px-5 py-3.5 bg-gray-950 border-t border-gray-800 flex items-center justify-between gap-2 shrink-0">
+        <button onclick="prevModalGuideStep()" id="modal-guide-btn-prev" class="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 rounded-xl text-xs font-bold transition active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1">
+          <i class="fa-solid fa-chevron-left text-[9px]"></i> 上一頁
+        </button>
+
+        <div id="modal-guide-dots" class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2 rounded-full bg-amber-400 transition-all"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-700 transition-all"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-700 transition-all"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-700 transition-all"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-700 transition-all"></span>
+        </div>
+
+        <button onclick="nextModalGuideStep()" id="modal-guide-btn-next" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:opacity-95 text-gray-950 rounded-xl text-xs font-black transition active:scale-95 shadow-md shadow-amber-500/30 flex items-center gap-1">
+          <span>下一頁</span> <i class="fa-solid fa-chevron-right text-[9px]"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 模組化 JavaScript 腳本 -->
   <script src="js/config.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/api.js"></script>
