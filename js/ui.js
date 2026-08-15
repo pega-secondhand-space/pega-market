@@ -207,11 +207,11 @@ function renderItems() {
       expCountdownHtml = getExpirationCountdown(getItemExpiration(item));
     }
 
-    const isMobileDevice = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024) || (window.innerWidth < 1024 && window.innerHeight < 600);
+    const isMobileDevice = window.innerWidth < 768;
     const storageKey = isMobileDevice ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
-    const colsNum = parseInt(localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || '1', 10);
+    const colsNum = parseInt(localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || (isMobileDevice ? '1' : '2'), 10);
     const isEndOfRow = ((idx + 1) % colsNum === 0);
-    const dividerHtml = (isEndOfRow && idx < pageItems.length - 1) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
+    const dividerHtml = (isEndOfRow && idx < pageItems.length - 1 && isMobileDevice && colsNum === 1) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
 
     const isFloatLeft = ((idx % colsNum) >= (colsNum / 2));
     const bubbleClass = isFloatLeft ? 'right-full mr-4' : 'left-full ml-4';
@@ -228,7 +228,7 @@ function renderItems() {
 
     const mobileCardHtml = (colsNum === 1) ? `
       <!-- 📱 手機端：100% 擬真 Threads 原生黑底串文資訊流 -->
-      <div onclick="openDetailModal('${item.id}')" class="threads-card-item ${isMobileDevice ? 'block' : 'block sm:hidden'} border-b border-gray-800/80 pt-3.5 pb-4 px-1 cursor-pointer active:bg-gray-900/30 transition">
+      <div onclick="openDetailModal('${item.id}')" class="threads-card-item block border-b border-gray-800/80 pt-3.5 pb-4 px-1 cursor-pointer active:bg-gray-900/30 transition">
         <div class="flex gap-3 items-stretch">
           <!-- 左欄：Threads 圓形頭像 + 串文垂直連接軸線 (固定經典尺寸，不因文字縮放變形) -->
           <div class="w-10 flex flex-col items-center shrink-0">
@@ -305,7 +305,7 @@ function renderItems() {
       </div>
     ` : `
       <!-- 📱 手機端 (雙排 IG 懸浮風格：支援 2 行標題完整可讀) -->
-      <div onclick="openDetailModal('${item.id}')" class="threads-card-item ${isMobileDevice ? 'block' : 'block sm:hidden'} relative aspect-square bg-gray-950 rounded-2xl overflow-hidden shadow-lg border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500 shadow-amber-500/10' : 'border-gray-800 active:scale-95'} transition cursor-pointer">
+      <div onclick="openDetailModal('${item.id}')" class="threads-card-item block relative aspect-square bg-gray-950 rounded-2xl overflow-hidden shadow-lg border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500 shadow-amber-500/10' : 'border-gray-800 active:scale-95'} transition cursor-pointer">
         ${(isPinned && !isSold) ? '<div class="absolute top-0 inset-x-0 bg-amber-500 text-gray-950 text-[9px] font-black py-0.5 text-center z-10">📌 官方置頂</div>' : ''}
         
         <img data-card-img-id="${item.id}" src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block">
@@ -331,11 +331,9 @@ function renderItems() {
       </div>
     `;
 
-    const cardHtml = `
-      ${mobileCardHtml}
-
+    const desktopCardHtml = `
       <!-- 💻 電腦端 (經典完整豐富卡片風格) -->
-      <div onclick="openDetailModal('${item.id}')" class="${isMobileDevice ? 'hidden' : 'hidden sm:flex'} bg-gray-900 border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800 hover:border-indigo-500/60'} rounded-2xl relative transition ${isSold ? '' : 'group'} cursor-pointer overflow-hidden flex-col justify-between shadow-md">
+      <div onclick="openDetailModal('${item.id}')" class="flex bg-gray-900 border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500/80 shadow-amber-500/10 shadow-lg' : 'border-gray-800 hover:border-indigo-500/60'} rounded-2xl relative transition ${isSold ? '' : 'group'} cursor-pointer overflow-hidden flex-col justify-between shadow-md">
         ${(isPinned && !isSold) ? '<div class="bg-amber-500 text-gray-950 text-xs font-black px-3 py-1 text-center">📌 官方置頂商品</div>' : ''}
         
         <!-- 卡通對話氣泡 PC Hover 快速預覽 -->
@@ -408,6 +406,7 @@ function renderItems() {
       </div>
     `;
     
+    const cardHtml = isMobileDevice ? mobileCardHtml : desktopCardHtml;
     return cardHtml + dividerHtml;
   }).join('');
 }
