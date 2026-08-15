@@ -1,5 +1,7 @@
 .env
-website.txt
+*.txt
+*.ps1
 *.py
 *.zip
-*.js
+.system_generated/
+deploy.zip
