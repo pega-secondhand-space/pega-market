@@ -1,6 +1,0 @@
-帳號: jovianturkey
-Token: nfp_V3DpF4V5iA15yiQeDEsZwnV2yvcd6BYt7ed3
-Site ID: 7fc6873d-980a-4c79-87aa-f0c292ea13ed
-Site Name: None
-正式網址: http://6a80095509294fa8ed2c8f56--wonderful-toffee-9fd071.netlify.app
-管理後台: None
