@@ -379,34 +379,28 @@ function applyCouponDiscount(pct) {
 }
 
 /**
- * 快速滾動至商品網格頂部
+ * 快速平滑滾動至頁面最頂部 (頂部標題、搜尋列、分類選單)
  */
 function scrollToTopItem() {
-  const grid = document.getElementById('item-grid');
-  if (grid) {
-    const firstCard = grid.firstElementChild;
-    if (firstCard) {
-      firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      showNotification('⬆️ 已捲動至最上方的一筆資料！', 'info');
-    } else {
-      grid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+  if (typeof showNotification === 'function') {
+    showNotification('⬆️ 已快速捲動至頁面頂端！', 'info');
   }
 }
 
 /**
- * 快速滾動至商品網格底部
+ * 快速平滑滾動至頁面最底部 (最後一筆商品與頁尾)
  */
 function scrollToBottomItem() {
-  const grid = document.getElementById('item-grid');
-  if (grid) {
-    const lastCard = grid.lastElementChild;
-    if (lastCard) {
-      lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      showNotification('⬇️ 已捲動至最下方的一筆資料！', 'info');
-    } else {
-      grid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+  window.scrollTo({
+    top: Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+    behavior: 'smooth'
+  });
+  if (typeof showNotification === 'function') {
+    showNotification('⬇️ 已快速捲動至頁面最底端！', 'info');
   }
 }
 

@@ -313,17 +313,17 @@
   </div>
 
   <!-- 浮動控制面板 (FAB + 快速捲動箭頭) -->
-  <div class="fixed right-5 bottom-6 flex flex-col gap-2.5 items-end z-30">
+  <div class="fixed right-4 sm:right-6 bottom-5 sm:bottom-6 flex flex-col gap-2.5 items-end z-40">
     <!-- 爬到最上面一筆資料 -->
-    <button onclick="scrollToTopItem()" class="bg-gray-900/90 hover:bg-gray-800 border border-gray-700 text-gray-300 w-10 h-10 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center active:scale-95 border-indigo-400/20" title="爬到最上面一筆資料">
-      <i class="fa-solid fa-arrow-up text-sm text-indigo-400"></i>
+    <button type="button" onclick="scrollToTopItem()" class="bg-gray-900/95 hover:bg-gray-800 border-2 border-amber-500/40 hover:border-amber-400 text-amber-300 w-11 h-11 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center active:scale-90 cursor-pointer backdrop-blur-md" title="回到最頂端">
+      <i class="fa-solid fa-arrow-up text-sm sm:text-base text-amber-400"></i>
     </button>
     <!-- 爬到最下面一筆資料 -->
-    <button onclick="scrollToBottomItem()" class="bg-gray-900/90 hover:bg-gray-800 border border-gray-700 text-gray-300 w-10 h-10 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center active:scale-95 border-indigo-400/20" title="爬到最下面一筆資料">
-      <i class="fa-solid fa-arrow-down text-sm text-indigo-400"></i>
+    <button type="button" onclick="scrollToBottomItem()" class="bg-gray-900/95 hover:bg-gray-800 border-2 border-amber-500/40 hover:border-amber-400 text-amber-300 w-11 h-11 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center active:scale-90 cursor-pointer backdrop-blur-md" title="滑到最底端">
+      <i class="fa-solid fa-arrow-down text-sm sm:text-base text-amber-400"></i>
     </button>
     <!-- 我要刊登按鈕 -->
-    <button onclick="openCreateModal()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 border border-indigo-400/40">
+    <button type="button" onclick="openCreateModal()" class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-gray-950 font-black px-5 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 active:scale-95 border-2 border-amber-300/40 cursor-pointer">
       <i class="fa-solid fa-plus text-base"></i>
       <span class="text-xs sm:text-sm">我要刊登</span>
     </button>

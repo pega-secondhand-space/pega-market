@@ -1302,29 +1302,29 @@ function getVisibleCards() {
 }
 
 /**
- * 快速滾動至最上方第一筆資料
+ * 快速滾動至最上方 (搜尋列與頂部)
  */
 function scrollToTopItem() {
-  const visibleCards = getVisibleCards();
-  if (visibleCards.length > 0) {
-    visibleCards[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } else {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+  if (typeof showNotification === 'function') {
+    showNotification('⬆️ 已快速捲動至頂端！', 'info');
   }
-  showNotification('⬆️ 已快速捲動至最上方的一筆資料！', 'info');
 }
 
 /**
- * 快速滾動至最下方最後一筆資料
+ * 快速滾動至最下方 (最後一筆商品與頁尾)
  */
 function scrollToBottomItem() {
-  const visibleCards = getVisibleCards();
-  if (visibleCards.length > 0) {
-    visibleCards[visibleCards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'end' });
-  } else {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  window.scrollTo({
+    top: Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+    behavior: 'smooth'
+  });
+  if (typeof showNotification === 'function') {
+    showNotification('⬇️ 已快速捲動至最底端！', 'info');
   }
-  showNotification('⬇️ 已快速捲動至最下方的一筆資料！', 'info');
 }
 
 /**
