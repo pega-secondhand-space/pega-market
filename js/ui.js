@@ -778,6 +778,18 @@ function applyGridLayout(cols) {
 
   const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
 
+  // 同步膠囊按鈕 active 樣式
+  const btnShowcase = document.getElementById('layout-btn-showcase');
+  const btn1 = document.getElementById('layout-btn-1');
+  const btn2 = document.getElementById('layout-btn-2');
+
+  const activeStyle = 'px-2.5 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition flex items-center gap-1';
+  const inactiveStyle = 'px-2.5 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1';
+
+  if (btnShowcase) btnShowcase.className = (cols === 'showcase') ? activeStyle : inactiveStyle;
+  if (btn1) btn1.className = (cols === '1') ? activeStyle : inactiveStyle;
+  if (btn2) btn2.className = (cols === '2') ? activeStyle : inactiveStyle;
+
   if (cols === 'showcase') {
     container.className = 'mx-auto max-w-xl sm:max-w-2xl';
     grid.style.display = 'flex';
@@ -808,26 +820,17 @@ function updateGridLayoutOptions() {
   const select = document.getElementById('grid-layout-select');
   const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
 
-  let activeCols = '2';
+  const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
+  let activeCols = localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || 'showcase';
 
-  if (isMobile) {
-    // 📱 手機端：預設【單排 1 卡 (Threads 流)】，支援 🍎 階差模式與雙排方格
-    const storageKey = 'pega_grid_cols_mobile';
-    activeCols = localStorage.getItem(storageKey) || '1';
-    if (activeCols !== 'showcase' && parseInt(activeCols, 10) > 2) activeCols = '1';
-    if (select) {
+  if (select) {
+    if (isMobile) {
       select.innerHTML = `
-        <option value="1">📱 單排 1 卡 (Threads 串文)</option>
         <option value="showcase">🍎 階差沉浸大卡 (Apple 風格)</option>
+        <option value="1">📱 單排 1 卡 (Threads 串文)</option>
         <option value="2">📱 雙排 2 卡 (IG 方格)</option>
       `;
-      select.value = activeCols;
-    }
-  } else {
-    // 💻 電腦模式：支援 🍎 階差模式與 1~5 排
-    const storageKey = 'pega_grid_cols_pc';
-    activeCols = localStorage.getItem(storageKey) || '2';
-    if (select) {
+    } else {
       select.innerHTML = `
         <option value="showcase">🍎 階差沉浸大卡 (Apple 風格)</option>
         <option value="1">單排 1 卡 (大圖)</option>
@@ -836,8 +839,8 @@ function updateGridLayoutOptions() {
         <option value="4">四排 4 卡 (電腦)</option>
         <option value="5">五排 5 卡 (寬屏)</option>
       `;
-      select.value = activeCols;
     }
+    select.value = activeCols;
   }
 
   applyGridLayout(activeCols);

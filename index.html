@@ -118,14 +118,18 @@
           <input type="text" id="search-input" oninput="filterItems()" placeholder="搜尋物品標題、描述或聯絡資訊..." class="w-full pl-9 pr-4 py-2 bg-gray-900/90 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/40 transition shadow-inner font-medium">
         </div>
 
-        <!-- 排列欄數選擇器 (1至5排) -->
-        <select id="grid-layout-select" onchange="changeGridLayout(this.value)" class="py-2 px-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400 shrink-0">
-          <option value="1">單排 1 卡 (大圖)</option>
-          <option value="2" selected>雙排 2 卡 (預設)</option>
-          <option value="3">三排 3 卡</option>
-          <option value="4">四排 4 卡 (電腦)</option>
-          <option value="5">五排 5 卡 (寬屏)</option>
-        </select>
+        <!-- 🍎 醒目版型切換膠囊 (階差大卡 / 串文 / 雙排) -->
+        <div class="flex items-center gap-1 bg-gray-900/90 p-1 rounded-xl border border-amber-500/40 shrink-0">
+          <button onclick="changeGridLayout('showcase')" id="layout-btn-showcase" class="px-2.5 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition flex items-center gap-1" title="切換為 Apple 階差沉浸大卡">
+            <span>🍎 階差大卡</span>
+          </button>
+          <button onclick="changeGridLayout('1')" id="layout-btn-1" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1" title="切換為 Threads 串文流">
+            <span>📱 串文</span>
+          </button>
+          <button onclick="changeGridLayout('2')" id="layout-btn-2" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1" title="切換為雙排方格">
+            <span>▦ 雙排</span>
+          </button>
+        </div>
       </div>
 
       <!-- 分類 Tab -->
