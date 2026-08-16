@@ -209,9 +209,11 @@ function renderItems() {
 
     const isMobileDevice = window.innerWidth < 768;
     const storageKey = isMobileDevice ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
-    const colsNum = parseInt(localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || (isMobileDevice ? '1' : '2'), 10);
+    const activeLayout = localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || (isMobileDevice ? '1' : '2');
+    const isShowcase = (activeLayout === 'showcase');
+    const colsNum = isShowcase ? 1 : (parseInt(activeLayout, 10) || (isMobileDevice ? 1 : 2));
     const isEndOfRow = ((idx + 1) % colsNum === 0);
-    const dividerHtml = (isEndOfRow && idx < pageItems.length - 1 && isMobileDevice && colsNum === 1) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
+    const dividerHtml = (isEndOfRow && idx < pageItems.length - 1 && isMobileDevice && colsNum === 1 && !isShowcase) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
 
     const isFloatLeft = ((idx % colsNum) >= (colsNum / 2));
     const bubbleClass = isFloatLeft ? 'right-full mr-4' : 'left-full ml-4';
@@ -226,7 +228,89 @@ function renderItems() {
     const typeShortText = item.type === 'free' ? '免費送' : item.type === 'buy' ? '想買' : item.type === 'lucky' ? '尾牙' : '想賣';
     const typeColorClass = item.type === 'free' ? 'text-emerald-400' : item.type === 'buy' ? 'text-amber-400' : item.type === 'lucky' ? 'text-rose-400' : 'text-indigo-400';
 
-    const mobileCardHtml = (colsNum === 1) ? `
+    // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode)
+    const showcaseCardHtml = `
+      <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-5 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left">
+        <!-- 巨大浮水印序號 -->
+        <div class="step-watermark-num absolute right-4 top-2 pointer-events-none">${String(idx + 1).padStart(2, '0')}</div>
+
+        <div class="relative z-10 space-y-4">
+          <!-- 頂部資訊列：頭像/暱稱 + 分類徽章 + 時間 + 售出打勾 -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-gray-950 text-xs font-black shadow-md shrink-0">
+                ${safeNickname.slice(0, 1) || '同'}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-black text-sm text-gray-100 truncate">${safeNickname}</span>
+                  ${typeBadge}
+                </div>
+                <div class="text-[11px] text-gray-400 font-medium">${timeAgo(item.created_at)}</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
+              ${isPinned ? '<span class="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-xl font-black border border-amber-500/40 shadow-sm">📌 置頂</span>' : ''}
+              <button onclick="toggleItemSoldState('${item.id}')" 
+                      class="w-8 h-8 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
+                      ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'}"
+                      title="${isSold ? '標記為未售出' : '標記為已售出'}">
+                <i class="fa-solid ${isSold ? 'fa-check-double' : 'fa-check'} text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 標題與描述 -->
+          <div class="space-y-1.5">
+            <h3 class="text-base sm:text-lg font-black text-gray-100 leading-snug break-words" title="${safeTitle}">
+              ${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}
+            </h3>
+            ${safeDesc ? `<p class="text-xs sm:text-sm text-gray-300 leading-relaxed font-medium line-clamp-3">${safeDesc}</p>` : ''}
+          </div>
+
+          <!-- 滿版大圖 (點擊燈箱放大) -->
+          ${p2 ? `
+            <div class="grid grid-cols-2 gap-2.5 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner">
+              <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
+                <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 1/2 放大</span>
+              </div>
+              <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 2 張照片">
+                <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 2/2 放大</span>
+              </div>
+            </div>
+          ` : `
+            <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 cursor-zoom-in group shadow-inner" title="點擊放大照片">
+              <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大全圖</span>
+            </div>
+          `}
+
+          <!-- 底部階差標價 ＋ 一鍵複製直貼 -->
+          <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3">
+            <div>
+              <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">PRICE</span>
+              <div class="text-lg sm:text-xl font-black bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent">${priceDisplay}</div>
+            </div>
+
+            <div class="flex items-center gap-2" onclick="event.stopPropagation()">
+              ${(safeContact && !isSold) ? `
+                <button onclick="copyContactForItem('${item.id}')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-1.5">
+                  <i class="fa-regular fa-copy"></i> 聯絡複製
+                </button>
+              ` : ''}
+              <button onclick="openDetailModal('${item.id}')" class="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs font-bold rounded-xl border border-gray-700 active:scale-95 transition">
+                詳情 <i class="fa-solid fa-chevron-right text-[9px]"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const mobileCardHtml = (colsNum === 1 && !isShowcase) ? `
       <!-- 📱 手機端：100% 擬真 Threads 原生黑底串文資訊流 -->
       <div onclick="openDetailModal('${item.id}')" class="threads-card-item block border-b border-gray-800/80 pt-3.5 pb-4 px-1 cursor-pointer active:bg-gray-900/30 transition">
         <div class="flex gap-3 items-stretch">
@@ -413,7 +497,7 @@ function renderItems() {
       </div>
     `;
     
-    const cardHtml = isMobileDevice ? mobileCardHtml : desktopCardHtml;
+    const cardHtml = isShowcase ? showcaseCardHtml : (isMobileDevice ? mobileCardHtml : desktopCardHtml);
     return cardHtml + dividerHtml;
   }).join('');
 }
@@ -490,16 +574,15 @@ function openDetailModal(itemId) {
     let priceDisplay = '';
     if (item.price && String(item.price).startsWith('swap:')) {
       const swapVal = String(item.price).replace('swap:', '');
-      priceDisplay = `🔄 以物易物 (想換：${swapVal || '未指定'})`;
-      priceElem.className = "detail-price-font font-black text-rose-400 flex items-center gap-1";
+      priceDisplay = `🔄 換：${swapVal || '未指定'}`;
+      priceElem.className = "font-black text-2xl sm:text-3xl text-rose-400 flex items-center gap-1.5";
+    } else if (item.type === 'free') {
+      priceDisplay = 'NT$ 0 (免費贈送)';
+      priceElem.className = "font-black text-2xl sm:text-3xl text-emerald-400";
     } else {
-      priceElem.className = "detail-price-font font-black text-indigo-400";
-      if (item.type === 'free') {
-        priceDisplay = 'NT$ 0 (免費親自取件)';
-      } else {
-        const numPrice = parseFloat(item.price);
-        priceDisplay = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
-      }
+      const numPrice = parseFloat(item.price);
+      priceDisplay = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
+      priceElem.className = "font-black text-2xl sm:text-3xl bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent";
     }
     priceElem.innerText = priceDisplay;
   }
@@ -670,13 +753,17 @@ function goToLastPage() {
 
 /**
  * 切換網格排列佈局
- * - 📱 手機端 (直立與橫向)：統一維持極致清晰的「雙排 2 卡 (預設)」或「單排 1 卡」
- * - 💻 電腦寬屏：支援 1~5 排自由調整
+ * - 🍎 階差沉浸大卡 (Showcase Mode)
+ * - 📱 手機端 (直立與橫向)：單排 1 卡 (Threads 流 / 預設)、雙排 2 卡
+ * - 💻 電腦寬屏：支援 1~5 排自由調整與 🍎 階差模式
  */
 function changeGridLayout(cols) {
   const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
-  const maxCols = isMobile ? 2 : 5;
-  const validCols = Math.min(maxCols, Math.max(1, parseInt(cols, 10) || 2)).toString();
+  let validCols = cols;
+  if (cols !== 'showcase') {
+    const maxCols = isMobile ? 2 : 5;
+    validCols = Math.min(maxCols, Math.max(1, parseInt(cols, 10) || 2)).toString();
+  }
   const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
   localStorage.setItem(storageKey, validCols);
   localStorage.setItem('pega_grid_cols', validCols);
@@ -690,6 +777,15 @@ function applyGridLayout(cols) {
   if (!container || !grid) return;
 
   const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
+
+  if (cols === 'showcase') {
+    container.className = 'mx-auto max-w-xl sm:max-w-2xl';
+    grid.style.display = 'flex';
+    grid.style.flexDirection = 'column';
+    grid.style.gap = isMobile ? '1.25rem' : '1.75rem';
+    return;
+  }
+
   const numCols = isMobile ? Math.min(2, parseInt(cols, 10) || 2) : (parseInt(cols, 10) || 2);
 
   const maxWMap = {
@@ -703,6 +799,7 @@ function applyGridLayout(cols) {
   container.className = `mx-auto ${maxWMap[numCols] || 'max-w-2xl'}`;
   
   grid.style.display = 'grid';
+  grid.style.flexDirection = '';
   grid.style.gridTemplateColumns = `repeat(${numCols}, minmax(0, 1fr))`;
   grid.style.gap = isMobile ? '0.65rem' : '1.5rem';
 }
@@ -714,24 +811,26 @@ function updateGridLayoutOptions() {
   let activeCols = '2';
 
   if (isMobile) {
-    // 📱 手機端 (直立/橫向)：預設【單排 1 卡 (Threads 流)】，標題 100% 完整呈現無省略號
+    // 📱 手機端：預設【單排 1 卡 (Threads 流)】，支援 🍎 階差模式與雙排方格
     const storageKey = 'pega_grid_cols_mobile';
     activeCols = localStorage.getItem(storageKey) || '1';
-    if (parseInt(activeCols, 10) > 2) activeCols = '1';
+    if (activeCols !== 'showcase' && parseInt(activeCols, 10) > 2) activeCols = '1';
     if (select) {
       select.innerHTML = `
-        <option value="1">📱 單排 1 卡 (Threads 流 / 預設)</option>
+        <option value="1">📱 單排 1 卡 (Threads 串文)</option>
+        <option value="showcase">🍎 階差沉浸大卡 (Apple 風格)</option>
         <option value="2">📱 雙排 2 卡 (IG 方格)</option>
       `;
       select.value = activeCols;
     }
   } else {
-    // 💻 電腦模式：支援 1~5 排
+    // 💻 電腦模式：支援 🍎 階差模式與 1~5 排
     const storageKey = 'pega_grid_cols_pc';
     activeCols = localStorage.getItem(storageKey) || '2';
     if (select) {
       select.innerHTML = `
-        <option value="1">單排 1 卡</option>
+        <option value="showcase">🍎 階差沉浸大卡 (Apple 風格)</option>
+        <option value="1">單排 1 卡 (大圖)</option>
         <option value="2">雙排 2 卡 (預設)</option>
         <option value="3">三排 3 卡</option>
         <option value="4">四排 4 卡 (電腦)</option>

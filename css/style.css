@@ -323,9 +323,42 @@ textarea::placeholder {
     right: 0.75rem !important;
     bottom: 4.5rem !important;
     gap: 0.35rem !important;
-  }
 }
 
+/* ==========================================================================
+   🍎 Apple 階差視差質感與大標價系統 (Apple Stepped Parallax & Showcase)
+   ========================================================================== */
 
+.apple-step-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.88) 0%, rgba(3, 7, 18, 0.96) 100%);
+  border: 2px solid rgba(245, 158, 11, 0.35);
+  border-radius: 2rem;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(245, 158, 11, 0.08);
+  backdrop-filter: blur(24px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
+.apple-step-card:hover {
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 30px 70px -15px rgba(245, 158, 11, 0.22), 0 0 45px rgba(245, 158, 11, 0.18);
+}
 
+.step-watermark-num {
+  font-size: clamp(4rem, 10vw, 7.5rem);
+  line-height: 0.85;
+  font-weight: 900;
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.2) 0%, rgba(255, 255, 255, 0.02) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+
+.glow-pulse {
+  animation: glow-pulse-anim 3.5s ease-in-out infinite;
+}
+@keyframes glow-pulse-anim {
+  0%, 100% { filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.4)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.8)); transform: scale(1.02); }
+}

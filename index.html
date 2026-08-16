@@ -215,80 +215,87 @@
   </nav>
 
   <!-- 🔍 商品詳情放大 Modal (完整相片展示，支援手機下滑手勢直接關閉，字體全域聯動) -->
-  <div id="detail-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-2.5 pt-8 sm:p-4">
-    <div id="detail-modal-card" class="bg-gray-900 border border-gray-800 text-gray-100 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fadeIn transition-transform duration-200">
-      <!-- 手機專屬下滑關閉手勢指示條 (Drag Handle) -->
-      <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto my-2 sm:hidden shrink-0 cursor-grab active:cursor-grabbing"></div>
+  <!-- 🔍 商品詳情放大 Modal (Apple 階差質感 + 誇張大標價 + 100% 完整相片展示 + 燈箱支援) -->
+  <div id="detail-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-2.5 pt-6 sm:p-4 animate-fadeIn">
+    <div id="detail-modal-card" class="relative bg-gradient-to-b from-gray-900/95 to-gray-950/95 border-2 border-amber-500/40 text-gray-100 w-full max-w-2xl rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.15)] overflow-hidden flex flex-col max-h-[92vh] transition-all duration-200">
       
-      <!-- 頂部列：右側圓形紅底白字 X 關閉按鈕絕對固定顯示 (任何長標題皆不推擠、不截斷) -->
-      <div class="px-4 py-3.5 bg-gray-950/80 border-b border-gray-800 flex items-center justify-between shrink-0 gap-2">
-        <div class="flex items-center gap-2 flex-1 min-w-0 pr-1">
+      <!-- 頂部列：分類徽章 + 標題 + 右側醒目關閉按鈕 -->
+      <div class="px-5 py-3.5 bg-gray-950/90 border-b border-gray-800 flex items-center justify-between shrink-0 gap-3">
+        <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1">
           <span id="detail-type-badge" class="shrink-0"></span>
           <h3 id="detail-title" class="font-black text-gray-100 detail-title-font break-words whitespace-normal leading-snug"></h3>
         </div>
         
-        <!-- 手機專屬醒目圓形紅底白字 X 關閉按鈕 (保證不被覆蓋也不被推擠) -->
-        <button onclick="closeDetailModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-xl flex items-center justify-center border-2 border-white/30 transition active:scale-90 shrink-0 cursor-pointer z-30 ml-1" title="按下關閉視窗">
+        <button onclick="closeDetailModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-xl flex items-center justify-center border-2 border-white/30 transition active:scale-90 shrink-0 cursor-pointer z-30" title="按下關閉視窗">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="p-5 overflow-y-auto space-y-4">
-        <!-- 照片完整顯示區 (100% object-contain 完整全圖展示，防裁切) -->
-        <div id="detail-photos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-black border border-gray-800 p-2">
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4">
+        <!-- 照片展示區 (100% 完整全圖展示 + 點擊燈箱放大) -->
+        <div id="detail-photos-container" class="rounded-2xl overflow-hidden bg-black border border-gray-800 p-2 shadow-inner">
           <!-- 動態照片 -->
         </div>
 
-        <!-- 價格與時間 -->
-        <div class="flex items-center justify-between">
-          <span id="detail-price" class="detail-price-font font-black text-indigo-400"></span>
-          <span id="detail-time" class="threads-meta-font text-gray-400"></span>
+        <!-- 🍎 階差式核心標價區 (誇張大字體 + 流金漸層) -->
+        <div class="p-4 bg-gray-950/90 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+          <div class="space-y-0.5">
+            <span class="text-[10px] text-gray-400 font-bold tracking-wider uppercase">PRICE / SWAP</span>
+            <div id="detail-price" class="font-black text-2xl sm:text-3xl bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent"></div>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-gray-400 font-bold self-start sm:self-center">
+            <span id="detail-time" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800"></span>
+            <span id="detail-expiration" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 font-bold text-amber-300"></span>
+          </div>
         </div>
 
-        <!-- 聯絡資訊方塊 (點擊一鍵複製名稱與聯絡方式) -->
-        <div id="detail-contact-box" onclick="handleContactClick(document.getElementById('detail-contact-text').innerText, document.getElementById('detail-title').innerText)" class="bg-indigo-950/80 hover:bg-indigo-900/80 border border-indigo-500/40 p-4 rounded-2xl space-y-1.5 cursor-pointer transition active:scale-[0.99] shadow-sm" title="點擊一鍵複製商品名稱與聯絡資訊">
+        <!-- 聯絡資訊方塊 (一鍵複製直貼通訊軟體) -->
+        <div id="detail-contact-box" onclick="handleContactClick(document.getElementById('detail-contact-text').innerText, document.getElementById('detail-title').innerText)" class="bg-gradient-to-r from-indigo-950/90 to-purple-950/90 hover:from-indigo-900/90 hover:to-purple-900/90 border-2 border-indigo-500/40 p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer transition active:scale-[0.99] shadow-lg group" title="點擊一鍵複製商品名稱與聯絡資訊">
           <div class="flex items-center justify-between">
             <p class="threads-meta-font font-black text-indigo-300 flex items-center gap-1.5">
-              <i class="fa-solid fa-phone text-indigo-400"></i> 聯絡資訊：
+              <i class="fa-solid fa-phone text-amber-400"></i> 聯絡刊登同仁：
             </p>
-            <span class="threads-meta-font bg-indigo-600 hover:bg-indigo-500 text-white font-black px-3 py-1 rounded-xl shadow-sm">點擊一鍵複製</span>
+            <span class="bg-indigo-600 group-hover:bg-indigo-500 text-white font-black text-xs px-3 py-1 rounded-xl shadow-md transition flex items-center gap-1">
+              <i class="fa-regular fa-copy"></i> 點擊一鍵複製直貼
+            </span>
           </div>
-          <p id="detail-contact-text" class="detail-desc-font text-indigo-100 font-bold break-all"></p>
+          <p id="detail-contact-text" class="text-sm sm:text-base text-indigo-100 font-bold break-all"></p>
         </div>
 
         <!-- 詳細描述 -->
-        <div class="space-y-1.5">
-          <p class="threads-meta-font font-bold text-gray-400">物品詳細描述：</p>
-          <div id="detail-desc" class="detail-desc-font text-gray-200 leading-relaxed font-medium bg-gray-950/80 p-4 rounded-2xl border border-gray-800 whitespace-pre-line"></div>
+        <div class="space-y-2">
+          <p class="text-xs font-bold text-gray-400 flex items-center gap-1.5"><i class="fa-solid fa-align-left text-amber-400"></i> 物品詳細說明：</p>
+          <div id="detail-desc" class="text-xs sm:text-sm text-gray-200 leading-relaxed font-medium bg-gray-950/80 p-4 sm:p-5 rounded-2xl border border-gray-800 whitespace-pre-line shadow-inner"></div>
+        </div>
+
+        <!-- 發布者與管理區域 -->
+        <div class="pt-2 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400">
+          <span>👤 刊登人：<strong id="detail-nickname" class="text-gray-200 font-bold"></strong></span>
+          <span class="text-[11px] text-gray-500 font-mono">PEGA 匿名流通保護</span>
         </div>
 
         <!-- 刊登者本人編輯與下架區域 -->
-        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-gray-800 flex gap-2">
-          <button id="detail-owner-edit-btn" onclick="" class="threads-meta-font flex-1 py-2.5 bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-500/40 font-bold rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+        <div id="detail-owner-action-box" class="hidden pt-2 border-t border-gray-800 flex gap-2.5">
+          <button id="detail-owner-edit-btn" onclick="" class="flex-1 py-2.5 bg-indigo-950/90 hover:bg-indigo-900 text-indigo-300 border border-indigo-500/40 font-bold text-xs sm:text-sm rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
             <i class="fa-solid fa-pen-to-square text-indigo-400"></i>
             <span>修改貼文</span>
           </button>
-          <button id="detail-owner-delete-btn" onclick="" class="threads-meta-font flex-1 py-2.5 bg-red-950 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+          <button id="detail-owner-delete-btn" onclick="" class="flex-1 py-2.5 bg-red-950/90 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs sm:text-sm rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
             <i class="fa-solid fa-trash-can text-red-400"></i>
             <span>下架貼文 (售出/結案)</span>
           </button>
         </div>
 
         <!-- 管理員操作區域 -->
-        <div id="detail-admin-action-box" class="hidden pt-2 border-t border-gray-800 flex gap-2">
-          <button id="detail-admin-pin-btn" onclick="" class="threads-meta-font flex-1 py-2.5 bg-amber-950/80 border border-amber-500/40 text-amber-300 hover:bg-amber-900 font-bold rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+        <div id="detail-admin-action-box" class="hidden pt-2 border-t border-gray-800 flex gap-2.5">
+          <button id="detail-admin-pin-btn" onclick="" class="flex-1 py-2.5 bg-amber-950/80 border border-amber-500/40 text-amber-300 hover:bg-amber-900 font-bold text-xs sm:text-sm rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
             <i class="fa-solid fa-thumbtack text-amber-400"></i>
             <span id="detail-admin-pin-text">置頂</span>
           </button>
-          <button id="detail-admin-delete-btn" onclick="" class="threads-meta-font px-5 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+          <button id="detail-admin-delete-btn" onclick="" class="px-5 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-500/40 font-bold text-xs sm:text-sm rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
             <i class="fa-solid fa-trash-can text-sm"></i>
             <span>刪除貼文</span>
           </button>
-        </div>
-
-        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
-          <span>發布者：<strong id="detail-nickname" class="text-slate-700"></strong></span>
-          <span id="detail-expiration" class="font-bold"></span>
         </div>
       </div>
     </div>
