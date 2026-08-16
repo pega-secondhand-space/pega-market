@@ -43,10 +43,52 @@ function closeIssueModal() {
 }
 
 /**
+ * 驗證版主權限 (若尚未登入則彈出密碼輸入框)
+ */
+async function ensureAdminAuth(actionDesc = '執行管理操作') {
+  if (isAdmin && localStorage.getItem('pega_admin_hash')) return true;
+  const pwd = prompt(`🔐 請輸入版主管理密碼以${actionDesc}：`);
+  if (!pwd) return false;
+
+  try {
+    const inputHash = await sha256(pwd.trim());
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/check_admin_login`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ pwd_input: inputHash })
+    });
+
+    if (res.ok) {
+      const pass = await res.json();
+      if (pass === true) {
+        isAdmin = true;
+        localStorage.setItem('pega_is_admin', 'true');
+        localStorage.setItem('pega_admin_hash', inputHash);
+        const btnText = document.getElementById('admin-btn-text');
+        if (btnText) btnText.innerText = '管理面板 (已登入)';
+        showNotification('🔑 版主身份驗證成功！', 'success');
+        return true;
+      }
+    }
+    showNotification('⚠️ 密碼不正確，操作已取消', 'warning');
+    return false;
+  } catch(e) {
+    console.error('Admin auth check error:', e);
+    showNotification('⚠️ 連線驗證失敗：' + e.message, 'warning');
+    return false;
+  }
+}
+
+/**
  * 版主標記留言已修復/重新打開
  */
 async function toggleResolveIssue(issueId, isCurrentlyResolved) {
-  if (!isAdmin) return showNotification('⚠️ 只有版主可以變更處理狀態', 'warning');
+  const authed = await ensureAdminAuth(!isCurrentlyResolved ? '標記此留言為已處理' : '恢復此留言為處理中');
+  if (!authed) return;
   const pwdHash = localStorage.getItem('pega_admin_hash') || '';
   
   try {
@@ -74,7 +116,7 @@ async function toggleResolveIssue(issueId, isCurrentlyResolved) {
     });
 
     if (res.ok) {
-      showNotification(!isCurrentlyResolved ? '✅ 已標記為【已修復/已開發完成】並自動沉底！' : '⚡ 已標記為處理中', 'success');
+      showNotification(!isCurrentlyResolved ? '✅ 已標記為【已處理完成】並自動沉底！' : '⚡ 已標記為處理中', 'success');
       loadAndRenderIssues();
     }
   } catch(e) {
@@ -83,11 +125,55 @@ async function toggleResolveIssue(issueId, isCurrentlyResolved) {
 }
 
 /**
- * 版主刪除留言紀錄
+ * 版主快速回覆同仁留言並標記處理
+ */
+async function replyIssueAdmin(issueId) {
+  const authed = await ensureAdminAuth('回覆此筆同仁留言');
+  if (!authed) return;
+
+  const replyText = prompt('💬 請輸入要回覆給同仁的說明內容：');
+  if (!replyText || !replyText.trim()) return;
+
+  const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+  try {
+    const fetchRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${issueId}&select=content`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const msgData = await fetchRes.json();
+    if (!msgData || msgData.length === 0) return;
+
+    let content = msgData[0].content || '';
+    content = content.replace(/\[ADMIN_REPLY:[\s\S]*?\]/g, '').replace(/\[RESOLVED\]/g, '').trim();
+    content = `${content}\n[ADMIN_REPLY: ${replyText.trim()}]\n[RESOLVED]`;
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/resolve_issue_admin`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ issue_id: issueId, new_content: content, pwd_input: pwdHash })
+    });
+
+    if (res.ok) {
+      showNotification('💬 已成功送出版主回覆並標記為處理完成！', 'success');
+      loadAndRenderIssues();
+    }
+  } catch (e) {
+    console.error('Reply issue error:', e);
+    showNotification('⚠️ 回覆留言失敗：' + e.message, 'warning');
+  }
+}
+
+/**
+ * 版主刪除單筆留言紀錄
  */
 async function deleteIssueAdmin(issueId) {
-  if (!isAdmin) return;
-  if (!confirm('確定要刪除這筆留言紀錄嗎？')) return;
+  const authed = await ensureAdminAuth('刪除這筆留言紀錄');
+  if (!authed) return;
+
+  if (!confirm('⚠️ 確定要永久刪除這筆留言紀錄嗎？\n此操作無法復原！')) return;
   try {
     const pwdHash = localStorage.getItem('pega_admin_hash') || '';
     const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_issue_admin`, {
@@ -96,7 +182,7 @@ async function deleteIssueAdmin(issueId) {
       body: JSON.stringify({ issue_id: issueId, pwd_input: pwdHash })
     });
     if (res.ok) {
-      showNotification('🗑️ 留言紀錄已刪除', 'info');
+      showNotification('🗑️ 留言紀錄已成功刪除', 'info');
       loadAndRenderIssues();
     } else {
       showNotification('⚠️ 刪除留言失敗，密碼已失效，請重新登入版主', 'warning');
@@ -124,7 +210,7 @@ async function loadAndRenderIssues() {
       if (badge) badge.innerText = issues.length;
 
       if (issues.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無任何留言歷史紀錄</p>';
+        container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs font-bold">💬 尚無任何留言歷史紀錄</p>';
         return;
       }
 
@@ -147,7 +233,7 @@ async function loadAndRenderIssues() {
       if (badge) badge.innerText = activeIssues.length;
 
       if (activeIssues.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs">💬 尚無待處理的同仁留言反饋</p>';
+        container.innerHTML = '<p class="text-gray-500 text-center py-10 text-xs font-bold">💬 尚無待處理的同仁留言反饋</p>';
         return;
       }
 
@@ -159,11 +245,7 @@ async function loadAndRenderIssues() {
 
       const batchToolbar = document.getElementById('issue-admin-batch-toolbar');
       if (batchToolbar) {
-        if (isAdmin) {
-          batchToolbar.classList.remove('hidden');
-        } else {
-          batchToolbar.classList.add('hidden');
-        }
+        batchToolbar.classList.remove('hidden');
       }
 
       container.innerHTML = activeIssues.map(iss => {
@@ -187,10 +269,10 @@ async function loadAndRenderIssues() {
         const safeReplyText = escapeHtml(replyText);
 
         return `
-          <div class="p-3.5 ${isResolved ? 'bg-gray-950/60 opacity-80 border-gray-800/60' : 'bg-gray-900 border-gray-700/80'} border rounded-2xl space-y-2 transition">
+          <div class="p-3.5 sm:p-4 ${isResolved ? 'bg-gray-950/70 opacity-80 border-gray-800' : 'bg-gray-900/90 border-gray-700/80 shadow-md'} border rounded-2xl space-y-2.5 transition">
             <div class="flex items-center justify-between text-xs">
               <div class="flex items-center gap-2">
-                ${isAdmin ? `<input type="checkbox" class="issue-select-chk w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-400 bg-gray-950 cursor-pointer" value="${iss.id}" onchange="updateIssueBatchUI()">` : ''}
+                <input type="checkbox" class="issue-select-chk w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-400 bg-gray-950 cursor-pointer" value="${iss.id}" onchange="updateIssueBatchUI()">
                 <span class="font-bold text-gray-200 flex items-center gap-1.5">
                   <i class="fa-solid fa-circle-user text-amber-400"></i> ${safeSenderName} 
                   ${isResolved ? 
@@ -198,30 +280,31 @@ async function loadAndRenderIssues() {
                     '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-xs font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中 / 待版主回覆</span>'}
                 </span>
               </div>
-              <span class="text-xs text-gray-500">${timeAgo(iss.created_at)}</span>
+              <span class="text-xs text-gray-500 font-bold">${timeAgo(iss.created_at)}</span>
             </div>
 
-            <div class="text-xs text-gray-200 leading-relaxed font-medium bg-black/30 p-3 rounded-xl border border-white/5 whitespace-pre-line">
+            <div class="text-xs sm:text-sm text-gray-200 leading-relaxed font-medium bg-black/40 p-3 rounded-xl border border-white/5 whitespace-pre-line shadow-inner">
               ${safeUserText}
             </div>
 
             ${safeReplyText ? `
-              <div class="mt-2 p-2.5 bg-indigo-950/80 border border-indigo-500/40 rounded-xl text-xs text-indigo-200 space-y-1">
-                <div class="font-bold text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 版主回覆與處理說明：</div>
-                <div class="whitespace-pre-line leading-relaxed font-medium text-gray-200">${safeReplyText}</div>
+              <div class="p-3 bg-indigo-950/80 border border-indigo-500/40 rounded-xl text-xs sm:text-sm text-indigo-200 space-y-1 shadow-inner">
+                <div class="font-bold text-amber-300 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-amber-400"></i> 版主回覆與處理說明：</div>
+                <div class="whitespace-pre-line leading-relaxed font-medium text-gray-100">${safeReplyText}</div>
               </div>
             ` : ''}
 
-            ${isAdmin ? `
-              <div class="flex justify-end gap-1.5 pt-1">
-                <button onclick="toggleResolveIssue('${iss.id}', ${isResolved})" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 text-amber-300' : 'bg-emerald-900/60 text-emerald-300'} text-xs font-bold rounded-lg transition">
-                  ${isResolved ? '↩️ 恢復處理中' : '✍️ 標記已處理'}
-                </button>
-                <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2 py-1 bg-red-900/60 text-red-300 text-xs font-bold rounded-lg transition">
-                  🗑️ 刪除留言
-                </button>
-              </div>
-            ` : ''}
+            <div class="flex items-center justify-end gap-2 pt-1 border-t border-gray-800/80">
+              <button onclick="replyIssueAdmin('${iss.id}')" class="px-2.5 py-1 bg-indigo-900/70 hover:bg-indigo-800 text-indigo-200 text-xs font-bold rounded-lg transition flex items-center gap-1 cursor-pointer">
+                💬 版主回覆
+              </button>
+              <button onclick="toggleResolveIssue('${iss.id}', ${isResolved})" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 hover:bg-amber-800 text-amber-300' : 'bg-emerald-900/60 hover:bg-emerald-800 text-emerald-300'} text-xs font-bold rounded-lg transition cursor-pointer">
+                ${isResolved ? '↩️ 恢復處理中' : '✍️ 標記已處理'}
+              </button>
+              <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2.5 py-1 bg-rose-950/70 hover:bg-rose-900 border border-rose-700/50 text-rose-300 text-xs font-bold rounded-lg transition flex items-center gap-1 cursor-pointer">
+                <i class="fa-solid fa-trash-can text-[10px]"></i> 刪除
+              </button>
+            </div>
           </div>
         `;
       }).join('');
@@ -272,7 +355,6 @@ function updateIssueBatchUI() {
  * 版主執行批次刪除留言
  */
 async function deleteSelectedIssuesAdmin() {
-  if (!isAdmin) return showNotification('⚠️ 只有版主具備批次刪除權限', 'warning');
   const checkedBoxes = Array.from(document.querySelectorAll('.issue-select-chk:checked'));
   const ids = checkedBoxes.map(c => c.value);
 
@@ -280,6 +362,9 @@ async function deleteSelectedIssuesAdmin() {
     showNotification('⚠️ 請先勾選要刪除的留言紀錄！', 'warning');
     return;
   }
+
+  const authed = await ensureAdminAuth(`批次刪除選取的 ${ids.length} 則留言紀錄`);
+  if (!authed) return;
 
   if (!confirm(`⚠️ 確定要批次永久刪除選取的 ${ids.length} 則留言紀錄嗎？\n此操作無法復原！`)) return;
 
@@ -378,6 +463,8 @@ async function submitNewIssue() {
 }
 
 // 綁定全域以供呼叫
+window.replyIssueAdmin = replyIssueAdmin;
+window.ensureAdminAuth = ensureAdminAuth;
 window.switchIssueTab = switchIssueTab;
 window.openIssueModal = openIssueModal;
 window.closeIssueModal = closeIssueModal;

@@ -615,11 +615,14 @@
               <span class="font-bold text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 版主權限已解鎖</span>
               <!-- 版主內部切換頁籤 -->
               <div class="flex gap-1.5 ml-2">
-                <button onclick="switchAdminTab('settings')" id="admin-tab-btn-settings" class="px-3.5 py-1.5 bg-indigo-600 text-white rounded-xl font-bold text-xs shadow transition">
+                <button onclick="switchAdminTab('settings')" id="admin-tab-btn-settings" class="px-3.5 py-1.5 bg-indigo-600 text-white rounded-xl font-bold text-xs shadow transition cursor-pointer">
                   ⚙️ 系統設定與公告
                 </button>
-                <button onclick="switchAdminTab('items')" id="admin-tab-btn-items" class="px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5">
+                <button onclick="switchAdminTab('items')" id="admin-tab-btn-items" class="px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer">
                   📋 貼文批次管理 / 強制刪除 (<span id="admin-items-total-badge">0</span>)
+                </button>
+                <button onclick="switchAdminTab('issues')" id="admin-tab-btn-issues" class="px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer">
+                  💬 留言板批次管理 (<span id="admin-issues-total-badge">0</span>)
                 </button>
               </div>
             </div>
@@ -753,75 +756,124 @@
               </table>
             </div>
           </div>
+
+          <!-- 子頁籤 3：留言板批次管理與回覆 (PC 專用大面板) -->
+          <div id="admin-subview-issues" class="hidden space-y-3 flex-1 flex flex-col">
+            <!-- 搜尋與批次操作工具列 -->
+            <div class="flex flex-wrap items-center justify-between gap-3 bg-gray-900/90 p-3.5 rounded-2xl border border-gray-700 shrink-0">
+              <div class="flex items-center gap-2.5 flex-1 min-w-[240px]">
+                <div class="relative flex-1">
+                  <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
+                  <input type="text" id="admin-issues-search" oninput="filterAdminIssues()" placeholder="搜尋留言內容或同仁暱稱..." class="w-full pl-8 pr-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-amber-500 font-bold">
+                </div>
+                <select id="admin-issues-status-filter" onchange="filterAdminIssues()" class="px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-200 font-bold focus:outline-none cursor-pointer">
+                  <option value="all">全部狀態</option>
+                  <option value="pending">⚡ 待處理 / 處理中</option>
+                  <option value="resolved">✅ 已處理完成</option>
+                </select>
+              </div>
+
+              <!-- 批次刪除按鈕 (勾選時顯示) -->
+              <div class="flex items-center gap-2">
+                <button onclick="batchDeleteSelectedAdminIssues()" id="admin-issues-batch-delete-btn" class="hidden px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs sm:text-sm rounded-xl transition shadow-xl flex items-center gap-1.5 active:scale-95 animate-fadeIn cursor-pointer">
+                  <i class="fa-solid fa-trash-can"></i> 批次刪除選取留言 (<span id="admin-issues-selected-count">0</span>)
+                </button>
+              </div>
+            </div>
+
+            <!-- 留言表格列表 (佔滿垂直高度) -->
+            <div class="overflow-x-auto border border-gray-700 rounded-2xl flex-1 max-h-[calc(95vh-230px)] overflow-y-auto">
+              <table class="min-w-full divide-y divide-gray-700 text-left text-xs sm:text-sm text-gray-300">
+                <thead class="bg-gray-900 font-bold text-gray-200 sticky top-0 z-10 shadow-sm">
+                  <tr>
+                    <th scope="col" class="px-3.5 py-3 w-10 text-center">
+                      <input type="checkbox" id="admin-issues-select-all" onclick="toggleSelectAllAdminIssues(this)" class="w-4 h-4 rounded bg-gray-950 border-gray-700 text-amber-500 focus:ring-0 cursor-pointer" title="全選/全取消">
+                    </th>
+                    <th scope="col" class="px-3.5 py-3 w-28">同仁暱稱</th>
+                    <th scope="col" class="px-3.5 py-3">問題與建議內容</th>
+                    <th scope="col" class="px-3.5 py-3 w-48">版主回覆</th>
+                    <th scope="col" class="px-3.5 py-3 w-28 text-center">處理狀態</th>
+                    <th scope="col" class="px-3.5 py-3 w-28">提出時間</th>
+                    <th scope="col" class="px-3.5 py-3 w-36 text-center">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-issues-table-body" class="divide-y divide-gray-800 bg-gray-950/50 font-medium">
+                  <!-- 動態加載留言 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 🐛 回報網站問題與建議留言板 Modal -->
+  <!-- 🐛 回報網站問題與建議留言板 Modal (PC/手機雙端友善 + 批次刪除支援) -->
   <div id="issue-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[580px] animate-fadeIn">
+    <div class="bg-gray-800 border-2 border-amber-500/40 w-full max-w-3xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.15)] overflow-hidden flex flex-col h-[88vh] sm:h-[620px] animate-fadeIn">
       <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-base">
             🐛
           </div>
           <div>
-            <h3 class="font-bold text-sm text-gray-100">回報網站問題與建議留言板</h3>
-            <p class="text-[10px] text-gray-400">匿名提出除錯反饋與改善建議</p>
+            <h3 class="font-black text-sm sm:text-base text-gray-100 flex items-center gap-2">
+              回報網站問題與建議留言板
+            </h3>
+            <p class="text-[10px] text-amber-300/80">匿名提出除錯反饋與改善建議，全站同仁共同維護</p>
           </div>
         </div>
         <!-- 醒目圓形紅底白字 X 關閉按鈕 -->
-        <button onclick="closeIssueModal()" class="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 ml-2" title="按下關閉視窗">
+        <button onclick="closeIssueModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 cursor-pointer ml-2" title="按下關閉視窗">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <!-- 切換按鈕 Tab: 提出留言 vs 查看歷史 -->
-      <div class="px-5 py-2.5 bg-gray-900/60 border-b border-gray-700/80 flex gap-2 shrink-0">
-        <button onclick="switchIssueTab('form')" id="issue-tab-form" class="px-4 py-2.5 rounded-xl bg-amber-600 text-white font-black text-xs sm:text-sm transition shadow flex items-center gap-2 active:scale-95">
+      <div class="px-5 py-2.5 bg-gray-900/80 border-b border-gray-700/80 flex gap-2 shrink-0">
+        <button onclick="switchIssueTab('form')" id="issue-tab-form" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs sm:text-sm transition shadow flex items-center gap-2 active:scale-95 cursor-pointer">
           <i class="fa-solid fa-pen-to-square"></i> 我要提出問題或建議
         </button>
-        <button onclick="switchIssueTab('list')" id="issue-tab-list" class="px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 hover:text-white border border-gray-700 font-black text-xs sm:text-sm transition flex items-center gap-2 active:scale-95">
-          <i class="fa-solid fa-list-ul"></i> 查看留言紀錄 <span id="issue-count-badge" class="bg-amber-900/80 text-amber-300 text-[10px] px-1.5 py-0.2 rounded-md">0</span>
+        <button onclick="switchIssueTab('list')" id="issue-tab-list" class="px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 hover:text-white border border-gray-700 font-bold text-xs sm:text-sm transition flex items-center gap-2 active:scale-95 cursor-pointer">
+          <i class="fa-solid fa-list-ul"></i> 查看留言紀錄 <span id="issue-count-badge" class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] px-1.5 py-0.5 rounded-md font-black">0</span>
         </button>
       </div>
 
-      <div class="p-4 sm:p-5 flex-1 overflow-y-auto">
+      <div class="p-4 sm:p-5 flex-1 overflow-y-auto space-y-3">
         <!-- 分頁 1: 填寫資料表單 -->
         <div id="issue-view-form" class="space-y-4">
-          <div class="bg-gray-900/90 p-4 rounded-2xl border border-gray-700/80 space-y-3 shadow-inner">
-            <h4 class="font-bold text-xs text-amber-300 flex items-center gap-1.5">
+          <div class="bg-gray-900/90 p-4 sm:p-5 rounded-2xl border border-gray-700/80 space-y-3 shadow-inner">
+            <h4 class="font-black text-xs sm:text-sm text-amber-300 flex items-center gap-1.5">
               <i class="fa-solid fa-comment-dots"></i> 請輸入您遇到的問題或改善建議：
             </h4>
-            <textarea id="issue-content" rows="4" placeholder="例如：手機版卡片數量無法切換 / 建議新增... (將由版主統一審核回覆)" class="w-full p-3.5 bg-gray-950 border border-gray-700 rounded-xl text-xs sm:text-base text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 resize-none font-bold leading-relaxed"></textarea>
+            <textarea id="issue-content" rows="4" placeholder="例如：手機版卡片數量無法切換 / 建議新增... (將由版主統一審核回覆)" class="w-full p-3.5 bg-gray-950 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 resize-none font-bold leading-relaxed shadow-inner"></textarea>
             
-            <div id="issue-form-error" class="hidden bg-red-900/80 border border-red-500 text-red-100 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
-              <i class="fa-solid fa-triangle-exclamation text-red-400"></i>
+            <div id="issue-form-error" class="hidden bg-rose-900/80 border border-rose-500 text-rose-100 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
               <span id="issue-form-error-text"></span>
             </div>
 
             <div class="flex items-center justify-between pt-1">
-              <button onclick="switchIssueTab('list')" class="text-xs text-indigo-400 hover:underline font-bold flex items-center gap-1">
+              <button onclick="switchIssueTab('list')" class="text-xs text-amber-400 hover:underline font-bold flex items-center gap-1 cursor-pointer">
                 <i class="fa-solid fa-list-ul"></i> 去看歷史留言清單 »
               </button>
-              <button id="submit-issue-btn" onclick="submitNewIssue()" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs sm:text-sm rounded-xl transition shadow-lg active:scale-95 flex items-center gap-2">
+              <button id="submit-issue-btn" onclick="submitNewIssue()" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:opacity-95 text-gray-950 font-black text-xs sm:text-sm rounded-xl transition shadow-lg shadow-amber-500/25 active:scale-95 flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-paper-plane"></i> 送出問題單
               </button>
             </div>
           </div>
         </div>
 
-        <!-- 分頁 2: 查看留言紀錄列表 (已修復項目自動沉底 ＋ 版主批次刪除) -->
+        <!-- 分頁 2: 查看留言紀錄列表 (已修復項目自動沉底 ＋ PC/手機批次刪除支援) -->
         <div id="issue-view-list" class="hidden space-y-3">
-          <!-- 版主專屬批次操作列 (登入版主時自動顯示) -->
-          <div id="issue-admin-batch-toolbar" class="hidden p-2.5 bg-gray-900 border border-amber-500/40 rounded-xl flex items-center justify-between gap-2 shadow">
-            <div class="flex items-center gap-2">
+          <!-- 批次管理操作列 (支援勾選全選與批次刪除) -->
+          <div id="issue-admin-batch-toolbar" class="p-3 bg-gray-900/95 border border-amber-500/40 rounded-2xl flex items-center justify-between gap-2 shadow-md">
+            <div class="flex items-center gap-2.5">
               <input type="checkbox" id="issue-select-all-checkbox" onchange="toggleSelectAllIssues(this.checked)" class="w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-400 bg-gray-950 cursor-pointer">
-              <label for="issue-select-all-checkbox" class="text-xs text-amber-300 font-bold cursor-pointer select-none">全選留言</label>
-              <span id="issue-selected-count-badge" class="text-[11px] text-gray-400 font-bold bg-black/50 px-2 py-0.5 rounded-md">已選 0 則</span>
+              <label for="issue-select-all-checkbox" class="text-xs text-amber-300 font-bold cursor-pointer select-none">全選所有留言</label>
+              <span id="issue-selected-count-badge" class="text-[11px] text-gray-300 font-bold bg-black/60 border border-white/10 px-2.5 py-0.5 rounded-lg">已選 0 則</span>
             </div>
-            <button id="issue-batch-delete-btn" onclick="deleteSelectedIssuesAdmin()" class="px-3 py-1.5 bg-red-700 hover:bg-red-600 active:scale-95 text-white font-black text-xs rounded-lg transition shadow flex items-center gap-1.5">
+            <button id="issue-batch-delete-btn" onclick="deleteSelectedIssuesAdmin()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-black text-xs rounded-xl transition shadow flex items-center gap-1.5 cursor-pointer opacity-50 cursor-not-allowed" disabled>
               <i class="fa-solid fa-trash-can"></i> 批次刪除選取
             </button>
           </div>

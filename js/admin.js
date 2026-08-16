@@ -817,36 +817,255 @@ function exportArchiveToTxt() {
 
 var adminItemsList = [];
 
+var adminIssuesList = [];
+
 /**
- * 切換版主後台內部子頁籤 (系統設定 vs 貼文批次管理)
- * @param {'settings'|'items'} tab 子分頁
+ * 切換版主後台內部子頁籤 (系統設定 vs 貼文批次管理 vs 留言板批次管理)
+ * @param {'settings'|'items'|'issues'} tab 子分頁
  */
 function switchAdminTab(tab) {
   const settingsView = document.getElementById('admin-subview-settings');
   const itemsView = document.getElementById('admin-subview-items');
+  const issuesView = document.getElementById('admin-subview-issues');
   const settingsBtn = document.getElementById('admin-tab-btn-settings');
   const itemsBtn = document.getElementById('admin-tab-btn-items');
+  const issuesBtn = document.getElementById('admin-tab-btn-issues');
+
+  if (settingsView) settingsView.classList.add('hidden');
+  if (itemsView) itemsView.classList.add('hidden');
+  if (issuesView) issuesView.classList.add('hidden');
+
+  if (settingsBtn) settingsBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition cursor-pointer';
+  if (itemsBtn) itemsBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer';
+  if (issuesBtn) issuesBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer';
 
   if (tab === 'settings') {
     if (settingsView) settingsView.classList.remove('hidden');
-    if (itemsView) itemsView.classList.add('hidden');
-    if (settingsBtn) {
-      settingsBtn.className = 'px-3 py-1 bg-indigo-600 text-white rounded-lg font-bold text-xs shadow transition';
-    }
-    if (itemsBtn) {
-      itemsBtn.className = 'px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-bold text-xs transition flex items-center gap-1';
-    }
-  } else {
-    if (settingsView) settingsView.classList.add('hidden');
+    if (settingsBtn) settingsBtn.className = 'px-3.5 py-1.5 bg-indigo-600 text-white rounded-xl font-bold text-xs shadow transition cursor-pointer';
+  } else if (tab === 'items') {
     if (itemsView) itemsView.classList.remove('hidden');
-    if (settingsBtn) {
-      settingsBtn.className = 'px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-bold text-xs transition';
-    }
-    if (itemsBtn) {
-      itemsBtn.className = 'px-3 py-1 bg-indigo-600 text-white rounded-lg font-bold text-xs shadow transition flex items-center gap-1';
-    }
+    if (itemsBtn) itemsBtn.className = 'px-3.5 py-1.5 bg-indigo-600 text-white rounded-xl font-bold text-xs shadow transition flex items-center gap-1.5 cursor-pointer';
     loadAdminItemsTable();
+  } else if (tab === 'issues') {
+    if (issuesView) issuesView.classList.remove('hidden');
+    if (issuesBtn) issuesBtn.className = 'px-3.5 py-1.5 bg-amber-500 text-gray-950 rounded-xl font-black text-xs shadow transition flex items-center gap-1.5 cursor-pointer';
+    loadAdminIssuesTable();
   }
+}
+
+/**
+ * 載入並渲染版主留言板管理列表
+ */
+async function loadAdminIssuesTable() {
+  const tbody = document.getElementById('admin-issues-table-body');
+  if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-400 font-bold">⏳ 正在載入留言板清單...</td></tr>';
+  }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000002&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      adminIssuesList = data || [];
+
+      const badge = document.getElementById('admin-issues-total-badge');
+      if (badge) badge.innerText = adminIssuesList.length;
+
+      filterAdminIssues();
+    } else {
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-rose-400 font-bold">⚠️ 載入留言失敗，請檢查網路連線</td></tr>';
+      }
+    }
+  } catch(e) {
+    console.error('Load admin issues error:', e);
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-rose-400 font-bold">⚠️ 載入失敗：${e.message}</td></tr>`;
+    }
+  }
+}
+
+/**
+ * 依搜尋與狀態條件過濾留言
+ */
+function filterAdminIssues() {
+  const searchVal = (document.getElementById('admin-issues-search')?.value || '').toLowerCase().trim();
+  const statusFilter = document.getElementById('admin-issues-status-filter')?.value || 'all';
+
+  const filtered = adminIssuesList.filter(iss => {
+    const isResolved = (iss.content || '').includes('[RESOLVED]');
+    if (statusFilter === 'pending' && isResolved) return false;
+    if (statusFilter === 'resolved' && !isResolved) return false;
+
+    if (searchVal) {
+      const matchNick = (iss.sender_name || '').toLowerCase().includes(searchVal);
+      const matchContent = (iss.content || '').toLowerCase().includes(searchVal);
+      return matchNick || matchContent;
+    }
+    return true;
+  });
+
+  renderAdminIssuesTable(filtered);
+}
+
+/**
+ * 渲染版主留言板表格 DOM
+ */
+function renderAdminIssuesTable(issues) {
+  const tbody = document.getElementById('admin-issues-table-body');
+  if (!tbody) return;
+
+  const masterCb = document.getElementById('admin-issues-select-all');
+  if (masterCb) masterCb.checked = false;
+  updateAdminIssueBatchUI();
+
+  if (issues.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-400 font-bold">尚無符合條件的留言資料</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = issues.map(iss => {
+    const isResolved = (iss.content || '').includes('[RESOLVED]');
+    const fullContent = iss.content || '';
+    
+    let replyText = '';
+    const replyMatch = fullContent.match(/\[ADMIN_REPLY:([\s\S]*?)\]/);
+    if (replyMatch && replyMatch[1]) {
+      replyText = replyMatch[1];
+    }
+
+    const cleanUserText = fullContent
+      .replace(/\[ADMIN_REPLY:[\s\S]*?\]/g, '')
+      .replace(/\[RESOLVED_AT:.*?\]/g, '')
+      .replace(/\[RESOLVED\]/g, '')
+      .trim();
+
+    const safeSenderName = escapeHtml(iss.sender_name || '熱心同仁');
+    const safeUserText = escapeHtml(cleanUserText);
+    const safeReplyText = escapeHtml(replyText);
+
+    return `
+      <tr class="hover:bg-gray-900/80 transition ${isResolved ? 'opacity-70 bg-gray-950/40' : ''}">
+        <td class="px-3.5 py-3 text-center">
+          <input type="checkbox" class="admin-issue-checkbox w-4 h-4 rounded bg-gray-950 border-gray-700 text-amber-500 focus:ring-0 cursor-pointer" value="${iss.id}" onchange="updateAdminIssueBatchUI()">
+        </td>
+        <td class="px-3.5 py-3 font-bold text-gray-200">
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-user text-amber-400"></i> ${safeSenderName}</span>
+        </td>
+        <td class="px-3.5 py-3 text-gray-200 max-w-xs break-words">
+          <div class="line-clamp-3 text-xs leading-relaxed font-medium bg-black/30 p-2 rounded-lg border border-white/5 whitespace-pre-line">${safeUserText}</div>
+        </td>
+        <td class="px-3.5 py-3 text-xs max-w-xs break-words">
+          ${safeReplyText ? `
+            <div class="text-indigo-300 bg-indigo-950/60 p-2 rounded-lg border border-indigo-500/30 line-clamp-3 leading-relaxed">
+              <span class="font-bold text-amber-300">版主：</span>${safeReplyText}
+            </div>
+          ` : '<span class="text-gray-500 text-xs italic">尚未回覆</span>'}
+        </td>
+        <td class="px-3.5 py-3 text-center">
+          ${isResolved ? 
+            '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold px-2 py-0.5 rounded-md">✅ 已處理完成</span>' : 
+            '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-[11px] font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中</span>'}
+        </td>
+        <td class="px-3.5 py-3 text-xs text-gray-400 whitespace-nowrap font-medium">${timeAgo(iss.created_at)}</td>
+        <td class="px-3.5 py-3 text-center whitespace-nowrap">
+          <div class="flex items-center justify-center gap-1.5">
+            <button onclick="replyIssueAdmin('${iss.id}').then(() => loadAdminIssuesTable())" class="px-2.5 py-1 bg-indigo-900/80 hover:bg-indigo-700 text-indigo-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="回覆同仁">
+              💬 回覆
+            </button>
+            <button onclick="toggleResolveIssue('${iss.id}', ${isResolved}).then(() => loadAdminIssuesTable())" class="px-2.5 py-1 ${isResolved ? 'bg-amber-900/60 hover:bg-amber-700 text-amber-300' : 'bg-emerald-900/60 hover:bg-emerald-700 text-emerald-300'} rounded-lg text-xs font-bold transition cursor-pointer" title="切換狀態">
+              ${isResolved ? '↩️ 處理中' : '✍️ 標已解'}
+            </button>
+            <button onclick="deleteIssueAdmin('${iss.id}').then(() => loadAdminIssuesTable())" class="px-2.5 py-1 bg-rose-950/80 hover:bg-rose-900 border border-rose-700/50 text-rose-300 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="刪除留言">
+              🗑️
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/**
+ * 全選或取消全選版主留言表格
+ */
+function toggleSelectAllAdminIssues(master) {
+  const cbs = document.querySelectorAll('.admin-issue-checkbox');
+  cbs.forEach(cb => cb.checked = master.checked);
+  updateAdminIssueBatchUI();
+}
+
+/**
+ * 更新版主留言表格批次選取狀態
+ */
+function updateAdminIssueBatchUI() {
+  const cbs = document.querySelectorAll('.admin-issue-checkbox:checked');
+  const cnt = cbs.length;
+  const badge = document.getElementById('admin-issues-selected-count');
+  const btn = document.getElementById('admin-issues-batch-delete-btn');
+  const master = document.getElementById('admin-issues-select-all');
+
+  if (badge) badge.innerText = cnt;
+  if (btn) {
+    if (cnt > 0) {
+      btn.classList.remove('hidden');
+      btn.classList.add('flex');
+    } else {
+      btn.classList.add('hidden');
+      btn.classList.remove('flex');
+    }
+  }
+
+  const allCbs = document.querySelectorAll('.admin-issue-checkbox');
+  if (master && allCbs.length > 0) {
+    master.checked = (cnt === allCbs.length);
+  }
+}
+
+/**
+ * 版主表格批次強制刪除留言
+ */
+async function batchDeleteSelectedAdminIssues() {
+  const cbs = document.querySelectorAll('.admin-issue-checkbox:checked');
+  const selectedIds = Array.from(cbs).map(cb => cb.value);
+
+  if (selectedIds.length === 0) return;
+
+  if (!confirm(`⚠️ 確定要批次永久刪除選取的 ${selectedIds.length} 則留言紀錄嗎？\n此操作無法復原！`)) return;
+
+  showNotification(`🗑️ 正在批次刪除 ${selectedIds.length} 則留言...`, 'info');
+
+  const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+  let successCount = 0;
+
+  for (const id of selectedIds) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_issue_admin`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ issue_id: id, pwd_input: pwdHash })
+      });
+      if (res.ok) successCount++;
+    } catch(e) {
+      console.error('Batch delete single issue error:', e);
+    }
+  }
+
+  showNotification(`🎉 批次刪除完成！成功刪除 ${successCount} 則留言。`, 'success');
+  await loadAdminIssuesTable();
+  if (typeof loadAndRenderIssues === 'function') loadAndRenderIssues();
 }
 
 /**
@@ -1112,4 +1331,11 @@ window.updateAdminItemBatchUI = updateAdminItemBatchUI;
 window.deleteSingleItemFromAdminTable = deleteSingleItemFromAdminTable;
 window.batchDeleteSelectedAdminItems = batchDeleteSelectedAdminItems;
 window.toggleAdminFullscreen = toggleAdminFullscreen;
+
+window.loadAdminIssuesTable = loadAdminIssuesTable;
+window.filterAdminIssues = filterAdminIssues;
+window.renderAdminIssuesTable = renderAdminIssuesTable;
+window.toggleSelectAllAdminIssues = toggleSelectAllAdminIssues;
+window.updateAdminIssueBatchUI = updateAdminIssueBatchUI;
+window.batchDeleteSelectedAdminIssues = batchDeleteSelectedAdminIssues;
 
