@@ -210,7 +210,15 @@ function renderItems() {
 
     const isMobileDevice = window.innerWidth < 768;
     const storageKey = isMobileDevice ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
-    const activeLayout = localStorage.getItem(storageKey) || (isMobileDevice ? 'showcase' : '2');
+    let activeLayout = localStorage.getItem(storageKey);
+    if (isMobileDevice) {
+      if (!activeLayout || activeLayout === '1') {
+        activeLayout = 'showcase';
+        localStorage.setItem(storageKey, 'showcase');
+      }
+    } else {
+      if (!activeLayout) activeLayout = '2';
+    }
     const isShowcase = (activeLayout === 'showcase');
     const colsNum = isShowcase ? 1 : (parseInt(activeLayout, 10) || (isMobileDevice ? 1 : 2));
     const isEndOfRow = ((idx + 1) % colsNum === 0);
@@ -830,7 +838,10 @@ function updateGridLayoutOptions() {
   let activeCols = localStorage.getItem(storageKey);
 
   if (isMobile) {
-    if (!activeCols) activeCols = 'showcase';
+    if (!activeCols || activeCols === '1') {
+      activeCols = 'showcase';
+      localStorage.setItem(storageKey, 'showcase');
+    }
   } else {
     // 💻 PC 端維持 2~4 張卡片顯示最適宜
     if (!activeCols || !['2', '3', '4'].includes(activeCols)) {
