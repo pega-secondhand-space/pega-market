@@ -886,37 +886,52 @@
     </div>
   </div>
 
-  <!-- 🤝 歷史成交紀錄 Modal -->
+  <!-- 🤝 歷史成交紀錄 Modal (PC/手機雙端友善 + 支援批次刪除與一鍵清空) -->
   <div id="archive-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[580px] animate-fadeIn">
+    <div class="bg-gray-800 border-2 border-emerald-500/40 w-full max-w-4xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_30px_rgba(16,185,129,0.15)] overflow-hidden flex flex-col h-[88vh] sm:h-[620px] animate-fadeIn">
       <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0 font-sans">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-base">
             🤝
           </div>
           <div>
-            <h3 class="font-bold text-sm text-gray-100">歷史成交與下架存檔紀錄</h3>
-            <p class="text-[10px] text-gray-400">已售出商品之歷史存檔，提供同仁統計與查閱</p>
+            <h3 class="font-black text-sm sm:text-base text-gray-100 flex items-center gap-2">
+              歷史成交與下架存檔紀錄
+            </h3>
+            <p class="text-[10px] text-emerald-400">已售出商品之歷史存檔，提供全站同仁統計與查閱</p>
           </div>
         </div>
         <!-- 醒目圓形紅底白字 X 關閉按鈕 -->
-        <button onclick="closeArchiveModal()" class="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 ml-2" title="按下關閉視窗">
+        <button onclick="closeArchiveModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-lg flex items-center justify-center border-2 border-white/20 transition active:scale-90 shrink-0 cursor-pointer ml-2" title="按下關閉視窗">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <!-- 統計方塊與工具列 -->
-      <div class="px-5 py-3 bg-gray-900/60 border-b border-gray-700/80 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 font-sans">
-        <div class="flex flex-wrap gap-2 text-xs font-bold text-gray-300">
-          <span class="bg-emerald-950 border border-emerald-800 text-emerald-300 px-2.5 py-1 rounded-lg">累計成交：<strong id="archive-stat-count" class="text-white">0</strong> 件</span>
-          <span class="bg-purple-950 border border-purple-800 text-purple-300 px-2.5 py-1 rounded-lg">免費贈送：<strong id="archive-stat-free" class="text-white">0</strong> 件</span>
+      <div class="px-5 py-3 bg-gray-900/80 border-b border-gray-700/80 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 shrink-0 font-sans">
+        <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-gray-300">
+          <span class="bg-emerald-950 border border-emerald-700/60 text-emerald-300 px-3 py-1.5 rounded-xl">累計成交：<strong id="archive-stat-count" class="text-white font-black">0</strong> 件</span>
+          <span class="bg-purple-950 border border-purple-700/60 text-purple-300 px-3 py-1.5 rounded-xl">免費贈送：<strong id="archive-stat-free" class="text-white font-black">0</strong> 件</span>
         </div>
-        <div class="flex gap-2 w-full sm:w-auto">
-          <input type="text" id="archive-search" oninput="filterArchive()" placeholder="搜尋存檔物品..." class="px-3 py-1.5 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500 w-full sm:w-44 font-medium">
-          <button id="archive-batch-delete-btn" onclick="deleteSelectedArchiveLogs()" class="px-3.5 py-1.5 bg-red-700 hover:bg-red-600 active:scale-95 text-white font-black text-xs rounded-xl transition shadow hidden items-center gap-1 shrink-0">
+        
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+          <div class="relative flex-1 lg:w-48">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+            <input type="text" id="archive-search" oninput="filterArchive()" placeholder="搜尋存檔物品..." class="w-full pl-8 pr-3 py-1.5 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500 font-bold shadow-inner">
+          </div>
+
+          <!-- 批次刪除選取 -->
+          <button id="archive-batch-delete-btn" onclick="deleteSelectedArchiveLogs()" class="hidden px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-black text-xs rounded-xl transition shadow flex items-center gap-1.5 shrink-0 cursor-pointer animate-fadeIn">
             <i class="fa-solid fa-trash-can"></i> 批次刪除 (<span id="archive-selected-count">0</span>)
           </button>
-          <button onclick="exportArchiveToTxt()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black text-xs rounded-xl transition shadow flex items-center gap-1 shrink-0">
+
+          <!-- 🧹 一鍵清空所有存檔按鈕 -->
+          <button id="archive-clear-all-btn" onclick="clearAllArchiveLogs()" class="px-3.5 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-600/60 hover:border-rose-500 text-rose-300 hover:text-white active:scale-95 font-black text-xs rounded-xl transition shadow flex items-center gap-1.5 shrink-0 cursor-pointer" title="清空全部歷史成交紀錄">
+            <i class="fa-solid fa-broom"></i> 清空所有存檔
+          </button>
+
+          <!-- 匯出文字檔 -->
+          <button onclick="exportArchiveToTxt()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black text-xs rounded-xl transition shadow flex items-center gap-1.5 shrink-0 cursor-pointer">
             <i class="fa-solid fa-download"></i> 匯出文字檔
           </button>
         </div>
@@ -925,19 +940,19 @@
       <!-- 數據表格 -->
       <div class="flex-1 overflow-auto p-4 font-sans">
         <div class="min-w-full inline-block align-middle">
-          <div class="overflow-hidden border border-gray-700 rounded-xl">
-            <table class="min-w-full divide-y divide-gray-700 text-left text-xs text-gray-300">
-              <thead class="bg-gray-900 font-bold text-gray-200">
+          <div class="overflow-hidden border border-gray-700 rounded-2xl shadow">
+            <table class="min-w-full divide-y divide-gray-700 text-left text-xs sm:text-sm text-gray-300">
+              <thead class="bg-gray-900 font-bold text-gray-200 sticky top-0 z-10 shadow-sm">
                 <tr>
-                  <th scope="col" id="archive-header-select" class="px-3 py-3 w-10 text-center hidden">
-                    <input type="checkbox" id="archive-select-all" onclick="toggleSelectAllArchive(this)" class="w-4 h-4 rounded bg-gray-950 border-gray-700 text-indigo-600 focus:ring-0 cursor-pointer" title="全選/全取消">
+                  <th scope="col" id="archive-header-select" class="px-3.5 py-3 w-10 text-center">
+                    <input type="checkbox" id="archive-select-all" onclick="toggleSelectAllArchive(this)" class="w-4 h-4 rounded bg-gray-950 border-gray-700 text-emerald-500 focus:ring-0 cursor-pointer" title="全選/全取消">
                   </th>
                   <th scope="col" class="px-4 py-3">商品/需求名稱</th>
                   <th scope="col" class="px-3 py-3 w-20">類型</th>
-                  <th scope="col" class="px-3 py-3 w-24">金額</th>
-                  <th scope="col" class="px-3 py-3 w-24">刊登者</th>
-                  <th scope="col" class="px-4 py-3 w-32">成交下架時間</th>
-                  <th scope="col" id="archive-header-action" class="px-3 py-3 w-16 text-center hidden">單筆操作</th>
+                  <th scope="col" class="px-3 py-3 w-28">金額</th>
+                  <th scope="col" class="px-3 py-3 w-28">刊登者</th>
+                  <th scope="col" class="px-4 py-3 w-36">成交下架時間</th>
+                  <th scope="col" id="archive-header-action" class="px-3 py-3 w-20 text-center">操作</th>
                 </tr>
               </thead>
               <tbody id="archive-table-body" class="divide-y divide-gray-800 bg-gray-950/40 font-medium">

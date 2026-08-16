@@ -529,15 +529,22 @@ function updateArchiveBatchDeleteUI() {
   }
 }
 
+/**
+ * 批次刪除選取的成交/下架存檔紀錄
+ */
 async function deleteSelectedArchiveLogs() {
-  if (!isAdmin) return showNotification('⚠️ 權限不足，僅限版主批次刪除', 'warning');
-  
   const cbs = document.querySelectorAll('.archive-checkbox:checked');
   const selectedIds = Array.from(cbs).map(cb => cb.value);
   
-  if (selectedIds.length === 0) return;
+  if (selectedIds.length === 0) {
+    showNotification('⚠️ 請先勾選要刪除的存檔紀錄！', 'warning');
+    return;
+  }
   
-  if (!confirm(`您確定要一次【批次刪除】選取的 ${selectedIds.length} 筆歷史成交/下架存檔紀錄嗎？\n\n（此操作無法恢復，且會從成交清單中永久移除）`)) {
+  const authed = await ensureAdminAuth(`批次刪除選取的 ${selectedIds.length} 筆歷史成交存檔`);
+  if (!authed) return;
+
+  if (!confirm(`⚠️ 確定要批次永久刪除選取的 ${selectedIds.length} 筆歷史成交/下架存檔紀錄嗎？\n\n此操作無法復原！`)) {
     return;
   }
   
@@ -567,12 +574,68 @@ async function deleteSelectedArchiveLogs() {
   await loadArchiveLogs();
 }
 
-async function deleteArchiveLog(dbId) {
-  if (!isAdmin) {
-    showNotification('⚠️ 權限不足，僅限版主刪除紀錄', 'warning');
+/**
+ * 一鍵清空所有成交/下架存檔紀錄
+ */
+async function clearAllArchiveLogs() {
+  if (!archiveLogs || archiveLogs.length === 0) {
+    showNotification('⚠️ 目前沒有任何歷史成交存檔紀錄可以清空！', 'warning');
     return;
   }
-  if (!confirm('您確定要刪除此筆成交/下架存檔紀錄嗎？\n（此操作無法恢復，且會從歷史成交中移除）')) {
+
+  const authed = await ensureAdminAuth('一鍵清空所有歷史成交存檔紀錄');
+  if (!authed) return;
+
+  if (!confirm(`⚠️ 確定要一鍵【清空所有】歷史成交與下架存檔紀錄嗎？\n\n共 ${archiveLogs.length} 筆紀錄將被永久清除且無法復原！`)) {
+    return;
+  }
+
+  const clearBtn = document.getElementById('archive-clear-all-btn');
+  if (clearBtn) {
+    clearBtn.disabled = true;
+    clearBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 清空中...';
+  }
+
+  showNotification(`🗑️ 正在清空全部 ${archiveLogs.length} 筆歷史成交存檔...`, 'info');
+
+  const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+  let successCount = 0;
+
+  for (const log of archiveLogs) {
+    if (!log.db_id) continue;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/delete_archive_log_admin`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ log_uuid: log.db_id, pwd_input: pwdHash })
+      });
+      if (res.ok) successCount++;
+    } catch(e) {
+      console.error('Clear all single log error:', e);
+    }
+  }
+
+  if (clearBtn) {
+    clearBtn.disabled = false;
+    clearBtn.innerHTML = '<i class="fa-solid fa-broom"></i> 清空所有存檔';
+  }
+
+  showNotification(`🎉 歷史成交與下架存檔已全數清空（共清除 ${successCount} 筆）！`, 'success');
+  await loadArchiveLogs();
+}
+
+/**
+ * 刪除單筆成交/下架存檔紀錄
+ */
+async function deleteArchiveLog(dbId) {
+  const authed = await ensureAdminAuth('刪除此筆成交存檔紀錄');
+  if (!authed) return;
+
+  if (!confirm('⚠️ 您確定要永久刪除此筆成交/下架存檔紀錄嗎？\n（此操作無法恢復）')) {
     return;
   }
 
@@ -688,27 +751,27 @@ function renderArchive(logs) {
     const priceStr = log.type === 'free' ? '免費送' : `NT$ ${price.toLocaleString()}`;
     const soldDate = log.sold_at ? new Date(log.sold_at).toLocaleString('zh-TW', { hour12: false }) : '未知時間';
 
-    const deleteBtnHtml = isAdmin ? `
+    const deleteBtnHtml = `
       <td class="px-3 py-3 text-center">
-        <button onclick="deleteArchiveLog('${log.db_id}')" class="text-red-400 hover:text-red-300 transition active:scale-95 px-1.5 py-0.5 hover:bg-red-500/10 rounded" title="刪除此紀錄">
-          <i class="fa-solid fa-trash-can"></i>
+        <button onclick="deleteArchiveLog('${log.db_id}')" class="px-2 py-1 bg-rose-950/70 hover:bg-rose-900 border border-rose-700/50 text-rose-300 rounded-lg text-xs font-bold transition flex items-center gap-1 mx-auto cursor-pointer" title="刪除此存檔紀錄">
+          <i class="fa-solid fa-trash-can text-[10px]"></i> 刪除
         </button>
       </td>
-    ` : '';
+    `;
 
-    const checkboxTd = isAdmin ? `
-      <td class="px-3 py-3 text-center">
-        <input type="checkbox" class="archive-checkbox w-4 h-4 rounded bg-gray-950 border-gray-700 text-indigo-600 focus:ring-0 cursor-pointer" value="${log.db_id}" onclick="updateArchiveBatchDeleteUI()">
+    const checkboxTd = `
+      <td class="px-3.5 py-3 text-center">
+        <input type="checkbox" class="archive-checkbox w-4 h-4 rounded bg-gray-950 border-gray-700 text-emerald-500 focus:ring-0 cursor-pointer" value="${log.db_id}" onclick="updateArchiveBatchDeleteUI()">
       </td>
-    ` : '';
+    `;
 
     return `
       <tr class="hover:bg-gray-800/40 transition">
         ${checkboxTd}
         <td class="px-4 py-3 font-bold text-gray-100">${titleSafe}</td>
         <td class="px-3 py-3">${typeBadge}</td>
-        <td class="px-3 py-3 font-black text-indigo-400">${priceStr}</td>
-        <td class="px-3 py-3 text-gray-400">${nicknameSafe}</td>
+        <td class="px-3 py-3 font-black text-amber-400">${priceStr}</td>
+        <td class="px-3 py-3 text-gray-300">${nicknameSafe}</td>
         <td class="px-4 py-3 text-gray-400 text-xs">${soldDate}</td>
         ${deleteBtnHtml}
       </tr>
@@ -1316,6 +1379,7 @@ window.closeArchiveModal = closeArchiveModal;
 window.toggleSelectAllArchive = toggleSelectAllArchive;
 window.updateArchiveBatchDeleteUI = updateArchiveBatchDeleteUI;
 window.deleteSelectedArchiveLogs = deleteSelectedArchiveLogs;
+window.clearAllArchiveLogs = clearAllArchiveLogs;
 window.deleteArchiveLog = deleteArchiveLog;
 window.loadArchiveLogs = loadArchiveLogs;
 window.renderArchive = renderArchive;
