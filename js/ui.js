@@ -22,12 +22,12 @@ function renderItems() {
   const filtered = allItems.filter(item => {
     if (item.device_id === 'SYSTEM' || (item.title && item.title.startsWith('SYSTEM_')) || (item.id && item.id.startsWith('00000000-0000-0000-0000-'))) return false;
 
-    // 已售出逾 48 小時過期檢查 (僅前端過濾顯示)
+    // 已售出逾 24 小時過期檢查 (僅前端過濾顯示)
     if (isItemSold(item)) {
       const soldTime = getItemSoldTime(item);
       if (soldTime) {
         const diffMs = new Date() - soldTime;
-        if (diffMs > 2 * 24 * 60 * 60 * 1000) {
+        if (diffMs > 24 * 60 * 60 * 1000) {
           deleteItemSilently(item.id);
           return false;
         }
@@ -191,17 +191,18 @@ function renderItems() {
     if (isSold) {
       const soldTime = getItemSoldTime(item);
       if (soldTime) {
-        const remainingMs = (2 * 24 * 60 * 60 * 1000) - (new Date() - soldTime);
+        const remainingMs = (24 * 60 * 60 * 1000) - (new Date() - soldTime);
         const remainingHours = Math.max(0, Math.floor(remainingMs / (1000 * 60 * 60)));
-        if (remainingHours > 24) {
-          const remainingDays = Math.floor(remainingHours / 24);
-          const hours = remainingHours % 24;
-          expCountdownHtml = `<span class="text-emerald-400 font-bold text-[10px] sm:text-xs">⏳ 剩 ${remainingDays}天${hours}時下架</span>`;
+        const remainingMins = Math.max(0, Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60)));
+        if (remainingMs <= 0) {
+          expCountdownHtml = `<span class="text-rose-400 font-bold text-[10px] sm:text-xs">⏳ 即將自動移入成交庫</span>`;
+        } else if (remainingHours > 0) {
+          expCountdownHtml = `<span class="text-gray-400 font-bold text-[10px] sm:text-xs">⏳ 售出剩 ${remainingHours}小時${remainingMins}分 下架</span>`;
         } else {
-          expCountdownHtml = `<span class="text-red-400 font-bold animate-pulse text-[10px] sm:text-xs">⏳ 剩 ${remainingHours}時下架</span>`;
+          expCountdownHtml = `<span class="text-amber-400 font-bold animate-pulse text-[10px] sm:text-xs">⏳ 售出剩 ${remainingMins}分鐘 下架</span>`;
         }
       } else {
-        expCountdownHtml = `<span class="text-emerald-400 font-bold text-[10px] sm:text-xs">⏳ 已標記售出</span>`;
+        expCountdownHtml = `<span class="text-gray-400 font-bold text-[10px] sm:text-xs">⏳ 已售出 (24小時下架)</span>`;
       }
     } else {
       expCountdownHtml = getExpirationCountdown(getItemExpiration(item));
@@ -228,18 +229,20 @@ function renderItems() {
     const typeShortText = item.type === 'free' ? '免費送' : item.type === 'buy' ? '想買' : item.type === 'lucky' ? '尾牙' : '想賣';
     const typeColorClass = item.type === 'free' ? 'text-emerald-400' : item.type === 'buy' ? 'text-amber-400' : item.type === 'lucky' ? 'text-rose-400' : 'text-indigo-400';
 
-    // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode - 支援 5 級動態字級深度聯動)
+    // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode - 支援 5 級動態字級與售出黑白沈浸)
     const showcaseCardHtml = `
-      <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-4 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left border-2 border-amber-500/45 hover:border-amber-500/80">
-        <!-- 巨大金色浮水印數字 (01, 02, 03...) -->
-        <div class="step-watermark-num absolute right-2 top-0 pointer-events-none z-0">${String(idx + 1).padStart(2, '0')}</div>
+      <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-4 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left ${isSold ? 'grayscale opacity-75 contrast-90 border-2 border-gray-700 bg-gray-950/80' : 'border-2 border-amber-500/45 hover:border-amber-500/80'}">
+        <!-- 巨大金色/灰階浮水印數字 (01, 02, 03...) -->
+        <div class="step-watermark-num absolute right-2 top-0 pointer-events-none z-0 ${isSold ? 'opacity-25' : ''}">${String(idx + 1).padStart(2, '0')}</div>
 
         <div class="relative z-10 space-y-3.5">
           <!-- 頂部資訊列：階差編號徽章 + 頭像/暱稱 + 分類徽章 + 時間 + 售出打勾 -->
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-[11px] shadow">NO. ${String(idx + 1).padStart(2, '0')}</span>
-              <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white text-xs font-black shadow-md shrink-0">
+              <span class="px-2 py-0.5 rounded-md ${isSold ? 'bg-gray-800 text-gray-400 border border-gray-700' : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950'} font-black text-[11px] shadow">
+                ${isSold ? '已售出' : `NO. ${String(idx + 1).padStart(2, '0')}`}
+              </span>
+              <div class="w-7 h-7 rounded-full ${isSold ? 'bg-gray-800 text-gray-400' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white'} flex items-center justify-center text-xs font-black shadow-md shrink-0">
                 ${safeNickname.slice(0, 1) || '同'}
               </div>
               <div class="flex items-center gap-1.5 min-w-0">
@@ -250,7 +253,7 @@ function renderItems() {
             </div>
 
             <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-              ${isPinned ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-lg font-black border border-amber-500/40 shadow-sm text-[10px]">📌 置頂</span>' : ''}
+              ${(isPinned && !isSold) ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-lg font-black border border-amber-500/40 shadow-sm text-[10px]">📌 置頂</span>' : ''}
               <button onclick="toggleItemSoldState('${item.id}')" 
                       class="w-8 h-8 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
                       ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'}"
@@ -263,14 +266,14 @@ function renderItems() {
           <!-- 標題與描述 (字體動態聯動) -->
           <div class="space-y-1">
             <h3 class="font-black text-gray-100 leading-snug break-words showcase-title-font" title="${safeTitle}">
-              ${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}
+              ${isSold ? '<span class="text-gray-400 font-black">【已售出】</span>' : ''}${safeTitle}
             </h3>
             ${safeDesc ? `<p class="text-gray-300 leading-relaxed font-medium line-clamp-3 showcase-desc-font">${safeDesc}</p>` : ''}
           </div>
 
           <!-- 滿版大圖 (點擊燈箱放大) -->
           ${p2 ? `
-            <div class="grid grid-cols-2 gap-2 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner">
+            <div class="grid grid-cols-2 gap-2 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner ${isSold ? 'grayscale contrast-90' : ''}">
               <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
                 <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                 <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 1/2 放大</span>
@@ -281,17 +284,18 @@ function renderItems() {
               </div>
             </div>
           ` : `
-            <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 cursor-zoom-in group shadow-inner" title="點擊放大照片">
+            <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 cursor-zoom-in group shadow-inner ${isSold ? 'grayscale contrast-90' : ''}" title="點擊放大照片">
               <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
               <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大全圖</span>
             </div>
           `}
 
-          <!-- 底部階差標價 ＋ 一鍵複製直貼 (動態大字體) -->
+          <!-- 底部階差標價 ＋ 一鍵複製直貼 / 售出下架倒數 (動態大字體) -->
           <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3">
             <div>
-              <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">PRICE</span>
-              <div class="font-black bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent showcase-price-font">${priceDisplay}</div>
+              <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">${isSold ? 'STATUS' : 'PRICE'}</span>
+              <div class="font-black ${isSold ? 'text-gray-400 line-through' : 'bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent'} showcase-price-font">${priceDisplay}</div>
+              <div class="mt-0.5">${expCountdownHtml}</div>
             </div>
 
             <div class="flex items-center gap-2" onclick="event.stopPropagation()">
@@ -310,12 +314,12 @@ function renderItems() {
     `;
 
     const mobileCardHtml = (colsNum === 1 && !isShowcase) ? `
-      <!-- 📱 手機端：100% 擬真 Threads 原生黑底串文資訊流 -->
-      <div onclick="openDetailModal('${item.id}')" class="threads-card-item block border-b border-gray-800/80 pt-3.5 pb-4 px-1 cursor-pointer active:bg-gray-900/30 transition">
+      <!-- 📱 手機端：100% 擬真 Threads 原生黑底串文資訊流 (售出黑白灰階 + 24h 倒數) -->
+      <div onclick="openDetailModal('${item.id}')" class="threads-card-item block border-b border-gray-800/80 pt-3.5 pb-4 px-1 cursor-pointer active:bg-gray-900/30 transition ${isSold ? 'grayscale opacity-75 contrast-90' : ''}">
         <div class="flex gap-3 items-stretch">
           <!-- 左欄：Threads 圓形頭像 + 串文垂直連接軸線 (固定經典尺寸，不因文字縮放變形) -->
           <div class="w-10 flex flex-col items-center shrink-0">
-            <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white text-xs font-black shadow-md shrink-0">
+            <div class="relative w-9 h-9 rounded-full ${isSold ? 'bg-gray-800 text-gray-400' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white'} flex items-center justify-center text-xs font-black shadow-md shrink-0">
               ${safeNickname.slice(0, 1) || '同'}
               <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-gray-950 rounded-full flex items-center justify-center border border-gray-700 text-[8px] text-white">
                 <i class="fa-solid fa-plus"></i>
@@ -336,7 +340,7 @@ function renderItems() {
                 <span class="text-gray-500 font-medium text-[11px]">· ${timeAgo(item.created_at)}</span>
               </div>
               <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-                ${isPinned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-black border border-amber-500/30">📌置頂</span>' : ''}
+                ${(isPinned && !isSold) ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-black border border-amber-500/30">📌置頂</span>' : ''}
                 <button onclick="toggleItemSoldState('${item.id}')" 
                         class="w-7 h-7 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
                         ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white'}"
@@ -349,7 +353,7 @@ function renderItems() {
             <!-- 標題與內文：100% 完整自然換行、無任何省略號！ -->
             <div class="space-y-1.5">
               <h3 class="font-black text-gray-100 threads-title-font break-words whitespace-normal" title="${safeTitle}">
-                ${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}
+                ${isSold ? '<span class="text-gray-400 font-black">【已售出】</span>' : ''}${safeTitle}
               </h3>
               ${safeDesc ? `<p class="threads-desc-font text-gray-200 break-words whitespace-pre-line font-medium">${safeDesc}</p>` : ''}
               ${p2 ? '<div class="inline-block text-[11px] text-gray-300 bg-gray-900 px-2.5 py-0.5 rounded-full border border-gray-800 font-bold">1/2 多圖</div>' : ''}
@@ -374,10 +378,10 @@ function renderItems() {
               </div>
             `}
 
-            <!-- 底部 Threads 互動操作列 (售價 / 聯絡一鍵複製) -->
-            <div class="flex items-center justify-between text-gray-400 pt-2">
+            <!-- 底部 Threads 互動操作列 (售價 / 聯絡一鍵複製 / 24h 倒數) -->
+            <div class="flex flex-wrap items-center justify-between text-gray-400 pt-2 gap-2">
               <div class="flex items-center gap-3">
-                <span class="font-black text-indigo-300 threads-price-font flex items-center gap-1.5">
+                <span class="font-black ${isSold ? 'text-gray-400 line-through' : 'text-indigo-300'} threads-price-font flex items-center gap-1.5">
                   <i class="fa-solid fa-tag text-xs text-indigo-400"></i> ${priceDisplay}
                 </span>
                 ${(safeContact && !isSold) ? `
@@ -386,9 +390,12 @@ function renderItems() {
                   </button>
                 ` : ''}
               </div>
-              <span class="threads-meta-font text-gray-400 font-bold flex items-center gap-1">
-                查看詳情 <i class="fa-solid fa-chevron-right text-[9px]"></i>
-              </span>
+              <div class="flex items-center gap-2 text-xs">
+                ${expCountdownHtml}
+                <span class="threads-meta-font text-gray-400 font-bold flex items-center gap-1">
+                  詳情 <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                </span>
+              </div>
             </div>
           </div>
         </div>
