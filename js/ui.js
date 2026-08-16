@@ -228,7 +228,7 @@ function renderItems() {
     const typeShortText = item.type === 'free' ? '免費送' : item.type === 'buy' ? '想買' : item.type === 'lucky' ? '尾牙' : '想賣';
     const typeColorClass = item.type === 'free' ? 'text-emerald-400' : item.type === 'buy' ? 'text-amber-400' : item.type === 'lucky' ? 'text-rose-400' : 'text-indigo-400';
 
-    // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode)
+    // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode - 支援 5 級動態字級深度聯動)
     const showcaseCardHtml = `
       <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-5 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left">
         <!-- 巨大浮水印序號 -->
@@ -243,15 +243,15 @@ function renderItems() {
               </div>
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
-                  <span class="font-black text-sm text-gray-100 truncate">${safeNickname}</span>
+                  <span class="font-black text-gray-100 truncate showcase-meta-font">${safeNickname}</span>
                   ${typeBadge}
                 </div>
-                <div class="text-[11px] text-gray-400 font-medium">${timeAgo(item.created_at)}</div>
+                <div class="text-gray-400 font-medium showcase-meta-font">${timeAgo(item.created_at)}</div>
               </div>
             </div>
 
             <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-              ${isPinned ? '<span class="text-xs bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-xl font-black border border-amber-500/40 shadow-sm">📌 置頂</span>' : ''}
+              ${isPinned ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-xl font-black border border-amber-500/40 shadow-sm">📌 置頂</span>' : ''}
               <button onclick="toggleItemSoldState('${item.id}')" 
                       class="w-8 h-8 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
                       ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'}"
@@ -261,12 +261,12 @@ function renderItems() {
             </div>
           </div>
 
-          <!-- 標題與描述 -->
+          <!-- 標題與描述 (字體動態聯動) -->
           <div class="space-y-1.5">
-            <h3 class="text-base sm:text-lg font-black text-gray-100 leading-snug break-words" title="${safeTitle}">
+            <h3 class="font-black text-gray-100 leading-snug break-words showcase-title-font" title="${safeTitle}">
               ${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}
             </h3>
-            ${safeDesc ? `<p class="text-xs sm:text-sm text-gray-300 leading-relaxed font-medium line-clamp-3">${safeDesc}</p>` : ''}
+            ${safeDesc ? `<p class="text-gray-300 leading-relaxed font-medium line-clamp-3 showcase-desc-font">${safeDesc}</p>` : ''}
           </div>
 
           <!-- 滿版大圖 (點擊燈箱放大) -->
@@ -288,20 +288,20 @@ function renderItems() {
             </div>
           `}
 
-          <!-- 底部階差標價 ＋ 一鍵複製直貼 -->
+          <!-- 底部階差標價 ＋ 一鍵複製直貼 (動態大字體) -->
           <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3">
             <div>
               <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">PRICE</span>
-              <div class="text-lg sm:text-xl font-black bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent">${priceDisplay}</div>
+              <div class="font-black bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent showcase-price-font">${priceDisplay}</div>
             </div>
 
             <div class="flex items-center gap-2" onclick="event.stopPropagation()">
               ${(safeContact && !isSold) ? `
-                <button onclick="copyContactForItem('${item.id}')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-1.5">
+                <button onclick="copyContactForItem('${item.id}')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-1.5 showcase-meta-font">
                   <i class="fa-regular fa-copy"></i> 聯絡複製
                 </button>
               ` : ''}
-              <button onclick="openDetailModal('${item.id}')" class="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs font-bold rounded-xl border border-gray-700 active:scale-95 transition">
+              <button onclick="openDetailModal('${item.id}')" class="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold rounded-xl border border-gray-700 active:scale-95 transition showcase-meta-font">
                 詳情 <i class="fa-solid fa-chevron-right text-[9px]"></i>
               </button>
             </div>
@@ -821,25 +821,23 @@ function updateGridLayoutOptions() {
   const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
 
   const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
-  let activeCols = localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || 'showcase';
+  let activeCols = localStorage.getItem(storageKey);
+
+  if (isMobile) {
+    if (!activeCols) activeCols = 'showcase';
+  } else {
+    // 💻 PC 端維持 2~4 張卡片顯示最適宜
+    if (!activeCols || !['2', '3', '4'].includes(activeCols)) {
+      activeCols = '2';
+    }
+  }
 
   if (select) {
-    if (isMobile) {
-      select.innerHTML = `
-        <option value="showcase">🍎 階差沉浸大卡 (Apple 風格)</option>
-        <option value="1">📱 單排 1 卡 (Threads 串文)</option>
-        <option value="2">📱 雙排 2 卡 (IG 方格)</option>
-      `;
-    } else {
-      select.innerHTML = `
-        <option value="showcase">🍎 階差沉浸大卡 (Apple 風格)</option>
-        <option value="1">單排 1 卡 (大圖)</option>
-        <option value="2">雙排 2 卡 (預設)</option>
-        <option value="3">三排 3 卡</option>
-        <option value="4">四排 4 卡 (電腦)</option>
-        <option value="5">五排 5 卡 (寬屏)</option>
-      `;
-    }
+    select.innerHTML = `
+      <option value="2">雙排 2 卡 (預設)</option>
+      <option value="3">三排 3 卡</option>
+      <option value="4">四排 4 卡 (寬螢幕)</option>
+    `;
     select.value = activeCols;
   }
 
