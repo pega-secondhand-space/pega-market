@@ -1402,16 +1402,8 @@ function initDetailModalGestures() {
 /**
  * 📖 新手圖文使用指南彈窗邏輯
  */
-let modalGuideCurrentStep = 1;
-const modalGuideTotalSteps = 5;
-
 function openGuideModal() {
-  const modal = document.getElementById('guide-modal');
-  if (modal) {
-    modal.classList.remove('hidden');
-    modalGuideCurrentStep = 1;
-    updateModalGuideUI();
-  }
+  window.location.href = 'guide.html';
 }
 
 function closeGuideModal() {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PEGA 告示牌 - 蘋果級階差視差互動說明手冊</title>
+  <title>PEGA 告示牌 - 二手與尾牙交換使用說明</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* 🌌 蘋果級深邃極光背景 */
+    /* 🌌 深邃極光背景 */
     body {
       background-color: #030712;
       background-image: 
@@ -50,14 +50,6 @@
       pointer-events: none;
     }
 
-    /* 3D 手機外框擬物展示 (Simulated Phone Device Frame) */
-    .phone-mockup {
-      border: 8px solid #1f2937;
-      border-radius: 2.5rem;
-      box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,0,0,0.8);
-      background: #030712;
-    }
-
     /* 呼吸光暈與霓虹發光 */
     .glow-pulse {
       animation: glow-pulse-anim 3.5s ease-in-out infinite;
@@ -83,11 +75,11 @@
 
       <!-- 階差章節快速跳轉導航 -->
       <nav class="hidden md:flex items-center gap-1.5 text-xs font-black text-gray-400">
-        <a href="#step-1" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">01 分類易物</a>
-        <a href="#step-2" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">02 刊登密碼</a>
-        <a href="#step-3" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">03 雙端版型</a>
-        <a href="#step-4" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">04 護眼大字</a>
-        <a href="#step-5" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">05 聯絡下架</a>
+        <a href="#step-1" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">01 分類與易物</a>
+        <a href="#step-2" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">02 刊登與密碼</a>
+        <a href="#step-3" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">03 手機與電腦排版</a>
+        <a href="#step-4" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">04 字體與搜尋</a>
+        <a href="#step-5" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">05 聯絡與下架</a>
       </nav>
 
       <a href="index.html" class="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/25 hover:opacity-90 active:scale-95 transition flex items-center gap-1.5">
@@ -98,28 +90,28 @@
   </header>
 
   <!-- 🌟 震撼大標題 Hero 視覺 (誇張大字體 ＋ 流金光彩) -->
-  <section class="relative pt-12 pb-14 px-4 sm:px-6 text-center max-w-4xl mx-auto space-y-6">
+  <section class="relative pt-12 pb-14 px-4 sm:px-6 text-center max-w-4xl mx-auto space-y-5">
     <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border-2 border-amber-500/40 text-amber-300 text-xs font-black shadow-lg glow-pulse">
       <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-      PEGA 匿名二手交換平台 · 功能操作完整手冊
+      PEGA 二手物品與尾牙交換專區 · 使用說明
     </div>
 
     <!-- 誇張超大標題字體 (Apple Keynote Style) -->
     <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-tight bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent drop-shadow-2xl">
-      清楚。直覺。無負擔。<br>
-      二手交易功能全解析。
+      同仁二手物品與尾牙交換<br>
+      功能使用說明
     </h1>
 
     <p class="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto font-medium leading-relaxed">
-      為同仁量身打造的匿名流通空間。向下滾動依序瀏覽 5 大階差核心模組，親自體驗各項操作細節。
+      提供同仁刊登二手物品、尾牙抽獎禮物交換、聯絡複製與貼文下架的操作說明。
     </p>
 
     <!-- 階差快捷按鈕 -->
     <div class="flex flex-wrap justify-center gap-2.5 pt-2 text-xs font-bold">
       <a href="#step-1" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">01. 四大分類 & 易物</a>
-      <a href="#step-2" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">02. 刊登好物 & 密碼</a>
-      <a href="#step-3" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">03. 手機 Threads 串文</a>
-      <a href="#step-4" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">04. 5 級護眼大字體</a>
+      <a href="#step-2" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">02. 刊登表單 & 密碼</a>
+      <a href="#step-3" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">03. 手機與電腦排版</a>
+      <a href="#step-4" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">04. 5 段字體與搜尋</a>
       <a href="#step-5" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">05. 聯絡複製 & 下架</a>
     </div>
   </section>
@@ -136,11 +128,11 @@
         <!-- 標題列 -->
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950">STEP 01</span>
-            <span>分類與交換機制</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 01</span>
+            <span>分類與交換說明</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">四大好物專區 ＆ 尾牙以物易物</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">按需求點選分類標籤快速篩選，支援無定價以物易物</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">四大好物分類 ＆ 尾牙以物易物</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">依照需求選擇分類，支援自訂定價或填寫想交換的物品</p>
         </div>
 
         <!-- 四大專區擬物展示卡片 -->
@@ -148,40 +140,40 @@
           <div class="p-4 bg-gray-950/80 border border-indigo-500/40 rounded-2xl space-y-1.5 shadow-lg">
             <div class="flex items-center justify-between">
               <span class="bg-indigo-600 text-white font-black text-xs px-2.5 py-1 rounded-lg">💰 想賣</span>
-              <span class="text-[11px] text-indigo-300 font-bold">出清二手良品</span>
+              <span class="text-[11px] text-indigo-300 font-bold">二手物品出清</span>
             </div>
             <p class="text-xs text-gray-300 leading-relaxed font-medium">
-              刊登閒置二手物品（如 3C 配件、生活家電、書籍雜物），可自訂售價供同仁參考。
+              刊登出清閒置二手物品（如 3C 配件、書籍、生活小物等），自訂售價供同仁參考。
             </p>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-amber-500/40 rounded-2xl space-y-1.5 shadow-lg">
             <div class="flex items-center justify-between">
               <span class="bg-amber-500 text-gray-950 font-black text-xs px-2.5 py-1 rounded-lg">🔍 想買</span>
-              <span class="text-[11px] text-amber-300 font-bold">徵求好物</span>
+              <span class="text-[11px] text-amber-300 font-bold">徵求物品</span>
             </div>
             <p class="text-xs text-gray-300 leading-relaxed font-medium">
-              刊登您急需收購的物品或線材，讓手邊有閒置好物的同仁能主動與您聯絡轉讓。
+              刊登急需徵求的物品或線材，讓手邊剛好有閒置物品的同仁聯絡轉讓。
             </p>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-emerald-500/40 rounded-2xl space-y-1.5 shadow-lg">
             <div class="flex items-center justify-between">
               <span class="bg-emerald-500 text-gray-950 font-black text-xs px-2.5 py-1 rounded-lg">🎁 免費送</span>
-              <span class="text-[11px] text-emerald-300 font-bold">NT$ 0 免費結緣</span>
+              <span class="text-[11px] text-emerald-300 font-bold">NT$ 0 免費分享</span>
             </div>
             <p class="text-xs text-gray-300 leading-relaxed font-medium">
-              完全免費贈送（標價為 0 元）。同仁間愛心互助分享、斷捨離，約定分機或座位自取。
+              完全免費贈送（標價為 0 元）。同仁間愛心互助分享，約定分機或座位自取。
             </p>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-rose-500/40 rounded-2xl space-y-1.5 shadow-lg">
             <div class="flex items-center justify-between">
               <span class="bg-rose-500 text-white font-black text-xs px-2.5 py-1 rounded-lg">🧧 尾牙</span>
-              <span class="text-[11px] text-rose-300 font-bold">以物易物首選</span>
+              <span class="text-[11px] text-rose-300 font-bold">以物易物交換</span>
             </div>
             <p class="text-xs text-gray-300 leading-relaxed font-medium">
-              抽到的獎品若不需要，可勾選「以物易物」並註明想換的物品（如：想換 Switch 遊戲片、禮券等）。
+              抽到的獎品若不需要，可勾選「以物易物」並填寫想換的物品（如：想換 Switch 遊戲片、禮券等）。
             </p>
           </div>
         </div>
@@ -190,7 +182,7 @@
         <div class="p-4 sm:p-5 bg-black/60 border border-gray-800 rounded-2xl space-y-3">
           <div class="text-xs font-black text-gray-200 flex items-center gap-2">
             <i class="fa-solid fa-gamepad text-amber-400"></i>
-            <span>【操作試玩】點選下方按鈕，觀察以物易物標籤的即時動態呈現：</span>
+            <span>【以物易物示範】點選下方按鈕查看標籤顯示效果：</span>
           </div>
           <div class="flex flex-wrap gap-2">
             <button onclick="demoSwap('Switch 遊戲片')" class="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-gray-200 text-xs font-bold rounded-xl transition border border-gray-700 active:scale-95">想換：Switch 遊戲片</button>
@@ -214,11 +206,11 @@
       <div class="relative z-10 space-y-6">
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950">STEP 02</span>
-            <span>發布與密碼機制</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 02</span>
+            <span>刊登與密碼說明</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">➕ 刊登好物表單結構 ＆ 🔑 4 位數密碼</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">簡單 4 欄位極速發布，雙圖智慧壓縮，無痛自主下架</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">➕ 刊登表單結構 ＆ 🔑 4 位數密碼</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">填寫標題、定價與聯絡方式，設定 4 位密碼方便日後管理</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
@@ -231,10 +223,10 @@
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
-            <div class="font-black text-xs text-amber-400 flex items-center gap-1">2. 雙圖上傳支援</div>
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">2. 照片上傳支援</div>
             <h3 class="font-bold text-sm text-gray-100">最多可上傳 2 張照片</h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              支援上傳 1~2 張清晰照片，系統會在前端自動壓縮照片尺寸，提升手機瀏覽載入速度。
+              支援上傳 1~2 張照片，系統會在前端自動壓縮尺寸，以提升手機載入速度。
             </p>
           </div>
 
@@ -252,7 +244,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-xs font-black text-gray-200">
               <i class="fa-solid fa-lock text-amber-400"></i>
-              <span>【密碼模擬】在下方輸入 4 位數密碼，測試自主解鎖機制：</span>
+              <span>【密碼示範】在下方輸入 4 位數密碼，測試自主解鎖機制：</span>
             </div>
             <span id="vault-status-badge" class="text-xs font-bold text-gray-400 bg-gray-900 px-2 py-0.5 rounded border border-gray-800">🔒 待輸入密碼</span>
           </div>
@@ -265,7 +257,7 @@
           </div>
 
           <p class="text-center text-[11px] text-gray-400 font-medium">
-            💡 本機瀏覽器會自動記住密碼；更換裝置時只要輸入原設定之 4 位數密碼即可接管管理！
+            💡 本機瀏覽器會自動記住密碼；更換裝置時只要輸入原設定之 4 位數密碼即可管理！
           </p>
         </div>
       </div>
@@ -278,11 +270,11 @@
       <div class="relative z-10 space-y-6">
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950">STEP 03</span>
-            <span>雙端專屬版型</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 03</span>
+            <span>版型說明</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">📱 手機 Threads 串文流 vs 💻 電腦多排網格</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">手機單排完整閱讀不截斷，電腦支援 1~5 排自由切換</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">📱 手機與電腦版型說明</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">手機端採用單排完整呈現，電腦端支援 1~5 排網格切換</p>
         </div>
 
         <!-- 互動沙盒：動態版型切換展示 -->
@@ -290,7 +282,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span class="text-xs font-black text-gray-200 flex items-center gap-2">
               <i class="fa-solid fa-layer-group text-amber-400"></i>
-              【版型切換體驗】點擊切換手機與電腦模式，觀察卡片即時變形：
+              【版型切換示範】點選按鈕查看手機與電腦排版差異：
             </span>
             <div class="flex gap-1 bg-gray-950 p-1 rounded-xl border border-gray-800 self-start sm:self-auto">
               <button onclick="switchDemoLayout('mobile')" id="layout-btn-mobile" class="px-3 py-1 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition">📱 手機單排串文流</button>
@@ -312,7 +304,7 @@
               </div>
               <div class="flex items-center justify-between pt-1">
                 <span class="text-sm font-black text-indigo-400">NT$ 1,800</span>
-                <span class="text-xs text-indigo-300 font-bold bg-indigo-950 px-2 py-0.5 rounded-lg border border-indigo-500/40">聯絡複製</span>
+                <span class="text-xs text-indigo-300 font-bold bg-indigo-950 px-2.5 py-1 rounded-lg border border-indigo-500/40">聯絡複製</span>
               </div>
             </div>
           </div>
@@ -327,11 +319,11 @@
       <div class="relative z-10 space-y-6">
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950">STEP 04</span>
-            <span>字體與搜尋功能</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 04</span>
+            <span>字體與搜尋說明</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🔤 5 段護眼大字體 ＆ 頂部懸浮搜尋</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">全站深度動態等比字級縮放，頂部直接滑出即刻搜尋</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🔤 5 段字體調整 ＆ 頂部搜尋功能</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">全站支援 5 段字體大小切換，手機端可由頂部滑出搜尋列</p>
         </div>
 
         <!-- 互動沙盒：即時 5 段字體縮放台 -->
@@ -339,7 +331,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span class="text-xs font-black text-gray-200 flex items-center gap-2">
               <i class="fa-solid fa-font text-amber-400"></i>
-              【字體調整試玩】點選下方字級按鈕，觀察範例文字即時放大縮小：
+              【字體調整示範】點選下方按鈕，觀察範例文字即時放大縮小：
             </span>
             <div class="flex items-center gap-1 bg-gray-950 p-1 rounded-xl border border-amber-500/40 self-start sm:self-auto">
               <button onclick="setGuideFontSize('sm')" id="font-scale-sm" class="px-2 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white">A⁻</button>
@@ -351,9 +343,9 @@
           </div>
 
           <div id="demo-font-box" class="p-4 bg-gray-950 rounded-xl border border-gray-800 space-y-1.5 transition-all text-left">
-            <h4 id="demo-font-title" class="font-black text-amber-300 text-base">護眼閱讀體驗 · 照顧每一位同仁的雙眼</h4>
+            <h4 id="demo-font-title" class="font-black text-amber-300 text-base">字體大小調整範例</h4>
             <p id="demo-font-body" class="text-xs text-gray-300 leading-relaxed font-medium">
-              習慣大字的同仁可自由切換至 A⁺⁺⁺。全站包含商品標題、描述、價格、彈窗甚至本指南，全部動態同步放大，閱讀輕鬆無負擔！
+              習慣大字的同仁可自由切換至 A⁺⁺⁺。全站包含商品標題、描述、價格、彈窗甚至本說明頁，全部同步放大。
             </p>
           </div>
         </div>
@@ -367,32 +359,32 @@
       <div class="relative z-10 space-y-6">
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950">STEP 05</span>
-            <span>聯絡與管理下架</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 05</span>
+            <span>聯絡與管理說明</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🤝 一鍵聯絡複製 ＆ 成交管理與自刪下架</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">點一下直接複製完整資訊，成交後自動轉入歷史存檔</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🤝 一鍵聯絡複製 ＆ 成交管理與下架</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">點擊複製聯絡資訊，成交後可標記售出或自刪下架</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-2.5 shadow-lg text-left">
             <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
-              <i class="fa-regular fa-copy text-amber-400"></i> 一鍵複製直貼通訊軟體
+              <i class="fa-regular fa-copy text-amber-400"></i> 一鍵複製聯絡資訊
             </h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              點擊卡片上的「聯絡複製」，會自動將「物品名稱 ＋ 刊登者聯絡方式」複製到剪貼簿，直接在 LINE 或 Teams 貼上發送！
+              點擊卡片上的「聯絡複製」，會自動將「物品名稱 ＋ 刊登者聯絡方式」複製到剪貼簿，可直接貼到 LINE 或 Teams 發送。
             </p>
             <button onclick="demoCopyContact()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-xl shadow transition active:scale-95 flex items-center justify-center gap-2">
-              <i class="fa-regular fa-comment-dots"></i> 點此試玩「一鍵複製聯絡」
+              <i class="fa-regular fa-comment-dots"></i> 點此測試「一鍵複製聯絡」
             </button>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-2.5 shadow-lg text-left">
             <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
-              <i class="fa-solid fa-handshake text-emerald-400"></i> 標記已售出 ＆ 48h 轉存檔
+              <i class="fa-solid fa-handshake text-emerald-400"></i> 標記已售出與存檔
             </h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              商品售出後點開詳情按「下架貼文 (售出/結案)」，貼文即會標記為售出，48 小時後系統自動將其轉入歷史成交庫，不佔用首頁版面！
+              商品售出後點開詳情按「下架貼文 (售出/結案)」，貼文即會標記為售出，48 小時後系統自動將其轉入歷史成交庫，不佔用首頁版面。
             </p>
             <div class="p-2 bg-gray-900 rounded-xl border border-gray-800 flex items-center justify-between text-xs font-bold">
               <span class="text-gray-400">成交狀態：</span>
@@ -404,24 +396,24 @@
     </section>
 
     <!-- ================= 尾頁 CTA ================= -->
-    <section class="apple-step-card p-8 sm:p-12 text-center space-y-6 relative overflow-hidden">
-      <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-gray-950 text-3xl font-black flex items-center justify-center mx-auto shadow-2xl shadow-amber-500/50 glow-pulse">
-        🚀
+    <section class="apple-step-card p-8 sm:p-12 text-center space-y-5 relative overflow-hidden">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-gray-950 text-2xl font-black flex items-center justify-center mx-auto shadow-2xl shadow-amber-500/50 glow-pulse">
+        📦
       </div>
 
-      <div class="space-y-2">
-        <h3 class="text-2xl sm:text-3xl font-black text-gray-100">準備好開始尋寶與出清了嗎？</h3>
+      <div class="space-y-1.5">
+        <h3 class="text-2xl sm:text-3xl font-black text-gray-100">開始使用二手交換專區</h3>
         <p class="text-xs sm:text-sm text-gray-400 max-w-md mx-auto font-medium leading-relaxed">
-          點擊下方按鈕領取通關禮炮，立即開啟您的好物交換之旅！
+          若您已了解相關操作，點擊下方按鈕即可返回首頁開始瀏覽或刊登！
         </p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-        <button onclick="triggerConfettiExplosion()" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-500 hover:opacity-95 text-gray-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/30 active:scale-95 transition flex items-center justify-center gap-2 cursor-pointer">
+        <button onclick="triggerConfettiExplosion()" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-500 hover:opacity-95 text-gray-950 font-black text-xs sm:text-sm rounded-xl shadow-lg active:scale-95 transition flex items-center justify-center gap-2 cursor-pointer">
           <i class="fa-solid fa-cake-candles"></i> 點擊領取通關禮炮 🎉
         </button>
-        <a href="index.html" class="w-full sm:w-auto px-8 py-3.5 bg-gray-900 hover:bg-gray-800 text-gray-200 border border-gray-700 font-black text-sm rounded-2xl transition active:scale-95 flex items-center justify-center gap-2">
-          進入好物專區首頁 <i class="fa-solid fa-arrow-right text-xs"></i>
+        <a href="index.html" class="w-full sm:w-auto px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-200 border border-gray-700 font-black text-xs sm:text-sm rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
+          進入二手交換專區 <i class="fa-solid fa-arrow-right text-xs"></i>
         </a>
       </div>
     </section>
@@ -430,7 +422,7 @@
 
   <!-- 頁尾 -->
   <footer class="border-t border-gray-800/80 py-8 text-center text-xs text-gray-500 space-y-2">
-    <p>PEGA 二手物品匿名流通空間 · 讓資源延續美好</p>
+    <p>PEGA 二手物品匿名流通空間</p>
     <p class="font-mono text-[11px] text-gray-600">系統版本：v2026.08.15-2245</p>
   </footer>
 
@@ -444,7 +436,7 @@
       }
     }
 
-    // 2. 4 位 PIN 金庫輸入模擬
+    // 2. 4 位 PIN 密碼輸入模擬
     function handlePinInput(index) {
       const p1 = document.getElementById('pin-1')?.value;
       const p2 = document.getElementById('pin-2')?.value;
@@ -459,7 +451,7 @@
       if (p1 && p2 && p3 && p4) {
         if (badge) {
           badge.className = 'text-xs font-black text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/50 animate-bounce';
-          badge.innerHTML = `🔓 密碼正確 (${p1}${p2}${p3}${p4}) · 解鎖貼文權限！`;
+          badge.innerHTML = `🔓 密碼正確 (${p1}${p2}${p3}${p4}) · 驗證成功！`;
         }
       } else {
         if (badge) {
@@ -515,7 +507,7 @@
 
     // 5. 一鍵聯絡複製試玩
     function demoCopyContact() {
-      const sample = '【好物洽詢】Logitech MX Master 3S - 聯絡人分機: 45555';
+      const sample = '【物品詢問】Logitech MX Master 3S - 聯絡人分機: 45555';
       if (navigator.clipboard) {
         navigator.clipboard.writeText(sample);
       }
