@@ -209,7 +209,7 @@ function renderItems() {
 
     const isMobileDevice = window.innerWidth < 768;
     const storageKey = isMobileDevice ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
-    const activeLayout = localStorage.getItem(storageKey) || localStorage.getItem('pega_grid_cols') || (isMobileDevice ? '1' : '2');
+    const activeLayout = localStorage.getItem(storageKey) || (isMobileDevice ? 'showcase' : '2');
     const isShowcase = (activeLayout === 'showcase');
     const colsNum = isShowcase ? 1 : (parseInt(activeLayout, 10) || (isMobileDevice ? 1 : 2));
     const isEndOfRow = ((idx + 1) % colsNum === 0);
@@ -230,28 +230,27 @@ function renderItems() {
 
     // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode - 支援 5 級動態字級深度聯動)
     const showcaseCardHtml = `
-      <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-5 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left">
-        <!-- 巨大浮水印序號 -->
-        <div class="step-watermark-num absolute right-4 top-2 pointer-events-none">${String(idx + 1).padStart(2, '0')}</div>
+      <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-4 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left border-2 border-amber-500/45 hover:border-amber-500/80">
+        <!-- 巨大金色浮水印數字 (01, 02, 03...) -->
+        <div class="step-watermark-num absolute right-2 top-0 pointer-events-none z-0">${String(idx + 1).padStart(2, '0')}</div>
 
-        <div class="relative z-10 space-y-4">
-          <!-- 頂部資訊列：頭像/暱稱 + 分類徽章 + 時間 + 售出打勾 -->
+        <div class="relative z-10 space-y-3.5">
+          <!-- 頂部資訊列：階差編號徽章 + 頭像/暱稱 + 分類徽章 + 時間 + 售出打勾 -->
           <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-gray-950 text-xs font-black shadow-md shrink-0">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-[11px] shadow">NO. ${String(idx + 1).padStart(2, '0')}</span>
+              <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white text-xs font-black shadow-md shrink-0">
                 ${safeNickname.slice(0, 1) || '同'}
               </div>
-              <div class="min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="font-black text-gray-100 truncate showcase-meta-font">${safeNickname}</span>
-                  ${typeBadge}
-                </div>
-                <div class="text-gray-400 font-medium showcase-meta-font">${timeAgo(item.created_at)}</div>
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="font-black text-gray-100 truncate showcase-meta-font">${safeNickname}</span>
+                ${typeBadge}
               </div>
+              <div class="text-gray-400 font-medium showcase-meta-font text-[10px] hidden sm:inline">· ${timeAgo(item.created_at)}</div>
             </div>
 
             <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-              ${isPinned ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-xl font-black border border-amber-500/40 shadow-sm">📌 置頂</span>' : ''}
+              ${isPinned ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-lg font-black border border-amber-500/40 shadow-sm text-[10px]">📌 置頂</span>' : ''}
               <button onclick="toggleItemSoldState('${item.id}')" 
                       class="w-8 h-8 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
                       ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'}"
@@ -262,7 +261,7 @@ function renderItems() {
           </div>
 
           <!-- 標題與描述 (字體動態聯動) -->
-          <div class="space-y-1.5">
+          <div class="space-y-1">
             <h3 class="font-black text-gray-100 leading-snug break-words showcase-title-font" title="${safeTitle}">
               ${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}
             </h3>
@@ -271,7 +270,7 @@ function renderItems() {
 
           <!-- 滿版大圖 (點擊燈箱放大) -->
           ${p2 ? `
-            <div class="grid grid-cols-2 gap-2.5 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner">
+            <div class="grid grid-cols-2 gap-2 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner">
               <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
                 <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                 <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 1/2 放大</span>

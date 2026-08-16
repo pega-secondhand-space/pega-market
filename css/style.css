@@ -368,14 +368,17 @@ textarea::placeholder {
 }
 
 .step-watermark-num {
-  font-size: clamp(4rem, 10vw, 7.5rem);
-  line-height: 0.85;
-  font-weight: 900;
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.2) 0%, rgba(255, 255, 255, 0.02) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  user-select: none;
-  pointer-events: none;
+  font-size: clamp(5.5rem, 18vw, 9.5rem) !important;
+  line-height: 0.75 !important;
+  font-weight: 900 !important;
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.45) 0%, rgba(251, 191, 36, 0.08) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+  letter-spacing: -0.05em !important;
+  filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.3)) !important;
 }
 
 .glow-pulse {
