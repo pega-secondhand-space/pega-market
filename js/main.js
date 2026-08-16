@@ -88,6 +88,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnText = document.getElementById('admin-btn-text');
     if (btnText) btnText.innerText = '管理面板 (已登入)';
   }
+
+  // 8. 💻 PC 專屬極致體驗：按 Escape 鍵自動關閉所有開啟的彈窗
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const lightbox = document.getElementById('lightbox-modal');
+      if (lightbox && !lightbox.classList.contains('hidden')) {
+        if (typeof closeLightboxModal === 'function') closeLightboxModal();
+        return;
+      }
+      const searchOverlay = document.getElementById('sticky-search-overlay');
+      if (searchOverlay && !searchOverlay.classList.contains('hidden')) {
+        if (typeof closeSearchOverlay === 'function') closeSearchOverlay();
+        return;
+      }
+      if (typeof closeAllModals === 'function') closeAllModals();
+    }
+  });
+
+  // 9. 📱/💻 點擊任何彈窗的半透明暗色遮罩背景，自動關閉該彈窗
+  const backdropModalIds = [
+    'detail-modal',
+    'create-modal',
+    'issue-modal',
+    'archive-modal',
+    'admin-modal',
+    'online-users-modal',
+    'guide-modal'
+  ];
+  backdropModalIds.forEach(id => {
+    const modalEl = document.getElementById(id);
+    if (modalEl) {
+      modalEl.addEventListener('click', (e) => {
+        if (e.target === modalEl) {
+          modalEl.classList.add('hidden');
+        }
+      });
+    }
+  });
 });
 
 // 綁定全域

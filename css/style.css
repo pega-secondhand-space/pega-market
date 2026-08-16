@@ -404,3 +404,17 @@ textarea::placeholder {
   0%, 100% { filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.4)); transform: scale(1); }
   50% { filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.8)); transform: scale(1.02); }
 }
+
+/* 📱 手機 iOS 底部安全區間距 (Home Bar) 與防背景滾動透穿 */
+#mobile-bottom-nav {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+#create-modal > div,
+#detail-modal > div,
+#issue-modal > div,
+#archive-modal > div,
+#admin-modal > div,
+#online-users-modal > div {
+  overscroll-behavior: contain;
+}

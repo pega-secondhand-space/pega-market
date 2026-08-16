@@ -42,7 +42,10 @@ function closeAllModals() {
     'issue-modal', 
     'detail-modal', 
     'create-modal', 
-    'online-users-modal'
+    'online-users-modal',
+    'lightbox-modal',
+    'guide-modal',
+    'sticky-search-overlay'
   ];
   modalIds.forEach(id => {
     const el = document.getElementById(id);
