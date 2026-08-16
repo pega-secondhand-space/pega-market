@@ -852,7 +852,7 @@ function updateGridLayoutOptions() {
 }
 
 /**
- * 刊登類型選擇
+ * 刊登類型選擇 (智慧連動價格與琥珀金主題)
  */
 function setPostType(t) {
   postType = t;
@@ -860,12 +860,26 @@ function setPostType(t) {
     const btn = document.getElementById(`post-type-${type}`);
     if (btn) {
       if (type === t) {
-        btn.className = 'relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs transition-all duration-300';
+        btn.className = 'py-2.5 px-3 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 font-black text-xs sm:text-sm transition flex flex-col items-center gap-1 shadow';
       } else {
-        btn.className = 'relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs transition-all duration-300';
+        btn.className = 'py-2.5 px-3 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1';
       }
     }
   });
+
+  const priceInput = document.getElementById('post-price');
+  if (priceInput) {
+    if (t === 'free') {
+      priceInput.value = '0';
+      priceInput.placeholder = '0 (免費分享贈送)';
+    } else if (t === 'buy') {
+      if (priceInput.value === '0') priceInput.value = '';
+      priceInput.placeholder = '請輸入求購預算 (NT$)';
+    } else {
+      if (priceInput.value === '0') priceInput.value = '';
+      priceInput.placeholder = '請輸入預售金額 (NT$)';
+    }
+  }
 }
 
 function showCreateError(msg) {
@@ -882,7 +896,7 @@ function hideCreateError() {
 }
 
 /**
- * 開啟刊登貼文彈窗
+ * 開啟刊登貼文彈窗 (支援記憶資訊與 4 位數自刪密碼預設)
  */
 function openCreateModal() {
   if (typeof closeAllModals === 'function') closeAllModals();
@@ -890,7 +904,15 @@ function openCreateModal() {
   tempEditPassword = "";
 
   document.getElementById('post-title').value = "";
-  document.getElementById('post-contact').value = "";
+  
+  // 自動記憶並載入常用聯絡資訊與暱稱
+  const savedContact = localStorage.getItem('pega_user_contact') || "";
+  document.getElementById('post-contact').value = savedContact;
+
+  const savedNickname = localStorage.getItem('pega_user_nickname') || "";
+  const nickInput = document.getElementById('post-nickname');
+  if (nickInput) nickInput.value = savedNickname;
+
   document.getElementById('post-desc').value = "";
   document.getElementById('post-price').value = "";
   document.getElementById('post-swap-item').value = "";
@@ -913,16 +935,18 @@ function openCreateModal() {
   if (preview2) preview2.classList.add('hidden');
   if (previewsGrid) previewsGrid.classList.add('hidden');
   
-  document.getElementById('file1-status').innerText = '點擊上傳圖檔';
-  document.getElementById('file2-status').innerText = '點擊上傳第二張';
+  document.getElementById('file1-status').innerText = '點擊選圖或拍照';
+  document.getElementById('file2-status').innerText = '點擊補充第二張';
 
   setPostType('sell');
 
   const randPwd = Math.floor(1000 + Math.random() * 9000).toString();
   document.getElementById('post-edit-password').value = randPwd;
 
-  document.querySelector('#create-modal h3').innerHTML = `<i class="fa-solid fa-plus-circle text-indigo-400"></i> 我要發布告示牌貼文`;
-  document.getElementById('submit-create-btn').innerText = `🎉 發布貼文`;
+  const titleEl = document.querySelector('#create-modal h3');
+  if (titleEl) titleEl.innerHTML = `<span class="text-amber-400">🎁</span> 刊登好物 / 尾牙獎品`;
+  const submitBtn = document.getElementById('submit-create-btn');
+  if (submitBtn) submitBtn.innerHTML = `<span>🚀 立即發布好物</span>`;
 
   hideCreateError();
   document.getElementById('create-modal').classList.remove('hidden');
@@ -1053,8 +1077,10 @@ async function editMyItem(itemId) {
     }
   }
 
-  document.querySelector('#create-modal h3').innerHTML = `<i class="fa-solid fa-pen-to-square text-indigo-400"></i> 修改告示牌貼文`;
-  document.getElementById('submit-create-btn').innerText = `💾 儲存修改`;
+  const modalTitle = document.querySelector('#create-modal h3');
+  if (modalTitle) modalTitle.innerHTML = `<span class="text-amber-400">✏️</span> 修改好物貼文`;
+  const submitBtnEl = document.getElementById('submit-create-btn');
+  if (submitBtnEl) submitBtnEl.innerHTML = `<span>💾 儲存修改</span>`;
 
   document.getElementById('create-modal').classList.remove('hidden');
 }
@@ -1084,46 +1110,52 @@ async function submitCreateItem() {
   }
   const contactInput = document.getElementById('post-contact');
   const contact = (contactInput?.value || '').trim();
+  const nicknameInput = document.getElementById('post-nickname');
+  const nicknameVal = (nicknameInput?.value || '').trim() || myNickname || '匿名同仁';
   const imgUrl1 = (document.getElementById('post-img1-url')?.value || '').trim();
   const imgUrl2 = (document.getElementById('post-img2-url')?.value || '').trim();
   const expDays = document.getElementById('item-expiration')?.value || 'none';
   const editPasswordVal = (document.getElementById('post-edit-password')?.value || '').trim();
 
-  // 1. 檢查物品標題
+  // 1. 檢查物品標題 (步驟 2)
   if (!title) {
     if (titleInput) {
-      titleInput.classList.add('border-red-500');
+      titleInput.classList.add('border-rose-500');
       titleInput.focus();
     }
-    showCreateError('⚠️ 請填寫物品名稱/標題！');
+    showCreateError('⚠️ 步驟 2 未完成：請填寫物品名稱/標題！');
     return;
   } else if (titleInput) {
-    titleInput.classList.remove('border-red-500');
+    titleInput.classList.remove('border-rose-500');
   }
 
-  // 2. 檢查照片上傳 (至少 1 張)
+  // 2. 檢查照片上傳 (步驟 3 建議至少 1 張)
   if (!imgUrl1) {
-    showCreateError('⚠️ 請至少選擇並上傳 1 張物品照片才可以發布貼文！');
+    showCreateError('⚠️ 步驟 3 未完成：請至少選擇並上傳 1 張物品照片！');
     return;
   }
 
-  // 3. 檢查聯絡方式 (必填欄位)
+  // 3. 檢查聯絡方式 (步驟 4 必填)
   if (!contact) {
     if (contactInput) {
-      contactInput.classList.add('border-red-500');
+      contactInput.classList.add('border-rose-500');
       contactInput.focus();
     }
-    showCreateError('⚠️ 請填寫聯絡方式 (例如：分機 45555 / LINE / Teams)！');
+    showCreateError('⚠️ 步驟 4 未完成：請填寫聯絡方式 (例如：Teams / 分機 8888 / LINE)！');
     return;
   } else if (contactInput) {
-    contactInput.classList.remove('border-red-500');
+    contactInput.classList.remove('border-rose-500');
   }
 
-  // 4. 檢查編輯密碼
+  // 4. 檢查編輯密碼 (步驟 4 必填)
   if (!editPasswordVal) {
-    showCreateError('⚠️ 請輸入管理/編輯密碼，以便更換電腦時編輯或下架貼文！');
+    showCreateError('⚠️ 步驟 4 未完成：請輸入自刪管理密碼，以防未來更換裝置無法下架！');
     return;
   }
+
+  // 記憶同仁常用的聯絡方式與暱稱
+  localStorage.setItem('pega_user_contact', contact);
+  if (nicknameVal) localStorage.setItem('pega_user_nickname', nicknameVal);
 
   if (submitBtn) {
     submitBtn.disabled = true;
@@ -1189,7 +1221,7 @@ async function submitCreateItem() {
         price: finalPrice,
         type: postType,
         image_url: finalImgUrl,
-        nickname: myNickname,
+        nickname: nicknameVal,
         device_id: myDeviceId,
         contact_info: contact,
         edit_password: editPasswordVal
@@ -1219,7 +1251,7 @@ async function submitCreateItem() {
           myPasswords[newItemId] = editPasswordVal;
           localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
 
-          alert(`🎉 貼文發布成功！\n\n您的 4 位數「編輯與下架密碼」為：${editPasswordVal}\n\n（本機已自動為您記住此密碼。若日後更換電腦或手機，請憑此密碼修改或下架貼文，建議將其妥善保存喔！）`);
+          alert(`🎉 貼文發布成功！\n\n您的 4 位數「自刪管理密碼」為：${editPasswordVal}\n\n（本機已自動為您記住此密碼。若日後更換電腦或手機，請憑此密碼修改或下架貼文，建議將其妥善保存喔！）`);
         }
 
         showNotification('🎉 刊登成功！貼文已排在第一位展示。', 'success');

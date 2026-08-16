@@ -381,6 +381,22 @@ textarea::placeholder {
   filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.3)) !important;
 }
 
+/* ❶ ❷ ❸ ❹ 刊登表單階梯步驟圓形徽章 */
+.step-badge-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: #030712;
+  font-weight: 900;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+  flex-shrink: 0;
+}
+
 .glow-pulse {
   animation: glow-pulse-anim 3.5s ease-in-out infinite;
 }

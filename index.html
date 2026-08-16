@@ -324,191 +324,232 @@
     </button>
   </div>
 
-  <!-- 刊登物品 Modal (支援二欄式排版與自適應大小) -->
-  <div id="create-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-2.5 pt-8 sm:p-4">
-    <div class="bg-gray-800 border border-gray-700 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] animate-fadeIn">
+  <!-- 刊登好物 / 尾牙獎品 Modal (❶ ❷ ❸ ❹ 階梯步驟引導友好設計) -->
+  <div id="create-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-gray-900/95 border-2 border-amber-500/40 w-full max-w-3xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_30px_rgba(245,158,11,0.2)] overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] animate-fadeIn">
+      
       <!-- 手機專屬頂部指示條 -->
       <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto my-2 sm:hidden shrink-0"></div>
-      <div class="px-5 py-3.5 bg-gray-900 border-b border-gray-700 flex items-center justify-between shrink-0">
-        <h3 class="font-bold text-sm sm:text-base text-gray-100 flex items-center gap-2">
-          <i class="fa-solid fa-plus-circle text-indigo-400"></i> 我要發布告示牌貼文
-        </h3>
-        <button onclick="closeCreateModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-xl flex items-center justify-center border-2 border-white/30 transition active:scale-90 shrink-0 cursor-pointer ml-2" title="按下關閉視窗">
+      
+      <!-- Modal Header -->
+      <div class="px-5 sm:px-6 py-4 bg-gradient-to-r from-gray-900 via-gray-950 to-gray-900 border-b border-amber-500/20 flex items-center justify-between shrink-0">
+        <div>
+          <h3 class="font-black text-base sm:text-lg text-gray-100 flex items-center gap-2">
+            <span class="text-amber-400">🎁</span> 刊登好物 / 尾牙獎品
+          </h3>
+          <p class="text-xs text-amber-300/80 font-medium mt-0.5">依序完成 ❶ ❷ ❸ ❹ 步驟，10 秒內快速上架給全公司同仁！</p>
+        </div>
+        <button onclick="closeCreateModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-800 hover:bg-rose-600 border border-gray-700 hover:border-rose-400 text-gray-300 hover:text-white font-black text-base shadow-xl flex items-center justify-center transition active:scale-90 shrink-0 cursor-pointer ml-2" title="按下關閉視窗">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="p-5 overflow-y-auto space-y-4">
-        <!-- 二欄式響應式網格 (PC雙欄、手機單欄) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- 左側欄位 -->
-          <div class="space-y-4">
-            <div>
-              <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            交易類型 <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md font-sans">
-              💡 交易分類選擇：請挑選最符合您物品屬性的交易類型，以便同仁在首頁能精準篩選到您的貼文喔！
-            </div>
-          </label>
+
+      <!-- Modal Body (滾動區) -->
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-5">
+
+        <!-- ❶ 步驟 1：選擇交易分類 【必選】 -->
+        <div class="p-4 bg-gray-950/70 rounded-2xl border border-gray-800/80 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs sm:text-sm font-black text-gray-200 flex items-center gap-2">
+              <span class="step-badge-circle">1</span>
+              <span>選擇交易類型</span>
+              <span class="text-amber-400 text-[11px] font-bold">【必選】</span>
+            </label>
+            <span class="text-[11px] text-gray-400 hidden sm:inline">挑選最貼切的分類，方便同仁篩選</span>
+          </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="relative group py-2 rounded-xl border border-indigo-500 bg-indigo-600 text-white font-bold text-xs sm:text-sm transition-all duration-300">💰 想賣<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">自訂合理的出清價，將閒置物品折現賣給有需要的同仁。</div></button>
-            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🔍 想買<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">發布您目前需要的物品與徵求預算，向其他同仁求購。</div></button>
-            <button type="button" onclick="setPostType('free')" id="post-type-free" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">🎁 免費送<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">將閒置好物免費送給同仁，資源循環，環保、省空間又溫暖！</div></button>
-            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="relative group py-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm transition-all duration-300">✨ 尾牙全新<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">尾牙或春酒抽到但用不到的全新獎品，打折折現或拿來物物交換！</div></button>
+            <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2.5 px-3 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 font-black text-xs sm:text-sm transition flex flex-col items-center gap-1 shadow">
+              <span>💰 我想賣</span>
+              <span class="text-[10px] text-gray-400 font-normal">自訂出清價</span>
+            </button>
+            <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2.5 px-3 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1">
+              <span>🔍 我想買</span>
+              <span class="text-[10px] text-gray-400 font-normal">徵求與預算</span>
+            </button>
+            <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-2.5 px-3 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1">
+              <span>🎁 免費送</span>
+              <span class="text-[10px] text-gray-400 font-normal">0元好物分享</span>
+            </button>
+            <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="py-2.5 px-3 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1">
+              <span>🎉 尾牙全新</span>
+              <span class="text-[10px] text-gray-400 font-normal">尾牙抽中獎品</span>
+            </button>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            物品名稱/標題 <span class="text-amber-400">*</span> <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-              💡 填寫小撇步：建議寫明品牌與型號，例如「【全新】象印保溫杯 500ml」。標題精確能讓同仁更快速搜尋到您的好物！
-            </div>
-          </label>
-          <input type="text" id="post-title" placeholder="例如：精美單眼鏡頭清潔組 / 求購二手電風扇" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
-            <label class="block text-xs sm:text-sm font-bold text-gray-300 relative group cursor-pointer w-fit">
-              價格 (NT$) / 交易設定 <i class="fa-solid fa-circle-info text-xs text-indigo-400/50"></i>：
-              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-                💰 價格說明：請輸入預期交易的台幣金額。免費送請填 0；想徵求物品請填寫您的求購預算。
-              </div>
+        <!-- ❷ 步驟 2：物品名稱與價格 【必填】 -->
+        <div class="p-4 bg-gray-950/70 rounded-2xl border border-gray-800/80 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs sm:text-sm font-black text-gray-200 flex items-center gap-2">
+              <span class="step-badge-circle">2</span>
+              <span>物品名稱與價格</span>
+              <span class="text-amber-400 text-[11px] font-bold">【必填】</span>
             </label>
-            <label class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-indigo-400 cursor-pointer relative group">
-              <input type="checkbox" id="post-swap-check" onchange="toggleSwapMode(this.checked)" class="rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500">
-              <span>🔄 我要以物易物</span>
-              <i class="fa-solid fa-circle-info text-xs text-indigo-400/80"></i>
-              <div class="absolute top-full right-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-                不收現金，直接用實物與同仁交換等值好物。例如：空氣清淨機換咖啡機。
+            <span class="text-[11px] text-gray-400 hidden sm:inline">寫明品牌與型號更受歡迎</span>
+          </div>
+
+          <!-- 標題輸入 -->
+          <div>
+            <input type="text" id="post-title" placeholder="物品標題（例如：【全新未拆】象印保溫杯 480ml / Switch 遊戲片）" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 font-bold shadow-inner">
+          </div>
+
+          <!-- 金額 / 以物易物 -->
+          <div class="space-y-2 pt-1 border-t border-gray-800/60">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="text-xs text-gray-300 font-bold flex items-center gap-1">
+                <i class="fa-solid fa-coins text-amber-400"></i> 交易金額設定：
+              </span>
+              <label class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 cursor-pointer bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30 active:scale-95 transition">
+                <input type="checkbox" id="post-swap-check" onchange="toggleSwapMode(this.checked)" class="rounded border-gray-700 bg-gray-900 text-amber-500 focus:ring-amber-400">
+                <span>🔄 我要以物易物 (不收現金)</span>
+              </label>
+            </div>
+
+            <div id="price-input-container">
+              <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute left-3 top-2.5 text-gray-400 text-xs font-bold">NT$</span>
+                  <input type="number" id="post-price" placeholder="請輸入金額 (免費送填 0)" class="w-full pl-11 pr-3 py-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 font-bold shadow-inner">
+                </div>
+                <!-- 禮券折價助手 -->
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="applyCouponDiscount(0.9)" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-xl text-xs font-black transition" title="點擊自動計算 9 折">9 折</button>
+                  <button type="button" onclick="applyCouponDiscount(0.95)" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-xl text-xs font-black transition" title="點擊自動計算 95 折">95 折</button>
+                </div>
               </div>
+            </div>
+
+            <div id="swap-input-container" class="hidden">
+              <input type="text" id="post-swap-item" placeholder="請填寫想換的物品（例如：想換電風扇 / 吹風機 / 百貨禮券）" class="w-full p-3 bg-gray-900 border border-amber-500/50 rounded-xl text-xs sm:text-sm text-amber-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 font-bold shadow-inner">
+            </div>
+          </div>
+        </div>
+
+        <!-- ❸ 步驟 3：商品照片 【建議至少 1 張】 -->
+        <div class="p-4 bg-gray-950/70 rounded-2xl border border-gray-800/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs sm:text-sm font-black text-gray-200 flex items-center gap-2">
+              <span class="step-badge-circle">3</span>
+              <span>商品照片上傳</span>
+              <span class="text-amber-300 text-[11px] font-medium">【建議至少 1 張】</span>
             </label>
+            <span class="text-[11px] text-gray-400 hidden sm:inline">支援手機拍照直接上傳 (最多 2 張)</span>
           </div>
-          <div id="price-input-container">
-            <input type="number" id="post-price" placeholder="免費送可不填" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
-            <div class="mt-2.5 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-400 font-bold relative group">
-              <span>🎫 禮券折價助手 (點選折價) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：</span>
-              <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-                點選折數按鈕（如 95折），系統會自動計算折後價格，並自動在物品標題末尾加上標註！
-              </div>
-              <button type="button" onclick="applyCouponDiscount(0.9)" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-lg font-black transition">9 折</button>
-              <button type="button" onclick="applyCouponDiscount(0.95)" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 rounded-lg font-black transition">95 折</button>
-            </div>
-          </div>
-          <div id="swap-input-container" class="hidden">
-            <input type="text" id="post-swap-item" placeholder="例如：想換百貨禮券 / 電風扇 / 吹風機" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 focus:outline-none focus:border-indigo-500 font-bold">
-          </div>
-        </div>
 
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            📞 聯絡方式 (分機/LINE/Teams/面交點) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-              📞 隱私保護提醒：建議填寫分機、Teams 帳號、LINE 或面交大廳，避免公開個人手機號碼或敏感隱私資訊。
-            </div>
-          </label>
-          <input type="text" id="post-contact" placeholder="例如：分機 45555 / LINE: pega123 / A棟大廳面交" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 font-bold">
-        </div>
-      </div> <!-- 結束左側欄位 -->
-
-      <!-- 右側欄位 -->
-      <div class="space-y-4">
-
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            物品描述 <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-              📝 規格說明：建議寫明使用狀況（全新/九成新）、保固期限、使用次數，能大幅減少同仁來回詢問的時間喔！
-            </div>
-          </label>
-          <textarea id="post-desc" rows="3" placeholder="請詳細說明物品狀況、規格或交易地點..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-indigo-500 font-medium"></textarea>
-        </div>
-
-        <!-- 原生選擇照片檔案上傳資料庫 (最多 2 張照片，自動壓縮) -->
-        <div class="space-y-3 bg-gray-900/60 p-3.5 rounded-2xl border border-gray-700/80">
-          <label class="block text-xs font-bold text-gray-200 flex items-center justify-between relative group cursor-pointer w-fit">
-            <span>📷 上傳物品照片 (最多 2 張) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：</span>
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-              建議至少上傳一張清楚的主圖。若是尾牙全新商品，可附上外盒與封條照片證明。
-            </div>
-          </label>
-          
-          <!-- 上傳按鈕區 -->
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
+            <!-- 照片 1 (主圖) -->
             <div>
-              <label for="upload-file-1" class="cursor-pointer bg-gray-800 hover:bg-gray-700 border border-dashed border-indigo-500/60 hover:border-indigo-400 p-3 rounded-xl flex flex-col items-center justify-center text-center transition">
-                <i class="fa-solid fa-cloud-arrow-up text-indigo-400 text-lg mb-1"></i>
-                <span class="text-xs font-bold text-indigo-200">選擇照片 1</span>
-                <span id="file1-status" class="text-[9px] text-gray-400">點擊上傳圖檔</span>
+              <label for="upload-file-1" class="cursor-pointer bg-gray-900 hover:bg-gray-800/80 border-2 border-dashed border-amber-500/50 hover:border-amber-400 p-3.5 rounded-2xl flex flex-col items-center justify-center text-center transition group shadow-inner">
+                <i class="fa-solid fa-camera text-amber-400 text-xl mb-1 group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs font-black text-gray-200">📷 照片 1 (主圖封面)</span>
+                <span id="file1-status" class="text-[10px] text-amber-300/80 mt-0.5">點擊選圖或拍照</span>
               </label>
               <input type="file" id="upload-file-1" accept="image/*" onchange="handleImageSelect(1, event)" class="hidden">
               <input type="hidden" id="post-img1-url">
             </div>
 
+            <!-- 照片 2 (選填) -->
             <div>
-              <label for="upload-file-2" class="cursor-pointer bg-gray-800 hover:bg-gray-700 border border-dashed border-gray-600 hover:border-indigo-400 p-3 rounded-xl flex flex-col items-center justify-center text-center transition">
-                <i class="fa-solid fa-cloud-arrow-up text-gray-400 text-lg mb-1"></i>
-                <span class="text-xs font-bold text-gray-300">選擇照片 2 (選填)</span>
-                <span id="file2-status" class="text-[9px] text-gray-400">點擊上傳第二張</span>
+              <label for="upload-file-2" class="cursor-pointer bg-gray-900 hover:bg-gray-800/80 border-2 border-dashed border-gray-700 hover:border-amber-400/60 p-3.5 rounded-2xl flex flex-col items-center justify-center text-center transition group shadow-inner">
+                <i class="fa-solid fa-images text-gray-500 group-hover:text-amber-300 text-xl mb-1 group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs font-bold text-gray-300">📷 照片 2 (選填細節)</span>
+                <span id="file2-status" class="text-[10px] text-gray-400 mt-0.5">點擊補充第二張</span>
               </label>
               <input type="file" id="upload-file-2" accept="image/*" onchange="handleImageSelect(2, event)" class="hidden">
               <input type="hidden" id="post-img2-url">
             </div>
           </div>
 
-          <!-- 縮圖預覽區 -->
-          <div id="upload-previews-grid" class="hidden grid grid-cols-2 gap-2 pt-2">
-            <div id="preview-box-1" class="relative rounded-lg overflow-hidden border border-gray-700 bg-black aspect-video hidden">
+          <!-- 縮圖即時預覽區 -->
+          <div id="upload-previews-grid" class="hidden grid grid-cols-2 gap-3 pt-1">
+            <div id="preview-box-1" class="relative rounded-xl overflow-hidden border border-amber-500/40 bg-black aspect-video hidden shadow">
               <img id="preview-img-1" class="w-full h-full object-cover">
-              <span class="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded">照片 1</span>
+              <span class="absolute top-1.5 left-1.5 bg-black/80 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/20">主圖 1</span>
             </div>
-            <div id="preview-box-2" class="relative rounded-lg overflow-hidden border border-gray-700 bg-black aspect-video hidden">
+            <div id="preview-box-2" class="relative rounded-xl overflow-hidden border border-amber-500/40 bg-black aspect-video hidden shadow">
               <img id="preview-img-2" class="w-full h-full object-cover">
-              <span class="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded">照片 2</span>
+              <span class="absolute top-1.5 left-1.5 bg-black/80 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/20">照片 2</span>
             </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            ⏳ 自動下架截止日設定 <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-              設定貼文自動截止期限，時間到後系統會安全自動下架，防止過期訊息持續被打擾。
+        <!-- ❹ 步驟 4：聯絡資訊與管理密碼 【必填】 -->
+        <div class="p-4 bg-gray-950/70 rounded-2xl border border-gray-800/80 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs sm:text-sm font-black text-gray-200 flex items-center gap-2">
+              <span class="step-badge-circle">4</span>
+              <span>聯絡方式與管理密碼</span>
+              <span class="text-amber-400 text-[11px] font-bold">【必填】</span>
+            </label>
+            <span class="text-[10px] text-amber-300/80 font-medium">💡 系統已自動記住您的常用聯絡資訊</span>
+          </div>
+
+          <!-- 聯絡方式 -->
+          <div>
+            <label class="block text-xs font-bold text-gray-300 mb-1">
+              📞 聯絡方式 <span class="text-amber-400">*</span> (Teams / 分機 / LINE / 面交地點)：
+            </label>
+            <input type="text" id="post-contact" placeholder="例如：Teams: user_dev / 分機 8888 / A棟大廳面交" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 font-bold shadow-inner">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <!-- 暱稱 -->
+            <div>
+              <label class="block text-xs font-bold text-gray-300 mb-1">👤 稱呼 / 暱稱 (選填)：</label>
+              <input type="text" id="post-nickname" placeholder="例如：研發部 小陳 (預設匿名同仁)" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 font-bold">
             </div>
-          </label>
-          <select id="item-expiration" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 font-medium focus:outline-none focus:border-indigo-500">
-            <option value="none" selected>無限制 (預設永久展示直至手動下架)</option>
-            <option value="7">7 天後自動下架 (1 週刊登)</option>
-            <option value="14">14 天後自動下架 (2 週刊登)</option>
-            <option value="30">30 天後自動下架 (1 個月)</option>
-            <option value="60">60 天後自動下架 (2 個月)</option>
-          </select>
+
+            <!-- 4 位數自刪密碼 -->
+            <div>
+              <label class="block text-xs font-bold text-gray-300 mb-1">
+                🔑 自刪管理密碼 <span class="text-amber-400">*</span> (憑此密碼隨時下架)：
+              </label>
+              <input type="text" id="post-edit-password" maxlength="10" placeholder="例如：6688" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-amber-300 font-black focus:outline-none focus:border-amber-400 tracking-wider">
+            </div>
+          </div>
         </div>
 
-        <!-- 🔑 貼文管理/編輯密碼 -->
-        <div>
-          <label class="block text-xs font-bold text-gray-300 mb-1 relative group cursor-pointer w-fit">
-            🔑 貼文管理/編輯密碼 (跨裝置修改或下架憑證) <i class="fa-solid fa-circle-info text-xs text-gray-500"></i>：
-            <div class="absolute top-full left-0 mt-2 w-56 hidden group-hover:block bg-indigo-950 border-2 border-indigo-500 text-gray-100 text-xs p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(99,102,241,0.45)] pointer-events-none z-50 text-left font-semibold leading-relaxed backdrop-blur-md">
-              系統已自動隨機產生一個 4 位數密碼，您也可以自訂。若更換電腦，可憑此密碼修改或下架此貼文。
+        <!-- ⚙️ 更多選填補充 (可折疊/展開) -->
+        <details class="bg-gray-950/40 rounded-2xl border border-gray-800 p-3.5 group">
+          <summary class="text-xs font-bold text-gray-400 cursor-pointer flex items-center justify-between hover:text-amber-300 transition list-none">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-sliders text-amber-400 text-xs"></i> 更多選填項目 (物品詳細狀況補充、自動下架截止天數)
+            </span>
+            <i class="fa-solid fa-chevron-down text-[10px] group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="space-y-3 pt-3 mt-2 border-t border-gray-800/80">
+            <div>
+              <label class="block text-xs font-bold text-gray-300 mb-1">📝 物品詳細補充描述：</label>
+              <textarea id="post-desc" rows="2" placeholder="請補充物品保固期、使用次數、成色新舊或特定面交時間..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-amber-400 font-medium"></textarea>
             </div>
-          </label>
-          <input type="text" id="post-edit-password" maxlength="10" placeholder="例如：1234" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs sm:text-sm text-gray-100 font-bold focus:outline-none focus:border-indigo-500">
-        </div>
-      </div> <!-- 結束右側欄位 -->
-    </div> <!-- 結束網格 -->
 
-        
+            <div>
+              <label class="block text-xs font-bold text-gray-300 mb-1">⏳ 自動下架截止天數：</label>
+              <select id="item-expiration" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-100 font-medium focus:outline-none focus:border-amber-400 cursor-pointer">
+                <option value="none" selected>無限制 (永久展示直至手動下架)</option>
+                <option value="7">7 天後自動下架 (1 週刊登)</option>
+                <option value="14">14 天後自動下架 (2 週刊登)</option>
+                <option value="30">30 天後自動下架 (1 個月)</option>
+                <option value="60">60 天後自動下架 (2 個月)</option>
+              </select>
+            </div>
+          </div>
+        </details>
+
         <!-- 即時表單錯誤提醒區域 -->
-        <div id="create-modal-error" class="hidden bg-red-900/80 border border-red-500 text-red-100 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
-          <i class="fa-solid fa-triangle-exclamation text-red-400 text-sm"></i>
+        <div id="create-modal-error" class="hidden bg-rose-950/80 border border-rose-500 text-rose-200 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-rose-400 text-sm"></i>
           <span id="create-modal-error-text"></span>
         </div>
 
-        <div class="flex justify-end gap-2 pt-2">
-          <button onclick="closeCreateModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-bold rounded-xl transition">取消</button>
-          <button id="submit-create-btn" onclick="submitCreateItem()" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs rounded-xl transition shadow active:scale-95 disabled:opacity-50">🎉 發布貼文</button>
+        <!-- 底部確認操作按鈕 -->
+        <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-gray-800">
+          <button type="button" onclick="closeCreateModal()" class="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-bold rounded-xl transition cursor-pointer">取消</button>
+          <button type="button" id="submit-create-btn" onclick="submitCreateItem()" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:opacity-95 text-gray-950 font-black text-xs sm:text-sm rounded-xl transition shadow-lg shadow-amber-500/25 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5">
+            <span>🚀 立即發布好物</span>
+          </button>
         </div>
+
       </div>
     </div>
   </div>
