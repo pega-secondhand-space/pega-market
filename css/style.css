@@ -26,12 +26,12 @@
   --text-scale: 1.0;
 }
 
-/* 5 級字體微調乘數 (僅放大文字內容，100% 保持外框、按鈕與間距的黃金比例) */
-html.font-level-sm { --text-scale: 0.92; font-size: 14.5px; }
-html.font-level-base { --text-scale: 1.08; font-size: 16px; }  /* 預設：清晰好讀 */
-html.font-level-lg { --text-scale: 1.22; font-size: 16.8px; }  /* 中年舒適大字 */
-html.font-level-xl { --text-scale: 1.38; font-size: 17.6px; }  /* 特大無障礙字體 */
-html.font-level-2xl { --text-scale: 1.55; font-size: 18.5px; } /* 超大尊爵字體 (A+++) */
+/* 5 級字體微調乘數 (有感放大縮小，兼顧排版與可讀性) */
+html.font-level-sm { --text-scale: 0.85; font-size: 14px; }
+html.font-level-base { --text-scale: 1.05; font-size: 16px; }  /* 預設：清晰好讀 */
+html.font-level-lg { --text-scale: 1.28; font-size: 19px; }  /* 中年舒適大字 */
+html.font-level-xl { --text-scale: 1.55; font-size: 23px; }  /* 特大無障礙字體 */
+html.font-level-2xl { --text-scale: 1.85; font-size: 27px; } /* 超大尊爵字體 (A+++) */
 
 /* 📢 全站公告欄 / 使用須知動態字體聯動 */
 #announcement-bar {
@@ -44,49 +44,59 @@ html.font-level-2xl { --text-scale: 1.55; font-size: 18.5px; } /* 超大尊爵�
   line-height: 1.6 !important;
 }
 
-/* 📱 手機端 Threads 串文專屬字體微調器 */
-.threads-title-font {
-  font-size: calc(1.05rem * var(--text-scale)) !important;
-  line-height: 1.42 !important;
-  letter-spacing: -0.015em !important;
+/* 💻 電腦端經典卡片專屬動態字級聯動 */
+.desktop-title-font {
+  font-size: calc(1.1rem * var(--text-scale)) !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.01em !important;
 }
 
-.threads-desc-font {
-  font-size: calc(0.88rem * var(--text-scale)) !important;
-  line-height: 1.62 !important;
-  letter-spacing: 0.005em !important;
+.desktop-price-font {
+  font-size: calc(1.15rem * var(--text-scale)) !important;
+  line-height: 1.25 !important;
 }
 
-.threads-meta-font {
-  font-size: calc(0.8rem * var(--text-scale)) !important;
+.desktop-contact-font {
+  font-size: calc(0.9rem * var(--text-scale)) !important;
+  line-height: 1.35 !important;
+}
+
+.desktop-meta-font {
+  font-size: calc(0.82rem * var(--text-scale)) !important;
   line-height: 1.3 !important;
 }
 
-.threads-price-font {
-  font-size: calc(1.05rem * var(--text-scale)) !important;
+/* 📱 手機端雙排方格卡片專屬動態字級聯動 */
+.mobile-grid-title-font {
+  font-size: calc(0.85rem * var(--text-scale)) !important;
+  line-height: 1.3 !important;
+}
+
+.mobile-grid-price-font {
+  font-size: calc(0.92rem * var(--text-scale)) !important;
   line-height: 1.2 !important;
 }
 
 /* 🍎 Apple 階差沉浸大卡專屬動態字級聯動系統 (隨 A⁻ / A / A⁺ / A⁺⁺ / A⁺⁺⁺ 等比縮放) */
 .showcase-title-font {
-  font-size: calc(1.22rem * var(--text-scale)) !important;
+  font-size: calc(1.25rem * var(--text-scale)) !important;
   line-height: 1.4 !important;
   letter-spacing: -0.015em !important;
 }
 
 .showcase-desc-font {
-  font-size: calc(0.95rem * var(--text-scale)) !important;
-  line-height: 1.62 !important;
+  font-size: calc(0.98rem * var(--text-scale)) !important;
+  line-height: 1.65 !important;
   letter-spacing: 0.005em !important;
 }
 
 .showcase-price-font {
-  font-size: calc(1.4rem * var(--text-scale)) !important;
+  font-size: calc(1.45rem * var(--text-scale)) !important;
   line-height: 1.2 !important;
 }
 
 .showcase-meta-font {
-  font-size: calc(0.85rem * var(--text-scale)) !important;
+  font-size: calc(0.88rem * var(--text-scale)) !important;
   line-height: 1.3 !important;
 }
 

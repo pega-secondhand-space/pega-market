@@ -342,8 +342,8 @@ function renderItems() {
 
         <!-- 底部黑色漸層懸浮文字 (放寬為 line-clamp-2 讓標題更完整) -->
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-2.5 pt-10 flex flex-col justify-end pointer-events-none">
-          <h3 class="font-black text-xs text-white line-clamp-2 leading-snug drop-shadow-md" title="${safeTitle}">${isSold ? '<span class="text-emerald-400">[已售出] </span>' : ''}${safeTitle}</h3>
-          <div class="text-xs font-black text-indigo-300 drop-shadow-md mt-0.5">${priceDisplay}</div>
+          <h3 class="font-black text-white line-clamp-2 leading-snug drop-shadow-md mobile-grid-title-font" title="${safeTitle}">${isSold ? '<span class="text-emerald-400">[已售出] </span>' : ''}${safeTitle}</h3>
+          <div class="font-black text-indigo-300 drop-shadow-md mt-0.5 mobile-grid-price-font">${priceDisplay}</div>
         </div>
       </div>
     `;
@@ -399,13 +399,13 @@ function renderItems() {
 
         <div class="p-4 flex-1 flex flex-col justify-between space-y-3 bg-gray-900/95">
           <div>
-            <h3 class="font-black text-base lg:text-lg text-gray-100 mb-1.5 ${isSold ? '' : 'group-hover:text-indigo-300'} transition leading-snug break-words whitespace-normal" title="${safeTitle}">${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}</h3>
-            <p class="text-base lg:text-lg text-indigo-400 font-black">${priceDisplay}</p>
+            <h3 class="font-black text-gray-100 mb-1.5 ${isSold ? '' : 'group-hover:text-indigo-300'} transition leading-snug break-words whitespace-normal desktop-title-font" title="${safeTitle}">${isSold ? '<span class="text-emerald-400 font-black">【已售出】</span>' : ''}${safeTitle}</h3>
+            <p class="desktop-price-font text-indigo-400 font-black">${priceDisplay}</p>
           </div>
 
           <div class="space-y-2.5 pt-2.5 border-t border-gray-800/80">
             ${(safeContact && !isSold) ? `
-              <div onclick="event.stopPropagation(); copyContactForItem('${item.id}')" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 p-2.5 rounded-xl text-xs lg:text-sm text-indigo-200 font-bold flex items-center justify-between gap-2 transition active:scale-95 cursor-pointer shadow-sm" title="點擊一鍵複製好物名稱與聯絡方式">
+              <div onclick="event.stopPropagation(); copyContactForItem('${item.id}')" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 p-2.5 rounded-xl text-indigo-200 font-bold flex items-center justify-between gap-2 transition active:scale-95 cursor-pointer shadow-sm desktop-contact-font" title="點擊一鍵複製好物名稱與聯絡方式">
                 <div class="flex items-center gap-1.5 min-w-0 flex-1 truncate">
                   <i class="fa-solid fa-phone text-indigo-400 text-xs shrink-0"></i>
                   <span class="truncate">聯絡：${safeContact}</span>
@@ -414,7 +414,7 @@ function renderItems() {
               </div>
             ` : ''}
 
-            <div class="flex items-center justify-between text-xs text-gray-400 font-medium">
+            <div class="flex items-center justify-between text-gray-400 font-medium desktop-meta-font">
               <span class="truncate">👤 ${safeNickname}</span>
               <span class="font-bold">${expCountdownHtml}</span>
             </div>

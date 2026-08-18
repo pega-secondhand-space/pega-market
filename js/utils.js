@@ -420,6 +420,22 @@ function setFontSize(level, showToast = true) {
   const levels = ['sm', 'base', 'lg', 'xl', '2xl'];
   if (!levels.includes(level)) level = 'base';
 
+  const scaleMap = {
+    'sm': { scale: 0.85, rootSize: '14px' },
+    'base': { scale: 1.05, rootSize: '16px' },
+    'lg': { scale: 1.28, rootSize: '19px' },
+    'xl': { scale: 1.55, rootSize: '23px' },
+    '2xl': { scale: 1.85, rootSize: '27px' }
+  };
+
+  const current = scaleMap[level] || scaleMap['base'];
+  try {
+    document.documentElement.style.setProperty('--text-scale', current.scale);
+    document.documentElement.style.fontSize = current.rootSize;
+  } catch(e) {
+    console.warn('Set font scale property error:', e);
+  }
+
   document.documentElement.classList.remove('font-level-sm', 'font-level-base', 'font-level-lg', 'font-level-xl', 'font-level-2xl');
   document.documentElement.classList.add(`font-level-${level}`);
 
