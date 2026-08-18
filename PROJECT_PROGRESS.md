@@ -103,21 +103,25 @@
 
 ## 🌐 託管平台與帳號設定紀錄 (Netlify & Supabase)
 
-### 1. Netlify 帳號 1：`imjovian` (現行正式站)
-- **管理後台**：[https://app.netlify.com/projects/pega-market/overview](https://app.netlify.com/projects/pega-market/overview)
-- **正式網址**：[https://pega-market.netlify.app](https://pega-market.netlify.app)
-- **短網址**：[https://tinyurl.com/pega-market-official](https://tinyurl.com/pega-market-official)
-- **API Token**：`nfp_eGgrKsCuTaxKnWgj3cCnJGXck6D9JVXa80ab`
+### 1. 👑 官方正式發布站點 (主要網址)：`jovianturkey`
+- **官方正式網址**：[https://pega-exchange.netlify.app](https://pega-exchange.netlify.app)
+- **管理後台**：[https://app.netlify.com/projects/pega-exchange/overview](https://app.netlify.com/projects/pega-exchange/overview)
+- **API Token**：`nfp_V3DpF4V5iA15yiQeDEsZwnV2yvcd6BYt7ed3`
 
-### 2. Netlify 帳號 2：`jovianpega` (jovianpega's team - 舊/測試站)
-- **管理後台**：[https://app.netlify.com/projects/chipper-rolypoly-7c56c3/overview](https://app.netlify.com/projects/chipper-rolypoly-7c56c3/overview)
-- **站點網址**：[https://chipper-rolypoly-7c56c3.netlify.app/](https://chipper-rolypoly-7c56c3.netlify.app/)
-- **API Token**：`nfp_CUjzB56wkGYCREfpAWCQfc8aHtSCxs4Ga872` (有效期限: 2027-07-22)
+### 2. 🌿 分枝 / 備用分流站點 (Branches & Mirrors)
+- **分枝 1 (`imjovian`)**：
+  - 網址：[https://pega-market.netlify.app](https://pega-market.netlify.app)
+  - 後台：[https://app.netlify.com/projects/pega-market/overview](https://app.netlify.com/projects/pega-market/overview)
+  - API Token：`nfp_eGgrKsCuTaxKnWgj3cCnJGXck6D9JVXa80ab`
+- **分枝 2 (`jovianpega`)**：
+  - 網址：[https://chipper-rolypoly-7c56c3.netlify.app/](https://chipper-rolypoly-7c56c3.netlify.app/)
+  - 後台：[https://app.netlify.com/projects/chipper-rolypoly-7c56c3/overview](https://app.netlify.com/projects/chipper-rolypoly-7c56c3/overview)
+  - API Token：`nfp_CUjzB56wkGYCREfpAWCQfc8aHtSCxs4Ga872`
 
 ### 3. Supabase 雲端資料庫
 - **專案網址**：[https://supabase.com/dashboard/project/llnnbanqtmnccfvtwooo](https://supabase.com/dashboard/project/llnnbanqtmnccfvtwooo)
 - **API URL**：`https://llnnbanqtmnccfvtwooo.supabase.co`
 
 ---
-*文件更新時間: 2026-08-15 | PEGAPEGA 告示牌團隊*
+*文件更新時間: 2026-08-18 | PEGAPEGA 告示牌團隊*
 
