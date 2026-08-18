@@ -60,10 +60,12 @@ function closeAllModals() {
  * @param {'success'|'warning'|'info'} type 提示類型
  */
 function showNotification(msg, type = 'info') {
-  const container = document.getElementById('toast-container');
+  let container = document.getElementById('toast-container');
   if (!container) {
-    alert(msg);
-    return;
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'fixed bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-sm';
+    document.body.appendChild(container);
   }
   const toast = document.createElement('div');
   const bg = type === 'success' ? 'bg-emerald-600 border border-emerald-400/50 shadow-emerald-900/40' : 
@@ -446,6 +448,14 @@ function setFontSize(level, showToast = true) {
         btn.className = 'px-1.5 sm:px-2 py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md';
       } else {
         btn.className = 'px-1.5 sm:px-2 py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800';
+      }
+    }
+    const guideDemoBtn = document.getElementById(`font-scale-${l}`);
+    if (guideDemoBtn) {
+      if (l === level) {
+        guideDemoBtn.className = 'px-2 py-1 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow';
+      } else {
+        guideDemoBtn.className = 'px-2 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white';
       }
     }
   });

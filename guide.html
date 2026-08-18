@@ -82,10 +82,22 @@
         <a href="#step-5" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">05 聯絡與下架</a>
       </nav>
 
-      <a href="index.html" class="px-4 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/25 hover:opacity-90 active:scale-95 transition flex items-center gap-1.5">
-        <span>進入交換所</span>
-        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-      </a>
+      <!-- 頂部右側：5 段動態字體調整 ＋ 進入交換所 -->
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-0.5 sm:gap-1 bg-gray-900/90 p-0.5 sm:p-1 rounded-xl border border-amber-500/30 shrink-0 shadow-inner">
+          <span class="text-[10px] sm:text-xs text-amber-400 font-black px-1 shrink-0">🔤 字體：</span>
+          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
+          <button onclick="setFontSize('base')" id="font-btn-base" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md" title="標準字體 (A)">A</button>
+          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
+          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+          <button onclick="setFontSize('2xl')" id="font-btn-2xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="超大字體 (A⁺⁺⁺)">A⁺⁺⁺</button>
+        </div>
+
+        <a href="index.html" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/25 hover:opacity-90 active:scale-95 transition flex items-center gap-1.5 shrink-0">
+          <span>進入交換所</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
     </div>
   </header>
 
@@ -604,58 +616,51 @@
       }
     }
 
-    // 4. 字體大小即時縮放沙盒
+    // 4. 字體大小即時縮放沙盒 (聯動全站真實字體大小切換)
     function setGuideFontSize(level) {
-      const title = document.getElementById('demo-font-title');
-      const body = document.getElementById('demo-font-body');
-      
-      const scales = {
-        'sm': { title: 'text-sm', body: 'text-[11px]' },
-        'base': { title: 'text-base', body: 'text-xs' },
-        'lg': { title: 'text-lg', body: 'text-sm' },
-        'xl': { title: 'text-xl', body: 'text-base' },
-        '2xl': { title: 'text-2xl', body: 'text-lg' }
-      };
-
-      const sel = scales[level] || scales['base'];
-      if (title) title.className = `font-black text-amber-300 ${sel.title}`;
-      if (body) body.className = `${sel.body} text-gray-300 leading-relaxed font-medium`;
-
-      ['sm', 'base', 'lg', 'xl', '2xl'].forEach(l => {
-        const btn = document.getElementById(`font-scale-${l}`);
-        if (btn) {
-          btn.className = (l === level) 
-            ? 'px-2 py-1 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow'
-            : 'px-2 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white';
-        }
-      });
+      if (typeof setFontSize === 'function') {
+        setFontSize(level, true);
+      }
     }
+
+    // 頁面載入完成時同步初始化字體
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof initFontSize === 'function') {
+        initFontSize();
+      }
+    });
 
     // 5. 一鍵聯絡複製試玩
     function demoCopyContact() {
       const sample = '【物品詢問】Logitech MX Master 3S - 聯絡人分機: 45555';
-      if (navigator.clipboard) {
+      if (typeof copyTextToClipboard === 'function') {
+        copyTextToClipboard(sample, '🎉 已複製聯絡資訊！可直接貼到 LINE / Teams！');
+      } else if (navigator.clipboard) {
         navigator.clipboard.writeText(sample);
+        alert('🎉 複製成功！\n已將【Logitech MX Master 3S (分機: 45555)】複製到剪貼簿，可直接貼到 LINE / Teams！');
       }
-      alert('🎉 複製成功！\n已將【Logitech MX Master 3S (分機: 45555)】複製到剪貼簿，可直接貼到 LINE / Teams！');
     }
 
     // 5.1 刊登成功分享文案複製試玩
     function demoCopyPostSuccessText() {
       const text = `✨【關渡園區 好物分享】Logitech MX Master 3S 無線滑鼠 (95成新)\n💰 價格：NT$ 1,800\n📞 聯絡方式：公司分機: 45555 / Teams: 同仁\n🔗 專屬好物直達連結：https://pega-exchange.netlify.app/?item_id=demo-mouse-id`;
-      if (navigator.clipboard) {
+      if (typeof copyTextToClipboard === 'function') {
+        copyTextToClipboard(text, '📋 已複製好物完整分享文案！');
+      } else if (navigator.clipboard) {
         navigator.clipboard.writeText(text);
+        alert('📋 已複製【好物完整分享文案】！\n已將完整標題、價格、分機與專屬連結複製到剪貼簿，可直接貼到 LINE 群組或 Teams！');
       }
-      alert('📋 已複製【好物完整分享文案】！\n已將完整標題、價格、分機與專屬連結複製到剪貼簿，可直接貼到 LINE 群組或 Teams！');
     }
 
     // 5.2 刊登成功專屬連結複製試玩
     function demoCopyPostSuccessUrl() {
       const url = `https://pega-exchange.netlify.app/?item_id=demo-mouse-id`;
-      if (navigator.clipboard) {
+      if (typeof copyTextToClipboard === 'function') {
+        copyTextToClipboard(url, '🔗 已複製專屬好物直達連結！');
+      } else if (navigator.clipboard) {
         navigator.clipboard.writeText(url);
+        alert('🔗 已複製【專屬好物直達連結】！\n分享給同仁點擊打開時，系統會自動平滑捲動並彈出該商品的放大詳情！');
       }
-      alert('🔗 已複製【專屬好物直達連結】！\n分享給同仁點擊打開時，系統會自動平滑捲動並彈出該商品的放大詳情！');
     }
 
     // 6. 滿版金粉粒子禮炮物理引擎 (Canvas Confetti)
@@ -710,6 +715,18 @@
         }
       }
       render();
+    }
+  </script>
+
+  <!-- 浮動通知容器 -->
+  <div id="toast-container" class="fixed bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+  <!-- 工具函式庫 (提供字體大小切換與剪貼簿複製) -->
+  <script src="js/utils.js"></script>
+  <script>
+    // 立即執行一次確保無延遲字級套用
+    if (typeof initFontSize === 'function') {
+      initFontSize();
     }
   </script>
 </body>
