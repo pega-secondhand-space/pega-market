@@ -838,21 +838,23 @@ function updateGridLayoutOptions() {
   let activeCols = localStorage.getItem(storageKey);
 
   if (isMobile) {
+    // 📱 手機端首次進入預設：🍎 階差大卡 (Showcase Mode)
     if (!activeCols || activeCols === '1') {
       activeCols = 'showcase';
       localStorage.setItem(storageKey, 'showcase');
     }
   } else {
-    // 💻 PC 端維持 2~4 張卡片顯示最適宜
+    // 💻 PC 電腦端首次進入預設：三排 3 卡
     if (!activeCols || !['2', '3', '4'].includes(activeCols)) {
-      activeCols = '2';
+      activeCols = '3';
+      localStorage.setItem(storageKey, '3');
     }
   }
 
   if (select) {
     select.innerHTML = `
-      <option value="2">雙排 2 卡 (預設)</option>
-      <option value="3">三排 3 卡</option>
+      <option value="2">雙排 2 卡</option>
+      <option value="3">三排 3 卡 (預設)</option>
       <option value="4">四排 4 卡 (寬螢幕)</option>
     `;
     select.value = activeCols;
