@@ -239,33 +239,41 @@
           <p class="text-xs sm:text-sm text-gray-300 font-medium">填寫標題、定價與聯絡方式，設定 4 位密碼方便日後管理</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
             <div class="font-black text-xs text-amber-400 flex items-center gap-1">1. 基本資訊填寫</div>
-            <h3 class="font-bold text-sm text-gray-100">標題、定價與聯絡方式</h3>
+            <h3 class="font-bold text-sm text-gray-100">標題、定價與聯絡管道</h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              填寫清楚的物品名稱與型號。聯絡方式可留公司分機號碼、Teams 或 LINE ID。
+              填寫清楚的物品名稱與規格。PEGA 同仁留分機或 Teams，隔壁 ASUS/和信好鄰居留手機或 LINE。
             </p>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
             <div class="font-black text-xs text-amber-400 flex items-center gap-1">2. 照片上傳支援</div>
-            <h3 class="font-bold text-sm text-gray-100">最多可上傳 2 張照片</h3>
+            <h3 class="font-bold text-sm text-gray-100">最多可上傳 2 張實拍照</h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              支援上傳 1~2 張照片，系統會在前端自動壓縮尺寸，以提升手機載入速度。
+              支援上傳 1~2 張清晰照片，系統前端智慧壓縮，手機極速秒開不耗流量。
             </p>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
-            <div class="font-black text-xs text-amber-400 flex items-center gap-1">3. 編輯與下架密碼</div>
-            <h3 class="font-bold text-sm text-gray-100">自訂 4 位數管理密碼</h3>
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">3. 自訂管理密碼</div>
+            <h3 class="font-bold text-sm text-gray-100">4 位數自主修改/下架金鑰</h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              自訂 4 位數字密碼（如 1234）。日後若更換手機或電腦，可憑此密碼修改或下架貼文。
+              自訂 4 位密碼（如 1234）。瀏覽器自動記憶，換電腦或手機也能自主管理貼文。
+            </p>
+          </div>
+
+          <div class="p-4 bg-gray-950/80 border border-amber-500/40 rounded-2xl space-y-1.5 shadow-lg bg-amber-500/5">
+            <div class="font-black text-xs text-amber-300 flex items-center gap-1">4. 刊登成功分享</div>
+            <h3 class="font-bold text-sm text-gray-100">一鍵複製文案 ＆ 專屬直達連結</h3>
+            <p class="text-xs text-gray-300 leading-relaxed font-medium">
+              發布完成自動彈出分享面板，附帶專屬直達網址，同仁點擊直接聚焦彈出該商品！
             </p>
           </div>
         </div>
 
-        <!-- 互動沙盒：4 位數密碼解鎖測試台 -->
+        <!-- 互動沙盒 1：4 位數密碼解鎖測試台 -->
         <div class="p-4 sm:p-5 bg-black/60 border border-gray-800 rounded-2xl space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-xs font-black text-gray-200">
@@ -285,6 +293,56 @@
           <p class="text-center text-[11px] text-gray-400 font-medium">
             💡 本機瀏覽器會自動記住密碼；更換裝置時只要輸入原設定之 4 位數密碼即可管理！
           </p>
+        </div>
+
+        <!-- 互動沙盒 2：刊登成功分享視窗示範 (Post-Success Share Modal) -->
+        <div class="p-5 bg-gradient-to-b from-gray-900/90 to-gray-950/95 border-2 border-emerald-500/40 rounded-2xl space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-sm border border-emerald-500/40">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-black text-gray-100 flex items-center gap-1.5">
+                  <span>刊登成功產生的分享面板示範</span>
+                  <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-500/30">全新功能</span>
+                </h4>
+                <p class="text-[11px] text-gray-400 font-medium">發布後自動產生以下分享資訊，方便同仁一鍵貼到 LINE 群或 Teams：</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-amber-300 bg-gray-900 px-2.5 py-1 rounded-xl border border-gray-800">
+              🔑 密碼：<strong>8888</strong>
+            </span>
+          </div>
+
+          <!-- 預覽文案方塊 -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs text-gray-400 font-bold">
+              <span class="flex items-center gap-1"><i class="fa-regular fa-clipboard text-amber-400"></i> 自動生成好物分享文案：</span>
+              <span class="text-[10px] text-indigo-300">格式已排版優化</span>
+            </div>
+            <div class="p-3.5 bg-gray-950 rounded-xl border border-gray-800 text-xs text-gray-200 font-mono leading-relaxed whitespace-pre-wrap select-all shadow-inner">✨【關渡園區 好物分享】Logitech MX Master 3S 無線滑鼠 (95成新)
+💰 價格：NT$ 1,800
+📞 聯絡方式：公司分機: 45555 / Teams: 同仁
+🔗 專屬好物直達連結：https://pega-exchange.netlify.app/?item_id=demo-mouse-id</div>
+          </div>
+
+          <!-- 兩顆核心操作按鈕 -->
+          <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+            <button onclick="demoCopyPostSuccessText()" class="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-600/30 transition active:scale-95 flex items-center justify-center gap-2">
+              <i class="fa-regular fa-copy text-sm"></i>
+              <span>一鍵複製好物分享文案 (試點看看)</span>
+            </button>
+            <button onclick="demoCopyPostSuccessUrl()" class="py-2.5 px-4 bg-gray-900 hover:bg-gray-800 text-amber-300 border border-amber-500/40 font-bold text-xs rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-link text-xs"></i>
+              <span>僅複製專屬連結</span>
+            </button>
+          </div>
+
+          <div class="text-[11px] text-gray-400 leading-relaxed bg-gray-900/60 p-2.5 rounded-xl border border-gray-800 flex items-start gap-2">
+            <i class="fa-solid fa-lightbulb text-amber-400 shrink-0 mt-0.5"></i>
+            <span><strong>專屬直達連結特點</strong>：任何同仁點擊該專屬連結進入網站時，系統會自動平滑捲動並<strong>直接彈出該好物的完整大圖與詳細說明</strong>，無需手動搜尋！</span>
+          </div>
         </div>
       </div>
     </section>
@@ -580,6 +638,24 @@
         navigator.clipboard.writeText(sample);
       }
       alert('🎉 複製成功！\n已將【Logitech MX Master 3S (分機: 45555)】複製到剪貼簿，可直接貼到 LINE / Teams！');
+    }
+
+    // 5.1 刊登成功分享文案複製試玩
+    function demoCopyPostSuccessText() {
+      const text = `✨【關渡園區 好物分享】Logitech MX Master 3S 無線滑鼠 (95成新)\n💰 價格：NT$ 1,800\n📞 聯絡方式：公司分機: 45555 / Teams: 同仁\n🔗 專屬好物直達連結：https://pega-exchange.netlify.app/?item_id=demo-mouse-id`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+      }
+      alert('📋 已複製【好物完整分享文案】！\n已將完整標題、價格、分機與專屬連結複製到剪貼簿，可直接貼到 LINE 群組或 Teams！');
+    }
+
+    // 5.2 刊登成功專屬連結複製試玩
+    function demoCopyPostSuccessUrl() {
+      const url = `https://pega-exchange.netlify.app/?item_id=demo-mouse-id`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url);
+      }
+      alert('🔗 已複製【專屬好物直達連結】！\n分享給同仁點擊打開時，系統會自動平滑捲動並彈出該商品的放大詳情！');
     }
 
     // 6. 滿版金粉粒子禮炮物理引擎 (Canvas Confetti)
