@@ -212,17 +212,16 @@ function renderItems() {
     const storageKey = isMobileDevice ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
     let activeLayout = localStorage.getItem(storageKey);
     if (isMobileDevice) {
-      if (!activeLayout || activeLayout === '1') {
+      if (!activeLayout || activeLayout !== '2') {
         activeLayout = 'showcase';
         localStorage.setItem(storageKey, 'showcase');
       }
     } else {
-      if (!activeLayout) activeLayout = '2';
+      if (!activeLayout || !['2', '3', '4'].includes(activeLayout)) activeLayout = '3';
     }
     const isShowcase = (activeLayout === 'showcase');
-    const colsNum = isShowcase ? 1 : (parseInt(activeLayout, 10) || (isMobileDevice ? 1 : 2));
-    const isEndOfRow = ((idx + 1) % colsNum === 0);
-    const dividerHtml = (isEndOfRow && idx < pageItems.length - 1 && isMobileDevice && colsNum === 1 && !isShowcase) ? `<div class="border-b border-gray-800/80 my-5 col-span-full"></div>` : '';
+    const colsNum = isShowcase ? 1 : (parseInt(activeLayout, 10) || (isMobileDevice ? 2 : 3));
+    const dividerHtml = '';
 
     const isFloatLeft = ((idx % colsNum) >= (colsNum / 2));
     const bubbleClass = isFloatLeft ? 'right-full mr-4' : 'left-full ml-4';
@@ -321,95 +320,7 @@ function renderItems() {
       </div>
     `;
 
-    const mobileCardHtml = (colsNum === 1 && !isShowcase) ? `
-      <!-- 📱 手機端：100% 擬真 Threads 原生黑底串文資訊流 (售出黑白灰階 + 24h 倒數) -->
-      <div onclick="openDetailModal('${item.id}')" class="threads-card-item block border-b border-gray-800/80 pt-3.5 pb-4 px-1 cursor-pointer active:bg-gray-900/30 transition ${isSold ? 'grayscale opacity-75 contrast-90' : ''}">
-        <div class="flex gap-3 items-stretch">
-          <!-- 左欄：Threads 圓形頭像 + 串文垂直連接軸線 (固定經典尺寸，不因文字縮放變形) -->
-          <div class="w-10 flex flex-col items-center shrink-0">
-            <div class="relative w-9 h-9 rounded-full ${isSold ? 'bg-gray-800 text-gray-400' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white'} flex items-center justify-center text-xs font-black shadow-md shrink-0">
-              ${safeNickname.slice(0, 1) || '同'}
-              <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-gray-950 rounded-full flex items-center justify-center border border-gray-700 text-[8px] text-white">
-                <i class="fa-solid fa-plus"></i>
-              </div>
-            </div>
-            <!-- 垂直連接軸線 (Threads Vertical Rail) -->
-            <div class="w-0.5 bg-gray-800/80 flex-1 my-2 rounded-full min-h-[40px]"></div>
-          </div>
-
-          <!-- 右欄：發布者資訊、內文、多圖並排、底部按鈕 -->
-          <div class="flex-1 min-w-0 space-y-2.5">
-            <!-- 頂部列：暱稱 › 分類 · 時間 + 售出打勾 -->
-            <div class="flex items-center justify-between gap-1.5">
-              <div class="flex items-center gap-2 min-w-0 threads-meta-font truncate">
-                <span class="font-black text-gray-100 truncate">${safeNickname}</span>
-                <i class="fa-solid fa-chevron-right text-[9px] text-gray-600"></i>
-                <span class="font-black ${typeColorClass}">${typeShortText}</span>
-                <span class="text-gray-500 font-medium text-[11px]">· ${timeAgo(item.created_at)}</span>
-              </div>
-              <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-                ${(isPinned && !isSold) ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-black border border-amber-500/30">📌置頂</span>' : ''}
-                <button onclick="toggleItemSoldState('${item.id}')" 
-                        class="w-7 h-7 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
-                        ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white'}"
-                        title="${isSold ? '標記為未售出' : '標記為已售出'}">
-                  <i class="fa-solid ${isSold ? 'fa-check-double' : 'fa-check'} text-xs"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- 標題與內文：100% 完整自然換行、無任何省略號！ -->
-            <div class="space-y-1.5">
-              <h3 class="font-black text-gray-100 threads-title-font break-words whitespace-normal" title="${safeTitle}">
-                ${isSold ? '<span class="text-gray-400 font-black">【已售出】</span>' : ''}${safeTitle}
-              </h3>
-              ${safeDesc ? `<p class="threads-desc-font text-gray-200 break-words whitespace-pre-line font-medium">${safeDesc}</p>` : ''}
-              ${p2 ? '<div class="inline-block text-[11px] text-gray-300 bg-gray-900 px-2.5 py-0.5 rounded-full border border-gray-800 font-bold">1/2 多圖</div>' : ''}
-            </div>
-
-            <!-- 圖片區：若 2 張圖則並排，點擊照片直接全螢幕燈箱放大 -->
-            ${p2 ? `
-              <div class="grid grid-cols-2 gap-2 aspect-[4/3] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800/80">
-                <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第一張照片">
-                  <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                  <span class="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 sm:opacity-100 transition"><i class="fa-solid fa-expand"></i> 放大</span>
-                </div>
-                <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第二張照片">
-                  <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                  <span class="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 sm:opacity-100 transition"><i class="fa-solid fa-expand"></i> 放大</span>
-                </div>
-              </div>
-            ` : `
-              <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800/80 cursor-zoom-in group" title="點擊放大原圖">
-                <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
-                <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-md backdrop-blur-sm opacity-0 group-hover:opacity-100 sm:opacity-100 transition"><i class="fa-solid fa-expand"></i> 點擊放大原圖</span>
-              </div>
-            `}
-
-            <!-- 底部 Threads 互動操作列 (售價 / 聯絡一鍵複製 / 24h 倒數) -->
-            <div class="flex flex-wrap items-center justify-between text-gray-400 pt-2 gap-2">
-              <div class="flex items-center gap-3">
-                <span class="font-black ${isSold ? 'text-gray-400 line-through' : 'text-indigo-300'} threads-price-font flex items-center gap-1.5">
-                  <i class="fa-solid fa-tag text-xs text-indigo-400"></i> ${priceDisplay}
-                </span>
-                ${(safeContact && !isSold) ? `
-                  <button onclick="event.stopPropagation(); copyContactForItem('${item.id}')" class="threads-meta-font flex items-center gap-1.5 text-indigo-200 hover:text-white font-black active:scale-95 transition bg-indigo-950/90 border border-indigo-500/50 px-3 py-1 rounded-xl shadow">
-                    <i class="fa-regular fa-comment text-xs"></i> 聯絡複製
-                  </button>
-                ` : ''}
-              </div>
-              <div class="flex items-center gap-2 text-xs">
-                ${expCountdownHtml}
-                <span class="threads-meta-font text-gray-400 font-bold flex items-center gap-1">
-                  詳情 <i class="fa-solid fa-chevron-right text-[9px]"></i>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    ` : `
-      <!-- 📱 手機端 (雙排 IG 懸浮風格：支援 2 行標題完整可讀) -->
+      <!-- 📱 手機端 (雙排方格風格：支援 2 行標題完整可讀與點擊放大) -->
       <div onclick="openDetailModal('${item.id}')" class="threads-card-item block relative aspect-square bg-gray-950 rounded-2xl overflow-hidden shadow-lg border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500 shadow-amber-500/10' : 'border-gray-800 active:scale-95'} transition cursor-pointer">
         ${(isPinned && !isSold) ? '<div class="absolute top-0 inset-x-0 bg-amber-500 text-gray-950 text-[9px] font-black py-0.5 text-center z-10">📌 官方置頂</div>' : ''}
         
@@ -792,16 +703,14 @@ function applyGridLayout(cols) {
 
   const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
 
-  // 同步膠囊按鈕 active 樣式
+  // 同步手機膠囊按鈕 active 樣式 (階差大卡 / 雙排)
   const btnShowcase = document.getElementById('layout-btn-showcase');
-  const btn1 = document.getElementById('layout-btn-1');
   const btn2 = document.getElementById('layout-btn-2');
 
-  const activeStyle = 'px-2.5 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition flex items-center gap-1';
-  const inactiveStyle = 'px-2.5 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1';
+  const activeStyle = 'px-3 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition flex items-center gap-1';
+  const inactiveStyle = 'px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1';
 
   if (btnShowcase) btnShowcase.className = (cols === 'showcase') ? activeStyle : inactiveStyle;
-  if (btn1) btn1.className = (cols === '1') ? activeStyle : inactiveStyle;
   if (btn2) btn2.className = (cols === '2') ? activeStyle : inactiveStyle;
 
   if (cols === 'showcase') {
