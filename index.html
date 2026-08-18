@@ -264,37 +264,37 @@
         <div class="p-4 bg-gray-950/90 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
           <div class="space-y-0.5">
             <span class="text-[10px] text-gray-400 font-bold tracking-wider uppercase">PRICE / SWAP</span>
-            <div id="detail-price" class="font-black text-2xl sm:text-3xl bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent"></div>
+            <div id="detail-price" class="font-black detail-price-font bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent"></div>
           </div>
           <div class="flex items-center gap-2 text-xs text-gray-400 font-bold self-start sm:self-center">
-            <span id="detail-time" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800"></span>
-            <span id="detail-expiration" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 font-bold text-amber-300"></span>
+            <span id="detail-time" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 detail-meta-font"></span>
+            <span id="detail-expiration" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 font-bold text-amber-300 detail-meta-font"></span>
           </div>
         </div>
 
         <!-- 聯絡資訊方塊 (一鍵複製直貼通訊軟體) -->
         <div id="detail-contact-box" onclick="handleContactClick(document.getElementById('detail-contact-text').innerText, document.getElementById('detail-title').innerText)" class="bg-gradient-to-r from-indigo-950/90 to-purple-950/90 hover:from-indigo-900/90 hover:to-purple-900/90 border-2 border-indigo-500/40 p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer transition active:scale-[0.99] shadow-lg group" title="點擊一鍵複製商品名稱與聯絡資訊">
           <div class="flex items-center justify-between">
-            <p class="threads-meta-font font-black text-indigo-300 flex items-center gap-1.5">
+            <p class="detail-contact-title-font font-black text-indigo-300 flex items-center gap-1.5">
               <i class="fa-solid fa-phone text-amber-400"></i> 聯絡刊登同仁：
             </p>
             <span class="bg-indigo-600 group-hover:bg-indigo-500 text-white font-black text-xs px-3 py-1 rounded-xl shadow-md transition flex items-center gap-1">
               <i class="fa-regular fa-copy"></i> 點擊一鍵複製直貼
             </span>
           </div>
-          <p id="detail-contact-text" class="text-sm sm:text-base text-indigo-100 font-bold break-all"></p>
+          <p id="detail-contact-text" class="detail-contact-text-font text-indigo-100 font-bold break-all"></p>
         </div>
 
         <!-- 詳細描述 -->
         <div class="space-y-2">
-          <p class="text-xs font-bold text-gray-400 flex items-center gap-1.5"><i class="fa-solid fa-align-left text-amber-400"></i> 物品詳細說明：</p>
-          <div id="detail-desc" class="text-xs sm:text-sm text-gray-200 leading-relaxed font-medium bg-gray-950/80 p-4 sm:p-5 rounded-2xl border border-gray-800 whitespace-pre-line shadow-inner"></div>
+          <p class="detail-label-font font-bold text-gray-400 flex items-center gap-1.5"><i class="fa-solid fa-align-left text-amber-400"></i> 物品詳細說明：</p>
+          <div id="detail-desc" class="detail-desc-font text-gray-200 leading-relaxed font-medium bg-gray-950/80 p-4 sm:p-5 rounded-2xl border border-gray-800 whitespace-pre-line shadow-inner"></div>
         </div>
 
         <!-- 發布者與管理區域 -->
         <div class="pt-2 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400">
-          <span>👤 刊登人：<strong id="detail-nickname" class="text-gray-200 font-bold"></strong></span>
-          <span class="text-[11px] text-gray-500 font-mono">PEGA 匿名流通保護</span>
+          <span class="detail-meta-font">👤 刊登人：<strong id="detail-nickname" class="text-gray-200 font-bold"></strong></span>
+          <span class="detail-meta-font text-gray-500 font-mono">PEGA 匿名流通保護</span>
         </div>
 
         <!-- 刊登者本人編輯與下架區域 -->

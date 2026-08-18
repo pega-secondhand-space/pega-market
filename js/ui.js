@@ -589,14 +589,14 @@ function openDetailModal(itemId) {
     if (item.price && String(item.price).startsWith('swap:')) {
       const swapVal = String(item.price).replace('swap:', '');
       priceDisplay = `🔄 換：${swapVal || '未指定'}`;
-      priceElem.className = "font-black text-2xl sm:text-3xl text-rose-400 flex items-center gap-1.5";
+      priceElem.className = "font-black detail-price-font text-rose-400 flex items-center gap-1.5";
     } else if (item.type === 'free') {
       priceDisplay = 'NT$ 0 (免費贈送)';
-      priceElem.className = "font-black text-2xl sm:text-3xl text-emerald-400";
+      priceElem.className = "font-black detail-price-font text-emerald-400";
     } else {
       const numPrice = parseFloat(item.price);
       priceDisplay = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
-      priceElem.className = "font-black text-2xl sm:text-3xl bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent";
+      priceElem.className = "font-black detail-price-font bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent";
     }
     priceElem.innerText = priceDisplay;
   }

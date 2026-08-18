@@ -92,20 +92,40 @@ html.font-level-2xl { --text-scale: 1.55; font-size: 18.5px; } /* 超大尊爵�
 
 /* 🔍 刊登詳情彈窗專屬字體聯動系統 (隨 A⁻ / A / A⁺ / A⁺⁺ / A⁺⁺⁺ 同步放大縮小) */
 .detail-title-font {
-  font-size: calc(1.15rem * var(--text-scale)) !important;
+  font-size: calc(1.25rem * var(--text-scale)) !important;
   line-height: 1.4 !important;
   letter-spacing: -0.015em !important;
 }
 
 .detail-desc-font {
-  font-size: calc(0.92rem * var(--text-scale)) !important;
-  line-height: 1.68 !important;
-  letter-spacing: 0.005em !important;
+  font-size: calc(1.02rem * var(--text-scale)) !important;
+  line-height: 1.72 !important;
+  letter-spacing: 0.008em !important;
 }
 
 .detail-price-font {
-  font-size: calc(1.22rem * var(--text-scale)) !important;
-  line-height: 1.2 !important;
+  font-size: calc(1.35rem * var(--text-scale)) !important;
+  line-height: 1.25 !important;
+}
+
+.detail-contact-title-font {
+  font-size: calc(0.92rem * var(--text-scale)) !important;
+  line-height: 1.3 !important;
+}
+
+.detail-contact-text-font {
+  font-size: calc(1.05rem * var(--text-scale)) !important;
+  line-height: 1.4 !important;
+}
+
+.detail-meta-font {
+  font-size: calc(0.88rem * var(--text-scale)) !important;
+  line-height: 1.35 !important;
+}
+
+.detail-label-font {
+  font-size: calc(0.9rem * var(--text-scale)) !important;
+  line-height: 1.3 !important;
 }
 
 /* 🏷️ 分類選單按鈕 (全部 / 買 / 賣 / 送 / 尾牙) 動態字體聯動 */
