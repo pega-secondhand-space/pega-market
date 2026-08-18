@@ -405,7 +405,7 @@ function renderItems() {
 
           <div class="space-y-2.5 pt-2.5 border-t border-gray-800/80">
             ${(safeContact && !isSold) ? `
-              <div onclick="event.stopPropagation(); handleContactClick('${safeContact}')" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 p-2.5 rounded-xl text-xs lg:text-sm text-indigo-200 font-bold flex items-center justify-between gap-2 transition active:scale-95 cursor-pointer shadow-sm" title="點擊一鍵複製聯絡方式">
+              <div onclick="event.stopPropagation(); copyContactForItem('${item.id}')" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 p-2.5 rounded-xl text-xs lg:text-sm text-indigo-200 font-bold flex items-center justify-between gap-2 transition active:scale-95 cursor-pointer shadow-sm" title="點擊一鍵複製好物名稱與聯絡方式">
                 <div class="flex items-center gap-1.5 min-w-0 flex-1 truncate">
                   <i class="fa-solid fa-phone text-indigo-400 text-xs shrink-0"></i>
                   <span class="truncate">聯絡：${safeContact}</span>
@@ -455,26 +455,52 @@ function switchCardPhoto(itemId, dir) {
  * 點擊一鍵複製聯絡方式與商品名稱 (方便直接貼到 LINE / Teams)
  * @param {string} contactStr 聯絡資訊
  * @param {string} [titleStr] 商品標題
+ * @param {string} [itemId] 商品 ID
  */
-function handleContactClick(contactStr, titleStr = '') {
-  if (!contactStr) return;
-  const cleanTitle = (titleStr || '').replace(/^【.*?】|^\[.*?\]|^\(.*?\)|\s*-\s*【.*?】/, '').trim();
-  const textToCopy = cleanTitle ? `【二手商品】${cleanTitle}\n【聯絡方式】${contactStr}` : contactStr;
-  copyTextToClipboard(textToCopy, `📋 已複製商品名稱與聯絡方式！可直接貼到 LINE / Teams`);
+function handleContactClick(contactStr, titleStr = '', itemId = '') {
+  if (itemId) {
+    return copyContactForItem(itemId);
+  }
+  if (currentDetailItem) {
+    return copyContactForItem(currentDetailItem.id);
+  }
+  const cleanTitle = (titleStr || '').trim();
+  const textToCopy = cleanTitle ? `✨【好物洽詢】${cleanTitle}\n📞 聯絡方式：${contactStr}` : contactStr;
+  copyTextToClipboard(textToCopy, `📋 已複製好物名稱與聯絡方式！可直接貼到 Teams / LINE`);
 }
 
 /**
- * 透過 Item ID 一鍵安全複製聯絡資訊與商品名稱
+ * 透過 Item ID 一鍵安全複製完整好物資訊與聯絡資訊 (包含名稱、價格、聯絡方式與專屬連結)
  * @param {string} itemId 商品 ID
  */
 function copyContactForItem(itemId) {
-  const item = allItems.find(i => i.id === itemId);
+  const item = allItems.find(i => i.id === itemId) || currentDetailItem;
   if (!item) return;
-  const rawContact = item.contact_info || item.contact || '';
-  const rawTitle = item.title || '';
-  const cleanTitle = rawTitle.replace(/^【.*?】|^\[.*?\]|^\(.*?\)|\s*-\s*【.*?】/, '').trim();
-  const textToCopy = rawContact ? (cleanTitle ? `【二手商品】${cleanTitle}\n【聯絡方式】${rawContact}` : rawContact) : (cleanTitle ? `【二手商品】${cleanTitle}` : '暫無聯絡方式');
-  copyTextToClipboard(textToCopy, `📋 已複製商品名稱與聯絡方式！可直接貼到 LINE / Teams`);
+
+  const rawContact = item.contact_info || item.contact || '刊登同仁未留特定聯絡方式';
+  const fullTitle = item.title || '好物';
+  
+  let priceText = '';
+  if (item.price && String(item.price).startsWith('swap:')) {
+    priceText = `以物易物 (想換：${String(item.price).replace('swap:', '') || '未指定'})`;
+  } else if (item.type === 'free') {
+    priceText = 'NT$ 0 (同仁愛心免費贈送)';
+  } else {
+    const numPrice = parseFloat(item.price);
+    priceText = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
+  }
+
+  const siteOrigin = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
+    ? 'https://pega-exchange.netlify.app'
+    : window.location.origin;
+  const directLink = `${siteOrigin}/?item_id=${item.id}`;
+
+  const textToCopy = `✨【好物洽詢】${fullTitle}
+💰 價格/交換：${priceText}
+📞 聯絡方式：${rawContact}
+🔗 專屬直達連結：${directLink}`;
+
+  copyTextToClipboard(textToCopy, `📋 已複製【${fullTitle}】之完整洽詢資訊與聯絡方式！可直接貼到 Teams / LINE`);
 }
 
 /**
@@ -484,6 +510,8 @@ function openDetailModal(itemId) {
   if (typeof closeAllModals === 'function') closeAllModals();
   const item = allItems.find(i => i.id === itemId);
   if (!item) return;
+
+  currentDetailItem = item;
 
   const modal = document.getElementById('detail-modal');
   const typeBadge = document.getElementById('detail-type-badge');
