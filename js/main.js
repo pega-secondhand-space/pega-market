@@ -66,8 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
   updateGridLayoutOptions();
   window.addEventListener('resize', updateGridLayoutOptions);
 
-  // 5. 載入商品列表、啟動手機端無限滾動與詳情/燈箱滑動手勢
-  loadItems();
+  // 5. 載入商品列表、支援 URL 專屬商品直達連結、啟動手機端無限滾動與詳情/燈箱滑動手勢
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetItemId = urlParams.get('item_id') || urlParams.get('id');
+  if (targetItemId) {
+    loadItems(targetItemId, true);
+  } else {
+    loadItems();
+  }
+
   if (typeof setupMobileInfiniteScroll === 'function') {
     setupMobileInfiniteScroll();
   }
@@ -110,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backdropModalIds = [
     'detail-modal',
     'create-modal',
+    'post-success-modal',
     'issue-modal',
     'archive-modal',
     'admin-modal',

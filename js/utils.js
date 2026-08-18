@@ -42,6 +42,7 @@ function closeAllModals() {
     'issue-modal', 
     'detail-modal', 
     'create-modal', 
+    'post-success-modal',
     'online-users-modal',
     'lightbox-modal',
     'guide-modal',

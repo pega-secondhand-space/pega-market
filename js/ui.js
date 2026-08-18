@@ -1251,9 +1251,11 @@ async function submitCreateItem() {
 
       if (postRes.ok) {
         let newItemId = null;
+        let createdItemObj = null;
         const createdItems = await postRes.json();
         if (createdItems && createdItems.length > 0) {
-          newItemId = createdItems[0].id;
+          createdItemObj = createdItems[0];
+          newItemId = createdItemObj.id;
           let myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
           myItems.push(newItemId);
           localStorage.setItem('my_created_item_ids', JSON.stringify(myItems));
@@ -1261,8 +1263,6 @@ async function submitCreateItem() {
           const myPasswords = JSON.parse(localStorage.getItem('pega_my_post_passwords') || '{}');
           myPasswords[newItemId] = editPasswordVal;
           localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
-
-          alert(`🎉 貼文發布成功！\n\n您的 4 位數「自刪管理密碼」為：${editPasswordVal}\n\n（本機已自動為您記住此密碼。若日後更換電腦或手機，請憑此密碼修改或下架貼文，建議將其妥善保存喔！）`);
         }
 
         showNotification('🎉 刊登成功！貼文已排在第一位展示。', 'success');
@@ -1317,6 +1317,19 @@ async function submitCreateItem() {
 
         await loadItems(newItemId, false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 彈出刊登成功與文案分享/密碼備忘 Modal
+        if (newItemId) {
+          openPostSuccessModal({
+            id: newItemId,
+            title: title,
+            price: finalPrice,
+            type: postType,
+            nickname: nicknameVal,
+            contact_info: contact,
+            image_url: finalImgUrl
+          }, editPasswordVal);
+        }
       } else {
         const err = await postRes.json();
         showCreateError('⚠️ 發布失敗：' + (err.message || '伺服器拒絕此貼文'));
@@ -1721,6 +1734,149 @@ function initLightboxGestures() {
   });
 }
 
+// ==========================================
+// 🎉 刊登成功 ＆ 好物專屬文案分享 Modal 邏輯
+// ==========================================
+
+var currentSuccessItem = null;
+
+/**
+ * 開啟刊登成功 Modal 並填入商品資訊與 PIN 碼
+ * @param {Object} itemData 商品物件
+ * @param {string} pin 4 位數自刪密碼
+ */
+function openPostSuccessModal(itemData, pin) {
+  currentSuccessItem = itemData;
+  if (typeof closeAllModals === 'function') closeAllModals();
+
+  const modal = document.getElementById('post-success-modal');
+  if (!modal) return;
+
+  const pinDisplay = document.getElementById('success-pin-display');
+  if (pinDisplay) pinDisplay.innerText = pin || '----';
+
+  const titleEl = document.getElementById('success-item-title');
+  if (titleEl) titleEl.innerText = itemData.title || '';
+
+  const priceEl = document.getElementById('success-item-price');
+  if (priceEl) {
+    if (itemData.price && itemData.price.startsWith('swap:')) {
+      priceEl.innerText = '🔄 ' + itemData.price.replace('swap:', '');
+    } else if (itemData.type === 'free' || itemData.price === '0') {
+      priceEl.innerText = '🎁 免費贈送';
+    } else {
+      priceEl.innerText = '$ ' + itemData.price;
+    }
+  }
+
+  const typeEl = document.getElementById('success-item-type');
+  if (typeEl) {
+    const typeNames = { sell: '💰 我想賣', buy: '🔍 我想買', free: '🎁 免費送', lucky: '🎉 尾牙全新' };
+    typeEl.innerText = typeNames[itemData.type] || '💰 想賣';
+  }
+
+  const contactEl = document.getElementById('success-item-contact');
+  if (contactEl) {
+    contactEl.innerText = `👤 刊登人：${itemData.nickname || '同仁'} | 📞 聯絡：${itemData.contact_info || itemData.contact || ''}`;
+  }
+
+  const thumbImg = document.getElementById('success-item-thumb');
+  if (thumbImg) {
+    if (itemData.image_url) {
+      const firstImg = itemData.image_url.split('|||')[0];
+      thumbImg.src = firstImg;
+      thumbImg.classList.remove('hidden');
+    } else {
+      thumbImg.classList.add('hidden');
+    }
+  }
+
+  // 產生分享文案 (包含直達連結)
+  const shareUrl = `https://pega-exchange.netlify.app/?item_id=${itemData.id}`;
+  const priceDisplay = (itemData.price && itemData.price.startsWith('swap:'))
+    ? `以物易物 (${itemData.price.replace('swap:', '')})`
+    : ((itemData.type === 'free' || itemData.price === '0') ? '免費贈送 (0元)' : `$${itemData.price} 元`);
+  
+  const typeMap = { sell: '💰 我想賣', buy: '🔍 我想買', free: '🎁 免費送', lucky: '🎉 尾牙全新' };
+  const shareText = `📢【PEGAPEGA 二手交流】好物刊登！\n🏷️ 類型：${typeMap[itemData.type] || '好物'}\n🎁 物品：${itemData.title}\n💰 價格：${priceDisplay}\n👤 刊登人：${itemData.nickname || '同仁'}\n📞 聯絡：${itemData.contact_info || itemData.contact || ''}\n\n👉 點擊查看照片與詳情：\n${shareUrl}`;
+
+  const textarea = document.getElementById('success-share-textarea');
+  if (textarea) textarea.value = shareText;
+
+  modal.classList.remove('hidden');
+}
+
+/**
+ * 關閉刊登成功 Modal
+ */
+function closePostSuccessModal() {
+  const modal = document.getElementById('post-success-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+/**
+ * 一鍵複製好物專屬文案
+ */
+function copyPostSuccessText() {
+  const textarea = document.getElementById('success-share-textarea');
+  if (!textarea) return;
+
+  const copyViaClipboard = () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(textarea.value);
+    }
+    textarea.select();
+    document.execCommand('copy');
+    return Promise.resolve();
+  };
+
+  copyViaClipboard().then(() => {
+    const label = document.getElementById('copy-success-text-label');
+    const original = label ? label.innerText : '';
+    if (label) label.innerText = '✅ 文案已複製！可隨時貼上分享';
+    showNotification('✅ 好物分享文案已複製到剪貼簿！', 'success');
+    setTimeout(() => {
+      if (label) label.innerText = original || '一鍵複製好物分享文案';
+    }, 2500);
+  }).catch(e => {
+    textarea.select();
+    document.execCommand('copy');
+    showNotification('✅ 已選取並複製文案！', 'success');
+  });
+}
+
+/**
+ * 僅複製商品專屬直達連結
+ */
+function copyPostSuccessUrl() {
+  if (!currentSuccessItem) return;
+  const shareUrl = `https://pega-exchange.netlify.app/?item_id=${currentSuccessItem.id}`;
+
+  const copyViaClipboard = () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(shareUrl);
+    }
+    const input = document.createElement('input');
+    input.value = shareUrl;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    return Promise.resolve();
+  };
+
+  copyViaClipboard().then(() => {
+    const label = document.getElementById('copy-success-url-label');
+    if (label) label.innerText = '✅ 連結已複製！';
+    showNotification('🔗 商品專屬連結已複製！', 'success');
+    setTimeout(() => {
+      if (label) label.innerText = '僅複製專屬連結';
+    }, 2500);
+  }).catch(e => {
+    prompt('請手動複製商品連結：', shareUrl);
+  });
+}
+
 // 綁定全域以供 HTML 呼叫
 window.renderItems = renderItems;
 window.switchCardPhoto = switchCardPhoto;
@@ -1743,6 +1899,10 @@ window.openCreateModal = openCreateModal;
 window.closeCreateModal = closeCreateModal;
 window.editMyItem = editMyItem;
 window.submitCreateItem = submitCreateItem;
+window.openPostSuccessModal = openPostSuccessModal;
+window.closePostSuccessModal = closePostSuccessModal;
+window.copyPostSuccessText = copyPostSuccessText;
+window.copyPostSuccessUrl = copyPostSuccessUrl;
 window.scrollToTopItem = scrollToTopItem;
 window.scrollToBottomItem = scrollToBottomItem;
 window.toggleMobileSearch = toggleMobileSearch;
