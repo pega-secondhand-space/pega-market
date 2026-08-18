@@ -200,11 +200,11 @@ async function saveItemsPerPage() {
  * 載入網站自訂名稱
  */
 async function loadSiteName() {
-  const defaultName = localStorage.getItem('pega_site_name') || 'PEGAPEGA';
+  const defaultName = localStorage.getItem('pega_site_name') || '關渡園區 好物交換所';
   let nameToUse = defaultName;
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.${CONFIG_UUIDS.ANNOUNCEMENT}&select=*&order=created_at.desc&limit=1`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.${CONFIG_UUIDS.SITE_NAME}&select=*&order=created_at.desc&limit=1`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
     if (res.ok) {
@@ -295,7 +295,16 @@ function closeAnnouncementBar() {
  * 載入全站公告
  */
 async function loadAnnouncement() {
-  const defaultNotice = '歡迎使用 PEGA 告示牌！匿名二手與尾牙獎品交換平台：\n💡 免登入直接刊登：支援「想買、想賣、免費送」，全新推出「尾牙全新專區」與「以物易物」功能！\n📞 填寫正確聯絡管道：請務必提供分機 或 Teams，方便同仁一鍵複製快速聯繫。\n🤝 成交請及時下架：交易完成後，請務必點選卡片「已售出」或「下架貼文」，讓版面保持乾淨。';
+  const defaultNotice = `📢 歡迎來到【關渡園區 好物交換所】！
+( 專為 PEGA 同仁與關渡好鄰居打造 · 尾牙獎品交換／二手出清／以物易物 )
+
+🚀 【刊】免登入直接上架：支援「想賣、求購、尾牙獎品、以物易物」多元模式。
+📞 【聯】留下真實資訊：填寫分機 / Teams / 手機，加速面交撮合。
+🤝 【結】成交順手下架：物品交接完畢請點「已售出」，保持告示牌即時性。
+🎁 【贈】愛心免費流轉：善用免費贈送專區，傳遞辦公室人情味與物資新價值。
+
+• PEGA 同仁之間：留公司分機、內部 Teams 最方便。
+• 與 ASUS / 和信好鄰居面交：因系統不互通，留 手機 或 LINE 聯繫最即時！`;
   const textSpan = document.getElementById('announcement-text');
   const adminInput = document.getElementById('admin-announcement-input');
   const bar = document.getElementById('announcement-bar');
