@@ -17,6 +17,7 @@ function openAdminModal() {
   if (isAdmin) {
     document.getElementById('admin-login-view').classList.add('hidden');
     document.getElementById('admin-dashboard-view').classList.remove('hidden');
+    testSupabaseKeepAlive();
   } else {
     document.getElementById('admin-login-view').classList.remove('hidden');
     document.getElementById('admin-dashboard-view').classList.add('hidden');
@@ -136,6 +137,52 @@ function logoutAdmin() {
   closeAdminModal();
   showNotification('已登出版主權限', 'info');
   renderItems();
+}
+
+/**
+ * 測試 Supabase 資料庫連線健康度與保活心跳 (Ping)
+ */
+async function testSupabaseKeepAlive() {
+  const statusElem = document.getElementById('admin-db-status');
+  const pingBtn = document.getElementById('admin-db-ping-btn');
+  const latencyElem = document.getElementById('admin-db-latency');
+
+  if (pingBtn) {
+    pingBtn.disabled = true;
+    pingBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 檢測中...';
+  }
+
+  const startTime = Date.now();
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/items?select=id&limit=1`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const latency = Date.now() - startTime;
+    
+    if (res.ok) {
+      if (statusElem) {
+        statusElem.className = 'text-emerald-400 font-black flex items-center gap-1';
+        statusElem.innerHTML = '<i class="fa-solid fa-circle-check"></i> 🟢 連線正常 · 活躍中';
+      }
+      if (latencyElem) {
+        latencyElem.innerText = `${latency} ms`;
+      }
+      showNotification(`💓 Supabase 心跳保活檢測成功！延遲: ${latency}ms (專案持續活躍中)`, 'success');
+    } else {
+      throw new Error(`HTTP ${res.status}`);
+    }
+  } catch (err) {
+    if (statusElem) {
+      statusElem.className = 'text-red-400 font-black flex items-center gap-1';
+      statusElem.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 🔴 連線異常 (${err.message})`;
+    }
+    showNotification(`⚠️ Supabase 心跳檢測失敗: ${err.message}`, 'error');
+  } finally {
+    if (pingBtn) {
+      pingBtn.disabled = false;
+      pingBtn.innerHTML = '<i class="fa-solid fa-heart-pulse text-rose-400"></i> <span>手動發送保活心跳 (Ping)</span>';
+    }
+  }
 }
 
 /**
@@ -1372,6 +1419,7 @@ window.closeAdminModal = closeAdminModal;
 window.toggleAdminPasswordVisibility = toggleAdminPasswordVisibility;
 window.checkAdminPassword = checkAdminPassword;
 window.logoutAdmin = logoutAdmin;
+window.testSupabaseKeepAlive = testSupabaseKeepAlive;
 window.loadItemsPerPageSetting = loadItemsPerPageSetting;
 window.saveItemsPerPage = saveItemsPerPage;
 window.loadSiteName = loadSiteName;
