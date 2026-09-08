@@ -1,0 +1,42 @@
+name: Supabase Keep-Alive (保活防休眠心跳)
+
+on:
+  schedule:
+    # 每 3 天於 UTC 04:00 (台灣時間中午 12:00) 自動執行一次
+    - cron: '0 4 */3 * *'
+  workflow_dispatch: # 支援在 GitHub Actions 後台手動隨時觸發測試
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💓 發送 Supabase 心跳保活請求 (Ping Items Table)
+        run: |
+          echo "=================================================="
+          echo "🚀 正在發送 Supabase 保活心跳請求..."
+          echo "執行時間: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "=================================================="
+
+          SUPABASE_URL="https://llnnbanqtmnccfvtwooo.supabase.co"
+          API_KEY="${{ secrets.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyOTE5MjYsImV4cCI6MjEwMDg2NzkyNn0.ljcpgFCejH4OmUWZTp80RZ8nVsKtg5gbB1AYfNfoSDI' }}"
+
+          # 1. 查詢 Items 資料表 1 筆資料
+          HTTP_STATUS_ITEMS=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${SUPABASE_URL}/rest/v1/items?select=id&limit=1"             -H "apikey: ${API_KEY}"             -H "Authorization: Bearer ${API_KEY}")
+
+          echo "Items 表查詢狀態碼: ${HTTP_STATUS_ITEMS}"
+
+          # 2. 查詢 Messages 公告設定表
+          HTTP_STATUS_MSG=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=*&limit=1"             -H "apikey: ${API_KEY}"             -H "Authorization: Bearer ${API_KEY}")
+
+          echo "Messages 表查詢狀態碼: ${HTTP_STATUS_MSG}"
+
+          if [ "$HTTP_STATUS_ITEMS" -eq 200 ] || [ "$HTTP_STATUS_MSG" -eq 200 ]; then
+            echo "=================================================="
+            echo "✅ Supabase 資料庫保活成功！專案狀態正常活躍中。"
+            echo "=================================================="
+          else
+            echo "=================================================="
+            echo "⚠️ 請求異常 (Items: ${HTTP_STATUS_ITEMS}, Msg: ${HTTP_STATUS_MSG})"
+            echo "=================================================="
+            exit 1
+          fi
