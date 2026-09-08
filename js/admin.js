@@ -309,6 +309,27 @@ async function saveSiteName() {
 }
 
 /**
+ * 檢查並依據內容更新狀態控制公告欄顯示 (除非版主更新內容，否則已關閉者不再彈出)
+ */
+function checkAnnouncementVisibility() {
+  const bar = document.getElementById('announcement-bar');
+  if (!bar) return;
+
+  const cleanContent = (currentRawNotice || '').trim();
+  if (!cleanContent) {
+    bar.classList.add('hidden');
+    return;
+  }
+
+  const dismissedContent = localStorage.getItem('pega_dismissed_announcement_content');
+  if (dismissedContent && dismissedContent === cleanContent) {
+    bar.classList.add('hidden');
+  } else {
+    bar.classList.remove('hidden');
+  }
+}
+
+/**
  * 重新整理全站公告顯示
  */
 function refreshAnnouncementDisplay() {
@@ -325,16 +346,21 @@ function refreshAnnouncementDisplay() {
     noticeToDisplay = filteredLines.join('\n').trim();
     textSpan.innerText = noticeToDisplay + countText;
   }
+
+  checkAnnouncementVisibility();
 }
 
 /**
- * 關閉/收合全站公告欄 (並記錄至 sessionStorage 避免每次跳轉打擾使用者)
+ * 關閉/收合全站公告欄 (並以內容比對記憶至 localStorage，除非內容更新否則不再彈出)
  */
 function closeAnnouncementBar() {
   const bar = document.getElementById('announcement-bar');
   if (bar) {
     bar.classList.add('hidden');
-    sessionStorage.setItem('pega_announcement_dismissed', 'true');
+  }
+  const cleanContent = (currentRawNotice || '').trim();
+  if (cleanContent) {
+    localStorage.setItem('pega_dismissed_announcement_content', cleanContent);
   }
 }
 
@@ -354,7 +380,6 @@ async function loadAnnouncement() {
 • 與 ASUS / 和信好鄰居面交：因系統不互通，留 手機 或 LINE 聯繫最即時！`;
   const textSpan = document.getElementById('announcement-text');
   const adminInput = document.getElementById('admin-announcement-input');
-  const bar = document.getElementById('announcement-bar');
 
   const cachedNotice = localStorage.getItem('pega_custom_announcement');
   const initialNotice = cachedNotice || defaultNotice;
@@ -363,16 +388,9 @@ async function loadAnnouncement() {
   refreshAnnouncementDisplay();
 
   if (adminInput && !adminInput.value) adminInput.value = initialNotice;
-  
-  if (bar) {
-    const isDismissed = sessionStorage.getItem('pega_announcement_dismissed') === 'true';
-    if (!isDismissed) {
-      bar.classList.remove('hidden');
-    }
-  }
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000001&select=*&order=created_at.desc&limit=1`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?item_id=eq.${CONFIG_UUIDS.ANNOUNCEMENT}&select=*&order=created_at.desc&limit=1`, {
       headers: {
         'apikey': SUPABASE_KEY,
         'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -536,10 +554,6 @@ async function clearAnnouncement() {
     console.error('Clear announcement error:', e); 
     showNotification(`❌ 清除失敗：${e.message}`, 'error');
   }
-}
-
-function closeAnnouncementBar() {
-  document.getElementById('announcement-bar').classList.add('hidden');
 }
 
 // -----------------------------------------------------------------------------
