@@ -548,9 +548,9 @@ function copyContactForItem(itemId) {
     priceText = isNaN(numPrice) ? `NT$ ${item.price}` : `NT$ ${numPrice.toLocaleString()}`;
   }
 
-  const siteOrigin = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
-    ? 'https://pega-exchange.netlify.app'
-    : window.location.origin;
+  const siteOrigin = (window.location.origin && !window.location.origin.includes('null'))
+    ? window.location.origin
+    : 'https://pega-market.netlify.app';
   const directLink = `${siteOrigin}/?item_id=${item.id}`;
 
   const textToCopy = `✨【好物洽詢】${fullTitle}
@@ -2237,7 +2237,8 @@ function openPostSuccessModal(itemData, pin) {
   }
 
   // 產生分享文案 (包含直達連結)
-  const shareUrl = `https://pega-exchange.netlify.app/?item_id=${itemData.id}`;
+  const currentOrigin = (window.location.origin && !window.location.origin.includes('null')) ? window.location.origin : 'https://pega-market.netlify.app';
+  const shareUrl = `${currentOrigin}/?item_id=${itemData.id}`;
   const priceDisplay = (itemData.price && itemData.price.startsWith('swap:'))
     ? `以物易物 (${itemData.price.replace('swap:', '')})`
     : ((itemData.type === 'free' || itemData.price === '0') ? '免費贈送 (0元)' : `$${itemData.price} 元`);
@@ -2295,7 +2296,8 @@ function copyPostSuccessText() {
  */
 function copyPostSuccessUrl() {
   if (!currentSuccessItem) return;
-  const shareUrl = `https://pega-exchange.netlify.app/?item_id=${currentSuccessItem.id}`;
+  const currentOrigin = (window.location.origin && !window.location.origin.includes('null')) ? window.location.origin : 'https://pega-market.netlify.app';
+  const shareUrl = `${currentOrigin}/?item_id=${currentSuccessItem.id}`;
 
   const copyViaClipboard = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
