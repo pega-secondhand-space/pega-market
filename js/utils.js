@@ -196,7 +196,7 @@ function getItemExpiration(item) {
  */
 function getCleanDescription(desc) {
   if (!desc) return '';
-  return desc.replace(/\[EXP:.*?\]/g, '').replace(/\[SOLD_AT:.*?\]/g, '').trim();
+  return desc.replace(/\[EXP:.*?\]/g, '').replace(/\[SOLD_AT:.*?\]/g, '').replace(/\[DEV_TEST\]/g, '').trim();
 }
 
 /**
@@ -423,11 +423,11 @@ function setFontSize(level, showToast = true) {
   if (!levels.includes(level)) level = 'base';
 
   const scaleMap = {
-    'sm': { scale: 0.85, rootSize: '14px' },
-    'base': { scale: 1.05, rootSize: '16px' },
-    'lg': { scale: 1.28, rootSize: '19px' },
-    'xl': { scale: 1.55, rootSize: '23px' },
-    '2xl': { scale: 1.85, rootSize: '27px' }
+    'sm': { scale: 0.88, rootSize: '15px' },
+    'base': { scale: 1.0, rootSize: '16px' },
+    'lg': { scale: 1.15, rootSize: '16px' },
+    'xl': { scale: 1.28, rootSize: '16.5px' },
+    '2xl': { scale: 1.42, rootSize: '17px' }
   };
 
   const current = scaleMap[level] || scaleMap['base'];

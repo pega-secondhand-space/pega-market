@@ -3,13 +3,15 @@
  */
 
 /**
- * 全域錯誤捕獲提示
+ * 全域錯誤防護與日誌記錄 (預設安靜記錄於 Console，僅在 ?debug=1 模式下顯示提示列)
  */
 window.onerror = function(msg, url, lineNo, columnNo, error) {
+  console.warn(`[PEGA Debug] ${msg} at line ${lineNo}`);
+  const isDebugMode = window.location.search.includes('debug=1');
   const errBox = document.getElementById('debug-error-box');
-  if (errBox) {
+  if (errBox && isDebugMode) {
     errBox.classList.remove('hidden');
-    errBox.innerHTML = `<strong>⚠️ 系統載入提示：</strong> ${escapeHtml(msg)} (Line: ${lineNo})`;
+    errBox.innerHTML = `<strong>⚠️ 系統除錯提示：</strong> ${escapeHtml(msg)} (Line: ${lineNo})`;
   }
   return false;
 };

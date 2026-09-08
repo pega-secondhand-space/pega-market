@@ -8,6 +8,14 @@ var tempEditPassword = "";
 var mobileDisplayLimit = 30;
 
 /**
+ * 判斷當前是否為本地 / 內網測試環境 (localhost, 127.0.0.1, 172.20.x, 192.168.x)
+ */
+function isLocalEnvironment() {
+  const h = window.location.hostname;
+  return h === 'localhost' || h === '127.0.0.1' || h.startsWith('172.20.') || h.startsWith('192.168.') || h.startsWith('10.') || window.location.protocol === 'file:';
+}
+
+/**
  * 渲染全站商品卡片網格與分頁控制
  */
 function renderItems() {
@@ -18,9 +26,18 @@ function renderItems() {
   if (isNaN(itemsPerPage) || itemsPerPage < 1) itemsPerPage = 40;
 
   const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+  const isLocalEnv = isLocalEnvironment();
 
   const filtered = allItems.filter(item => {
     if (item.device_id === 'SYSTEM' || (item.title && item.title.startsWith('SYSTEM_')) || (item.id && item.id.startsWith('00000000-0000-0000-0000-'))) return false;
+
+    // 🛡️ 本地測試資料自動隔離：線上正式環境 (Netlify) 自動過濾並隱藏所有本地測試貼文！
+    const isDevItem = (item.device_id && item.device_id.startsWith('DEV_')) || 
+                      (item.description && item.description.includes('[DEV_TEST]')) || 
+                      (item.title && item.title.includes('【測試】'));
+    if (!isLocalEnv && isDevItem) {
+      return false;
+    }
 
     // 已售出逾 24 小時過期檢查 (僅前端過濾顯示)
     if (isItemSold(item)) {
@@ -75,6 +92,12 @@ function renderItems() {
   const totalPages = Math.ceil(filteredTotalCount / itemsPerPage) || 1;
   if (currentPage > totalPages) currentPage = totalPages;
   if (currentPage < 1) currentPage = 1;
+
+  // 頂部導航列總筆數膠囊更新
+  const headerTotalElem = document.getElementById('header-total-items-count');
+  if (headerTotalElem) {
+    headerTotalElem.innerText = filteredTotalCount;
+  }
 
   // 分頁 UI 更新
   const pagContainer = document.getElementById('pagination-container');
@@ -236,12 +259,49 @@ function renderItems() {
     const typeShortText = item.type === 'free' ? '免費送' : item.type === 'buy' ? '想買' : item.type === 'lucky' ? '尾牙' : '想賣';
     const typeColorClass = item.type === 'free' ? 'text-emerald-400' : item.type === 'buy' ? 'text-amber-400' : item.type === 'lucky' ? 'text-rose-400' : 'text-indigo-400';
 
+    let showcaseMediaHtml = '';
+    if (photos.length <= 1) {
+      showcaseMediaHtml = `
+        <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 cursor-zoom-in group shadow-inner ${isSold ? 'grayscale contrast-90' : ''}" title="點擊放大照片">
+          <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大全圖</span>
+        </div>
+      `;
+    } else if (photos.length === 2) {
+      showcaseMediaHtml = `
+        <div class="grid grid-cols-2 gap-2 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner ${isSold ? 'grayscale contrast-90' : ''}">
+          <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
+            <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 1/2 放大</span>
+          </div>
+          <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 2 張照片">
+            <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 2/2 放大</span>
+          </div>
+        </div>
+      `;
+    } else {
+      showcaseMediaHtml = `
+        <div class="grid grid-cols-3 gap-2 aspect-[16/8] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner ${isSold ? 'grayscale contrast-90' : ''}">
+          <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
+            <img src="${photos[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">1/${photos.length}</span>
+          </div>
+          <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 2 張照片">
+            <img src="${photos[1]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">2/${photos.length}</span>
+          </div>
+          <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 2)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大照片">
+            <img src="${photos[2]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">${photos.length > 3 ? `+${photos.length - 2} 圖` : `3/${photos.length}`}</span>
+          </div>
+        </div>
+      `;
+    }
+
     // 🍎 Apple 官網階差式沉浸大卡 (Showcase Mode - 支援 5 級動態字級與售出黑白沈浸)
     const showcaseCardHtml = `
       <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-4 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left ${isSold ? 'grayscale opacity-75 contrast-90 border-2 border-gray-700 bg-gray-950/80' : 'border-2 border-amber-500/45 hover:border-amber-500/80'}">
-        <!-- 巨大金色/灰階浮水印數字 (01, 02, 03...) -->
-        <div class="step-watermark-num absolute right-2 top-0 pointer-events-none z-0 ${isSold ? 'opacity-25' : ''}">${String(idx + 1).padStart(2, '0')}</div>
-
         <div class="relative z-10 space-y-3.5">
           <!-- 頂部資訊列：階差編號徽章 + 頭像/暱稱 + 分類徽章 + 時間 + 售出打勾 -->
           <div class="flex items-center justify-between gap-2">
@@ -279,26 +339,10 @@ function renderItems() {
           </div>
 
           <!-- 滿版大圖 (點擊燈箱放大) -->
-          ${p2 ? `
-            <div class="grid grid-cols-2 gap-2 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner ${isSold ? 'grayscale contrast-90' : ''}">
-              <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
-                <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 1/2 放大</span>
-              </div>
-              <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 2 張照片">
-                <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 2/2 放大</span>
-              </div>
-            </div>
-          ` : `
-            <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 cursor-zoom-in group shadow-inner ${isSold ? 'grayscale contrast-90' : ''}" title="點擊放大照片">
-              <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
-              <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大全圖</span>
-            </div>
-          `}
+          ${showcaseMediaHtml}
 
           <!-- 底部階差標價 ＋ 一鍵複製直貼 / 售出下架倒數 (動態大字體) -->
-          <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3">
+          <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3 relative z-10">
             <div>
               <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">${isSold ? 'STATUS' : 'PRICE'}</span>
               <div class="font-black ${isSold ? 'text-gray-400 line-through' : 'bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent'} showcase-price-font">${priceDisplay}</div>
@@ -317,6 +361,9 @@ function renderItems() {
             </div>
           </div>
         </div>
+
+        <!-- 🌟 巨大沉浸金色/灰階數字 (01, 02, 03...) - 移至卡片右下底層，醒目大氣且 100% 絕不蓋到文字 -->
+        <div class="step-watermark-num absolute right-2 -bottom-2 sm:-bottom-3 pointer-events-none z-0 select-none ${isSold ? 'opacity-20' : ''}">${String(idx + 1).padStart(2, '0')}</div>
       </div>
     `;
 
@@ -339,6 +386,12 @@ function renderItems() {
             <i class="fa-solid ${isSold ? 'fa-check-double' : 'fa-check'} text-xs"></i>
           </button>
         </div>
+
+        ${photos.length > 1 ? `
+          <div class="absolute top-2 right-11 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-white/20 shadow z-10">
+            📷 ${photos.length}
+          </div>
+        ` : ''}
 
         <!-- 底部黑色漸層懸浮文字 (放寬為 line-clamp-2 讓標題更完整) -->
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-2.5 pt-10 flex flex-col justify-end pointer-events-none">
@@ -369,8 +422,8 @@ function renderItems() {
         ` : ''}
 
         <div class="relative aspect-video bg-gray-950 overflow-hidden flex items-center justify-center">
-          <img data-card-img-id="${item.id}" src="${((item.image_url || '').split('|||')[0] || '').trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop'}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover ${isSold ? '' : 'group-hover:scale-105'} transition-transform duration-300 block">
-          <div class="absolute top-2 left-2 flex gap-1">${typeBadge}</div>
+          <img data-card-img-id="${item.id}" src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover ${isSold ? '' : 'group-hover:scale-105'} transition-transform duration-300 block">
+          <div class="absolute top-2 left-2 flex gap-1 z-10">${typeBadge}</div>
           
           <!-- 已售出打勾按鈕 -->
           <div class="absolute top-2 right-2 z-20" onclick="event.stopPropagation()">
@@ -382,17 +435,17 @@ function renderItems() {
             </button>
           </div>
 
-          ${((item.image_url || '').includes('|||') && !isSold) ? `
-            <div class="absolute inset-x-1 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none px-1">
-              <button onclick="event.stopPropagation(); switchCardPhoto('${item.id}', 0)" class="pointer-events-auto bg-black/75 hover:bg-black text-white w-8 h-8 rounded-full text-xs flex items-center justify-center border border-white/20 transition active:scale-90 shadow-md">
+          ${(photos.length > 1 && !isSold) ? `
+            <div class="absolute inset-x-1 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none px-1 z-20">
+              <button onclick="event.stopPropagation(); switchCardPhoto('${item.id}', -1)" class="pointer-events-auto bg-black/75 hover:bg-black text-white w-8 h-8 rounded-full text-xs flex items-center justify-center border border-white/20 transition active:scale-90 shadow-md">
                 <i class="fa-solid fa-chevron-left"></i>
               </button>
               <button onclick="event.stopPropagation(); switchCardPhoto('${item.id}', 1)" class="pointer-events-auto bg-black/75 hover:bg-black text-white w-8 h-8 rounded-full text-xs flex items-center justify-center border border-white/20 transition active:scale-90 shadow-md">
                 <i class="fa-solid fa-chevron-right"></i>
               </button>
             </div>
-            <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-bold px-2 py-0.5 rounded border border-white/20">
-              📷 雙圖
+            <div data-card-photo-badge="${item.id}" class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-0.5 rounded border border-white/20 z-10">
+              📷 1/${photos.length}
             </div>
           ` : ''}
         </div>
@@ -429,12 +482,12 @@ function renderItems() {
 }
 
 /**
- * 雙照片卡片無限循環切換 (Looping)
+ * 多照片卡片無限循環切換 (Looping)
  */
 function switchCardPhoto(itemId, dir) {
   const item = allItems.find(i => i.id === itemId);
   if (!item || !item.image_url) return;
-  const photos = (item.image_url || '').split('|||').filter(Boolean);
+  const photos = (item.image_url || '').split('|||').map(s => s.trim()).filter(Boolean);
   if (photos.length <= 1) return;
 
   const imgElems = document.querySelectorAll(`[data-card-img-id="${itemId}"]`);
@@ -449,6 +502,11 @@ function switchCardPhoto(itemId, dir) {
     img.src = photos[nextIdx];
     img.setAttribute('data-photo-idx', nextIdx);
   });
+
+  const badgeEl = document.querySelector(`[data-card-photo-badge="${itemId}"]`);
+  if (badgeEl) {
+    badgeEl.innerText = `📷 ${nextIdx + 1}/${photos.length}`;
+  }
 }
 
 /**
@@ -501,6 +559,86 @@ function copyContactForItem(itemId) {
 🔗 專屬直達連結：${directLink}`;
 
   copyTextToClipboard(textToCopy, `📋 已複製【${fullTitle}】之完整洽詢資訊與聯絡方式！可直接貼到 Teams / LINE`);
+}
+
+/**
+ * 渲染詳情彈窗多照片畫廊 (支援 1~5 張照片互動與燈箱放大)
+ */
+function renderDetailPhotos(photos) {
+  if (!photos) return '';
+  const photosArr = (typeof photos === 'string' ? photos.split('|||') : photos).map(s => s.trim()).filter(Boolean);
+  if (photosArr.length === 0) return '';
+  
+  const photosJson = escapeJsStr(photosArr.join('|||'));
+  window.currentDetailPhotoIdx = 0;
+
+  if (photosArr.length === 1) {
+    return `
+      <div onclick="openLightboxModal('${photosJson}', 0)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
+        <img src="${photosArr[0]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-80 w-full object-contain rounded-lg">
+        <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大原圖</span>
+      </div>
+    `;
+  }
+
+  if (photosArr.length === 2) {
+    return `
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+        <div onclick="openLightboxModal('${photosJson}', 0)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
+          <img src="${photosArr[0]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (1/2)</span>
+        </div>
+        <div onclick="openLightboxModal('${photosJson}', 1)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
+          <img src="${photosArr[1]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (2/2)</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // 3~5 張照片：主預覽圖 + 底部縮圖選擇列
+  const thumbsHtml = photosArr.map((url, idx) => `
+    <div onclick="switchDetailMainPhoto(${idx}, '${photosJson}')" id="detail-thumb-${idx}" class="cursor-pointer aspect-video rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-amber-400 opacity-100 scale-105' : 'border-gray-700 opacity-60 hover:opacity-100'} transition-all flex-1 min-w-[50px] max-w-[80px] bg-black">
+      <img src="${url}" class="w-full h-full object-cover">
+    </div>
+  `).join('');
+
+  return `
+    <div class="space-y-2.5 w-full">
+      <div id="detail-main-photo-box" onclick="openLightboxModal('${photosJson}', window.currentDetailPhotoIdx || 0)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
+        <img id="detail-main-photo-img" src="${photosArr[0]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
+        <span id="detail-main-photo-badge" class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 flex items-center gap-1 shadow">
+          <i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (1/${photosArr.length})
+        </span>
+      </div>
+      <div class="flex items-center justify-center gap-2 pt-1 overflow-x-auto">
+        ${thumbsHtml}
+      </div>
+    </div>
+  `;
+}
+
+function switchDetailMainPhoto(idx, photosStr) {
+  window.currentDetailPhotoIdx = idx;
+  const photos = photosStr.split('|||');
+  const mainImg = document.getElementById('detail-main-photo-img');
+  const badge = document.getElementById('detail-main-photo-badge');
+  if (mainImg && photos[idx]) {
+    mainImg.src = photos[idx];
+  }
+  if (badge) {
+    badge.innerHTML = `<i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (${idx + 1}/${photos.length})`;
+  }
+  photos.forEach((_, i) => {
+    const thumb = document.getElementById('detail-thumb-' + i);
+    if (thumb) {
+      if (i === idx) {
+        thumb.className = "cursor-pointer aspect-video rounded-xl overflow-hidden border-2 border-amber-400 opacity-100 scale-105 transition-all flex-1 min-w-[50px] max-w-[80px] bg-black";
+      } else {
+        thumb.className = "cursor-pointer aspect-video rounded-xl overflow-hidden border-2 border-gray-700 opacity-60 hover:opacity-100 transition-all flex-1 min-w-[50px] max-w-[80px] bg-black";
+      }
+    }
+  });
 }
 
 /**
@@ -557,31 +695,8 @@ function openDetailModal(itemId) {
 
   // 100% 完整照片不裁切呈現 (object-contain)
   if (photosContainer) {
-    const photos = (item.image_url || '').split('|||');
-    const p1 = photos[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';
-    const p2 = photos[1] || item.image_url2 || '';
-
-    if (p2) {
-      photosContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden bg-gray-950/90 border border-gray-700/60 p-2";
-      photosContainer.innerHTML = `
-        <div onclick="openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
-          <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
-          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (1/2)</span>
-        </div>
-        <div onclick="openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
-          <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
-          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (2/2)</span>
-        </div>
-      `;
-    } else {
-      photosContainer.className = "grid grid-cols-1 gap-3 rounded-2xl overflow-hidden bg-gray-950/90 border border-gray-700/60 p-2";
-      photosContainer.innerHTML = `
-        <div onclick="openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="bg-black/90 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
-          <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-80 w-full object-contain rounded-lg">
-          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大原圖</span>
-        </div>
-      `;
-    }
+    photosContainer.className = "rounded-2xl overflow-hidden bg-gray-950/90 border border-gray-700/60 p-2 shadow-inner";
+    photosContainer.innerHTML = renderDetailPhotos(item.image_url);
   }
 
   // 發布者/版主管理區塊
@@ -846,27 +961,408 @@ function hideCreateError() {
   if (errorBox) errorBox.classList.add('hidden');
 }
 
+var wizardCurrentStep = 1;
+var wizardPhotos = ['', '', '', '', ''];
+var aiRegenCounter = 0;
+const LUCKY_DEFAULT_COVER = 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop';
+const WIZARD_STEP_TITLES = [
+  '好物資訊 ＆ 一句話 AI 擬稿',
+  '照片上傳 ＆ 價格設定',
+  '聯絡方式 ＆ 密碼確認 ➔ 立即發布'
+];
+
 /**
- * 開啟刊登貼文彈窗 (支援記憶資訊與 4 位數自刪密碼預設)
+ * 設定並切換刊登精靈步驟 (Step 1~3 沉浸式零滾動)
+ */
+function setWizardStep(step) {
+  if (step < 1) step = 1;
+  if (step > 3) step = 3;
+  wizardCurrentStep = step;
+
+  const pct = (step / 3) * 100;
+  const bar = document.getElementById('wizard-progress-bar');
+  if (bar) bar.style.width = `${pct}%`;
+
+  const stepBadge = document.getElementById('wizard-step-badge');
+  if (stepBadge) stepBadge.innerText = `STEP ${step} / 3`;
+
+  const stepTitle = document.getElementById('wizard-step-title');
+  if (stepTitle) stepTitle.innerText = WIZARD_STEP_TITLES[step - 1];
+
+  for (let i = 1; i <= 3; i++) {
+    const stepEl = document.getElementById(`wizard-step-${i}`);
+    if (stepEl) {
+      if (i === step) stepEl.classList.remove('hidden');
+      else stepEl.classList.add('hidden');
+    }
+  }
+
+  const prevBtn = document.getElementById('wizard-prev-btn');
+  const nextBtn = document.getElementById('wizard-next-btn');
+  const submitBtn = document.getElementById('submit-create-btn');
+
+  if (prevBtn) {
+    if (step === 1) prevBtn.classList.add('hidden');
+    else prevBtn.classList.remove('hidden');
+  }
+
+  if (nextBtn) {
+    if (step < 3) nextBtn.classList.remove('hidden');
+    else nextBtn.classList.add('hidden');
+  }
+
+  if (submitBtn) {
+    if (step === 3) submitBtn.classList.remove('hidden');
+    else submitBtn.classList.add('hidden');
+  }
+
+  hideCreateError();
+}
+
+/**
+ * 刊登精靈下一步 (嚴格驗證當前步驟)
+ */
+function wizardNextStep() {
+  if (wizardCurrentStep === 1) {
+    const titleInput = document.getElementById('post-title');
+    const title = (titleInput?.value || '').trim();
+    if (!title) {
+      if (titleInput) {
+        titleInput.classList.add('border-rose-500');
+        titleInput.focus();
+      }
+      showCreateError('⚠️ 步驟 1 未完成：請填寫物品名稱/標題 (或在上方輸入關鍵字點選 ✨ AI 擬稿)！');
+      return;
+    }
+    if (titleInput) titleInput.classList.remove('border-rose-500');
+    setWizardStep(2);
+  } else if (wizardCurrentStep === 2) {
+    const count = wizardPhotos.filter(Boolean).length;
+    if (count === 0) {
+      showCreateError('⚠️ 步驟 2 未完成：請至少上傳 1 張照片 (或勾選上方尾牙獎品預設封面)！');
+      return;
+    }
+    const isSwap = document.getElementById('post-swap-check')?.checked;
+    if (isSwap) {
+      const swapItem = (document.getElementById('post-swap-item')?.value || '').trim();
+      if (!swapItem) {
+        showCreateError('⚠️ 步驟 2 未完成：請填寫您想換的物品清單！');
+        return;
+      }
+    }
+    setWizardStep(3);
+  }
+}
+
+/**
+ * 刊登精靈上一步
+ */
+function wizardPrevStep() {
+  if (wizardCurrentStep > 1) {
+    setWizardStep(wizardCurrentStep - 1);
+  }
+}
+
+/**
+ * ✨ AI 一句話快速解析生成草稿
+ */
+function runAiQuickDraft() {
+  const inputEl = document.getElementById('ai-quick-input');
+  const rawInput = (inputEl?.value || '').trim();
+
+  if (!rawInput) {
+    showNotification('💡 請在輸入框輸入關鍵字 (例如：黑色滑鼠 或 尾牙抽到AirPods 賣5500 分機45555)', 'warning');
+    if (inputEl) inputEl.focus();
+    return;
+  }
+
+  let text = rawInput;
+
+  // 1. 智慧偵測交易類型
+  let detectedType = 'sell';
+  if (/尾牙|抽到|抽中|獎品|年會|中獎/i.test(text)) {
+    detectedType = 'lucky';
+  } else if (/送|免費|愛心|結緣|0元|贈送/i.test(text)) {
+    detectedType = 'free';
+  } else if (/徵|求購|想買|收|徵求/i.test(text)) {
+    detectedType = 'buy';
+  }
+  setPostType(detectedType);
+
+  // 2. 智慧偵測金額
+  if (detectedType === 'free') {
+    const priceInput = document.getElementById('post-price');
+    if (priceInput) priceInput.value = '0';
+  } else {
+    const priceMatch = text.match(/(?:賣|售|預算|NT\$?|\$|價錢|價格)\s*[:：]?\s*([0-9,]+)/i) ||
+                       text.match(/(?:^|\s)([0-9]{3,6})(?:元|\s|$)/);
+    if (priceMatch) {
+      const p = priceMatch[1].replace(/,/g, '');
+      const priceInput = document.getElementById('post-price');
+      if (priceInput) priceInput.value = p;
+    }
+  }
+
+  // 3. 智慧偵測聯絡資訊
+  const extMatch = text.match(/(?:分機|ext\.?)\s*[:：]?\s*([0-9]{4,6})/i);
+  const teamsMatch = text.match(/(?:Teams|teams)\s*[:：]?\s*([a-zA-Z0-9_.-]+)/i);
+  const phoneMatch = text.match(/(?:手機|電話|LINE|line)\s*[:：]?\s*([0-9a-zA-Z_-]+)/i);
+
+  let detectedContact = '';
+  if (extMatch) detectedContact = `分機: ${extMatch[1]}`;
+  else if (teamsMatch) detectedContact = `Teams: ${teamsMatch[1]}`;
+  else if (phoneMatch) detectedContact = `LINE/手機: ${phoneMatch[1]}`;
+
+  if (detectedContact) {
+    const contactInput = document.getElementById('post-contact');
+    if (contactInput) contactInput.value = detectedContact;
+  }
+
+  // 4. 清理商品核心名稱
+  let cleanName = text
+    .replace(/(?:賣|售|預算|NT\$?|\$|價錢|價格)\s*[:：]?\s*[0-9,]+元?/gi, '')
+    .replace(/(?:分機|ext\.?)\s*[:：]?\s*[0-9]{4,6}/gi, '')
+    .replace(/(?:Teams|teams)\s*[:：]?\s*[a-zA-Z0-9_.-]+/gi, '')
+    .replace(/(?:手機|電話|LINE|line)\s*[:：]?\s*[0-9a-zA-Z_-]+/gi, '')
+    .replace(/尾牙抽到|尾牙抽中|抽中|抽到|全新|愛心|免費送|免費|我想買|想買|求購|徵求/g, '')
+    .trim();
+
+  if (!cleanName) cleanName = rawInput.trim();
+
+  // 5. 智慧包裝標題與條列式規格描述
+  let titlePrefix = detectedType === 'lucky' ? '【尾牙全新未拆】' :
+                    detectedType === 'free' ? '【愛心結緣 0元免費】' :
+                    detectedType === 'buy' ? '【誠意求購】' : '【優質出清】';
+
+  let refinedTitle = `${titlePrefix}${cleanName}`;
+  
+  let descBullets = [];
+  if (detectedType === 'lucky') {
+    descBullets.push(`【物品狀態】公司尾牙抽中，全新原廠封膜完整未拆！`);
+    descBullets.push(`【規格配件】附原廠完整盒裝與配件，未拆封新品。`);
+    descBullets.push(`【面交地點】關渡園區 / 立德路同仁可當面點交。`);
+  } else if (detectedType === 'free') {
+    descBullets.push(`【物品狀態】外觀良好整潔，功能正常，免費分享結緣給有需要的同仁！`);
+    descBullets.push(`【面交地點】立德路 / 關渡園區自取。`);
+  } else if (detectedType === 'buy') {
+    descBullets.push(`【徵求說明】誠徵「${cleanName}」，外觀功能良好無故障佳。`);
+    descBullets.push(`【面交地點】關渡園區 / 立德路可配合面交點收。`);
+  } else {
+    descBullets.push(`【物品狀態】少用如新，功能完全正常，外觀乾淨。`);
+    descBullets.push(`【規格特色】實用好物，適合居家或辦公使用。`);
+    descBullets.push(`【面交地點】關渡園區 / 立德路同仁可當面測試點交。`);
+  }
+
+  const titleInput = document.getElementById('post-title');
+  if (titleInput) titleInput.value = refinedTitle;
+
+  const descInput = document.getElementById('post-desc');
+  if (descInput) descInput.value = descBullets.join('\n');
+
+  // 若為尾牙且尚未選照片，自動幫忙勾選預設尾牙禮盒封面
+  if (detectedType === 'lucky' && wizardPhotos.filter(Boolean).length === 0) {
+    toggleLuckyDefaultCover(true);
+  }
+
+  showNotification('✨ AI 已為您快速解析並生成草稿！', 'success');
+}
+
+/**
+ * 🔄 換個寫法 (切換不同風格文案)
+ */
+function runAiRegenerate() {
+  const titleInput = document.getElementById('post-title');
+  const descInput = document.getElementById('post-desc');
+  if (!titleInput || !descInput) return;
+
+  const rawTitle = titleInput.value.replace(/^【.*?】\s*/, '').trim() || '好物';
+  aiRegenCounter = (aiRegenCounter + 1) % 3;
+
+  if (aiRegenCounter === 0) {
+    titleInput.value = `【出清如新】${rawTitle}`;
+    descInput.value = `【狀態】少用功能一切正常，外觀保養良好。\n【交貨】關渡園區 / 立德路可面交自取。`;
+    showNotification('🔄 已切換為【極簡俐落風】文案！', 'info');
+  } else if (aiRegenCounter === 1) {
+    titleInput.value = `【超值推薦】${rawTitle} (附配件/功能完好)`;
+    descInput.value = `【物品來源】個人升級換下，平時愛惜使用。\n【物品成色】外觀約 9 成新，功能按鍵測試皆正常。\n【配件說明】附完整盒裝與配件。\n【面交地點】關渡園區 / 立德路同仁可約面交點收。`;
+    showNotification('🔄 已切換為【誠意詳盡風】文案！', 'info');
+  } else {
+    titleInput.value = `【優質良品】${rawTitle}`;
+    descInput.value = `【規格特色】辦公/居家實用必備，隨插即用。\n【功能檢驗】功能 100% 正常無待修。\n【面交取件】立德路園區皆可當面交貨確認。`;
+    showNotification('🔄 已切換為【規格條列風】文案！', 'info');
+  }
+}
+
+/**
+ * 🗑️ 一鍵清空標題與描述草稿
+ */
+function clearAiDraft() {
+  const inputEl = document.getElementById('ai-quick-input');
+  const titleInput = document.getElementById('post-title');
+  const descInput = document.getElementById('post-desc');
+  if (inputEl) inputEl.value = '';
+  if (titleInput) titleInput.value = '';
+  if (descInput) descInput.value = '';
+  showNotification('🗑️ 已一鍵清空標題與描述草稿！', 'info');
+}
+
+/**
+ * 快捷補充字樣至描述欄
+ */
+function appendTagToDesc(text) {
+  const descEl = document.getElementById('post-desc');
+  if (!descEl) return;
+  const cur = descEl.value.trim();
+  if (cur.includes(text)) {
+    showNotification('💡 此標籤已在描述中', 'info');
+    return;
+  }
+  if (cur) {
+    descEl.value = cur + '\n' + text;
+  } else {
+    descEl.value = text;
+  }
+  showNotification(`➕ 已加入：${text}`, 'success');
+}
+
+/**
+ * 聯絡方式前綴快捷填入
+ */
+function fillContactPrefix(prefix) {
+  const input = document.getElementById('post-contact');
+  if (!input) return;
+  let cur = input.value.replace(/^(分機: |Teams: |LINE \/ 手機: )/, '').trim();
+  input.value = prefix + cur;
+  input.focus();
+}
+
+/**
+ * 處理 5 格照片選取、壓縮與上傳
+ */
+async function handleWizardImageSelect(slotIdx, event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  showNotification(`⏳ 照片 ${slotIdx + 1} 壓縮上傳中...`, 'info');
+
+  try {
+    const publicUrl = await compressAndUploadImage(file);
+    wizardPhotos[slotIdx] = publicUrl;
+    updateWizardPhotoUI();
+    showNotification(`🎉 照片 ${slotIdx + 1} 上傳成功！`, 'success');
+  } catch (e) {
+    console.error('Image upload error:', e);
+    showNotification(`⚠️ 照片 ${slotIdx + 1} 上傳失敗，請稍後再試：` + e.message, 'warning');
+  }
+}
+
+/**
+ * 移除指定格數照片 (自動向前遞補)
+ */
+function removeWizardPhoto(slotIdx) {
+  wizardPhotos[slotIdx] = '';
+  const compacted = wizardPhotos.filter(Boolean);
+  while (compacted.length < 5) compacted.push('');
+  wizardPhotos = compacted;
+
+  for (let i = 1; i <= 5; i++) {
+    const fileInput = document.getElementById(`upload-file-slot-${i}`);
+    if (fileInput) fileInput.value = '';
+  }
+
+  updateWizardPhotoUI();
+  showNotification(`🗑️ 已移除照片！`, 'info');
+}
+
+/**
+ * 尾牙大獎預設禮盒封面切換
+ */
+function toggleLuckyDefaultCover(checked) {
+  if (checked) {
+    if (!wizardPhotos[0] || wizardPhotos[0] !== LUCKY_DEFAULT_COVER) {
+      wizardPhotos[0] = LUCKY_DEFAULT_COVER;
+    }
+    showNotification('🎁 已套用【尾牙大獎禮品盒】質感預設封面！', 'success');
+  } else {
+    if (wizardPhotos[0] === LUCKY_DEFAULT_COVER) {
+      removeWizardPhoto(0);
+    }
+  }
+  updateWizardPhotoUI();
+}
+
+/**
+ * 同步更新 5 格照片預覽 UI
+ */
+function updateWizardPhotoUI() {
+  for (let i = 0; i < 5; i++) {
+    const slotEl = document.getElementById(`photo-slot-${i + 1}`);
+    const imgEl = document.getElementById(`photo-img-${i}`);
+    const delBtn = document.getElementById(`photo-del-${i}`);
+    const url = wizardPhotos[i];
+
+    if (url) {
+      if (imgEl) {
+        imgEl.src = url;
+        imgEl.classList.remove('hidden');
+      }
+      if (delBtn) delBtn.classList.remove('hidden');
+      if (slotEl) {
+        slotEl.classList.remove('border-dashed', 'border-gray-700', 'border-amber-500/60');
+        slotEl.classList.add('border-solid', 'border-amber-400');
+      }
+    } else {
+      if (imgEl) {
+        imgEl.src = '';
+        imgEl.classList.add('hidden');
+      }
+      if (delBtn) delBtn.classList.add('hidden');
+      if (slotEl) {
+        slotEl.classList.remove('border-solid', 'border-amber-400');
+        slotEl.classList.add('border-dashed', i === 0 ? 'border-amber-500/60' : 'border-gray-700');
+      }
+    }
+  }
+
+  const count = wizardPhotos.filter(Boolean).length;
+  const badge = document.getElementById('photo-count-badge');
+  if (badge) badge.innerText = `${count} / 5 張`;
+
+  const luckyCheck = document.getElementById('lucky-gift-cover-check');
+  if (luckyCheck) luckyCheck.checked = (wizardPhotos[0] === LUCKY_DEFAULT_COVER);
+}
+
+/**
+ * 開啟刊登貼文彈窗 (初始化 4-Step 精靈)
  */
 function openCreateModal() {
   if (typeof closeAllModals === 'function') closeAllModals();
   editingItemId = null;
   tempEditPassword = "";
 
-  document.getElementById('post-title').value = "";
+  const titleInput = document.getElementById('post-title');
+  if (titleInput) titleInput.value = "";
   
+  const aiInput = document.getElementById('ai-quick-input');
+  if (aiInput) aiInput.value = "";
+
   // 自動記憶並載入常用聯絡資訊與暱稱
   const savedContact = localStorage.getItem('pega_user_contact') || "";
-  document.getElementById('post-contact').value = savedContact;
+  const contactInput = document.getElementById('post-contact');
+  if (contactInput) contactInput.value = savedContact;
 
   const savedNickname = localStorage.getItem('pega_user_nickname') || "";
   const nickInput = document.getElementById('post-nickname');
   if (nickInput) nickInput.value = savedNickname;
 
-  document.getElementById('post-desc').value = "";
-  document.getElementById('post-price').value = "";
-  document.getElementById('post-swap-item').value = "";
+  const descInput = document.getElementById('post-desc');
+  if (descInput) descInput.value = "";
+
+  const priceInput = document.getElementById('post-price');
+  if (priceInput) priceInput.value = "";
+
+  const swapItemInput = document.getElementById('post-swap-item');
+  if (swapItemInput) swapItemInput.value = "";
   
   const swapCheckbox = document.getElementById('post-swap-check');
   if (swapCheckbox) {
@@ -874,31 +1370,31 @@ function openCreateModal() {
     toggleSwapMode(false);
   }
 
-  document.getElementById('item-expiration').value = "none";
+  const expSelect = document.getElementById('item-expiration');
+  if (expSelect) expSelect.value = "none";
   
-  document.getElementById('post-img1-url').value = "";
-  document.getElementById('post-img2-url').value = "";
-  
-  const preview1 = document.getElementById('preview-box-1');
-  const preview2 = document.getElementById('preview-box-2');
-  const previewsGrid = document.getElementById('upload-previews-grid');
-  if (preview1) preview1.classList.add('hidden');
-  if (preview2) preview2.classList.add('hidden');
-  if (previewsGrid) previewsGrid.classList.add('hidden');
-  
-  document.getElementById('file1-status').innerText = '點擊選圖或拍照';
-  document.getElementById('file2-status').innerText = '點擊補充第二張';
+  wizardPhotos = ['', '', '', '', ''];
+  for (let i = 1; i <= 5; i++) {
+    const fileInput = document.getElementById(`upload-file-slot-${i}`);
+    if (fileInput) fileInput.value = '';
+  }
 
+  const luckyCheck = document.getElementById('lucky-gift-cover-check');
+  if (luckyCheck) luckyCheck.checked = false;
+
+  updateWizardPhotoUI();
   setPostType('sell');
 
   const randPwd = Math.floor(1000 + Math.random() * 9000).toString();
-  document.getElementById('post-edit-password').value = randPwd;
+  const pwdInput = document.getElementById('post-edit-password');
+  if (pwdInput) pwdInput.value = randPwd;
 
   const titleEl = document.querySelector('#create-modal h3');
-  if (titleEl) titleEl.innerHTML = `<span class="text-amber-400">🎁</span> 刊登好物 / 尾牙獎品`;
+  if (titleEl) titleEl.innerHTML = `<span>刊登好物 / 尾牙獎品</span>`;
   const submitBtn = document.getElementById('submit-create-btn');
   if (submitBtn) submitBtn.innerHTML = `<span>🚀 立即發布好物</span>`;
 
+  setWizardStep(1);
   hideCreateError();
   document.getElementById('create-modal').classList.remove('hidden');
 }
@@ -908,7 +1404,7 @@ function closeCreateModal() {
 }
 
 /**
- * 編輯我的貼文
+ * 編輯我的貼文 (帶入 4-Step 精靈與 5 格照片)
  */
 async function editMyItem(itemId) {
   const item = allItems.find(i => i.id === itemId);
@@ -970,10 +1466,17 @@ async function editMyItem(itemId) {
   editingItemId = itemId;
   tempEditPassword = finalPwd;
 
-  document.getElementById('post-title').value = item.title || "";
-  document.getElementById('post-contact').value = item.contact_info || "";
-  document.getElementById('post-desc').value = item.description || "";
-  document.getElementById('post-edit-password').value = finalPwd;
+  const titleInput = document.getElementById('post-title');
+  if (titleInput) titleInput.value = item.title || "";
+
+  const contactInput = document.getElementById('post-contact');
+  if (contactInput) contactInput.value = item.contact_info || "";
+
+  const descInput = document.getElementById('post-desc');
+  if (descInput) descInput.value = item.description || "";
+
+  const pwdInput = document.getElementById('post-edit-password');
+  if (pwdInput) pwdInput.value = finalPwd;
 
   setPostType(item.type);
 
@@ -983,61 +1486,41 @@ async function editMyItem(itemId) {
     swapCheckbox.checked = isBarter;
     toggleSwapMode(isBarter);
   }
+
+  const swapItemInput = document.getElementById('post-swap-item');
+  const priceInput = document.getElementById('post-price');
   if (isBarter) {
-    document.getElementById('post-swap-item').value = item.price.replace('swap:', '');
-    document.getElementById('post-price').value = "";
+    if (swapItemInput) swapItemInput.value = item.price.replace('swap:', '');
+    if (priceInput) priceInput.value = "";
   } else {
-    document.getElementById('post-price').value = item.price || "";
-    document.getElementById('post-swap-item').value = "";
+    if (priceInput) priceInput.value = item.price || "";
+    if (swapItemInput) swapItemInput.value = "";
   }
 
-  document.getElementById('item-expiration').value = "none";
+  const expSelect = document.getElementById('item-expiration');
+  if (expSelect) expSelect.value = "none";
 
-  document.getElementById('post-img1-url').value = "";
-  document.getElementById('post-img2-url').value = "";
-  
-  const preview1 = document.getElementById('preview-box-1');
-  const preview2 = document.getElementById('preview-box-2');
-  const previewImg1 = document.getElementById('preview-img-1');
-  const previewImg2 = document.getElementById('preview-img-2');
-  const previewsGrid = document.getElementById('upload-previews-grid');
-
-  if (preview1) preview1.classList.add('hidden');
-  if (preview2) preview2.classList.add('hidden');
-  if (previewsGrid) previewsGrid.classList.add('hidden');
-
+  wizardPhotos = ['', '', '', '', ''];
   if (item.image_url) {
-    const urls = item.image_url.split('|||').filter(Boolean);
-    if (urls[0]) {
-      document.getElementById('post-img1-url').value = urls[0];
-      if (previewImg1 && preview1) {
-        previewImg1.src = urls[0];
-        preview1.classList.remove('hidden');
-        if (previewsGrid) previewsGrid.classList.remove('hidden');
-      }
-      document.getElementById('file1-status').innerText = "📷 已保留原有照片 1";
-    }
-    if (urls[1]) {
-      document.getElementById('post-img2-url').value = urls[1];
-      if (previewImg2 && preview2) {
-        previewImg2.src = urls[1];
-        preview2.classList.remove('hidden');
-        if (previewsGrid) previewsGrid.classList.remove('hidden');
-      }
-      document.getElementById('file2-status').innerText = "📷 已保留原有照片 2";
-    }
+    const urls = item.image_url.split('|||').map(s => s.trim()).filter(Boolean);
+    urls.slice(0, 5).forEach((u, idx) => {
+      wizardPhotos[idx] = u;
+    });
   }
+  updateWizardPhotoUI();
 
   const modalTitle = document.querySelector('#create-modal h3');
-  if (modalTitle) modalTitle.innerHTML = `<span class="text-amber-400">✏️</span> 修改好物貼文`;
+  if (modalTitle) modalTitle.innerHTML = `<span>修改好物貼文</span>`;
   const submitBtnEl = document.getElementById('submit-create-btn');
   if (submitBtnEl) submitBtnEl.innerHTML = `<span>💾 儲存修改</span>`;
 
+  setWizardStep(1);
+  hideCreateError();
   document.getElementById('create-modal').classList.remove('hidden');
 }
 
 /**
- * 提交發布或更新貼文
+ * 提交發布或更新貼文 (嚴格 4-Step 驗證 ＆ 5 張照片整合)
  */
 async function submitCreateItem() {
   const errorBox = document.getElementById('create-modal-error');
@@ -1063,44 +1546,47 @@ async function submitCreateItem() {
   const contact = (contactInput?.value || '').trim();
   const nicknameInput = document.getElementById('post-nickname');
   const nicknameVal = (nicknameInput?.value || '').trim() || myNickname || '匿名同仁';
-  const imgUrl1 = (document.getElementById('post-img1-url')?.value || '').trim();
-  const imgUrl2 = (document.getElementById('post-img2-url')?.value || '').trim();
   const expDays = document.getElementById('item-expiration')?.value || 'none';
   const editPasswordVal = (document.getElementById('post-edit-password')?.value || '').trim();
 
-  // 1. 檢查物品標題 (步驟 2)
+  // 1. 檢查物品標題 (步驟 1)
   if (!title) {
+    setWizardStep(1);
     if (titleInput) {
       titleInput.classList.add('border-rose-500');
       titleInput.focus();
     }
-    showCreateError('⚠️ 步驟 2 未完成：請填寫物品名稱/標題！');
+    showCreateError('⚠️ 步驟 1 未完成：請填寫物品名稱/標題！');
     return;
   } else if (titleInput) {
     titleInput.classList.remove('border-rose-500');
   }
 
-  // 2. 檢查照片上傳 (步驟 3 建議至少 1 張)
-  if (!imgUrl1) {
-    showCreateError('⚠️ 步驟 3 未完成：請至少選擇並上傳 1 張物品照片！');
+  // 2. 檢查照片上傳 (步驟 2 至少 1 張)
+  const validPhotos = wizardPhotos.filter(Boolean);
+  if (validPhotos.length === 0) {
+    setWizardStep(2);
+    showCreateError('⚠️ 步驟 2 未完成：請至少選擇並上傳 1 張物品照片 (或勾選尾牙獎品預設圖)！');
     return;
   }
 
-  // 3. 檢查聯絡方式 (步驟 4 必填)
+  // 3. 檢查聯絡方式 (步驟 3 必填)
   if (!contact) {
+    setWizardStep(3);
     if (contactInput) {
       contactInput.classList.add('border-rose-500');
       contactInput.focus();
     }
-    showCreateError('⚠️ 步驟 4 未完成：請填寫聯絡方式 (例如：Teams / 分機 8888 / LINE)！');
+    showCreateError('⚠️ 步驟 3 未完成：請填寫聯絡方式 (例如：Teams / 分機 8888 / LINE)！');
     return;
   } else if (contactInput) {
     contactInput.classList.remove('border-rose-500');
   }
 
-  // 4. 檢查編輯密碼 (步驟 4 必填)
+  // 4. 檢查編輯密碼 (步驟 3 必填)
   if (!editPasswordVal) {
-    showCreateError('⚠️ 步驟 4 未完成：請輸入自刪管理密碼，以防未來更換裝置無法下架！');
+    setWizardStep(3);
+    showCreateError('⚠️ 步驟 3 未完成：請輸入自刪管理密碼，以防未來更換裝置無法下架！');
     return;
   }
 
@@ -1113,13 +1599,17 @@ async function submitCreateItem() {
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 處理中...';
   }
 
-  const finalImgUrl = imgUrl2 ? `${imgUrl1}|||${imgUrl2}` : imgUrl1;
+  const finalImgUrl = validPhotos.join('|||');
 
+  const isLocal = isLocalEnvironment();
   let finalDesc = desc;
   if (expDays !== 'none' && !editingItemId) {
     const d = new Date();
     d.setDate(d.getDate() + parseInt(expDays, 10));
     finalDesc = `${desc}\n[EXP:${d.toISOString()}]`;
+  }
+  if (isLocal && !editingItemId) {
+    finalDesc = `${finalDesc}\n[DEV_TEST]`;
   }
 
   try {
@@ -1165,7 +1655,8 @@ async function submitCreateItem() {
         showCreateError('⚠️ 修改發生錯誤：' + (err.message || '伺服器拒絕更新'));
       }
     } else {
-      // INSERT 模式
+      // INSERT 模式 (本地端自動標記 DEV_ 設備代號)
+      const devIdToUse = isLocal ? (myDeviceId.startsWith('DEV_') ? myDeviceId : 'DEV_' + myDeviceId) : myDeviceId;
       const payload = {
         title: title,
         description: finalDesc,
@@ -1173,7 +1664,7 @@ async function submitCreateItem() {
         type: postType,
         image_url: finalImgUrl,
         nickname: nicknameVal,
-        device_id: myDeviceId,
+        device_id: devIdToUse,
         contact_info: contact,
         edit_password: editPasswordVal
       };
@@ -1205,35 +1696,8 @@ async function submitCreateItem() {
           localStorage.setItem('pega_my_post_passwords', JSON.stringify(myPasswords));
         }
 
-        showNotification('🎉 刊登成功！貼文已排在第一位展示。', 'success');
+        showNotification(isLocal ? '🎉 刊登成功！(🛡️ 本地隔離測試模式：公網已自動隱藏)' : '🎉 刊登成功！貼文已排在第一位展示。', 'success');
         closeCreateModal();
-        
-        if (titleInput) titleInput.value = '';
-        const descInput = document.getElementById('post-desc');
-        if (descInput) descInput.value = '';
-        const priceInput = document.getElementById('post-price');
-        if (priceInput) priceInput.value = '';
-        if (contactInput) contactInput.value = '';
-        const swapCheck = document.getElementById('post-swap-check');
-        if (swapCheck) {
-          swapCheck.checked = false;
-          toggleSwapMode(false);
-        }
-        const swapInput = document.getElementById('post-swap-item');
-        if (swapInput) swapInput.value = '';
-        
-        const hidden1 = document.getElementById('post-img1-url');
-        if (hidden1) hidden1.value = '';
-        const hidden2 = document.getElementById('post-img2-url');
-        if (hidden2) hidden2.value = '';
-
-        const status1 = document.getElementById('file1-status');
-        if (status1) status1.innerText = '點擊上傳圖檔';
-        const status2 = document.getElementById('file2-status');
-        if (status2) status2.innerText = '點擊上傳第二張';
-
-        const previewsGrid = document.getElementById('upload-previews-grid');
-        if (previewsGrid) previewsGrid.classList.add('hidden');
 
         // 自動切換至全部好物分類與第一頁，清除搜尋過濾
         currentFilter = 'all';
@@ -1281,7 +1745,7 @@ async function submitCreateItem() {
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.innerText = editingItemId ? '💾 儲存修改' : '🎉 發布貼文';
+      submitBtn.innerText = editingItemId ? '💾 儲存修改' : '🚀 立即發布好物';
     }
   }
 }
@@ -1502,10 +1966,23 @@ function initDetailModalGestures() {
 }
 
 /**
- * 📖 新手圖文使用指南彈窗邏輯
+ * 📖 新手圖文使用指南彈窗邏輯 (互動式 5 步驟輪播彈窗)
  */
+var modalGuideCurrentStep = 1;
+var modalGuideTotalSteps = 5;
+
 function openGuideModal() {
-  window.location.href = 'guide.html';
+  if (typeof closeAllModals === 'function') {
+    closeAllModals();
+  }
+  const modal = document.getElementById('guide-modal');
+  if (modal) {
+    modalGuideCurrentStep = 1;
+    updateModalGuideUI();
+    modal.classList.remove('hidden');
+  } else {
+    window.location.href = 'guide.html';
+  }
 }
 
 function closeGuideModal() {
@@ -1579,6 +2056,30 @@ function prevModalGuideStep() {
 function finishModalGuide() {
   localStorage.setItem('pega_seen_guide', 'true');
   closeGuideModal();
+}
+
+/**
+ * 📖 新手指南彈窗內互動體驗小函式
+ */
+function demoModalSwap(item) {
+  const el = document.getElementById('demo-modal-swap-display');
+  if (el) {
+    el.innerHTML = `<i class="fa-solid fa-arrows-rotate text-xs animate-spin"></i> 換：${item}`;
+    showNotification(`🔄 已切換易物標籤為：${item}`, 'info');
+  }
+}
+
+function demoModalAiDraft() {
+  const titleEl = document.getElementById('demo-modal-ai-title');
+  const descEl = document.getElementById('demo-modal-ai-desc');
+  if (titleEl) titleEl.innerText = '【出清】Logitech MX Master 3S 無線滑鼠 (95成新)';
+  if (descEl) descEl.innerText = '【狀態】少用盒裝完整，微動靜音，功能測試完全正常。\n【面交】立德路園區可當面點交。';
+  showNotification('✨ AI 已為您解析填入標題與規格描述！', 'success');
+}
+
+function demoModalCopy() {
+  const sample = '【好物詢問】Logitech MX Master 3S - 聯絡人分機: 45555';
+  copyTextToClipboard(sample, '🎉 已成功複製聯絡資訊！可直接貼到 LINE / Teams！');
 }
 
 /**
@@ -1862,6 +2363,20 @@ window.prevLightboxPhoto = prevLightboxPhoto;
 window.initLightboxGestures = initLightboxGestures;
 window.setupMobileInfiniteScroll = setupMobileInfiniteScroll;
 window.initDetailModalGestures = initDetailModalGestures;
-
-
+window.setWizardStep = setWizardStep;
+window.wizardNextStep = wizardNextStep;
+window.wizardPrevStep = wizardPrevStep;
+window.runAiQuickDraft = runAiQuickDraft;
+window.runAiRegenerate = runAiRegenerate;
+window.clearAiDraft = clearAiDraft;
+window.appendTagToDesc = appendTagToDesc;
+window.handleWizardImageSelect = handleWizardImageSelect;
+window.removeWizardPhoto = removeWizardPhoto;
+window.toggleLuckyDefaultCover = toggleLuckyDefaultCover;
+window.fillContactPrefix = fillContactPrefix;
+window.switchDetailMainPhoto = switchDetailMainPhoto;
+window.demoModalSwap = demoModalSwap;
+window.demoModalAiDraft = demoModalAiDraft;
+window.demoModalCopy = demoModalCopy;
+window.updateModalGuideUI = updateModalGuideUI;
 

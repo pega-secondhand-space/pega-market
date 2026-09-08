@@ -38,16 +38,23 @@
       box-shadow: 0 35px 80px -15px rgba(245, 158, 11, 0.25), 0 0 50px rgba(245, 158, 11, 0.2);
     }
 
-    /* 巨大背景浮水印章節數字 (Gigantic Watermark Numbers) */
+    /* 背景浮水印章節數字 (淡雅底紋，絕不遮擋前景文字) */
     .step-watermark-num {
-      font-size: clamp(6rem, 15vw, 11rem);
+      font-size: clamp(3rem, 10vw, 6rem);
       line-height: 0.8;
       font-weight: 900;
-      background: linear-gradient(180deg, rgba(245, 158, 11, 0.2) 0%, rgba(255, 255, 255, 0.02) 100%);
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.12) 0%, rgba(255, 255, 255, 0.01) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       user-select: none;
       pointer-events: none;
+      opacity: 0.25;
+    }
+    @media (max-width: 640px) {
+      .step-watermark-num {
+        font-size: clamp(2.2rem, 8vw, 3.5rem);
+        opacity: 0.18;
+      }
     }
 
     /* 呼吸光暈與霓虹發光 */
@@ -76,21 +83,21 @@
       <!-- 階差章節快速跳轉導航 -->
       <nav class="hidden md:flex items-center gap-1.5 text-xs font-black text-gray-400">
         <a href="#step-1" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">01 分類與易物</a>
-        <a href="#step-2" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">02 刊登與密碼</a>
-        <a href="#step-3" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">03 手機與電腦排版</a>
-        <a href="#step-4" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">04 字體與搜尋</a>
-        <a href="#step-5" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">05 聯絡與下架</a>
+        <a href="#step-2" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">02 4步精靈與AI擬稿</a>
+        <a href="#step-3" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">03 5張多圖與尾牙封面</a>
+        <a href="#step-4" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">04 排版與字體搜尋</a>
+        <a href="#step-5" class="px-2.5 py-1 rounded-lg hover:text-amber-300 hover:bg-gray-900 transition">05 聯絡下架與測試隔離</a>
       </nav>
 
       <!-- 頂部右側：5 段動態字體調整 ＋ 進入交換所 -->
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-0.5 sm:gap-1 bg-gray-900/90 p-0.5 sm:p-1 rounded-xl border border-amber-500/30 shrink-0 shadow-inner">
-          <span class="text-[10px] sm:text-xs text-amber-400 font-black px-1 shrink-0">🔤 字體：</span>
-          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
-          <button onclick="setFontSize('base')" id="font-btn-base" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md" title="標準字體 (A)">A</button>
-          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
-          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
-          <button onclick="setFontSize('2xl')" id="font-btn-2xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="超大字體 (A⁺⁺⁺)">A⁺⁺⁺</button>
+          <span class="text-[9px] sm:text-xs text-amber-400 font-black px-0.5 sm:px-1 shrink-0">🔤 字體：</span>
+          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
+          <button onclick="setFontSize('base')" id="font-btn-base" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-black transition bg-amber-400 text-gray-950 shadow-md" title="標準字體 (A)">A</button>
+          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
+          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+          <button onclick="setFontSize('2xl')" id="font-btn-2xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="超大字體 (A⁺⁺⁺)">A⁺⁺⁺</button>
         </div>
 
         <a href="index.html" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/25 hover:opacity-90 active:scale-95 transition flex items-center gap-1.5 shrink-0">
@@ -122,19 +129,19 @@
       <div class="space-y-2.5 text-xs sm:text-sm text-gray-200 leading-relaxed font-medium">
         <div class="flex items-start gap-2.5">
           <span class="text-base shrink-0">🚀</span>
-          <div><strong class="text-amber-400 font-black">【刊】免登入直接上架</strong>：支援「想賣、求購、尾牙獎品、以物易物」多元模式。</div>
+          <div><strong class="text-amber-400 font-black">【刊】免登入 3 步極簡精靈</strong>：好物類型與超大描述框 ➔ 照片與定價 ➔ 聯絡與密碼，手機大框舒適好填寫！</div>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <span class="text-base shrink-0">✨</span>
+          <div><strong class="text-amber-400 font-black">【寫】一句話 AI 擬稿</strong>：隨意輸入關鍵字，AI 自動補齊標題、描述、建議價格與分類。</div>
         </div>
         <div class="flex items-start gap-2.5">
           <span class="text-base shrink-0">📞</span>
-          <div><strong class="text-amber-400 font-black">【聯】留下真實資訊</strong>：填寫分機 / Teams / 手機，加速面交撮合。</div>
+          <div><strong class="text-amber-400 font-black">【聯】記憶預填與一鍵複製</strong>：自動帶入上次分機/Teams/手機，買家一鍵複製直接貼。</div>
         </div>
         <div class="flex items-start gap-2.5">
           <span class="text-base shrink-0">🤝</span>
-          <div><strong class="text-amber-400 font-black">【結】成交順手下架</strong>：物品交接完畢請點「已售出」，保持告示牌即時性。</div>
-        </div>
-        <div class="flex items-start gap-2.5">
-          <span class="text-base shrink-0">🎁</span>
-          <div><strong class="text-amber-400 font-black">【贈】愛心免費流轉</strong>：善用免費贈送專區，傳遞辦公室人情味與物資新價值。</div>
+          <div><strong class="text-amber-400 font-black">【結】成交順手下架</strong>：物品交接完畢憑 4 位密碼點「已售出」，24h 自動轉入歷史存檔。</div>
         </div>
       </div>
       
@@ -147,10 +154,10 @@
     <!-- 階差快捷按鈕 -->
     <div class="flex flex-wrap justify-center gap-2.5 pt-2 text-xs font-bold">
       <a href="#step-1" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">01. 四大分類 & 易物</a>
-      <a href="#step-2" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">02. 刊登表單 & 密碼</a>
-      <a href="#step-3" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">03. 手機與電腦排版</a>
-      <a href="#step-4" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">04. 5 段字體與搜尋</a>
-      <a href="#step-5" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">05. 聯絡複製 & 下架</a>
+      <a href="#step-2" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">02. 4步精靈 & AI擬稿</a>
+      <a href="#step-3" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">03. 5張多圖 & 尾牙封面</a>
+      <a href="#step-4" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">04. 5段字體 & 搜尋</a>
+      <a href="#step-5" class="px-3.5 py-2 bg-gray-900/90 border border-amber-500/40 rounded-xl text-amber-300 hover:bg-amber-500/20 transition active:scale-95">05. 聯絡下架 & 測試隔離</a>
     </div>
   </section>
 
@@ -245,42 +252,188 @@
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
             <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 02</span>
-            <span>刊登與密碼說明</span>
+            <span>刊登精靈與 AI 擬稿</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">➕ 刊登表單結構 ＆ 🔑 4 位數密碼</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">填寫標題、定價與聯絡方式，設定 4 位密碼方便日後管理</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">📱 單步沉浸 3 步精靈 ＆ ✨ 一句話 AI 快速擬稿</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">告別上下翻找的繁瑣長表單！輸入一句話，AI 立即為您解析標題、分類與規格描述，第一步提供超寬敞大框！</p>
         </div>
 
+        <!-- 四大核心刊登特色 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
-            <div class="font-black text-xs text-amber-400 flex items-center gap-1">1. 基本資訊填寫</div>
-            <h3 class="font-bold text-sm text-gray-100">標題、定價與聯絡管道</h3>
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">1. 📱 單步沉浸精靈</div>
+            <h3 class="font-bold text-sm text-gray-100">大框填寫零滾動</h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              填寫清楚的物品名稱與規格。PEGA 同仁留分機或 Teams，隔壁 ASUS/和信好鄰居留手機或 LINE。
-            </p>
-          </div>
-
-          <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
-            <div class="font-black text-xs text-amber-400 flex items-center gap-1">2. 照片上傳支援</div>
-            <h3 class="font-bold text-sm text-gray-100">最多可上傳 2 張實拍照</h3>
-            <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              支援上傳 1~2 張清晰照片，系統前端智慧壓縮，手機極速秒開不耗流量。
-            </p>
-          </div>
-
-          <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
-            <div class="font-black text-xs text-amber-400 flex items-center gap-1">3. 自訂管理密碼</div>
-            <h3 class="font-bold text-sm text-gray-100">4 位數自主修改/下架金鑰</h3>
-            <p class="text-xs text-gray-400 leading-relaxed font-medium">
-              自訂 4 位密碼（如 1234）。瀏覽器自動記憶，換電腦或手機也能自主管理貼文。
+              3 步流程沉浸聚焦（1.類型標題與大描述框 ➔ 2.照片上傳與定價易物 ➔ 3.聯絡與密碼），手機填字超舒適。
             </p>
           </div>
 
           <div class="p-4 bg-gray-950/80 border border-amber-500/40 rounded-2xl space-y-1.5 shadow-lg bg-amber-500/5">
-            <div class="font-black text-xs text-amber-300 flex items-center gap-1">4. 刊登成功分享</div>
-            <h3 class="font-bold text-sm text-gray-100">一鍵複製文案 ＆ 專屬直達連結</h3>
+            <div class="font-black text-xs text-amber-300 flex items-center gap-1">2. ✨ 一句話 AI 擬稿</div>
+            <h3 class="font-bold text-sm text-gray-100">隨意口語一鍵解析</h3>
             <p class="text-xs text-gray-300 leading-relaxed font-medium">
-              發布完成自動彈出分享面板，附帶專屬直達網址，同仁點擊直接聚焦彈出該商品！
+              輸入「黑色滑鼠 95成新 1800」，點擊「AI 幫我寫」即刻自動填入標題、分類、建議價格與條列式描述！
+            </p>
+          </div>
+
+          <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">3. 🔄 換寫法 ＆ 🗑️ 清空</div>
+            <h3 class="font-bold text-sm text-gray-100">隨心調整文案風格</h3>
+            <p class="text-xs text-gray-400 leading-relaxed font-medium">
+              不喜歡 AI 生成的文字？點擊「換個寫法」輪替俐落風、詳盡風、條列風；也可「一鍵清空」自主重填。
+            </p>
+          </div>
+
+          <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">4. 🏷️ 快捷標籤補充</div>
+            <h3 class="font-bold text-sm text-gray-100">一鍵帶入常見備註</h3>
+            <p class="text-xs text-gray-400 leading-relaxed font-medium">
+              點擊「+ 尾牙全新」、「+ 95成新」、「+ 誠可小議」、「+ 限關渡面交」直接自動追加進說明內容。
+            </p>
+          </div>
+        </div>
+
+        <!-- ✨ 互動沙盒：一句話 AI 擬稿即時模擬體驗台 -->
+        <div class="p-5 bg-gradient-to-b from-gray-900/90 to-gray-950/95 border-2 border-amber-500/50 rounded-2xl space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-sm border border-amber-500/40">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-black text-gray-100 flex items-center gap-1.5">
+                  <span>✨ 一句話 AI 快速擬稿 · 線上即時體驗台</span>
+                  <span class="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/30">全新強打</span>
+                </h4>
+                <p class="text-[11px] text-gray-400 font-medium">點選下方範例或自行輸入關鍵字，點「✨ AI 幫我擬稿」查看自動解析成果：</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 快速點選範例晶片 -->
+          <div class="space-y-1.5">
+            <span class="text-xs text-gray-400 font-bold flex items-center gap-1"><i class="fa-regular fa-lightbulb text-amber-400"></i> 快速填入範例：</span>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="demoSetAiInput('黑色滑鼠 95成新 1800 分機45555')" class="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-amber-300 border border-gray-700 hover:border-amber-500/50 text-[11px] font-bold rounded-lg transition">🖱️ 黑色滑鼠 95成新 1800</button>
+              <button onclick="demoSetAiInput('尾牙抽中 AirPods Pro 全新未拆 賣5500')" class="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-rose-300 border border-gray-700 hover:border-rose-500/50 text-[11px] font-bold rounded-lg transition">🧧 尾牙抽中 AirPods Pro 全新</button>
+              <button onclick="demoSetAiInput('尾牙抽到 Switch 想換 機械鍵盤')" class="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-indigo-300 border border-gray-700 hover:border-indigo-500/50 text-[11px] font-bold rounded-lg transition">🔄 尾牙Switch 想換機械鍵盤</button>
+              <button onclick="demoSetAiInput('免費送 辦公室綠色多肉植物 自取')" class="px-2.5 py-1 bg-gray-900 hover:bg-gray-800 text-emerald-300 border border-gray-700 hover:border-emerald-500/50 text-[11px] font-bold rounded-lg transition">🎁 免費送 辦公室多肉植物</button>
+            </div>
+          </div>
+
+          <!-- 輸入框與按鈕 -->
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <input type="text" id="demo-ai-input" value="黑色滑鼠 95成新 1800 分機45555" placeholder="隨意輸入關鍵字，例如：黑色滑鼠 95成新 想賣1800 分機45555" class="flex-1 bg-gray-950 border border-amber-500/50 focus:border-amber-400 text-xs text-gray-100 rounded-xl px-3 py-2.5 outline-none font-medium transition">
+              <button onclick="demoRunAiDraft()" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-gray-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>✨ AI 幫我擬稿</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-xs pt-0.5">
+              <div class="flex gap-2">
+                <button onclick="demoRegenAiDraft()" class="px-3 py-1 bg-gray-900 hover:bg-gray-800 text-indigo-300 border border-indigo-500/40 rounded-lg font-bold text-[11px] transition active:scale-95 flex items-center gap-1">
+                  <i class="fa-solid fa-rotate"></i> <span>🔄 換個寫法 (切換風格)</span>
+                </button>
+                <button onclick="demoClearAiDraft()" class="px-3 py-1 bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-rose-400 border border-gray-700 rounded-lg font-bold text-[11px] transition active:scale-95 flex items-center gap-1">
+                  <i class="fa-regular fa-trash-can"></i> <span>🗑️ 一鍵清空</span>
+                </button>
+              </div>
+              <span class="text-[10px] text-gray-400">💡 擬稿後可隨時手動編輯或追加標籤</span>
+            </div>
+          </div>
+
+          <!-- AI 解析結果展示面板 -->
+          <div class="p-4 bg-gray-950 rounded-xl border border-gray-800 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div class="sm:col-span-2 space-y-1">
+                <span class="text-[10px] text-gray-400 font-bold">✨ 自動解析商品標題：</span>
+                <input type="text" id="demo-result-title" value="【優質出清】黑色滑鼠" class="w-full bg-gray-900 border border-gray-700 text-amber-300 text-xs font-bold rounded-lg px-3 py-2 outline-none">
+              </div>
+              <div class="space-y-1">
+                <span class="text-[10px] text-gray-400 font-bold">🎯 自動識別分類：</span>
+                <div id="demo-result-badge" class="bg-indigo-600/30 border border-indigo-500/50 text-indigo-300 text-xs font-black px-3 py-2 rounded-lg text-center">
+                  💰 想賣 (出清售出)
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div class="space-y-1">
+                <span class="text-[10px] text-gray-400 font-bold">💰 建議售價 / 易物：</span>
+                <input type="text" id="demo-result-price" value="NT$ 1,800" class="w-full bg-gray-900 border border-gray-700 text-yellow-400 text-xs font-bold rounded-lg px-3 py-2 outline-none">
+              </div>
+              <div class="space-y-1">
+                <span class="text-[10px] text-gray-400 font-bold">📞 提取聯絡資訊：</span>
+                <input type="text" id="demo-result-contact" value="公司分機: 45555" class="w-full bg-gray-900 border border-gray-700 text-emerald-300 text-xs font-bold rounded-lg px-3 py-2 outline-none">
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] text-gray-400 font-bold">📝 生成規格與特色說明：</span>
+                <!-- 快捷標籤 -->
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] text-gray-500">點擊追加：</span>
+                  <button onclick="demoAppendTag('【全新】尾牙抽中新品未拆')" class="text-[10px] text-amber-300 bg-gray-900 hover:bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700 transition">+ 尾牙全新</button>
+                  <button onclick="demoAppendTag('【成色】外觀約 95 成新')" class="text-[10px] text-amber-300 bg-gray-900 hover:bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700 transition">+ 95成新</button>
+                  <button onclick="demoAppendTag('【交貨】限立德路園區面交')" class="text-[10px] text-amber-300 bg-gray-900 hover:bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700 transition">+ 限關渡面交</button>
+                </div>
+              </div>
+              <textarea id="demo-result-desc" rows="3" class="w-full bg-gray-900 border border-gray-700 text-gray-200 text-xs font-medium rounded-lg p-2.5 outline-none leading-relaxed">【物品狀態】少用如新，功能完全正常，外觀乾淨。
+【規格特色】實用好物，適合居家或辦公使用。
+【面交地點】關渡園區 / 立德路同仁可當面測試點交。</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STEP 03 ================= -->
+    <section id="step-3" class="apple-step-card p-6 sm:p-10 relative overflow-hidden scroll-mt-20">
+      <div class="step-watermark-num absolute right-4 top-2 pointer-events-none">03</div>
+
+      <div class="relative z-10 space-y-6">
+        <div class="space-y-1">
+          <div class="text-xs font-black text-amber-400 flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 03</span>
+            <span>多圖上傳與尾牙封面</span>
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">📷 支援最多 5 張多圖 ＆ 🎁 尾牙獎品預設封面</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">支援 1~5 張照片極速壓縮上傳；尾牙沒拿到實物也能套用精美預設封面直接刊登！</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">1. 📷 最多 5 張多圖</div>
+            <h3 class="font-bold text-sm text-gray-100">多角度全方位展示</h3>
+            <p class="text-xs text-gray-400 leading-relaxed font-medium">
+              支援上傳 1~5 張清晰商品照，詳情頁提供縮圖切換與輪播，完整展示品相細節。
+            </p>
+          </div>
+
+          <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-1.5 shadow-lg">
+            <div class="font-black text-xs text-amber-400 flex items-center gap-1">2. ⚡ 前端智慧極速壓縮</div>
+            <h3 class="font-bold text-sm text-gray-100">800px 畫質好秒開</h3>
+            <p class="text-xs text-gray-400 leading-relaxed font-medium">
+              上傳照片時自動於瀏覽器端完成 Canvas 壓縮，手機上傳極速秒傳、零流量負擔。
+            </p>
+          </div>
+
+          <div class="p-4 bg-gray-950/80 border border-rose-500/40 rounded-2xl space-y-1.5 shadow-lg bg-rose-500/5">
+            <div class="font-black text-xs text-rose-300 flex items-center gap-1">3. 🎁 尾牙獎品預設封面</div>
+            <h3 class="font-bold text-sm text-gray-100">無實拍照也能先刊登</h3>
+            <p class="text-xs text-gray-300 leading-relaxed font-medium">
+              尾牙抽中但獎品尚未領到手？一鍵勾選「尾牙獎品預設封面」，即可快速發布卡位！
+            </p>
+          </div>
+
+          <div class="p-4 bg-gray-950/80 border border-amber-500/40 rounded-2xl space-y-1.5 shadow-lg bg-amber-500/5">
+            <div class="font-black text-xs text-amber-300 flex items-center gap-1">4. 🔑 4位密碼與直達連結</div>
+            <h3 class="font-bold text-sm text-gray-100">自主管理 ＆ 專屬直達</h3>
+            <p class="text-xs text-gray-300 leading-relaxed font-medium">
+              設定 4 位數密碼方便日後下架，刊登完成自動生成排版好的文案與專屬好物直達連結。
             </p>
           </div>
         </div>
@@ -359,17 +512,17 @@
       </div>
     </section>
 
-    <!-- ================= STEP 03 ================= -->
-    <section id="step-3" class="apple-step-card p-6 sm:p-10 relative overflow-hidden scroll-mt-20">
-      <div class="step-watermark-num absolute right-4 top-2 pointer-events-none">03</div>
+    <!-- ================= STEP 04 ================= -->
+    <section id="step-4" class="apple-step-card p-6 sm:p-10 relative overflow-hidden scroll-mt-20">
+      <div class="step-watermark-num absolute right-4 top-2 pointer-events-none">04</div>
 
       <div class="relative z-10 space-y-6">
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 03</span>
-            <span>版型說明</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 04</span>
+            <span>排版與字體說明</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">📱 手機與電腦排版說明</h2>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">📱 手機與電腦排版 ＆ 🔤 5 段字體調整</h2>
           <p class="text-xs sm:text-sm text-gray-300 font-medium">手機端預設「🍎 階差大卡」與「▦ 雙排方格」；電腦端預設「三排 3 卡」最佳視野</p>
         </div>
 
@@ -422,7 +575,7 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-1.5">
                   <span class="bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-[11px] px-2 py-0.5 rounded shadow">NO. 02</span>
-                  <span class="bg-rose-600 text-white font-black text-xs px-2 py-0.5 rounded-md shadow">🎁 尾牙</span>
+                  <span class="bg-rose-600 text-white font-black text-xs px-2 py-0.5 rounded-md shadow">🧧 尾牙</span>
                 </div>
                 <span class="text-[11px] text-gray-400 font-bold">25 分鐘前</span>
               </div>
@@ -446,22 +599,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= STEP 04 ================= -->
-    <section id="step-4" class="apple-step-card p-6 sm:p-10 relative overflow-hidden scroll-mt-20">
-      <div class="step-watermark-num absolute right-4 top-2 pointer-events-none">04</div>
-
-      <div class="relative z-10 space-y-6">
-        <div class="space-y-1">
-          <div class="text-xs font-black text-amber-400 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 04</span>
-            <span>字體與搜尋說明</span>
-          </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🔤 5 段字體調整 ＆ 頂部搜尋功能</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">全站支援 5 段字體大小切換，手機端可由頂部滑出搜尋列</p>
         </div>
 
         <!-- 互動沙盒：即時 5 段字體縮放台 -->
@@ -498,16 +635,16 @@
         <div class="space-y-1">
           <div class="text-xs font-black text-amber-400 flex items-center gap-2">
             <span class="px-2 py-0.5 rounded bg-amber-400 text-gray-950 font-bold">STEP 05</span>
-            <span>聯絡與管理說明</span>
+            <span>聯絡下架與安全隔離</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🤝 一鍵聯絡複製 ＆ 成交管理與下架</h2>
-          <p class="text-xs sm:text-sm text-gray-300 font-medium">點擊複製聯絡資訊，成交後可標記售出或自刪下架</p>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-100">🤝 一鍵聯絡複製、成交下架 ＆ 🛡️ 本地測試安全隔離</h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium">智慧記憶聯絡資訊免重打，成交自主下架，本地測試自動隔離公網</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-2.5 shadow-lg text-left">
             <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
-              <i class="fa-regular fa-copy text-amber-400"></i> 一鍵複製聯絡資訊
+              <i class="fa-regular fa-copy text-amber-400"></i> 1. 一鍵複製聯絡資訊
             </h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
               點擊卡片上的「聯絡複製」，會自動將「物品名稱 ＋ 刊登者聯絡方式」複製到剪貼簿，可直接貼到 LINE 或 Teams 發送。
@@ -519,7 +656,7 @@
 
           <div class="p-4 bg-gray-950/80 border border-gray-800 rounded-2xl space-y-2.5 shadow-lg text-left">
             <h3 class="font-bold text-sm text-gray-100 flex items-center gap-2">
-              <i class="fa-solid fa-handshake text-emerald-400"></i> 標記已售出與存檔
+              <i class="fa-solid fa-handshake text-emerald-400"></i> 2. 標記已售出與存檔
             </h3>
             <p class="text-xs text-gray-400 leading-relaxed font-medium">
               商品售出後點開詳情按「下架貼文 (售出/結案)」，貼文即會標記為售出（黑白灰階顯示），24 小時後系統自動將其轉入歷史成交庫，不佔用首頁版面。
@@ -527,6 +664,37 @@
             <div class="p-2 bg-gray-900 rounded-xl border border-gray-800 flex items-center justify-between text-xs font-bold">
               <span class="text-gray-400">成交狀態：</span>
               <span class="text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> ⏳ 已標記售出</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🛡️ 本地線下測試自動隔離保護機制說明卡 -->
+        <div class="p-5 bg-gradient-to-b from-gray-900/90 to-gray-950/95 border-2 border-indigo-500/40 rounded-2xl space-y-3 text-left shadow-2xl">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-sm border border-indigo-500/40 shrink-0">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-black text-gray-100 flex items-center gap-2">
+                <span>🛡️ 本地測試自動隔離保護機制 (Dev Test Isolation)</span>
+                <span class="bg-indigo-500/20 text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded border border-indigo-500/30">系統安全防護</span>
+              </h4>
+              <p class="text-[11px] text-gray-400 font-medium">保障線上環境純淨，線下測試資料絕不干擾正式公網同仁：</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
+            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800 space-y-1">
+              <div class="font-bold text-amber-300 flex items-center gap-1.5"><i class="fa-solid fa-laptop-code"></i> 本地測試自動上鎖</div>
+              <p class="text-gray-400 text-[11px] leading-relaxed">在 localhost 或內部區網測試刊登時，系統自動附加 <code>[DEV_TEST]</code> 隔離標籤。</p>
+            </div>
+            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800 space-y-1">
+              <div class="font-bold text-emerald-300 flex items-center gap-1.5"><i class="fa-solid fa-filter-circle-xmark"></i> 公網正式站自動隱藏</div>
+              <p class="text-gray-400 text-[11px] leading-relaxed">生產環境 (Netlify) 全天候自動過濾測試貼文，一般同仁完全看不見任何測試雜訊。</p>
+            </div>
+            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800 space-y-1">
+              <div class="font-bold text-indigo-300 flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> 隨時測試安心無虞</div>
+              <p class="text-gray-400 text-[11px] leading-relaxed">任何新功能線下驗證皆可隨意刊登測試，安全隔離零負擔！</p>
             </div>
           </div>
         </div>
@@ -561,7 +729,7 @@
   <!-- 頁尾 -->
   <footer class="border-t border-gray-800/80 py-8 text-center text-xs text-gray-500 space-y-2">
     <p>PEGA 二手物品匿名流通空間</p>
-    <p class="font-mono text-[11px] text-gray-600">系統版本：v2026.09.08-1415</p>
+    <p class="font-mono text-[11px] text-gray-600">系統版本：v2026.09.08-1430</p>
   </footer>
 
   <!-- 互動腳本與 Confetti 物理引擎 -->
@@ -574,7 +742,160 @@
       }
     }
 
-    // 2. 4 位 PIN 密碼輸入模擬
+    // 2. ✨ 一句話 AI 快速擬稿沙盒模擬
+    let demoAiStyleCounter = 0;
+
+    function demoSetAiInput(val) {
+      const input = document.getElementById('demo-ai-input');
+      if (input) {
+        input.value = val;
+        demoRunAiDraft();
+      }
+    }
+
+    function demoRunAiDraft() {
+      const inputEl = document.getElementById('demo-ai-input');
+      const text = (inputEl?.value || '').trim();
+      if (!text) {
+        if (typeof showNotification === 'function') {
+          showNotification('💡 請在輸入框輸入關鍵字！', 'warning');
+        } else {
+          alert('💡 請在輸入框輸入關鍵字！');
+        }
+        return;
+      }
+
+      // 類型偵測
+      let type = 'sell';
+      let badgeHtml = '<span class="text-indigo-300">💰 想賣 (出清售出)</span>';
+      let titlePrefix = '【優質出清】';
+      let price = 'NT$ 1,800';
+
+      if (/尾牙|抽到|抽中|獎品|中獎/i.test(text)) {
+        type = 'lucky';
+        badgeHtml = '<span class="text-rose-300">🧧 尾牙 (獎品交換/出售)</span>';
+        titlePrefix = '【尾牙全新未拆】';
+      } else if (/送|免費|愛心|0元|贈送/i.test(text)) {
+        type = 'free';
+        badgeHtml = '<span class="text-emerald-300">🎁 免費送 (0元分享)</span>';
+        titlePrefix = '【愛心結緣 0元免費】';
+        price = 'NT$ 0 (免費贈送)';
+      } else if (/徵|求購|想買|收/i.test(text)) {
+        type = 'buy';
+        badgeHtml = '<span class="text-amber-300">🔍 想買 (徵求求購)</span>';
+        titlePrefix = '【誠意求購】';
+      }
+
+      // 金額偵測
+      if (type !== 'free') {
+        const pMatch = text.match(/(?:賣|售|預算|NT\$?|\$|價錢|價格)\s*[:：]?\s*([0-9,]+)/i) || text.match(/(?:^|\s)([0-9]{3,6})(?:元|\s|$)/);
+        if (pMatch) {
+          price = `NT$ ${parseInt(pMatch[1].replace(/,/g, ''), 10).toLocaleString()}`;
+        }
+      }
+
+      // 聯絡偵測
+      let contact = '公司分機: 45555';
+      const extMatch = text.match(/(?:分機|ext\.?)\s*[:：]?\s*([0-9]{4,6})/i);
+      if (extMatch) contact = `公司分機: ${extMatch[1]}`;
+
+      // 物品名稱清理
+      let cleanName = text
+        .replace(/(?:賣|售|預算|NT\$?|\$|價錢|價格)\s*[:：]?\s*[0-9,]+元?/gi, '')
+        .replace(/(?:分機|ext\.?)\s*[:：]?\s*[0-9]{4,6}/gi, '')
+        .replace(/尾牙抽到|尾牙抽中|抽中|抽到|全新未拆|全新|愛心|免費送|免費|我想買|想買|求購|徵求/g, '')
+        .trim() || '好物推薦';
+
+      // 描述生成
+      let desc = '';
+      if (type === 'lucky') {
+        desc = `【物品狀態】公司尾牙抽中，全新原廠封膜完整未拆！
+【規格配件】附原廠完整盒裝與配件。
+【面交地點】關渡園區 / 立德路同仁可當面點交。`;
+      } else if (type === 'free') {
+        desc = `【物品狀態】外觀良好整潔，功能正常，免費分享給有需要的同仁！
+【面交地點】立德路 / 關渡園區自取。`;
+      } else if (type === 'buy') {
+        desc = `【徵求說明】誠徵「${cleanName}」，外觀功能良好無故障佳。
+【面交地點】關渡園區 / 立德路可配合面交點收。`;
+      } else {
+        desc = `【物品狀態】少用如新，功能完全正常，外觀乾淨。
+【規格特色】實用好物，適合居家或辦公使用。
+【面交地點】關渡園區 / 立德路同仁可當面測試點交。`;
+      }
+
+      const titleEl = document.getElementById('demo-result-title');
+      const badgeEl = document.getElementById('demo-result-badge');
+      const priceEl = document.getElementById('demo-result-price');
+      const contactEl = document.getElementById('demo-result-contact');
+      const descEl = document.getElementById('demo-result-desc');
+
+      if (titleEl) titleEl.value = `${titlePrefix}${cleanName}`;
+      if (badgeEl) badgeEl.innerHTML = badgeHtml;
+      if (priceEl) priceEl.value = price;
+      if (contactEl) contactEl.value = contact;
+      if (descEl) descEl.value = desc;
+
+      if (typeof showNotification === 'function') {
+        showNotification('✨ AI 已為您快速解析並生成草稿！', 'success');
+      }
+    }
+
+    function demoRegenAiDraft() {
+      const titleEl = document.getElementById('demo-result-title');
+      const descEl = document.getElementById('demo-result-desc');
+      if (!titleEl || !descEl) return;
+
+      const raw = titleEl.value.replace(/^【.*?】\s*/, '').trim() || '好物';
+      demoAiStyleCounter = (demoAiStyleCounter + 1) % 3;
+
+      if (demoAiStyleCounter === 0) {
+        titleEl.value = `【出清如新】${raw}`;
+        descEl.value = `【狀態】少用功能一切正常，外觀保養良好。
+【交貨】關渡園區 / 立德路可面交自取。`;
+      } else if (demoAiStyleCounter === 1) {
+        titleEl.value = `【超值推薦】${raw} (附配件/功能完好)`;
+        descEl.value = `【物品來源】個人升級換下，平時愛惜使用。
+【物品成色】外觀約 9 成新，功能按鍵測試皆正常。
+【配件說明】附完整盒裝與配件。
+【面交地點】關渡園區 / 立德路同仁可約面交點收。`;
+      } else {
+        titleEl.value = `【優質良品】${raw}`;
+        descEl.value = `【規格特色】辦公/居家實用必備，隨插即用。
+【功能檢驗】功能 100% 正常無待修。
+【面交取件】立德路園區皆可當面交貨確認。`;
+      }
+
+      if (typeof showNotification === 'function') {
+        showNotification('🔄 已為您切換不同風格之 AI 文案！', 'info');
+      }
+    }
+
+    function demoClearAiDraft() {
+      const input = document.getElementById('demo-ai-input');
+      const titleEl = document.getElementById('demo-result-title');
+      const descEl = document.getElementById('demo-result-desc');
+      if (input) input.value = '';
+      if (titleEl) titleEl.value = '';
+      if (descEl) descEl.value = '';
+      if (typeof showNotification === 'function') {
+        showNotification('🗑️ 已一鍵清空草稿！', 'info');
+      }
+    }
+
+    function demoAppendTag(tag) {
+      const descEl = document.getElementById('demo-result-desc');
+      if (!descEl) return;
+      const cur = descEl.value.trim();
+      if (cur.includes(tag)) return;
+      descEl.value = cur ? `${cur}
+${tag}` : tag;
+      if (typeof showNotification === 'function') {
+        showNotification(`➕ 已追加標籤：${tag}`, 'success');
+      }
+    }
+
+    // 3. 4 位 PIN 密碼輸入模擬
     function handlePinInput(index) {
       const p1 = document.getElementById('pin-1')?.value;
       const p2 = document.getElementById('pin-2')?.value;
@@ -599,7 +920,7 @@
       }
     }
 
-    // 3. 版型形態變形切換
+    // 4. 版型形態變形切換
     function switchDemoLayout(mode) {
       const container = document.getElementById('demo-cards-container');
       const btnMobile = document.getElementById('layout-btn-mobile');
@@ -616,7 +937,7 @@
       }
     }
 
-    // 4. 字體大小即時縮放沙盒 (聯動全站真實字體大小切換)
+    // 5. 字體大小即時縮放沙盒 (聯動全站真實字體大小切換)
     function setGuideFontSize(level) {
       if (typeof setFontSize === 'function') {
         setFontSize(level, true);
@@ -630,7 +951,7 @@
       }
     });
 
-    // 5. 一鍵聯絡複製試玩
+    // 6. 一鍵聯絡複製試玩
     function demoCopyContact() {
       const sample = '【物品詢問】Logitech MX Master 3S - 聯絡人分機: 45555';
       if (typeof copyTextToClipboard === 'function') {
@@ -641,7 +962,7 @@
       }
     }
 
-    // 5.1 刊登成功分享文案複製試玩
+    // 6.1 刊登成功分享文案複製試玩
     function demoCopyPostSuccessText() {
       const text = `✨【關渡園區 好物分享】Logitech MX Master 3S 無線滑鼠 (95成新)\n💰 價格：NT$ 1,800\n📞 聯絡方式：公司分機: 45555 / Teams: 同仁\n🔗 專屬好物直達連結：https://pega-exchange.netlify.app/?item_id=demo-mouse-id`;
       if (typeof copyTextToClipboard === 'function') {
@@ -652,7 +973,7 @@
       }
     }
 
-    // 5.2 刊登成功專屬連結複製試玩
+    // 6.2 刊登成功專屬連結複製試玩
     function demoCopyPostSuccessUrl() {
       const url = `https://pega-exchange.netlify.app/?item_id=demo-mouse-id`;
       if (typeof copyTextToClipboard === 'function') {
@@ -663,7 +984,7 @@
       }
     }
 
-    // 6. 滿版金粉粒子禮炮物理引擎 (Canvas Confetti)
+    // 7. 滿版金粉粒子禮炮物理引擎 (Canvas Confetti)
     function triggerConfettiExplosion() {
       const canvas = document.getElementById('confetti-canvas');
       if (!canvas) return;
@@ -722,7 +1043,7 @@
   <div id="toast-container" class="fixed bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"></div>
 
   <!-- 工具函式庫 (提供字體大小切換與剪貼簿複製) -->
-  <script src="js/utils.js"></script>
+  <script src="js/utils.js?v=20260908_wizard"></script>
   <script>
     // 立即執行一次確保無延遲字級套用
     if (typeof initFontSize === 'function') {
