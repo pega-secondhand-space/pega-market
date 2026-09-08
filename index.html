@@ -204,7 +204,7 @@
     <footer class="mt-12 mb-24 sm:mb-8 text-center text-[11px] text-gray-500 font-medium space-y-1 select-none">
       <p>PEGA 二手物品匿名流通空間 · 讓資源延續美好</p>
       <p class="text-[10px] text-gray-400 font-mono">
-        系統版本：<span class="text-amber-400 font-bold bg-gray-900 px-2 py-0.5 rounded-md border border-gray-800">v2026.09.08-1545</span>
+        系統版本：<span class="text-amber-400 font-bold bg-gray-900 px-2 py-0.5 rounded-md border border-gray-800">v2026.09.08-1550</span>
       </p>
     </footer>
 
@@ -368,48 +368,60 @@
         </button>
       </div>
 
-      <!-- 🌟 步驟進度條 (Progress Bar · 共 3 步) -->
+      <!-- 🌟 步驟進度條 (Progress Bar · 共 4 步) -->
       <div class="px-5 sm:px-6 py-2.5 bg-gray-950/90 border-b border-gray-800 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2">
-          <span id="wizard-step-badge" class="px-2 py-0.5 rounded-lg bg-amber-400 text-gray-950 font-black text-[10px] sm:text-xs">STEP 1 / 3</span>
-          <span id="wizard-step-title" class="text-xs sm:text-sm font-bold text-gray-200">好物資訊 ＆ 一句話 AI 擬稿</span>
+          <span id="wizard-step-badge" class="px-2 py-0.5 rounded-lg bg-amber-400 text-gray-950 font-black text-[10px] sm:text-xs">STEP 1 / 4</span>
+          <span id="wizard-step-title" class="text-xs sm:text-sm font-bold text-gray-200">好物資訊 (類型 ＆ 標題)</span>
         </div>
         <div class="w-24 sm:w-36 bg-gray-800 h-2 rounded-full overflow-hidden border border-gray-700">
-          <div id="wizard-progress-bar" class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full w-1/3 transition-all duration-300"></div>
+          <div id="wizard-progress-bar" class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full w-1/4 transition-all duration-300"></div>
         </div>
       </div>
 
       <!-- Wizard 步驟容器 (每一頁填滿，無上下滾動負擔) -->
       <div class="p-4 sm:p-6 overflow-y-auto flex-1 flex flex-col justify-between space-y-4">
         
-        <!-- ================= ❶ 步驟 1：好物類型 ＆ 標題 ＆ AI 擬稿 ＆ 超寬敞補充描述 ================= -->
-        <div id="wizard-step-1" class="wizard-step space-y-3.5 animate-fadeIn">
+        <!-- ================= ❶ 步驟 1：只要【好物基本資訊】(類型 ＆ 標題) ================= -->
+        <div id="wizard-step-1" class="wizard-step space-y-4 animate-fadeIn">
           <!-- 交易類型 (4顆大按鈕) -->
-          <div class="space-y-1.5">
-            <label class="text-xs font-black text-amber-400 flex items-center justify-between">
+          <div class="space-y-2">
+            <label class="text-xs sm:text-sm font-black text-amber-400 flex items-center justify-between">
               <span>1. 請選擇交易類型：</span>
               <span class="text-[10px] text-gray-400 font-normal">點選即可切換</span>
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-2.5 px-2 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 font-black text-xs transition flex flex-col items-center gap-0.5 shadow">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button type="button" onclick="setPostType('sell')" id="post-type-sell" class="py-3 px-2 rounded-2xl border border-amber-500 bg-amber-500/20 text-amber-300 font-black text-xs sm:text-sm transition flex flex-col items-center gap-1 shadow">
                 <span>💰 我想賣</span>
-                <span class="text-[9px] text-gray-400 font-normal">自訂出清價</span>
+                <span class="text-[10px] text-gray-400 font-normal">自訂出清價</span>
               </button>
-              <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="py-2.5 px-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs hover:border-amber-500/50 transition flex flex-col items-center gap-0.5">
+              <button type="button" onclick="setPostType('lucky')" id="post-type-lucky" class="py-3 px-2 rounded-2xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1">
                 <span>🎉 尾牙全新</span>
-                <span class="text-[9px] text-gray-400 font-normal">尾牙抽中獎品</span>
+                <span class="text-[10px] text-gray-400 font-normal">尾牙抽中獎品</span>
               </button>
-              <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-2.5 px-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs hover:border-amber-500/50 transition flex flex-col items-center gap-0.5">
+              <button type="button" onclick="setPostType('buy')" id="post-type-buy" class="py-3 px-2 rounded-2xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1">
                 <span>🔍 我想買</span>
-                <span class="text-[9px] text-gray-400 font-normal">徵求與預算</span>
+                <span class="text-[10px] text-gray-400 font-normal">徵求與預算</span>
               </button>
-              <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-2.5 px-2 rounded-xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs hover:border-amber-500/50 transition flex flex-col items-center gap-0.5">
+              <button type="button" onclick="setPostType('free')" id="post-type-free" class="py-3 px-2 rounded-2xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-xs sm:text-sm hover:border-amber-500/50 transition flex flex-col items-center gap-1">
                 <span>🎁 免費送</span>
-                <span class="text-[9px] text-gray-400 font-normal">0元愛心分享</span>
+                <span class="text-[10px] text-gray-400 font-normal">0元愛心分享</span>
               </button>
             </div>
           </div>
 
+          <!-- 標題輸入區 -->
+          <div class="space-y-1.5 pt-2">
+            <label class="text-xs sm:text-sm font-black text-gray-100 flex items-center justify-between">
+              <span>2. 物品名稱／標題 <span class="text-amber-400">*</span>：</span>
+              <span class="text-[10px] text-gray-400">必填 · 清楚好辨識</span>
+            </label>
+            <input type="text" id="post-title" placeholder="例如：【全新未拆】象印保溫杯 480ml / Switch 瑪利歐賽車" class="w-full p-3 sm:p-3.5 bg-gray-950 border-2 border-gray-700 focus:border-amber-400 rounded-2xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 font-bold shadow-inner">
+          </div>
+        </div>
+
+        <!-- ================= ❷ 步驟 2：【一句話 AI 擬稿 ＆ 💥 超大補充描述框】 ================= -->
+        <div id="wizard-step-2" class="wizard-step hidden space-y-3.5 animate-fadeIn">
           <!-- ✨ AI 一句話快速生成工具箱 -->
           <div class="p-3 bg-gradient-to-b from-indigo-950/40 to-gray-950/70 rounded-2xl border border-indigo-500/30 space-y-2">
             <div class="flex items-center justify-between">
@@ -417,7 +429,10 @@
                 <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
                 <span>貼上一句話 / 關鍵字，AI 自動幫您擬草稿：</span>
               </label>
-              <span class="text-[10px] text-indigo-400">智能極速解析</span>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="clearAiDraft()" class="text-[10px] text-gray-400 hover:text-rose-300 transition flex items-center gap-1"><i class="fa-regular fa-trash-can"></i> 清空</button>
+                <button type="button" onclick="runAiRegenerate()" class="text-[10px] text-indigo-300 hover:text-indigo-200 transition flex items-center gap-1"><i class="fa-solid fa-rotate"></i> 換寫法</button>
+              </div>
             </div>
             <div class="flex gap-2">
               <input type="text" id="ai-quick-input" onkeydown="if(event.key==='Enter'){event.preventDefault(); runAiQuickDraft();}" placeholder="例如：黑色滑鼠 或 貼上：尾牙抽到AirPods 全新賣5500 分機45555" class="flex-1 p-2.5 bg-gray-900 border border-gray-700 focus:border-indigo-400 rounded-xl text-xs text-gray-100 placeholder-gray-500 font-medium">
@@ -427,34 +442,22 @@
             </div>
           </div>
 
-          <!-- 標題輸入區 -->
-          <div class="space-y-1">
-            <div class="flex items-center justify-between mb-0.5">
-              <label class="text-xs font-black text-gray-200">2. 物品名稱/標題 <span class="text-amber-400">*</span></label>
-              <div class="flex items-center gap-2">
-                <button type="button" onclick="clearAiDraft()" class="text-[10px] text-gray-400 hover:text-rose-300 transition flex items-center gap-1"><i class="fa-regular fa-trash-can"></i> 清空</button>
-                <button type="button" onclick="runAiRegenerate()" class="text-[10px] text-indigo-300 hover:text-indigo-200 transition flex items-center gap-1"><i class="fa-solid fa-rotate"></i> 換寫法</button>
-              </div>
-            </div>
-            <input type="text" id="post-title" placeholder="例如：【全新未拆】象印保溫杯 480ml / Switch 瑪利歐賽車" class="w-full p-2.5 sm:p-3 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 font-bold shadow-inner">
-          </div>
-
-          <!-- 3. 詳細補充描述 (超寬敞舒適大輸入框，手機極好填字) -->
+          <!-- 💥 詳細補充描述 (超寬敞舒適大輸入框，手機極好填字) -->
           <div class="space-y-1.5">
-            <label class="block text-xs font-black text-gray-200">3. 詳細補充描述 (超大輸入框 · 舒適填寫)：</label>
-            <textarea id="post-desc" rows="5" placeholder="請補充物品成色、保固、配件狀態或面交地點 (如立德路大廳/星巴克)..." class="w-full p-3 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-2xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 font-medium leading-relaxed min-h-[120px] sm:min-h-[140px] resize-y shadow-inner"></textarea>
+            <label class="block text-xs font-black text-gray-200">詳細補充描述 (💥 超大輸入框 · 寬敞舒適好填寫)：</label>
+            <textarea id="post-desc" rows="6" placeholder="請補充物品成色、保固、配件狀態或面交地點 (如立德路大廳/星巴克)..." class="w-full p-3.5 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-2xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 font-medium leading-relaxed min-h-[140px] sm:min-h-[160px] resize-y shadow-inner"></textarea>
             <!-- 快捷補充標籤 -->
-            <div class="flex flex-wrap gap-1.5 pt-0.5 text-[10px]">
-              <button type="button" onclick="appendTagToDesc('【物品狀態】尾牙抽中全新未拆封。')" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-amber-300 rounded-lg border border-gray-700 font-bold transition active:scale-95">+ 尾牙全新</button>
-              <button type="button" onclick="appendTagToDesc('【物品狀態】品相約 95 成新，少用功能一切正常。')" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 font-bold transition active:scale-95">+ 95成新</button>
-              <button type="button" onclick="appendTagToDesc('【配件】附原廠盒裝與完整配件。')" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 font-bold transition active:scale-95">+ 附盒裝配件</button>
-              <button type="button" onclick="appendTagToDesc('【面交】可約關渡園區 / 立德路面交自取。')" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 font-bold transition active:scale-95">+ 立德路面交</button>
+            <div class="flex flex-wrap gap-1.5 pt-0.5">
+              <button type="button" onclick="appendTagToDesc('【物品狀態】尾牙抽中全新未拆封。')" class="desc-tag-btn px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-amber-300 rounded-xl border border-gray-700 font-bold transition active:scale-95 shadow-sm">+ 尾牙全新</button>
+              <button type="button" onclick="appendTagToDesc('【物品狀態】品相約 95 成新，少用功能一切正常。')" class="desc-tag-btn px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 font-bold transition active:scale-95 shadow-sm">+ 95成新</button>
+              <button type="button" onclick="appendTagToDesc('【配件】附原廠盒裝與完整配件。')" class="desc-tag-btn px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 font-bold transition active:scale-95 shadow-sm">+ 附盒裝配件</button>
+              <button type="button" onclick="appendTagToDesc('【面交】可約關渡園區 / 立德路面交自取。')" class="desc-tag-btn px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 font-bold transition active:scale-95 shadow-sm">+ 立德路面交</button>
             </div>
           </div>
         </div>
 
-        <!-- ================= ❷ 步驟 2：照片上傳 (1~5張) ＆ 價格 / 以物易物 (2+3 完美合一) ================= -->
-        <div id="wizard-step-2" class="wizard-step hidden space-y-4 animate-fadeIn">
+        <!-- ================= ❸ 步驟 3：【照片上傳 (1~5張) ＆ 價格 / 以物易物】 ================= -->
+        <div id="wizard-step-3" class="wizard-step hidden space-y-4 animate-fadeIn">
           <!-- 照片區域 -->
           <div class="space-y-2">
             <div class="flex items-center justify-between">
@@ -580,8 +583,8 @@
           </div>
         </div>
 
-        <!-- ================= ❸ 步驟 3：聯絡資訊 ＆ 自刪密碼 ➔ 立即發布 ================= -->
-        <div id="wizard-step-3" class="wizard-step hidden space-y-4 animate-fadeIn">
+        <!-- ================= ❹ 步驟 4：【聯絡資訊 ＆ 4 位自刪密碼 ➔ 立即發布】 ================= -->
+        <div id="wizard-step-4" class="wizard-step hidden space-y-4 animate-fadeIn">
           <!-- 隱私保護聲明 -->
           <div class="p-3 bg-indigo-950/40 border border-indigo-500/30 rounded-2xl flex items-start gap-2.5 text-xs text-indigo-200">
             <i class="fa-solid fa-user-shield text-indigo-400 text-base shrink-0 mt-0.5"></i>
@@ -1479,12 +1482,12 @@
   </div>
 
   <!-- 模組化 JavaScript 腳本 (含版本號防止快取) -->
-  <script src="js/config.js?v=20260908_1545"></script>
-  <script src="js/utils.js?v=20260908_1545"></script>
-  <script src="js/api.js?v=20260908_1545"></script>
-  <script src="js/ui.js?v=20260908_1545"></script>
-  <script src="js/admin.js?v=20260908_1545"></script>
-  <script src="js/issue-board.js?v=20260908_1545"></script>
-  <script src="js/main.js?v=20260908_1545"></script>
+  <script src="js/config.js?v=20260908_1550"></script>
+  <script src="js/utils.js?v=20260908_1550"></script>
+  <script src="js/api.js?v=20260908_1550"></script>
+  <script src="js/ui.js?v=20260908_1550"></script>
+  <script src="js/admin.js?v=20260908_1550"></script>
+  <script src="js/issue-board.js?v=20260908_1550"></script>
+  <script src="js/main.js?v=20260908_1550"></script>
 </body>
 </html>

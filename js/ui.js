@@ -966,30 +966,31 @@ var wizardPhotos = ['', '', '', '', ''];
 var aiRegenCounter = 0;
 const LUCKY_DEFAULT_COVER = 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop';
 const WIZARD_STEP_TITLES = [
-  '好物資訊 ＆ 一句話 AI 擬稿',
-  '照片上傳 ＆ 價格設定',
+  '好物基本資訊 (類型 ＆ 標題)',
+  '詳細補充描述 (AI 擬稿 ＆ 超大文字框)',
+  '照片上傳 ＆ 價格設定 (1~5張照片 ＆ 定價/易物)',
   '聯絡方式 ＆ 密碼確認 ➔ 立即發布'
 ];
 
 /**
- * 設定並切換刊登精靈步驟 (Step 1~3 沉浸式零滾動)
+ * 設定並切換刊登精靈步驟 (Step 1~4 沉浸式零滾動)
  */
 function setWizardStep(step) {
   if (step < 1) step = 1;
-  if (step > 3) step = 3;
+  if (step > 4) step = 4;
   wizardCurrentStep = step;
 
-  const pct = (step / 3) * 100;
+  const pct = (step / 4) * 100;
   const bar = document.getElementById('wizard-progress-bar');
   if (bar) bar.style.width = `${pct}%`;
 
   const stepBadge = document.getElementById('wizard-step-badge');
-  if (stepBadge) stepBadge.innerText = `STEP ${step} / 3`;
+  if (stepBadge) stepBadge.innerText = `STEP ${step} / 4`;
 
   const stepTitle = document.getElementById('wizard-step-title');
   if (stepTitle) stepTitle.innerText = WIZARD_STEP_TITLES[step - 1];
 
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 4; i++) {
     const stepEl = document.getElementById(`wizard-step-${i}`);
     if (stepEl) {
       if (i === step) stepEl.classList.remove('hidden');
@@ -1007,12 +1008,12 @@ function setWizardStep(step) {
   }
 
   if (nextBtn) {
-    if (step < 3) nextBtn.classList.remove('hidden');
+    if (step < 4) nextBtn.classList.remove('hidden');
     else nextBtn.classList.add('hidden');
   }
 
   if (submitBtn) {
-    if (step === 3) submitBtn.classList.remove('hidden');
+    if (step === 4) submitBtn.classList.remove('hidden');
     else submitBtn.classList.add('hidden');
   }
 
@@ -1031,26 +1032,29 @@ function wizardNextStep() {
         titleInput.classList.add('border-rose-500');
         titleInput.focus();
       }
-      showCreateError('⚠️ 步驟 1 未完成：請填寫物品名稱/標題 (或在上方輸入關鍵字點選 ✨ AI 擬稿)！');
+      showCreateError('⚠️ 步驟 1 未完成：請填寫物品名稱/標題！');
       return;
     }
     if (titleInput) titleInput.classList.remove('border-rose-500');
     setWizardStep(2);
   } else if (wizardCurrentStep === 2) {
+    // 步驟 2 是詳細補充描述與 AI 擬稿，可直接進入步驟 3
+    setWizardStep(3);
+  } else if (wizardCurrentStep === 3) {
     const count = wizardPhotos.filter(Boolean).length;
     if (count === 0) {
-      showCreateError('⚠️ 步驟 2 未完成：請至少上傳 1 張照片 (或勾選上方尾牙獎品預設封面)！');
+      showCreateError('⚠️ 步驟 3 未完成：請至少上傳 1 張照片 (或勾選上方尾牙獎品預設封面)！');
       return;
     }
     const isSwap = document.getElementById('post-swap-check')?.checked;
     if (isSwap) {
       const swapItem = (document.getElementById('post-swap-item')?.value || '').trim();
       if (!swapItem) {
-        showCreateError('⚠️ 步驟 2 未完成：請填寫您想換的物品清單！');
+        showCreateError('⚠️ 步驟 3 未完成：請填寫您想換的物品清單！');
         return;
       }
     }
-    setWizardStep(3);
+    setWizardStep(4);
   }
 }
 
@@ -1562,31 +1566,31 @@ async function submitCreateItem() {
     titleInput.classList.remove('border-rose-500');
   }
 
-  // 2. 檢查照片上傳 (步驟 2 至少 1 張)
+  // 2. 檢查照片上傳 (步驟 3 至少 1 張)
   const validPhotos = wizardPhotos.filter(Boolean);
   if (validPhotos.length === 0) {
-    setWizardStep(2);
-    showCreateError('⚠️ 步驟 2 未完成：請至少選擇並上傳 1 張物品照片 (或勾選尾牙獎品預設圖)！');
+    setWizardStep(3);
+    showCreateError('⚠️ 步驟 3 未完成：請至少選擇並上傳 1 張物品照片 (或勾選尾牙獎品預設圖)！');
     return;
   }
 
-  // 3. 檢查聯絡方式 (步驟 3 必填)
+  // 3. 檢查聯絡方式 (步驟 4 必填)
   if (!contact) {
-    setWizardStep(3);
+    setWizardStep(4);
     if (contactInput) {
       contactInput.classList.add('border-rose-500');
       contactInput.focus();
     }
-    showCreateError('⚠️ 步驟 3 未完成：請填寫聯絡方式 (例如：Teams / 分機 8888 / LINE)！');
+    showCreateError('⚠️ 步驟 4 未完成：請填寫聯絡方式 (例如：Teams / 分機 8888 / LINE)！');
     return;
   } else if (contactInput) {
     contactInput.classList.remove('border-rose-500');
   }
 
-  // 4. 檢查編輯密碼 (步驟 3 必填)
+  // 4. 檢查編輯密碼 (步驟 4 必填)
   if (!editPasswordVal) {
-    setWizardStep(3);
-    showCreateError('⚠️ 步驟 3 未完成：請輸入自刪管理密碼，以防未來更換裝置無法下架！');
+    setWizardStep(4);
+    showCreateError('⚠️ 步驟 4 未完成：請輸入自刪管理密碼，以防未來更換裝置無法下架！');
     return;
   }
 
