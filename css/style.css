@@ -26,124 +26,124 @@
   --text-scale: 1.0;
 }
 
-/* 5 級字體微調乘數 (維持版面容器 REM 穩定，僅等比放大文字，絕不超框爆版) */
-html.font-level-sm { --text-scale: 0.88; font-size: 15px; }
-html.font-level-base { --text-scale: 1.0; font-size: 16px; }  /* 預設：清晰好讀 */
-html.font-level-lg { --text-scale: 1.15; font-size: 16px; }  /* 中年舒適大字 (+15%) */
-html.font-level-xl { --text-scale: 1.28; font-size: 16.5px; }  /* 特大無障礙字體 (+28%) */
-html.font-level-2xl { --text-scale: 1.42; font-size: 17px; } /* 超大清晰字體 (+42% 頂級可讀且邊界自適應) */
+/* 5 級字體微調乘數 (等比縮放全站 REM 元素，邊界自適應，不超框爆版) */
+html.font-level-sm { --text-scale: 0.88; font-size: 14px !important; }
+html.font-level-base { --text-scale: 1.0; font-size: 16px !important; }  /* 預設：標準 16px */
+html.font-level-lg { --text-scale: 1.15; font-size: 18px !important; }  /* 舒適大字 (+15% ~ 18px) */
+html.font-level-xl { --text-scale: 1.28; font-size: 20.5px !important; }  /* 特大無障礙 (+28% ~ 20.5px) */
+html.font-level-2xl { --text-scale: 1.44; font-size: 23px !important; } /* 超大清晰字體 (+44% ~ 23px) */
 
 /* 📢 全站公告欄 / 使用須知動態字體聯動 */
 #announcement-bar {
-  font-size: calc(0.875rem * var(--text-scale)) !important;
+  font-size: 0.875rem !important;
   line-height: 1.55 !important;
   word-break: break-word;
 }
 
 #announcement-text {
-  font-size: calc(0.875rem * var(--text-scale)) !important;
+  font-size: 0.875rem !important;
   line-height: 1.6 !important;
   word-break: break-word;
 }
 
 /* 💻 電腦端經典卡片專屬動態字級聯動 */
 .desktop-title-font {
-  font-size: calc(1.05rem * var(--text-scale)) !important;
+  font-size: 1.05rem !important;
   line-height: 1.4 !important;
   letter-spacing: -0.01em !important;
   word-break: break-word;
 }
 
 .desktop-price-font {
-  font-size: calc(1.15rem * var(--text-scale)) !important;
+  font-size: 1.15rem !important;
   line-height: 1.25 !important;
 }
 
 .desktop-contact-font {
-  font-size: calc(0.88rem * var(--text-scale)) !important;
+  font-size: 0.88rem !important;
   line-height: 1.35 !important;
 }
 
 .desktop-meta-font {
-  font-size: calc(0.82rem * var(--text-scale)) !important;
+  font-size: 0.82rem !important;
   line-height: 1.3 !important;
 }
 
 /* 📱 手機端雙排方格卡片專屬動態字級聯動 */
 .mobile-grid-title-font {
-  font-size: calc(0.85rem * var(--text-scale)) !important;
+  font-size: 0.85rem !important;
   line-height: 1.3 !important;
   word-break: break-word;
 }
 
 .mobile-grid-price-font {
-  font-size: calc(0.92rem * var(--text-scale)) !important;
+  font-size: 0.92rem !important;
   line-height: 1.2 !important;
 }
 
 /* 🍎 Apple 階差沉浸大卡專屬動態字級聯動系統 (隨 A⁻ / A / A⁺ / A⁺⁺ / A⁺⁺⁺ 等比縮放) */
 .showcase-title-font {
-  font-size: calc(1.18rem * var(--text-scale)) !important;
+  font-size: 1.18rem !important;
   line-height: 1.4 !important;
   letter-spacing: -0.015em !important;
   word-break: break-word;
 }
 
 .showcase-desc-font {
-  font-size: calc(0.95rem * var(--text-scale)) !important;
+  font-size: 0.95rem !important;
   line-height: 1.65 !important;
   letter-spacing: 0.005em !important;
   word-break: break-word;
 }
 
 .showcase-price-font {
-  font-size: calc(1.35rem * var(--text-scale)) !important;
+  font-size: 1.35rem !important;
   line-height: 1.2 !important;
 }
 
 .showcase-meta-font {
-  font-size: calc(0.85rem * var(--text-scale)) !important;
+  font-size: 0.85rem !important;
   line-height: 1.3 !important;
 }
 
 /* 🔍 刊登詳情彈窗專屬字體聯動系統 (隨 A⁻ / A / A⁺ / A⁺⁺ / A⁺⁺⁺ 同步放大縮小) */
 .detail-title-font {
-  font-size: calc(1.2rem * var(--text-scale)) !important;
+  font-size: 1.2rem !important;
   line-height: 1.4 !important;
   letter-spacing: -0.015em !important;
   word-break: break-word;
 }
 
 .detail-desc-font {
-  font-size: calc(1.0rem * var(--text-scale)) !important;
+  font-size: 1.0rem !important;
   line-height: 1.7 !important;
   letter-spacing: 0.008em !important;
   word-break: break-word;
 }
 
 .detail-price-font {
-  font-size: calc(1.3rem * var(--text-scale)) !important;
+  font-size: 1.3rem !important;
   line-height: 1.25 !important;
 }
 
 .detail-contact-title-font {
-  font-size: calc(0.9rem * var(--text-scale)) !important;
+  font-size: 0.9rem !important;
   line-height: 1.3 !important;
 }
 
 .detail-contact-text-font {
-  font-size: calc(1.0rem * var(--text-scale)) !important;
+  font-size: 1.0rem !important;
   line-height: 1.4 !important;
   word-break: break-all;
 }
 
 .detail-meta-font {
-  font-size: calc(0.85rem * var(--text-scale)) !important;
+  font-size: 0.85rem !important;
   line-height: 1.35 !important;
 }
 
 .detail-label-font {
-  font-size: calc(0.88rem * var(--text-scale)) !important;
+  font-size: 0.88rem !important;
   line-height: 1.3 !important;
 }
 
@@ -155,7 +155,8 @@ html.font-level-2xl { --text-scale: 1.42; font-size: 17px; } /* 超大清晰字�
 #filter-lucky,
 [id^="post-type-"],
 #grid-layout-select {
-  font-size: calc(0.85rem * var(--text-scale)) !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
 }
 
 /* 🔍 搜尋框（主頁搜尋、懸浮搜尋、後台搜尋、成交庫搜尋）打字與提示文字動態字體放大 */
@@ -167,8 +168,19 @@ input[type="text"],
 input[type="number"],
 input[type="password"],
 textarea {
-  font-size: calc(0.92rem * var(--text-scale)) !important;
-  line-height: 1.4 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.45 !important;
+}
+
+@media (max-width: 640px) {
+  /* 手機端防 iOS Safari 聚焦自動放大畫面 */
+  input[type="text"],
+  input[type="number"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: max(16px, 0.95rem) !important;
+  }
 }
 
 #search-input::placeholder,
@@ -177,20 +189,20 @@ textarea {
 #archive-search::placeholder,
 input::placeholder,
 textarea::placeholder {
-  font-size: calc(0.85rem * var(--text-scale)) !important;
+  font-size: 0.88rem !important;
 }
 
 /* 🏷️ 懸浮搜尋熱門關鍵字膠囊動態字體 */
 #sticky-search-overlay button,
 #sticky-search-overlay span {
-  font-size: calc(0.8rem * var(--text-scale)) !important;
+  font-size: 0.85rem !important;
 }
 
 /* 🏷️ 買/賣/送/尾牙 徽章連動全域字體放大 */
 .badge-dynamic-font,
 [class*="badge-dynamic"] {
-  font-size: calc(0.78rem * var(--text-scale)) !important;
-  line-height: 1.2 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.25 !important;
 }
 
 /* 🛡️ 後台管理控制台全域字體深度聯動 */
@@ -201,51 +213,124 @@ textarea::placeholder {
 #admin-modal-card select,
 #admin-modal-card textarea,
 #admin-announcement-input {
-  font-size: calc(0.88rem * var(--text-scale)) !important;
+  font-size: 0.92rem !important;
   line-height: 1.5 !important;
 }
 
-#admin-modal h2,
-#admin-modal h3,
-#admin-modal h4 {
-  font-size: calc(1.08rem * var(--text-scale)) !important;
+/* 👑 全站所有彈窗主標題與頂部抬頭深度聯動 (大字體時清晰雄偉) */
+#guide-modal h2, #guide-modal h3,
+#create-modal h2, #create-modal h3,
+#detail-modal h2, #detail-modal h3,
+#admin-modal h2, #admin-modal h3,
+#issue-modal h2, #issue-modal h3,
+#archive-modal h2, #archive-modal h3,
+#online-users-modal h2, #online-users-modal h3,
+#post-success-modal h2, #post-success-modal h3,
+#detail-title,
+.modal-title-dynamic {
+  font-size: 1.25rem !important;
+  line-height: 1.35 !important;
+  font-weight: 900 !important;
 }
 
-/* 說明指南與階差卡片文字放大 */
-#guide-modal h3,
+/* 🏷️ 章節標題、步驟標題、表單分組標題、小卡標題 */
 #guide-modal h4,
 #guide-modal h5,
 .modal-guide-slide h3,
 .modal-guide-slide h4,
 .modal-guide-slide h5,
+.modal-guide-ch-header,
 .apple-step-card h2,
 .apple-step-card h3,
 .apple-step-card h4,
-.apple-step-card h5 {
-  font-size: calc(1.1rem * var(--text-scale)) !important;
-  line-height: 1.4 !important;
+.apple-step-card h5,
+.wizard-step-title,
+.guide-ch-title,
+.section-header-title {
+  font-size: 1.08rem !important;
+  line-height: 1.35 !important;
+  font-weight: 800 !important;
 }
 
+/* 🚀 全站核心導航按鈕（下一頁 / 上一頁 / 下一步 / 上一步 / 立即發布 / 分頁按鈕 / 詳情操作按鈕） */
+#modal-guide-btn-prev,
+#modal-guide-btn-next,
+#wizard-prev-btn,
+#wizard-next-btn,
+#btn-page-prev,
+#btn-page-next,
+#btn-post-submit,
+#detail-contact-btn,
+#detail-copy-btn,
+#detail-mark-sold-btn,
+#detail-edit-btn,
+#detail-delete-btn,
+.guide-nav-btn {
+  font-size: 0.98rem !important;
+  line-height: 1.4 !important;
+  font-weight: 800 !important;
+}
+
+#page-info {
+  font-size: 0.92rem !important;
+  line-height: 1.4 !important;
+  font-weight: 700 !important;
+}
+
+/* 說明彈窗與一般內文段落 */
 #guide-modal p,
 #guide-modal li,
 .modal-guide-slide p,
 .modal-guide-slide li,
 .apple-step-card p,
 .apple-step-card li {
-  font-size: calc(0.92rem * var(--text-scale)) !important;
+  font-size: 0.94rem !important;
   line-height: 1.6 !important;
   word-break: break-word;
+}
+
+/* 說明彈窗內示範小卡、按鈕、膠囊標籤一律等比縮放，徹底消除微小死字 */
+.modal-guide-slide span,
+.modal-guide-slide div,
+.modal-guide-slide button,
+.modal-guide-slide b,
+.modal-guide-slide strong,
+.modal-guide-slide code {
+  font-size: inherit;
+  line-height: 1.5;
+}
+
+.modal-guide-slide .guide-box,
+.modal-guide-slide [class*="bg-gray-9"],
+.modal-guide-slide [class*="bg-gray-950"] {
+  font-size: 0.9rem !important;
+}
+
+.modal-guide-slide button {
+  font-size: 0.9rem !important;
+}
+
+.modal-guide-slide .guide-tag-sm {
+  font-size: 0.82rem !important;
+}
+
+/* 🏷️ 按鈕與標題內圖標自動等比聯動 (消除固定 9px/10px 死角) */
+button i,
+a i,
+span i,
+h1 i, h2 i, h3 i, h4 i, h5 i {
+  font-size: inherit;
 }
 
 /* 📝 刊登表單大文字框與快捷標籤字體聯動 */
 #post-desc {
   min-height: 140px;
-  font-size: calc(0.92rem * var(--text-scale)) !important;
+  font-size: 0.95rem !important;
   line-height: 1.6 !important;
 }
 
 .desc-tag-btn {
-  font-size: calc(0.82rem * var(--text-scale)) !important;
+  font-size: 0.85rem !important;
   line-height: 1.35 !important;
   display: inline-flex;
   align-items: center;
@@ -405,6 +490,7 @@ textarea::placeholder {
     right: 0.75rem !important;
     bottom: 4.5rem !important;
     gap: 0.35rem !important;
+  }
 }
 
 /* ==========================================================================

@@ -242,66 +242,87 @@ function getExpirationCountdown(expiresAt) {
  */
 async function compressAndUploadImage(file) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function(event) {
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const maxDim = 1024;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > maxDim) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          }
-        } else {
-          if (height > maxDim) {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        canvas.toBlob(async function(blob) {
-          if (!blob) {
-            reject(new Error('圖片壓縮失敗'));
-            return;
-          }
-
-          const filename = `item_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function(event) {
+        const rawDataUrl = event.target.result;
+        const img = new Image();
+        img.src = rawDataUrl;
+        img.onload = function() {
           try {
-            const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/item-images/${filename}`, {
-              method: 'POST',
-              headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Content-Type': 'image/jpeg'
-              },
-              body: blob
-            });
+            const canvas = document.createElement('canvas');
+            const maxDim = 1024;
+            let width = img.width || 800;
+            let height = img.height || 600;
 
-            if (uploadRes.ok) {
-              const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/item-images/${filename}`;
-              resolve(publicUrl);
+            if (width > height) {
+              if (width > maxDim) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              }
             } else {
-              reject(new Error('上傳至 Supabase Storage 失敗'));
+              if (height > maxDim) {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
             }
-          } catch(err) {
-            reject(err);
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const fallbackDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+            canvas.toBlob(async function(blob) {
+              if (!blob) {
+                // 若 blob 轉換失敗，直接使用 canvas DataURL
+                return resolve(fallbackDataUrl);
+              }
+
+              const filename = `item_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+              try {
+                const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/item-images/${filename}`, {
+                  method: 'POST',
+                  headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'image/jpeg'
+                  },
+                  body: blob
+                });
+
+                if (uploadRes.ok) {
+                  const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/item-images/${filename}`;
+                  resolve(publicUrl);
+                } else {
+                  console.warn('Supabase storage upload failed, using DataURL fallback');
+                  resolve(fallbackDataUrl);
+                }
+              } catch(err) {
+                console.warn('Supabase storage upload network error, using DataURL fallback:', err);
+                resolve(fallbackDataUrl);
+              }
+            }, 'image/jpeg', 0.82);
+          } catch (canvasErr) {
+            console.warn('Canvas compression error, using raw DataURL:', canvasErr);
+            resolve(rawDataUrl);
           }
-        }, 'image/jpeg', 0.85);
+        };
+        img.onerror = function(imgErr) {
+          console.warn('Image load error, fallback to raw DataURL:', imgErr);
+          resolve(rawDataUrl);
+        };
       };
-      img.onerror = reject;
-    };
-    reader.onerror = reject;
+      reader.onerror = function(readErr) {
+        console.error('FileReader error:', readErr);
+        reject(new Error('讀取檔案失敗'));
+      };
+    } catch (outerErr) {
+      console.error('compressAndUploadImage error:', outerErr);
+      reject(outerErr);
+    }
   });
 }
 
@@ -423,11 +444,11 @@ function setFontSize(level, showToast = true) {
   if (!levels.includes(level)) level = 'base';
 
   const scaleMap = {
-    'sm': { scale: 0.88, rootSize: '15px' },
+    'sm': { scale: 0.88, rootSize: '14px' },
     'base': { scale: 1.0, rootSize: '16px' },
-    'lg': { scale: 1.15, rootSize: '16px' },
-    'xl': { scale: 1.28, rootSize: '16.5px' },
-    '2xl': { scale: 1.42, rootSize: '17px' }
+    'lg': { scale: 1.15, rootSize: '18px' },
+    'xl': { scale: 1.28, rootSize: '20.5px' },
+    '2xl': { scale: 1.44, rootSize: '23px' }
   };
 
   const current = scaleMap[level] || scaleMap['base'];

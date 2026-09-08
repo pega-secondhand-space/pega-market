@@ -202,7 +202,7 @@ function renderItems() {
     let priceDisplay = '';
     if (item.price && String(item.price).startsWith('swap:')) {
       const swapVal = String(item.price).replace('swap:', '');
-      priceDisplay = `<span class="text-rose-400 font-black flex items-center gap-1 text-xs sm:text-base"><i class="fa-solid fa-arrows-rotate text-[10px]"></i> 換：${escapeHtml(swapVal) || '未指定'}</span>`;
+      priceDisplay = `<span class="text-rose-400 font-black flex items-center gap-1 text-xs sm:text-base"><i class="fa-solid fa-arrows-rotate text-xs"></i> 換：${escapeHtml(swapVal) || '未指定'}</span>`;
     } else if (item.type === 'free') {
       priceDisplay = 'NT$ 0 (免費送)';
     } else {
@@ -218,14 +218,14 @@ function renderItems() {
         const remainingHours = Math.max(0, Math.floor(remainingMs / (1000 * 60 * 60)));
         const remainingMins = Math.max(0, Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60)));
         if (remainingMs <= 0) {
-          expCountdownHtml = `<span class="text-rose-400 font-bold text-[10px] sm:text-xs">⏳ 即將自動移入成交庫</span>`;
+          expCountdownHtml = `<span class="text-rose-400 font-bold text-xs sm:text-xs">⏳ 即將自動移入成交庫</span>`;
         } else if (remainingHours > 0) {
-          expCountdownHtml = `<span class="text-gray-400 font-bold text-[10px] sm:text-xs">⏳ 售出剩 ${remainingHours}小時${remainingMins}分 下架</span>`;
+          expCountdownHtml = `<span class="text-gray-400 font-bold text-xs sm:text-xs">⏳ 售出剩 ${remainingHours}小時${remainingMins}分 下架</span>`;
         } else {
-          expCountdownHtml = `<span class="text-amber-400 font-bold animate-pulse text-[10px] sm:text-xs">⏳ 售出剩 ${remainingMins}分鐘 下架</span>`;
+          expCountdownHtml = `<span class="text-amber-400 font-bold animate-pulse text-xs sm:text-xs">⏳ 售出剩 ${remainingMins}分鐘 下架</span>`;
         }
       } else {
-        expCountdownHtml = `<span class="text-gray-400 font-bold text-[10px] sm:text-xs">⏳ 已售出 (24小時下架)</span>`;
+        expCountdownHtml = `<span class="text-gray-400 font-bold text-xs sm:text-xs">⏳ 已售出 (24小時下架)</span>`;
       }
     } else {
       expCountdownHtml = getExpirationCountdown(getItemExpiration(item));
@@ -264,7 +264,7 @@ function renderItems() {
       showcaseMediaHtml = `
         <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 cursor-zoom-in group shadow-inner ${isSold ? 'grayscale contrast-90' : ''}" title="點擊放大照片">
           <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
-          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大全圖</span>
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1"><i class="fa-solid fa-expand text-xs"></i> 點擊放大全圖</span>
         </div>
       `;
     } else if (photos.length === 2) {
@@ -272,11 +272,11 @@ function renderItems() {
         <div class="grid grid-cols-2 gap-2 aspect-[16/10] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner ${isSold ? 'grayscale contrast-90' : ''}">
           <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
             <img src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 1/2 放大</span>
+            <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-xs"></i> 1/2 放大</span>
           </div>
           <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 2 張照片">
             <img src="${p2}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 2/2 放大</span>
+            <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow"><i class="fa-solid fa-expand text-xs"></i> 2/2 放大</span>
           </div>
         </div>
       `;
@@ -285,15 +285,15 @@ function renderItems() {
         <div class="grid grid-cols-3 gap-2 aspect-[16/8] w-full rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner ${isSold ? 'grayscale contrast-90' : ''}">
           <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 0)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 1 張照片">
             <img src="${photos[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">1/${photos.length}</span>
+            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-xs font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">1/${photos.length}</span>
           </div>
           <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 1)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大第 2 張照片">
             <img src="${photos[1]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">2/${photos.length}</span>
+            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-xs font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">2/${photos.length}</span>
           </div>
           <div onclick="event.stopPropagation(); openLightboxModal('${escapeJsStr(item.image_url)}', 2)" class="w-full h-full cursor-zoom-in relative group overflow-hidden" title="點擊放大照片">
             <img src="${photos[2]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">${photos.length > 3 ? `+${photos.length - 2} 圖` : `3/${photos.length}`}</span>
+            <span class="absolute bottom-1.5 right-1.5 bg-black/75 text-amber-300 text-xs font-bold px-1.5 py-0.5 rounded border border-white/20 shadow">${photos.length > 3 ? `+${photos.length - 2} 圖` : `3/${photos.length}`}</span>
           </div>
         </div>
       `;
@@ -306,7 +306,7 @@ function renderItems() {
           <!-- 頂部資訊列：階差編號徽章 + 頭像/暱稱 + 分類徽章 + 時間 + 售出打勾 -->
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="px-2 py-0.5 rounded-md ${isSold ? 'bg-gray-800 text-gray-400 border border-gray-700' : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950'} font-black text-[11px] shadow">
+              <span class="px-2 py-0.5 rounded-md ${isSold ? 'bg-gray-800 text-gray-400 border border-gray-700' : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950'} font-black text-xs shadow">
                 ${isSold ? '已售出' : `NO. ${String(idx + 1).padStart(2, '0')}`}
               </span>
               <div class="w-7 h-7 rounded-full ${isSold ? 'bg-gray-800 text-gray-400' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white'} flex items-center justify-center text-xs font-black shadow-md shrink-0">
@@ -316,11 +316,11 @@ function renderItems() {
                 <span class="font-black text-gray-100 truncate showcase-meta-font">${safeNickname}</span>
                 ${typeBadge}
               </div>
-              <div class="text-gray-400 font-medium showcase-meta-font text-[10px] hidden sm:inline">· ${timeAgo(item.created_at)}</div>
+              <div class="text-gray-400 font-medium showcase-meta-font text-xs hidden sm:inline">· ${timeAgo(item.created_at)}</div>
             </div>
 
             <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-              ${(isPinned && !isSold) ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-lg font-black border border-amber-500/40 shadow-sm text-[10px]">📌 置頂</span>' : ''}
+              ${(isPinned && !isSold) ? '<span class="showcase-meta-font bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-lg font-black border border-amber-500/40 shadow-sm text-xs">📌 置頂</span>' : ''}
               <button onclick="toggleItemSoldState('${item.id}')" 
                       class="w-8 h-8 rounded-full border shadow flex items-center justify-center transition active:scale-90 font-bold text-xs 
                       ${isSold ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-gray-900 border-gray-700 text-gray-400 hover:text-white hover:border-gray-500'}"
@@ -344,7 +344,7 @@ function renderItems() {
           <!-- 底部階差標價 ＋ 一鍵複製直貼 / 售出下架倒數 (動態大字體) -->
           <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3 relative z-10">
             <div>
-              <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">${isSold ? 'STATUS' : 'PRICE'}</span>
+              <span class="text-xs text-gray-500 font-bold uppercase tracking-wider block">${isSold ? 'STATUS' : 'PRICE'}</span>
               <div class="font-black ${isSold ? 'text-gray-400 line-through' : 'bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent'} showcase-price-font">${priceDisplay}</div>
               <div class="mt-0.5">${expCountdownHtml}</div>
             </div>
@@ -356,7 +356,7 @@ function renderItems() {
                 </button>
               ` : ''}
               <button onclick="openDetailModal('${item.id}')" class="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold rounded-xl border border-gray-700 active:scale-95 transition showcase-meta-font">
-                詳情 <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                詳情 <i class="fa-solid fa-chevron-right text-xs"></i>
               </button>
             </div>
           </div>
@@ -370,7 +370,7 @@ function renderItems() {
     const mobileCardHtml = `
       <!-- 📱 手機端 (雙排方格風格：支援 2 行標題完整可讀與點擊放大) -->
       <div onclick="openDetailModal('${item.id}')" class="threads-card-item block relative aspect-square bg-gray-950 rounded-2xl overflow-hidden shadow-lg border ${isSold ? 'grayscale opacity-60 border-gray-800' : isPinned ? 'border-amber-500 shadow-amber-500/10' : 'border-gray-800 active:scale-95'} transition cursor-pointer">
-        ${(isPinned && !isSold) ? '<div class="absolute top-0 inset-x-0 bg-amber-500 text-gray-950 text-[9px] font-black py-0.5 text-center z-10">📌 官方置頂</div>' : ''}
+        ${(isPinned && !isSold) ? '<div class="absolute top-0 inset-x-0 bg-amber-500 text-gray-950 text-xs font-black py-0.5 text-center z-10">📌 官方置頂</div>' : ''}
         
         <img data-card-img-id="${item.id}" src="${p1}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block">
         
@@ -388,7 +388,7 @@ function renderItems() {
         </div>
 
         ${photos.length > 1 ? `
-          <div class="absolute top-2 right-11 bg-black/75 text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-white/20 shadow z-10">
+          <div class="absolute top-2 right-11 bg-black/75 text-amber-300 text-xs font-bold px-1.5 py-0.5 rounded-md border border-white/20 shadow z-10">
             📷 ${photos.length}
           </div>
         ` : ''}
@@ -444,7 +444,7 @@ function renderItems() {
                 <i class="fa-solid fa-chevron-right"></i>
               </button>
             </div>
-            <div data-card-photo-badge="${item.id}" class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-0.5 rounded border border-white/20 z-10">
+            <div data-card-photo-badge="${item.id}" class="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-bold px-2 py-0.5 rounded border border-white/20 z-10">
               📷 1/${photos.length}
             </div>
           ` : ''}
@@ -576,7 +576,7 @@ function renderDetailPhotos(photos) {
     return `
       <div onclick="openLightboxModal('${photosJson}', 0)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
         <img src="${photosArr[0]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-80 w-full object-contain rounded-lg">
-        <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大原圖</span>
+        <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-xs"></i> 點擊放大原圖</span>
       </div>
     `;
   }
@@ -586,11 +586,11 @@ function renderDetailPhotos(photos) {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
         <div onclick="openLightboxModal('${photosJson}', 0)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
           <img src="${photosArr[0]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
-          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (1/2)</span>
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-xs"></i> 點擊放大 (1/2)</span>
         </div>
         <div onclick="openLightboxModal('${photosJson}', 1)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
           <img src="${photosArr[1]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
-          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (2/2)</span>
+          <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-lg border border-white/20 flex items-center gap-1 shadow"><i class="fa-solid fa-expand text-xs"></i> 點擊放大 (2/2)</span>
         </div>
       </div>
     `;
@@ -607,8 +607,8 @@ function renderDetailPhotos(photos) {
     <div class="space-y-2.5 w-full">
       <div id="detail-main-photo-box" onclick="openLightboxModal('${photosJson}', window.currentDetailPhotoIdx || 0)" class="bg-black/90 rounded-2xl overflow-hidden flex items-center justify-center p-1 border border-gray-800 cursor-zoom-in group relative active:scale-98 transition shadow">
         <img id="detail-main-photo-img" src="${photosArr[0]}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="max-h-72 w-full object-contain rounded-lg">
-        <span id="detail-main-photo-badge" class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 flex items-center gap-1 shadow">
-          <i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (1/${photosArr.length})
+        <span id="detail-main-photo-badge" class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-white/20 flex items-center gap-1 shadow">
+          <i class="fa-solid fa-expand text-xs"></i> 點擊放大 (1/${photosArr.length})
         </span>
       </div>
       <div class="flex items-center justify-center gap-2 pt-1 overflow-x-auto">
@@ -627,7 +627,7 @@ function switchDetailMainPhoto(idx, photosStr) {
     mainImg.src = photos[idx];
   }
   if (badge) {
-    badge.innerHTML = `<i class="fa-solid fa-expand text-[9px]"></i> 點擊放大 (${idx + 1}/${photos.length})`;
+    badge.innerHTML = `<i class="fa-solid fa-expand text-xs"></i> 點擊放大 (${idx + 1}/${photos.length})`;
   }
   photos.forEach((_, i) => {
     const thumb = document.getElementById('detail-thumb-' + i);
@@ -946,6 +946,10 @@ function setPostType(t) {
       priceInput.placeholder = '請輸入預售金額 (NT$)';
     }
   }
+
+  if (typeof updateDynamicSmartTags === 'function') {
+    updateDynamicSmartTags();
+  }
 }
 
 function showCreateError(msg) {
@@ -1017,7 +1021,15 @@ function setWizardStep(step) {
     else submitBtn.classList.add('hidden');
   }
 
-  hideCreateError();
+  if (step === 2) {
+    const titleInput = document.getElementById('post-title');
+    const title = (titleInput?.value || '').trim();
+    const aiInput = document.getElementById('ai-quick-input');
+    if (aiInput && !aiInput.value.trim() && title) {
+      aiInput.value = title;
+    }
+    updateDynamicSmartTags();
+  }
 }
 
 /**
@@ -1068,14 +1080,450 @@ function wizardPrevStep() {
 }
 
 /**
+ * 🧠 智慧商品特徵庫與語意分類器 (Semantic Product Engine)
+ */
+function analyzeProductSemantic(title, rawInput, tradeType) {
+  const combined = `${title || ''} ${rawInput || ''}`.toLowerCase();
+  
+  // 1. 影音耳機 / 藍牙喇叭 (Audio & Headphones - 優先於品牌手機)
+  if (/airpods|earbuds|bose|beats|sennheiser|鐵三角|耳機|降噪|藍牙耳機|喇叭|音響|soundbar|buds|骨傳導/i.test(combined)) {
+    return {
+      category: 'audio',
+      categoryName: '🎧 藍牙耳機 / 影音',
+      groups: [
+        {
+          label: '🔇 降噪音質',
+          chips: [
+            { label: '主動降噪(ANC)', text: '【降噪功能】主動降噪 (ANC) 與通透模式運作完全正常。' },
+            { label: '高音質立體聲', text: '【音質表現】雙耳音質高低音分明，通話收音清晰平衡。' },
+            { label: '空間音訊', text: '【特色功能】支援頭部追蹤空間音訊，沉浸感極佳。' }
+          ]
+        },
+        {
+          label: '🔋 蓄電充電',
+          chips: [
+            { label: '續航長達30h', text: '【電池續航】耳機單次 6h / 搭配充電盒最長 30 小時長效續航。' },
+            { label: 'Type-C快充', text: '【充電接口】支援 Type-C 快速充電與無線充電。' },
+            { label: '蓄電功能正常', text: '【電池狀態】充電盒與雙耳蓄電正常，無單耳掉電問題。' }
+          ]
+        },
+        {
+          label: '🧼 清潔配件',
+          chips: [
+            { label: '全機酒精消毒', text: '【衛生清潔】出貨前已全機深度酒精清潔消毒，乾淨衛生安心用。' },
+            { label: '附原裝耳塞套', text: '【配件說明】附原廠充電盒、充電線與不同尺寸耳塞套。' },
+            { label: '立德路現場試聽', text: '【面交地點】關渡園區 / 立德路可當面連線試聽點交。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【出清良品】${title}`,
+          desc: `【商品型號】${title}\n【聲學降噪】主動降噪 (ANC) 與通透模式運作正常，高低音層次分明\n【電池續航】充電盒與雙耳蓄電正常，無快速掉電問題\n【衛生消毒】出貨前已全機深度酒精除菌消毒，乾淨衛生\n【成色狀況】少用外觀無明顯磕碰，功能 100% 正常\n【配件清單】附原廠充電盒、充電線與原裝耳塞套\n【面交地點】關渡園區 / 立德路可當面連線試聽點交`
+        }
+      ]
+    };
+  }
+
+  // 2. 植物 / 盆栽 / 綠植 / 龜背芋 (Plants & Garden)
+  if (/盆栽|植物|綠植|龜背芋|多肉|仙人掌|黃金葛|虎尾蘭|觀葉|花盆|琴葉榕|鹿角蕨/i.test(combined)) {
+    return {
+      category: 'plant',
+      categoryName: '🌿 綠植盆栽 / 園藝',
+      groups: [
+        {
+          label: '🌱 植物狀態',
+          chips: [
+            { label: '根系健康茂盛', text: '【植物狀況】根系健康茂盛，植株穩根已生長良好。' },
+            { label: '葉片翠綠無蟲害', text: '【葉片健康】葉片大片翠綠無蟲害，新芽持續萌發。' },
+            { label: '適合室內散射光', text: '【生長環境】適合室內明亮散射光環境，通風即可生長良好。' }
+          ]
+        },
+        {
+          label: '🪴 盆器規格',
+          chips: [
+            { label: '含質感陶瓷盆/底盤', text: '【盆器規格】含質感陶瓷盆與接水底盤，盆徑約 5~6 吋。' },
+            { label: '土乾澆透好照顧', text: '【照顧說明】土乾澆透即可，新手也能輕鬆照顧。' },
+            { label: '辦公桌療癒首選', text: '【擺設推薦】辦公桌或客廳擺設超療癒，增添綠意。' },
+            { label: '植物脆弱限自取', text: '【取件說明】植物脆弱避免碰撞，限關渡園區 / 立德路現場面交（請自備提袋）。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【療癒綠植】${title}`,
+          desc: `【商品名稱】${title}\n【植物狀況】根系健康茂盛，葉片大片翠綠無蟲害，室內明亮通風處即可良好生長\n【盆器規格】含質感盆器與接水底盤，盆徑適中，辦公桌或居家擺設超療癒\n【照顧說明】土乾澆透即可，新手友善好照顧\n【取件說明】植物脆弱避免碰撞，限關渡園區 / 立德路現場面交自取（請自備提袋）`
+        }
+      ]
+    };
+  }
+
+  // 3. 寵物 / 毛孩 / 認養 (Pets & Adoption)
+  if (/狗|犬|貓|幼犬|幼貓|領養|認養|土狗|毛孩|米克斯|柴犬|橘貓/i.test(combined)) {
+    return {
+      category: 'pet',
+      categoryName: '🐾 寵物認養 / 愛心結緣',
+      groups: [
+        {
+          label: '🏥 健康狀況',
+          chips: [
+            { label: '已打預防針疫苗', text: '【健康狀況】已施打完整預防針疫苗，有健康手冊。' },
+            { label: '已體內外驅蟲', text: '【驅蟲狀態】已完成體內外驅蟲，健康乾淨無跳蚤。' },
+            { label: '活潑親人愛撒嬌', text: '【個性特徵】個性活潑溫和、親人愛撒嬌、適應力良好。' },
+            { label: '會定點大小便', text: '【生活習慣】已訓練會定點大小便，生活習慣良好。' }
+          ]
+        },
+        {
+          label: '❤️ 認養條件',
+          chips: [
+            { label: '0元免費愛心認養', text: '【認養費用】同仁愛心免費認養（0元），不收任何費用。' },
+            { label: '須有穩定經濟能力', text: '【認養條件】須年滿20歲有穩定經濟能力與愛心，不離不棄。' },
+            { label: '歡迎相約互動看毛孩', text: '【互動方式】歡迎約在立德路或關渡周邊相約互動看毛孩！' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【愛心認養】${title}`,
+          desc: `【送養對象】${title}\n【健康狀況】已施打預防針疫苗，已完成體內外驅蟲，健康活潑親人愛撒嬌\n【認養條件】同仁愛心免費認養（0元），須具備穩定飼養環境與愛心\n【互動方式】歡迎約在立德路或周邊相約互動看毛孩，給牠一個溫暖的家！`
+        }
+      ]
+    };
+  }
+
+  // 4. 遊戲主機 / 遊戲片 / 卡帶 (Gaming)
+  if (/switch|ps5|ps4|ps3|xbox|遊戲|卡帶|瑪利歐|薩爾達|寶可夢|動森|斯普拉遁|joycon|手把|steam/i.test(combined)) {
+    return {
+      category: 'gaming',
+      categoryName: '🎮 遊戲主機 / 卡帶',
+      groups: [
+        {
+          label: '🌐 版本語言',
+          chips: [
+            { label: '繁體中文官方版', text: '【版本語言】官方繁體中文版，完整支援繁體中文字幕與語音。' },
+            { label: '支援1~4人同樂', text: '【遊玩人數】支援 1~4 人派對同樂 / 多人連線對戰。' },
+            { label: '金手指乾淨秒讀', text: '【卡況成色】金手指乾淨亮麗無氧化無刮痕，插卡讀取秒速正常。' }
+          ]
+        },
+        {
+          label: '📦 外盒與易物',
+          chips: [
+            { label: '原廠盒裝封面完整', text: '【原廠外盒】原廠塑膠外盒與封面封紙保存完好無壓痕。' },
+            { label: '想換其他Switch遊戲', text: '【以物易物】歡迎使用其他 Switch 遊戲片互換交換！' },
+            { label: '想換百貨禮券', text: '【以物易物】可換等值新光三越/SOGO/超商百貨禮券。' },
+            { label: '立德路面交', text: '【面交地點】立德路園區或大廳可當面點交自取。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【二手遊戲】${title}`,
+          desc: `【遊戲名稱】${title}\n【版本語言】官方繁體中文版，完整支援中文字幕\n【卡況成色】全破出清，金手指乾淨無刮痕無氧化，插卡秒讀正常\n【外盒狀況】原廠外盒與封面保存完好無壓痕\n【交易方式】關渡立德路園區面交自取；若有其他遊戲片也歡迎以物易物！`
+        }
+      ]
+    };
+  }
+
+  // 5. 保溫杯 / 水瓶 / 鍋具 (Kitchenware & Bottles)
+  if (/保溫杯|保溫瓶|水壺|水杯|膳魔師|象印|stanley|悶燒罐|隨行杯|冰霸杯|馬克杯|陶瓷杯|熱水壺|平底鍋|鍋|餐具/i.test(combined)) {
+    return {
+      category: 'kitchen',
+      categoryName: '☕ 保溫杯 / 餐廚',
+      groups: [
+        {
+          label: '🧪 材質容量',
+          chips: [
+            { label: '304食品級不鏽鋼', text: '【安心材質】採用食品級 304 不鏽鋼內膽，安全耐酸鹼。' },
+            { label: '316醫療級鋼', text: '【頂級材質】採用醫療級 316 不鏽鋼內膽，抗腐蝕性極佳。' },
+            { label: '480ml容量', text: '【規格容量】容量約 480ml，超輕量設計好攜帶。' },
+            { label: '500ml容量', text: '【規格容量】容量約 500ml，廣口徑好清洗。' }
+          ]
+        },
+        {
+          label: '💧 效力防漏',
+          chips: [
+            { label: '長效保溫保冷', text: '【保溫效力】長效保溫 6 小時 68℃ 以上 / 保冷 8℃ 以下。' },
+            { label: '矽膠密封防漏', text: '【防漏密封】矽膠止水圈完好無老化，倒置搖晃不漏水。' },
+            { label: '內膽無茶垢水垢', text: '【內膽成色】內膽光亮潔淨無水垢茶漬，無任何殘留異味。' }
+          ]
+        },
+        {
+          label: '📦 配件面交',
+          chips: [
+            { label: '附原廠盒裝說明書', text: '【盒裝配件】附原廠包裝盒與使用說明書。' },
+            { label: '立德路大廳自取', text: '【面交地點】關渡園區 / 立德路大廳可當面點交自取。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【生活好物】${title}`,
+          desc: `【商品型號】${title}\n【主要材質】食品級 304/316 不鏽鋼內膽 / 雙層真空保溫\n【規格容量】約 480ml / 超輕量設計 / 廣口徑好清洗\n【保溫效力】長效保溫保冰達數小時，四季冷熱飲皆宜\n【成色狀況】少用如新，內膽光亮無水垢茶漬，防漏矽膠圈完好\n【盒裝配件】附原廠盒裝與使用說明書\n【面交取件】關渡園區 / 立德路可當面檢查點交`
+        }
+      ]
+    };
+  }
+
+  // 6. 電腦周邊 / 鍵鼠 / 螢幕 (PC Peripherals)
+  if (/滑鼠|鍵盤|keyboard|mouse|logitech|羅技|mx master|螢幕|顯示器|顯卡|散熱|dock|hub|隨身碟|硬碟|外接硬碟|筆電|thinkpad|asus|acer|dell/i.test(combined)) {
+    return {
+      category: 'pc',
+      categoryName: '🖱️ 電腦周邊 / 鍵鼠',
+      groups: [
+        {
+          label: '⚡ 連線功能',
+          chips: [
+            { label: '藍牙/2.4G雙模', text: '【連線規格】支援藍牙與 2.4G USB 雙模無線連線，多裝置秒切。' },
+            { label: '靜音按鍵無連點', text: '【按鍵手感】點擊靈敏清脆無連點，按鍵靜音舒適。' },
+            { label: '8000DPI高精準', text: '【感應規格】高精準光學追蹤，玻璃表面亦可流暢使用。' },
+            { label: '疾速電磁滾輪', text: '【滾輪特色】搭載疾速段落電磁滾輪，長文件翻頁極快。' }
+          ]
+        },
+        {
+          label: '✨ 成色外觀',
+          chips: [
+            { label: '95成新無油光', text: '【外觀成色】辦公少用約 95 成新，表面乾淨無打油磨損。' },
+            { label: '人體工學護腕', text: '【人體工學】貼合手掌自然弧度，長時辦公不易疲勞。' },
+            { label: 'Type-C充電', text: '【電池續航】Type-C 快充，充飽電續航長達數十天。' }
+          ]
+        },
+        {
+          label: '📦 配件面交',
+          chips: [
+            { label: '附原廠USB接收器', text: '【配件清單】附原廠 USB 接收器與專用充電線。' },
+            { label: '立德路現場測試', text: '【面交驗收】立德路園區可配合現場連線或插電測試點交。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【辦公好物】${title}`,
+          desc: `【產品型號】${title}\n【連線規格】支援藍牙與 2.4G USB 雙模連線，支援多裝置快速切換\n【手感功能】按鍵點擊清脆靈敏無連點，滾輪段落分明順暢\n【電池續航】Type-C 快充 / 內建鋰電池長效續航\n【成色狀況】辦公室少用約 95 成新，表面乾淨無打油磨損\n【配件清單】附原廠 USB 接收器與充電連接線\n【面交地點】關渡園區 / 立德路同仁可當面測試點交`
+        }
+      ]
+    };
+  }
+
+  // 7. 生活家電 / 吹風機 / 氣炸鍋 (Appliances)
+  if (/吹風機|氣炸鍋|咖啡機|除濕機|空氣清淨機|電風扇|吸塵器|烤箱|電鍋|熱水瓶|微波爐|掃地機|dyson|電暖器/i.test(combined)) {
+    return {
+      category: 'appliance',
+      categoryName: '💨 生活家電 / 廚房',
+      groups: [
+        {
+          label: '⚡ 電壓風量',
+          chips: [
+            { label: '110V台灣標準電壓', text: '【額定電壓】110V 台灣標準電壓插頭，隨插即用安全無虞。' },
+            { label: '多段溫控風量', text: '【功能調節】具備多段溫控與風量切換，操作直覺。' },
+            { label: '運轉靜音平穩', text: '【運轉表現】運轉強勁平穩，無異音無過熱問題。' }
+          ]
+        },
+        {
+          label: '🧼 清潔成色',
+          chips: [
+            { label: '內外已深度除垢', text: '【衛生清潔】機身內膽、濾網已深度清潔除塵除垢。' },
+            { label: '9成新無摔傷', text: '【外觀成色】約 9 成新，外觀乾淨無摔傷凹損。' },
+            { label: '附原廠吹嘴配件', text: '【配件清單】附原廠專屬配件工具與使用說明書。' },
+            { label: '可現場插電測試', text: '【面交驗收】立德路園區可配合現場插電測試功能。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【優質家電】${title}`,
+          desc: `【電器型號】${title}\n【額定電壓】110V 台灣標準電壓插頭，隨插即用\n【功能特點】具備多段溫控與風量調節，運轉強勁平穩靜音\n【成色狀況】居家少用，機身外觀無摔傷凹損，內膽濾網已深度清潔\n【配件清單】附原廠專屬配件與使用說明書\n【面交地點】立德路園區可配合現場插電測試點收`
+        }
+      ]
+    };
+  }
+
+  // 8. 禮券 / 票券 / 餐券 (Vouchers)
+  if (/禮券|禮卷|餐券|住宿券|電影票|威秀|新光三越|sogo|遠東|漢來|饗食天堂|星巴克|7-11|全家|家樂福|提貨券/i.test(combined)) {
+    return {
+      category: 'voucher',
+      categoryName: '🎫 禮券 / 票券',
+      groups: [
+        {
+          label: '📅 期限規則',
+          chips: [
+            { label: '無使用期限(永久有效)', text: '【有效期限】無使用期限 (永久有效)，可隨時彈性消費折抵。' },
+            { label: '全台門市專櫃通用', text: '【適用範圍】全台各分店/專櫃門市皆可通用抵扣消費。' },
+            { label: '平假日皆可使用', text: '【使用規則】平假日、節慶期間皆可直接使用無加價限制。' }
+          ]
+        },
+        {
+          label: '💰 票況點交',
+          chips: [
+            { label: '防偽條碼面額清晰', text: '【票券票況】實體正本票券，防偽條碼與面額字樣清晰無折損。' },
+            { label: '讓利折扣現買現省', text: '【優惠售價】小幅折讓回饋同仁，現買現省超划算。' },
+            { label: '立德路當面點清', text: '【面交點交】立德路園區可當面點交點清張數最安心。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【優惠轉讓】${title}`,
+          desc: `【票券名稱】${title}\n【使用期限】無使用期限限制 (永久有效)\n【適用範圍】全台門市專櫃皆可通用抵扣消費\n【使用規則】平假日、節慶活動期間皆可直接使用無加價限制\n【票券狀態】實體正本票券，防偽條碼與面額清晰無折損\n【面交地點】立德路園區可當面點交點清張數最安心`
+        }
+      ]
+    };
+  }
+
+  // 9. 3C 手機 / 平板 (Phone & Tablet - 排除配件後的實際行動裝置)
+  if (/iphone|ipad|ios|samsung|galaxy|pixel|android|紅米|小米|oppo|vivo|手機|平板|空機|二手機/i.test(combined)) {
+    return {
+      category: 'phone',
+      categoryName: '📱 手機 / 平板',
+      groups: [
+        {
+          label: '💾 容量規格',
+          chips: [
+            { label: '128GB', text: '【規格容量】儲存空間 128GB' },
+            { label: '256GB', text: '【規格容量】儲存空間 256GB' },
+            { label: '512GB', text: '【規格容量】儲存空間 512GB' },
+            { label: '1TB', text: '【規格容量】儲存空間 1TB' }
+          ]
+        },
+        {
+          label: '✨ 外觀成色',
+          chips: [
+            { label: '尾牙全新未拆', text: '【物品狀態】公司尾牙抽中全新未拆封，原廠封膜完整！' },
+            { label: '95成新無傷', text: '【外觀成色】約 95 成新，平時皆裝防摔殼與滿版保護貼，螢幕無刮傷。' },
+            { label: '85成新正常', text: '【外觀成色】約 85 成新，邊框有輕微正常使用痕跡，螢幕顯示良好。' },
+            { label: '已重置出廠', text: '【系統重置】已登出帳號並清除所有內容與設定，開機即用。' }
+          ]
+        },
+        {
+          label: '🔋 電池配件',
+          chips: [
+            { label: '電池健康90%+', text: '【電池健康】電池健康度良好 (90%+)，日常續航正常。' },
+            { label: '附盒裝充電線', text: '【盒裝配件】附原廠完整外盒與原廠充電傳輸線。' },
+            { label: '附防摔保護殼', text: '【額外附贈】附贈防摔保護殼與多張全新保護貼。' },
+            { label: '立德路現場驗機', text: '【面交點收】關渡園區 / 立德路同仁可當面開機檢查點收。' }
+          ]
+        }
+      ],
+      drafts: [
+        {
+          title: `【優質出清】${title}`,
+          desc: `【商品型號】${title}\n【規格容量】儲存空間 256GB / 效能流暢\n【成色狀況】自用升級換下約 95 成新，平時愛惜使用，螢幕顯示正常無烙印\n【系統狀態】已登出帳號並清除所有內容，重置為原廠出廠設定\n【電池狀況】電池健康度良好，日常續航正常\n【盒裝配件】附原廠包裝盒與充電傳輸線\n【面交地點】關渡園區 / 立德路大廳可當面開機檢查點收`
+        },
+        {
+          title: `【良品出清】${title}`,
+          desc: `【商品特色】拍照清晰、觸控靈敏、功能 100% 正常\n【外觀說明】外觀保存良好無重大摔傷\n【交易方式】立德路園區面交自取`
+        }
+      ]
+    };
+  }
+
+  // 10. 預設通用生活良品 (General Fallback)
+  return {
+    category: 'general',
+    categoryName: '📦 生活好物',
+    groups: [
+      {
+        label: '✨ 外觀成色',
+        chips: [
+          { label: '95成新 (少用如新)', text: '【成色狀況】少用約 95 成新，外觀保持良好乾淨無破損。' },
+          { label: '9成新 (良品)', text: '【成色狀況】約 9 成新，外觀整潔，正常使用痕跡。' },
+          { label: '全新未拆', text: '【物品狀態】全新原廠包裝未拆封。' },
+          { label: '功能100%正常', text: '【功能檢驗】所有功能經測試 100% 正常無故障，隨取即用。' }
+        ]
+      },
+      {
+        label: '📦 配件取件',
+        chips: [
+          { label: '附完整配件包裝', text: '【配件清單】附原廠完整包裝盒與配件。' },
+          { label: '僅本體單件', text: '【配件說明】無盒裝，僅物品本體。' },
+          { label: '立德路園區面交', text: '【面交地點】關渡園區 / 立德路同仁可當面點交自取。' },
+          { label: '誠意小議可談', text: '【價格討論】誠意出清，合理小議可討論。' }
+        ]
+      }
+    ],
+    drafts: [
+      {
+        title: `【優質好物】${title}`,
+        desc: `【商品名稱】${title}\n【物品狀態】少用如新，外觀保持良好乾淨無損壞\n【功能檢驗】功能經測試完全正常，隨取即用\n【配件說明】附完整配件與原裝包裝\n【面交地點】關渡園區 / 立德路同仁可配合面交點交`
+      }
+    ]
+  };
+}
+
+/**
+ * 智慧動態分組規格晶片渲染器
+ */
+function updateDynamicSmartTags() {
+  const container = document.getElementById('dynamic-spec-chips-container');
+  const titleBadge = document.getElementById('spec-panel-category-title');
+  if (!container) return;
+
+  const title = (document.getElementById('post-title')?.value || '').trim();
+  const rawInput = (document.getElementById('ai-quick-input')?.value || '').trim();
+  const tradeType = (typeof postType !== 'undefined' && postType) ? postType : 'sell';
+
+  const sem = analyzeProductSemantic(title, rawInput, tradeType);
+
+  if (titleBadge) {
+    titleBadge.innerText = `${sem.categoryName} 常用規格 (點選加入描述)`;
+  }
+
+  let html = '';
+  (sem.groups || []).forEach(group => {
+    html += `
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-xs text-gray-400 font-black shrink-0">${group.label}：</span>
+        <div class="flex flex-wrap gap-1">
+          ${group.chips.map(chip => {
+            const escapedText = (chip.text || '').replace(/'/g, "\\'");
+            return `<button type="button" onclick="appendTagToDesc('${escapedText}')" class="desc-tag-btn px-2 py-1 bg-gray-900 hover:bg-amber-500 hover:text-gray-950 text-amber-300 rounded-lg border border-gray-700 hover:border-amber-400 font-bold transition active:scale-95 shadow-sm text-xs" title="點擊加入描述">${chip.label}</button>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  // 額外附加交易類型專屬標籤
+  if (tradeType === 'lucky') {
+    html += `
+      <div class="flex items-center gap-1.5 flex-wrap pt-0.5 border-t border-gray-800">
+        <span class="text-xs text-rose-400 font-black shrink-0">🎁 尾牙專屬：</span>
+        <div class="flex flex-wrap gap-1">
+          <button type="button" onclick="appendTagToDesc('【物品狀態】公司尾牙抽中，全新原廠封膜完好未拆！')" class="desc-tag-btn px-2 py-1 bg-rose-950/60 hover:bg-rose-600 text-rose-300 hover:text-white rounded-lg border border-rose-500/40 font-bold transition active:scale-95 text-xs">+ 尾牙全新未拆</button>
+          <button type="button" onclick="appendTagToDesc('【以物易物】歡迎使用等值百貨禮券或 Switch 遊戲片交換！')" class="desc-tag-btn px-2 py-1 bg-rose-950/60 hover:bg-rose-600 text-rose-300 hover:text-white rounded-lg border border-rose-500/40 font-bold transition active:scale-95 text-xs">+ 想換等值好物/禮券</button>
+        </div>
+      </div>
+    `;
+  } else if (tradeType === 'free') {
+    html += `
+      <div class="flex items-center gap-1.5 flex-wrap pt-0.5 border-t border-gray-800">
+        <span class="text-xs text-emerald-400 font-black shrink-0">🎁 免費專屬：</span>
+        <div class="flex flex-wrap gap-1">
+          <button type="button" onclick="appendTagToDesc('【贈送說明】同仁愛心結緣免費贈送（0元），功能正常！')" class="desc-tag-btn px-2 py-1 bg-emerald-950/60 hover:bg-emerald-600 text-emerald-300 hover:text-white rounded-lg border border-emerald-500/40 font-bold transition active:scale-95 text-xs">+ 0元愛心免費贈</button>
+          <button type="button" onclick="appendTagToDesc('【取件說明】立德路園區自取，先約好時間先得不保留。')" class="desc-tag-btn px-2 py-1 bg-emerald-950/60 hover:bg-emerald-600 text-emerald-300 hover:text-white rounded-lg border border-emerald-500/40 font-bold transition active:scale-95 text-xs">+ 立德路自取先約先得</button>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+/**
  * ✨ AI 一句話快速解析生成草稿
  */
 function runAiQuickDraft() {
   const inputEl = document.getElementById('ai-quick-input');
-  const rawInput = (inputEl?.value || '').trim();
+  const titleEl = document.getElementById('post-title');
+  let rawInput = (inputEl?.value || '').trim();
+
+  // 若 AI 欄位為空，自動取第 1 步的標題
+  if (!rawInput && titleEl) {
+    rawInput = (titleEl.value || '').trim();
+    if (inputEl) inputEl.value = rawInput;
+  }
 
   if (!rawInput) {
-    showNotification('💡 請在輸入框輸入關鍵字 (例如：黑色滑鼠 或 尾牙抽到AirPods 賣5500 分機45555)', 'warning');
+    showNotification('💡 請在第 1 步填寫商品名稱，或在此輸入關鍵字 (如：黑色滑鼠 或 象印保溫杯)', 'warning');
     if (inputEl) inputEl.focus();
     return;
   }
@@ -1083,7 +1531,7 @@ function runAiQuickDraft() {
   let text = rawInput;
 
   // 1. 智慧偵測交易類型
-  let detectedType = 'sell';
+  let detectedType = (typeof postType !== 'undefined' && postType) ? postType : 'sell';
   if (/尾牙|抽到|抽中|獎品|年會|中獎/i.test(text)) {
     detectedType = 'lucky';
   } else if (/送|免費|愛心|結緣|0元|贈送/i.test(text)) {
@@ -1133,42 +1581,41 @@ function runAiQuickDraft() {
 
   if (!cleanName) cleanName = rawInput.trim();
 
-  // 5. 智慧包裝標題與條列式規格描述
-  let titlePrefix = detectedType === 'lucky' ? '【尾牙全新未拆】' :
-                    detectedType === 'free' ? '【愛心結緣 0元免費】' :
+  // 5. 語意引擎深度分析
+  const sem = analyzeProductSemantic(cleanName, rawInput, detectedType);
+  const draft = sem.drafts[0];
+
+  // 智慧包裝標題
+  let titlePrefix = detectedType === 'lucky' ? '【尾牙全新】' :
+                    detectedType === 'free' ? '【愛心免費送】' :
                     detectedType === 'buy' ? '【誠意求購】' : '【優質出清】';
 
-  let refinedTitle = `${titlePrefix}${cleanName}`;
-  
-  let descBullets = [];
-  if (detectedType === 'lucky') {
-    descBullets.push(`【物品狀態】公司尾牙抽中，全新原廠封膜完整未拆！`);
-    descBullets.push(`【規格配件】附原廠完整盒裝與配件，未拆封新品。`);
-    descBullets.push(`【面交地點】關渡園區 / 立德路同仁可當面點交。`);
-  } else if (detectedType === 'free') {
-    descBullets.push(`【物品狀態】外觀良好整潔，功能正常，免費分享結緣給有需要的同仁！`);
-    descBullets.push(`【面交地點】立德路 / 關渡園區自取。`);
-  } else if (detectedType === 'buy') {
-    descBullets.push(`【徵求說明】誠徵「${cleanName}」，外觀功能良好無故障佳。`);
-    descBullets.push(`【面交地點】關渡園區 / 立德路可配合面交點收。`);
-  } else {
-    descBullets.push(`【物品狀態】少用如新，功能完全正常，外觀乾淨。`);
-    descBullets.push(`【規格特色】實用好物，適合居家或辦公使用。`);
-    descBullets.push(`【面交地點】關渡園區 / 立德路同仁可當面測試點交。`);
-  }
+  let finalTitle = `${titlePrefix}${cleanName}`;
+  if (titleEl) titleEl.value = finalTitle;
 
-  const titleInput = document.getElementById('post-title');
-  if (titleInput) titleInput.value = refinedTitle;
-
+  // 設置語意描述
   const descInput = document.getElementById('post-desc');
-  if (descInput) descInput.value = descBullets.join('\n');
+  if (descInput) {
+    let finalDesc = draft.desc;
+    if (detectedType === 'lucky') {
+      finalDesc = `【物品狀態】公司尾牙抽中全新未拆封，原廠封膜完整！\n` + finalDesc;
+    } else if (detectedType === 'free') {
+      finalDesc = `【愛心分享】同仁愛心結緣免費贈送（0元），功能正常！\n` + finalDesc;
+    } else if (detectedType === 'buy') {
+      finalDesc = `【徵求說明】誠徵「${cleanName}」，外觀功能良好無故障佳。\n` + finalDesc;
+    }
+    descInput.value = finalDesc;
+  }
 
   // 若為尾牙且尚未選照片，自動幫忙勾選預設尾牙禮盒封面
   if (detectedType === 'lucky' && wizardPhotos.filter(Boolean).length === 0) {
     toggleLuckyDefaultCover(true);
   }
 
-  showNotification('✨ AI 已為您快速解析並生成草稿！', 'success');
+  // 即時更新專屬動態標籤
+  updateDynamicSmartTags();
+
+  showNotification(`✨ AI 已依據【${cleanName}】生成專屬規格與描述！`, 'success');
 }
 
 /**
@@ -1177,37 +1624,34 @@ function runAiQuickDraft() {
 function runAiRegenerate() {
   const titleInput = document.getElementById('post-title');
   const descInput = document.getElementById('post-desc');
+  const inputEl = document.getElementById('ai-quick-input');
   if (!titleInput || !descInput) return;
 
-  const rawTitle = titleInput.value.replace(/^【.*?】\s*/, '').trim() || '好物';
-  aiRegenCounter = (aiRegenCounter + 1) % 3;
+  const rawTitle = titleInput.value.replace(/^【.*?】\s*/, '').trim() || (inputEl?.value || '').trim() || '好物';
+  const tradeType = (typeof postType !== 'undefined' && postType) ? postType : 'sell';
 
-  if (aiRegenCounter === 0) {
-    titleInput.value = `【出清如新】${rawTitle}`;
-    descInput.value = `【狀態】少用功能一切正常，外觀保養良好。\n【交貨】關渡園區 / 立德路可面交自取。`;
-    showNotification('🔄 已切換為【極簡俐落風】文案！', 'info');
-  } else if (aiRegenCounter === 1) {
-    titleInput.value = `【超值推薦】${rawTitle} (附配件/功能完好)`;
-    descInput.value = `【物品來源】個人升級換下，平時愛惜使用。\n【物品成色】外觀約 9 成新，功能按鍵測試皆正常。\n【配件說明】附完整盒裝與配件。\n【面交地點】關渡園區 / 立德路同仁可約面交點收。`;
-    showNotification('🔄 已切換為【誠意詳盡風】文案！', 'info');
-  } else {
-    titleInput.value = `【優質良品】${rawTitle}`;
-    descInput.value = `【規格特色】辦公/居家實用必備，隨插即用。\n【功能檢驗】功能 100% 正常無待修。\n【面交取件】立德路園區皆可當面交貨確認。`;
-    showNotification('🔄 已切換為【規格條列風】文案！', 'info');
-  }
+  const sem = analyzeProductSemantic(rawTitle, rawTitle, tradeType);
+  aiRegenCounter = (aiRegenCounter + 1) % sem.drafts.length;
+  const draft = sem.drafts[aiRegenCounter];
+
+  let titlePrefix = tradeType === 'lucky' ? '【尾牙全新】' :
+                    tradeType === 'free' ? '【愛心免費送】' :
+                    tradeType === 'buy' ? '【誠意求購】' : '【優質出清】';
+
+  titleInput.value = `${titlePrefix}${rawTitle}`;
+  descInput.value = draft.desc;
+
+  updateDynamicSmartTags();
+  showNotification(`🔄 已切換為第 ${aiRegenCounter + 1} 種【${sem.category}專屬風格】文案！`, 'info');
 }
 
 /**
- * 🗑️ 一鍵清空標題與描述草稿
+ * 🗑️ 一鍵清空描述草稿
  */
 function clearAiDraft() {
-  const inputEl = document.getElementById('ai-quick-input');
-  const titleInput = document.getElementById('post-title');
   const descInput = document.getElementById('post-desc');
-  if (inputEl) inputEl.value = '';
-  if (titleInput) titleInput.value = '';
   if (descInput) descInput.value = '';
-  showNotification('🗑️ 已一鍵清空標題與描述草稿！', 'info');
+  showNotification('🗑️ 已清空詳細描述文字！', 'info');
 }
 
 /**
@@ -1226,7 +1670,117 @@ function appendTagToDesc(text) {
   } else {
     descEl.value = text;
   }
-  showNotification(`➕ 已加入：${text}`, 'success');
+  showNotification(`➕ 已加入：${text.split('\n')[0].slice(0, 18)}...`, 'success');
+}
+
+/**
+ * 🔍 智慧查詢官方型號規格 (去除雜訊並一鍵直達官方頁面)
+ */
+function searchOfficialSpecs() {
+  try {
+    const inputEl = document.getElementById('ai-quick-input');
+    const titleEl = document.getElementById('post-title');
+    const raw = (inputEl?.value || '').trim() || (titleEl?.value || '').trim();
+
+    if (!raw) {
+      showNotification('💡 請先在上方輸入或填寫好物型號名稱 (如：象印 SM-SD48 或 羅技 MX Master 3S)', 'warning');
+      if (inputEl) inputEl.focus();
+      return;
+    }
+
+    // 智慧過濾標題雜訊
+    const cleanKeyword = raw
+      .replace(/^【.*?】\s*/g, '')
+      .replace(/(?:賣|售|預算|NT\$?|\$|價錢|價格)\s*[:：]?\s*[0-9,]+元?/gi, '')
+      .replace(/(?:分機|ext\.?)\s*[:：]?\s*[0-9]{4,6}/gi, '')
+      .replace(/(?:Teams|teams)\s*[:：]?\s*[a-zA-Z0-9_.-]+/gi, '')
+      .replace(/(?:手機|電話|LINE|line)\s*[:：]?\s*[0-9a-zA-Z_-]+/gi, '')
+      .replace(/尾牙抽到|尾牙抽中|抽中|抽到|全新未拆|全新|愛心|免費送|免費|我想買|想買|求購|徵求|立德路|面交|自取/g, '')
+      .trim();
+
+    const searchQuery = `${cleanKeyword || raw} 官方規格 介紹`;
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+
+    // 開啟新分頁進行搜尋
+    window.open(searchUrl, '_blank');
+
+    // 若當前描述欄為空，順便幫同仁貼心準備好「規格骨架」方便直接貼入
+    const descEl = document.getElementById('post-desc');
+    if (descEl && !descEl.value.trim()) {
+      insertSpecTemplate();
+    }
+
+    showNotification(`🔍 已在新分頁搜尋【${cleanKeyword || raw}】官方規格，查完可直接貼回！`, 'success');
+  } catch (err) {
+    console.error('searchOfficialSpecs error:', err);
+    showNotification('⚠️ 查詢開啟失敗，請直接在文字框輸入規格', 'warning');
+  }
+}
+
+/**
+ * 📋 100% 離線可用：一鍵套用智慧品類規格骨架模板
+ */
+function insertSpecTemplate() {
+  try {
+    const titleEl = document.getElementById('post-title');
+    const inputEl = document.getElementById('ai-quick-input');
+    const raw = (titleEl?.value || '').trim() || (inputEl?.value || '').trim() || '好物';
+    const cleanTitle = raw.replace(/^【.*?】\s*/g, '').trim();
+
+    const tradeType = (typeof postType !== 'undefined' && postType) ? postType : 'sell';
+    const sem = analyzeProductSemantic(cleanTitle, raw, tradeType);
+
+    let specPlaceholder = '【規格參數】（請在此填入：尺寸 / 顏色 / 規格型號）';
+    if (sem.category === 'audio') {
+      specPlaceholder = '【規格參數】（請在此填入：降噪功能 / 續航時數 / Type-C充電 / 顏色）';
+    } else if (sem.category === 'plant') {
+      specPlaceholder = '【植株規格】（請在此填入：盆徑吋數 / 植物品系 / 介質土壤）';
+    } else if (sem.category === 'pet') {
+      specPlaceholder = '【毛孩狀況】（請在此填入：年齡月數 / 疫苗驅蟲紀錄 / 個性特徵）';
+    } else if (sem.category === 'gaming') {
+      specPlaceholder = '【遊戲規格】（請在此填入：遊戲語言繁中 / 卡況金手指 / 盒裝保存）';
+    } else if (sem.category === 'kitchen') {
+      specPlaceholder = '【容量材質】（請在此填入：容量 ml / 304或316不鏽鋼 / 顏色）';
+    } else if (sem.category === 'pc') {
+      specPlaceholder = '【連線規格】（請在此填入：藍牙/2.4G雙模 / DPI / 按鍵手感）';
+    } else if (sem.category === 'appliance') {
+      specPlaceholder = '【電器規格】（請在此填入：110V電壓 / 檔位調節 / 配件清單）';
+    } else if (sem.category === 'voucher') {
+      specPlaceholder = '【票券資訊】（請在此填入：面額張數 / 使用期限 / 適用門市）';
+    } else if (sem.category === 'phone') {
+      specPlaceholder = '【規格容量】（請在此填入：儲存容量 128G/256G / 顏色 / 電池健康度%）';
+    }
+
+    let typeLine = '【成色狀況】約 95 成新，外觀乾淨無明顯刮痕，功能測試 100% 正常。';
+    if (tradeType === 'lucky') {
+      typeLine = '【物品狀態】公司尾牙抽中全新未拆封，原廠封膜完整！';
+    } else if (tradeType === 'free') {
+      typeLine = '【贈送說明】同仁愛心結緣免費贈送（0元），功能正常！';
+    } else if (tradeType === 'buy') {
+      typeLine = '【徵求說明】誠徵二手良品，外觀功能良好無故障即可。';
+    }
+
+    const skeleton = 
+`【商品名稱】${cleanTitle}
+${specPlaceholder}
+${typeLine}
+【盒裝配件】附原廠包裝盒、說明書與完整配件。
+【面交取件】關渡園區 / 立德路大廳可當面點交自取。`;
+
+    const descEl = document.getElementById('post-desc');
+    if (descEl) {
+      descEl.value = skeleton;
+      descEl.focus();
+    }
+
+    if (typeof updateDynamicSmartTags === 'function') {
+      updateDynamicSmartTags();
+    }
+    showNotification(`📋 已套用【${sem.categoryName}】專屬規格骨架！`, 'success');
+  } catch (err) {
+    console.error('insertSpecTemplate error:', err);
+    showNotification('⚠️ 套用規格骨架發生異常，請重試', 'warning');
+  }
 }
 
 /**
@@ -1241,22 +1795,42 @@ function fillContactPrefix(prefix) {
 }
 
 /**
- * 處理 5 格照片選取、壓縮與上傳
+ * 處理 5 格照片選取、壓縮與上傳 (支援 0ms 本機極速預覽與安全容錯)
  */
 async function handleWizardImageSelect(slotIdx, event) {
-  const file = event.target.files[0];
+  const file = event.target?.files?.[0];
   if (!file) return;
 
-  showNotification(`⏳ 照片 ${slotIdx + 1} 壓縮上傳中...`, 'info');
+  // 1. 0ms 即時預覽反應
+  try {
+    const tempUrl = URL.createObjectURL(file);
+    const imgEl = document.getElementById(`photo-img-${slotIdx}`);
+    const slotEl = document.getElementById(`photo-slot-${slotIdx + 1}`);
+    const delBtn = document.getElementById(`photo-del-${slotIdx}`);
+    if (imgEl) {
+      imgEl.src = tempUrl;
+      imgEl.classList.remove('hidden');
+    }
+    if (delBtn) delBtn.classList.remove('hidden');
+    if (slotEl) {
+      slotEl.classList.remove('border-dashed', 'border-gray-700', 'border-amber-500/60');
+      slotEl.classList.add('border-solid', 'border-amber-400');
+    }
+  } catch(previewErr) {
+    console.warn('Instant preview notice:', previewErr);
+  }
+
+  showNotification(`⏳ 照片 ${slotIdx + 1} 壓縮處理中...`, 'info');
 
   try {
     const publicUrl = await compressAndUploadImage(file);
     wizardPhotos[slotIdx] = publicUrl;
     updateWizardPhotoUI();
-    showNotification(`🎉 照片 ${slotIdx + 1} 上傳成功！`, 'success');
+    showNotification(`🎉 照片 ${slotIdx + 1} 已就緒！`, 'success');
   } catch (e) {
     console.error('Image upload error:', e);
-    showNotification(`⚠️ 照片 ${slotIdx + 1} 上傳失敗，請稍後再試：` + e.message, 'warning');
+    showNotification(`⚠️ 照片處理完成 (本地預覽)：` + e.message, 'info');
+    updateWizardPhotoUI();
   }
 }
 
@@ -1264,6 +1838,17 @@ async function handleWizardImageSelect(slotIdx, event) {
  * 移除指定格數照片 (自動向前遞補)
  */
 function removeWizardPhoto(slotIdx) {
+  const removedUrl = wizardPhotos[slotIdx];
+  if (removedUrl && removedUrl.includes('/item-images/') && removedUrl !== LUCKY_DEFAULT_COVER) {
+    const fname = removedUrl.split('/item-images/')[1]?.split('?')[0];
+    if (fname) {
+      fetch(`${SUPABASE_URL}/storage/v1/object/item-images/${fname}`, {
+        method: 'DELETE',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      }).catch(err => console.warn('Clean temp upload error:', err));
+    }
+  }
+
   wizardPhotos[slotIdx] = '';
   const compacted = wizardPhotos.filter(Boolean);
   while (compacted.length < 5) compacted.push('');
@@ -2025,10 +2610,10 @@ function updateModalGuideUI() {
   const nextBtn = document.getElementById('modal-guide-btn-next');
   if (nextBtn) {
     if (curStep >= totSteps) {
-      nextBtn.innerHTML = `<span>開始體驗</span> <i class="fa-solid fa-arrow-right text-[9px]"></i>`;
+      nextBtn.innerHTML = `<span>完成</span> <i class="fa-solid fa-check text-xs"></i>`;
       nextBtn.onclick = finishModalGuide;
     } else {
-      nextBtn.innerHTML = `<span>下一頁</span> <i class="fa-solid fa-chevron-right text-[9px]"></i>`;
+      nextBtn.innerHTML = `<span>下一頁</span> <i class="fa-solid fa-chevron-right text-xs"></i>`;
       nextBtn.onclick = nextModalGuideStep;
     }
   }
@@ -2389,4 +2974,37 @@ window.demoModalSwap = demoModalSwap;
 window.demoModalAiDraft = demoModalAiDraft;
 window.demoModalCopy = demoModalCopy;
 window.updateModalGuideUI = updateModalGuideUI;
+window.updateDynamicSmartTags = updateDynamicSmartTags;
+window.analyzeProductSemantic = analyzeProductSemantic;
+window.searchOfficialSpecs = searchOfficialSpecs;
+window.insertSpecTemplate = insertSpecTemplate;
+
+// 支援剪貼簿截圖直接貼上 (Ctrl+V / Command+V)
+document.addEventListener('paste', async function(e) {
+  if (typeof wizardCurrentStep === 'undefined' || wizardCurrentStep !== 3) return;
+  const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+  if (!items) return;
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item.kind === 'file' && item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (!file) continue;
+
+      let emptyIdx = wizardPhotos.findIndex(p => !p);
+      if (emptyIdx === -1) emptyIdx = 0;
+
+      showNotification(`📋 偵測到剪貼簿照片，自動加入照片 ${emptyIdx + 1}...`, 'info');
+      try {
+        const publicUrl = await compressAndUploadImage(file);
+        wizardPhotos[emptyIdx] = publicUrl;
+        updateWizardPhotoUI();
+        showNotification(`🎉 照片 ${emptyIdx + 1} 已成功加入！`, 'success');
+      } catch (err) {
+        console.error('Paste image error:', err);
+      }
+      break;
+    }
+  }
+});
 

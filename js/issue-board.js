@@ -302,7 +302,7 @@ async function loadAndRenderIssues() {
                 ${isResolved ? '↩️ 恢復處理中' : '✍️ 標記已處理'}
               </button>
               <button onclick="deleteIssueAdmin('${iss.id}')" class="px-2.5 py-1 bg-rose-950/70 hover:bg-rose-900 border border-rose-700/50 text-rose-300 text-xs font-bold rounded-lg transition flex items-center gap-1 cursor-pointer">
-                <i class="fa-solid fa-trash-can text-[10px]"></i> 刪除
+                <i class="fa-solid fa-trash-can text-xs"></i> 刪除
               </button>
             </div>
           </div>

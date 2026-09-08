@@ -18,6 +18,7 @@ function openAdminModal() {
     document.getElementById('admin-login-view').classList.add('hidden');
     document.getElementById('admin-dashboard-view').classList.remove('hidden');
     testSupabaseKeepAlive();
+    scanOrphanStorageImages(true);
   } else {
     document.getElementById('admin-login-view').classList.remove('hidden');
     document.getElementById('admin-dashboard-view').classList.add('hidden');
@@ -114,6 +115,7 @@ async function checkAdminPassword() {
         setTimeout(() => {
           loadAnnouncement().catch(e => console.error(e));
           loadItemsPerPageSetting().catch(e => console.error(e));
+          scanOrphanStorageImages(true).catch(e => console.error(e));
           renderItems();
         }, 50);
         return;
@@ -824,7 +826,7 @@ function renderArchive(logs) {
     const deleteBtnHtml = `
       <td class="px-3 py-3 text-center">
         <button onclick="deleteArchiveLog('${log.db_id}')" class="px-2 py-1 bg-rose-950/70 hover:bg-rose-900 border border-rose-700/50 text-rose-300 rounded-lg text-xs font-bold transition flex items-center gap-1 mx-auto cursor-pointer" title="刪除此存檔紀錄">
-          <i class="fa-solid fa-trash-can text-[10px]"></i> 刪除
+          <i class="fa-solid fa-trash-can text-xs"></i> 刪除
         </button>
       </td>
     `;
@@ -960,17 +962,21 @@ function switchAdminTab(tab) {
   const settingsView = document.getElementById('admin-subview-settings');
   const itemsView = document.getElementById('admin-subview-items');
   const issuesView = document.getElementById('admin-subview-issues');
+  const quotaView = document.getElementById('admin-subview-quota');
   const settingsBtn = document.getElementById('admin-tab-btn-settings');
   const itemsBtn = document.getElementById('admin-tab-btn-items');
   const issuesBtn = document.getElementById('admin-tab-btn-issues');
+  const quotaBtn = document.getElementById('admin-tab-btn-quota');
 
   if (settingsView) settingsView.classList.add('hidden');
   if (itemsView) itemsView.classList.add('hidden');
   if (issuesView) issuesView.classList.add('hidden');
+  if (quotaView) quotaView.classList.add('hidden');
 
   if (settingsBtn) settingsBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition cursor-pointer';
   if (itemsBtn) itemsBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer';
   if (issuesBtn) issuesBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer';
+  if (quotaBtn) quotaBtn.className = 'px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-bold text-xs transition flex items-center gap-1.5 cursor-pointer';
 
   if (tab === 'settings') {
     if (settingsView) settingsView.classList.remove('hidden');
@@ -983,6 +989,99 @@ function switchAdminTab(tab) {
     if (issuesView) issuesView.classList.remove('hidden');
     if (issuesBtn) issuesBtn.className = 'px-3.5 py-1.5 bg-amber-500 text-gray-950 rounded-xl font-black text-xs shadow transition flex items-center gap-1.5 cursor-pointer';
     loadAdminIssuesTable();
+  } else if (tab === 'quota') {
+    if (quotaView) quotaView.classList.remove('hidden');
+    if (quotaBtn) quotaBtn.className = 'px-3.5 py-1.5 bg-purple-600 text-white rounded-xl font-bold text-xs shadow transition flex items-center gap-1.5 cursor-pointer';
+    loadCloudQuotaDashboard();
+  }
+}
+
+/**
+ * 載入並計算 Supabase ＆ Netlify 雲端配額與即時用量
+ */
+async function loadCloudQuotaDashboard() {
+  const updateEl = document.getElementById('quota-last-update');
+  const storageUsedEl = document.getElementById('quota-storage-used');
+  const storageFilesEl = document.getElementById('quota-storage-files');
+  const storagePercentEl = document.getElementById('quota-storage-percent');
+  const storageBarEl = document.getElementById('quota-storage-bar');
+  
+  const dbItemsEl = document.getElementById('quota-db-items');
+  const dbMessagesEl = document.getElementById('quota-db-messages');
+  const dbUsedEl = document.getElementById('quota-db-used');
+  const dbPercentEl = document.getElementById('quota-db-percent');
+  const dbBarEl = document.getElementById('quota-db-bar');
+  const dbLatencyEl = document.getElementById('quota-db-latency');
+
+  if (updateEl) updateEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 計算中...';
+
+  const startTime = Date.now();
+
+  try {
+    // 1. 同步取得 Storage 檔案列表與 DB 統計
+    const [storageRes, itemsRes, messagesRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/storage/v1/object/list/item-images`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prefix: '', limit: 1000, offset: 0, sortBy: { column: 'name', order: 'asc' } })
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/items?select=id`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/messages?select=id`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      })
+    ]);
+
+    const latency = Date.now() - startTime;
+    if (dbLatencyEl) dbLatencyEl.innerText = `${latency} ms`;
+
+    // 2. 計算 Storage 用量 (上限 1024 MB)
+    let storageFiles = [];
+    if (storageRes.ok) storageFiles = await storageRes.json();
+    const totalStorageBytes = (Array.isArray(storageFiles) ? storageFiles : []).reduce((sum, f) => {
+      return sum + ((f.metadata && f.metadata.size) ? f.metadata.size : 0);
+    }, 0);
+    const storageUsedMb = totalStorageBytes / (1024 * 1024);
+    const storageQuotaMb = 1024;
+    const storagePercent = Math.min(100, Math.max(0.1, (storageUsedMb / storageQuotaMb) * 100));
+
+    if (storageUsedEl) storageUsedEl.innerText = `${storageUsedMb.toFixed(2)} MB`;
+    if (storageFilesEl) storageFilesEl.innerText = `${storageFiles.length} 個檔案`;
+    if (storagePercentEl) storagePercentEl.innerText = `${storagePercent.toFixed(2)}%`;
+    if (storageBarEl) storageBarEl.style.width = `${storagePercent.toFixed(1)}%`;
+
+    // 3. 計算 Database 用量 (上限 500 MB)
+    let items = [];
+    let messages = [];
+    if (itemsRes.ok) items = await itemsRes.json();
+    if (messagesRes.ok) messages = await messagesRes.json();
+
+    const itemsCount = Array.isArray(items) ? items.length : 0;
+    const messagesCount = Array.isArray(messages) ? messages.length : 0;
+
+    // 估算資料表使用量 (items ~2KB, messages ~1KB, index ~100KB)
+    const dbBytesEst = itemsCount * 2048 + messagesCount * 1024 + 102400;
+    const dbUsedMb = dbBytesEst / (1024 * 1024);
+    const dbQuotaMb = 500;
+    const dbPercent = Math.min(100, Math.max(0.01, (dbUsedMb / dbQuotaMb) * 100));
+
+    if (dbItemsEl) dbItemsEl.innerText = itemsCount;
+    if (dbMessagesEl) dbMessagesEl.innerText = messagesCount;
+    if (dbUsedEl) dbUsedEl.innerText = `${dbUsedMb.toFixed(3)} MB`;
+    if (dbPercentEl) dbPercentEl.innerText = `${dbPercent.toFixed(3)}%`;
+    if (dbBarEl) dbBarEl.style.width = `${Math.max(1, dbPercent * 5).toFixed(1)}%`;
+
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    if (updateEl) updateEl.innerText = `更新於 ${timeStr}`;
+  } catch (err) {
+    console.error('loadCloudQuotaDashboard error:', err);
+    if (updateEl) updateEl.innerText = '載入失敗';
   }
 }
 
@@ -1105,8 +1204,8 @@ function renderAdminIssuesTable(issues) {
         </td>
         <td class="px-3.5 py-3 text-center">
           ${isResolved ? 
-            '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold px-2 py-0.5 rounded-md">✅ 已處理完成</span>' : 
-            '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-[11px] font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中</span>'}
+            '<span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-2 py-0.5 rounded-md">✅ 已處理完成</span>' : 
+            '<span class="bg-amber-950/80 text-amber-400 border border-amber-500/40 text-xs font-bold px-2 py-0.5 rounded-md animate-pulse">⚡ 處理中</span>'}
         </td>
         <td class="px-3.5 py-3 text-xs text-gray-400 whitespace-nowrap font-medium">${timeAgo(iss.created_at)}</td>
         <td class="px-3.5 py-3 text-center whitespace-nowrap">
@@ -1427,6 +1526,288 @@ async function batchDeleteSelectedAdminItems() {
   await loadAdminItemsTable();
 }
 
+/**
+ * 孤立照片緩存清單
+ */
+var cachedOrphanImages = [];
+
+/**
+ * 掃描 Supabase Storage 中的孤立照片 (未被任何有效貼文引用)
+ */
+async function scanOrphanStorageImages(silent = false) {
+  const statusEl = document.getElementById('admin-storage-status');
+  const totalCountEl = document.getElementById('admin-storage-total-count');
+  const activeCountEl = document.getElementById('admin-storage-active-count');
+  const orphanCountEl = document.getElementById('admin-storage-orphan-count');
+  const bannerEl = document.getElementById('admin-storage-detail-banner');
+  const reclaimSizeEl = document.getElementById('admin-storage-reclaim-size');
+  const cleanBtn = document.getElementById('admin-clean-orphans-btn');
+  const scanBtn = document.getElementById('admin-scan-orphans-btn');
+
+  if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-amber-400"></i> 掃描中...';
+  if (scanBtn) scanBtn.disabled = true;
+
+  try {
+    // 1. 取得 DB 所有商品的圖片清單
+    const itemsRes = await fetch(`${SUPABASE_URL}/rest/v1/items?select=id,title,image_url`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const items = itemsRes.ok ? await itemsRes.json() : [];
+
+    const activeFilenames = new Set();
+    items.forEach(item => {
+      const urls = (item.image_url || '').split('|||');
+      urls.forEach(url => {
+        const cleanUrl = (url || '').trim();
+        if (cleanUrl.includes('/item-images/')) {
+          const fname = cleanUrl.split('/item-images/')[1]?.split('?')[0];
+          if (fname) activeFilenames.add(fname);
+        } else if (cleanUrl.startsWith('http') && cleanUrl.includes('item-images')) {
+          const fname = cleanUrl.split('/').pop()?.split('?')[0];
+          if (fname) activeFilenames.add(fname);
+        }
+      });
+    });
+
+    // 2. 取得 Storage bucket 內所有檔案列表 (分頁批次取得至多 1000 筆)
+    const storageRes = await fetch(`${SUPABASE_URL}/storage/v1/object/list/item-images`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prefix: '', limit: 1000, offset: 0, sortBy: { column: 'name', order: 'asc' } })
+    });
+
+    if (!storageRes.ok) {
+      throw new Error(`Storage 存取失敗 (HTTP ${storageRes.status})`);
+    }
+
+    const storageFiles = await storageRes.json();
+    const totalFiles = Array.isArray(storageFiles) ? storageFiles : [];
+
+    // 3. 找出未被引用的孤立檔案
+    let orphans = [];
+    let totalOrphanBytes = 0;
+
+    totalFiles.forEach(f => {
+      const fname = f.name;
+      if (!fname) return;
+      if (fname === '.emptyFolderPlaceholder') return;
+
+      if (!activeFilenames.has(fname)) {
+        const size = (f.metadata && f.metadata.size) ? f.metadata.size : 0;
+        orphans.push({ name: fname, size: size, created_at: f.created_at });
+        totalOrphanBytes += size;
+      }
+    });
+
+    cachedOrphanImages = orphans;
+
+    // 4. 更新 UI
+    if (totalCountEl) totalCountEl.innerText = `${totalFiles.length} 張`;
+    if (activeCountEl) activeCountEl.innerText = `${activeFilenames.size} 張`;
+    if (orphanCountEl) orphanCountEl.innerText = `${orphans.length} 張`;
+
+    const sizeStr = totalOrphanBytes > 1024 * 1024 
+      ? `${(totalOrphanBytes / (1024 * 1024)).toFixed(2)} MB` 
+      : `${(totalOrphanBytes / 1024).toFixed(1)} KB`;
+
+    if (reclaimSizeEl) reclaimSizeEl.innerText = sizeStr;
+    if (bannerEl) bannerEl.classList.remove('hidden');
+
+    if (cleanBtn) {
+      if (orphans.length > 0) {
+        cleanBtn.disabled = false;
+        cleanBtn.classList.remove('cursor-not-allowed', 'opacity-60', 'bg-rose-600/50', 'text-gray-400');
+        cleanBtn.classList.add('bg-rose-600', 'hover:bg-rose-500', 'text-white', 'cursor-pointer');
+      } else {
+        cleanBtn.disabled = true;
+        cleanBtn.classList.add('cursor-not-allowed', 'opacity-60', 'bg-rose-600/50', 'text-gray-400');
+        cleanBtn.classList.remove('bg-rose-600', 'hover:bg-rose-500', 'text-white', 'cursor-pointer');
+      }
+    }
+
+    if (statusEl) {
+      if (orphans.length > 0) {
+        statusEl.innerHTML = `<span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> 發現 ${orphans.length} 個孤立檔</span>`;
+      } else {
+        statusEl.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> 圖庫乾淨無殘留</span>`;
+      }
+    }
+
+    if (!silent) {
+      if (orphans.length > 0) {
+        showNotification(`🔍 掃描完成：發現 ${orphans.length} 個孤立照片，可釋放約 ${sizeStr} 空間！`, 'info');
+      } else {
+        showNotification('✨ 圖庫掃描完畢：所有照片均正常引用，無孤立殘留檔案！', 'success');
+      }
+    }
+  } catch (err) {
+    console.error('Scan orphan storage images error:', err);
+    if (statusEl) statusEl.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-circle-xmark"></i> 掃描失敗</span>`;
+    if (!silent) showNotification('⚠️ 圖庫掃描失敗：' + err.message, 'warning');
+  } finally {
+    if (scanBtn) scanBtn.disabled = false;
+  }
+}
+
+/**
+ * 孤立照片清理權限 SQL 語法常數
+ */
+const STORAGE_POLICY_SQL = `-- 【PEGA 二手空間】在 Supabase SQL Editor 貼上並點擊 Run 即可開放刪除權限：
+DROP POLICY IF EXISTS "Allow public delete on item-images" ON storage.objects;
+CREATE POLICY "Allow public delete on item-images"
+ON storage.objects FOR DELETE
+TO public, anon, authenticated
+USING ( bucket_id = 'item-images' );`;
+
+/**
+ * 顯示 Supabase Storage 刪除權限設定指引彈窗
+ */
+function showStoragePermissionGuide(reclaimStr, count) {
+  if (typeof showQuickCopyModal === 'function') {
+    showQuickCopyModal(
+      '🔒 雲端圖庫刪除權限尚未開放',
+      STORAGE_POLICY_SQL,
+      `由於 Supabase 雲端儲存空間的安全防護機制 (RLS)，目前資料庫尚未開放 DELETE 刪除權限給前端，導致 ${count} 張孤立照片 (約 ${reclaimStr}) 無法由瀏覽器直接刪除。\n\n請複製下方 SQL 語法，至 Supabase 後台的「SQL Editor」貼上並點擊「Run」執行一次，即可永久啟用「一鍵清理孤立照片」功能！`
+    );
+  } else {
+    navigator.clipboard && navigator.clipboard.writeText(STORAGE_POLICY_SQL);
+    alert(
+      `【🔒 Supabase 圖庫刪除權限尚未開放】\n\n` +
+      `由於 Supabase 預設未啟用 Storage 刪除權限，請至 Supabase 後台 ->「SQL Editor」執行授權 SQL。\n\n` +
+      `已將 SQL 授權語法複製至您的剪貼簿，直接在 Supabase 貼上並點擊 Run 即可！`
+    );
+  }
+}
+
+/**
+ * 一鍵清理 Supabase Storage 中的孤立照片
+ */
+async function cleanOrphanStorageImages() {
+  if (!isAdmin) {
+    showNotification('⚠️ 只有版主具備清理雲端圖庫之權限', 'warning');
+    return;
+  }
+
+  if (!cachedOrphanImages || cachedOrphanImages.length === 0) {
+    showNotification('💡 目前無孤立檔案需要清理，請先點擊掃描', 'info');
+    return;
+  }
+
+  const count = cachedOrphanImages.length;
+  const totalBytes = cachedOrphanImages.reduce((sum, f) => sum + (f.size || 0), 0);
+  const sizeStr = totalBytes > 1024 * 1024 
+    ? `${(totalBytes / (1024 * 1024)).toFixed(2)} MB` 
+    : `${(totalBytes / 1024).toFixed(1)} KB`;
+
+  const confirmClean = confirm(
+    `【雲端圖庫孤立照片清理確認】\n\n` +
+    `即將清理 ${count} 個未被任何商品引用的孤立照片檔案。\n` +
+    `預計可為 Supabase 儲存空間釋放約 ${sizeStr}。\n\n` +
+    `確定要執行清理嗎？`
+  );
+
+  if (!confirmClean) return;
+
+  const cleanBtn = document.getElementById('admin-clean-orphans-btn');
+  const statusEl = document.getElementById('admin-storage-status');
+  const pwdHash = localStorage.getItem('pega_admin_hash') || '';
+
+  if (cleanBtn) {
+    cleanBtn.disabled = true;
+    cleanBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>清理中...</span>';
+  }
+  if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-rose-400"></i> 清理中...';
+
+  let deletedCount = 0;
+  let failCount = 0;
+
+  try {
+    const batchSize = 50;
+    const filenames = cachedOrphanImages.map(f => f.name);
+
+    for (let i = 0; i < filenames.length; i += batchSize) {
+      const chunk = filenames.slice(i, i + batchSize);
+      
+      // 1. 優先嘗試透過版主專用 RPC 函數清理 (若已建立)
+      let rpcSuccess = false;
+      try {
+        const rpcRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/clean_orphan_storage_admin`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_names: chunk, pwd_input: pwdHash })
+        });
+        if (rpcRes.ok) {
+          const rpcDeleted = await rpcRes.json();
+          if (typeof rpcDeleted === 'number' && rpcDeleted >= 0) {
+            deletedCount += rpcDeleted;
+            rpcSuccess = true;
+          }
+        }
+      } catch (rpcErr) {
+        // RPC 未建立或網路錯誤，回退至 Storage API
+      }
+
+      // 2. 若無 RPC，使用標準 Supabase Storage 批次刪除 API
+      if (!rpcSuccess) {
+        try {
+          const delRes = await fetch(`${SUPABASE_URL}/storage/v1/object/item-images`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prefixes: chunk })
+          });
+          if (delRes.ok) {
+            const delData = await delRes.json();
+            if (Array.isArray(delData) && delData.length > 0) {
+              deletedCount += delData.length;
+            } else {
+              // 若回傳空陣列 []，表示 Storage RLS 權限未開放
+              failCount += chunk.length;
+            }
+          } else {
+            failCount += chunk.length;
+          }
+        } catch (chunkErr) {
+          console.error('Batch delete chunk error:', chunkErr);
+          failCount += chunk.length;
+        }
+      }
+    }
+
+    // 3. 判斷實際刪除結果
+    if (deletedCount > 0) {
+      cachedOrphanImages = [];
+      showNotification(`🎉 孤立照片清理完成！共刪除 ${deletedCount} 個檔案，釋放空間！`, 'success');
+      await scanOrphanStorageImages(true);
+    } else {
+      // 0 個檔案被刪除，代表 Supabase Storage RLS 權限尚未開放
+      if (statusEl) {
+        statusEl.innerHTML = `<span class="text-amber-400 font-bold"><i class="fa-solid fa-lock"></i> 需要啟用刪除權限</span>`;
+      }
+      showStoragePermissionGuide(sizeStr, count);
+      await scanOrphanStorageImages(true);
+    }
+  } catch (err) {
+    console.error('Clean orphan storage images error:', err);
+    showNotification('⚠️ 清理過程發生錯誤：' + err.message, 'warning');
+  } finally {
+    if (cleanBtn) {
+      cleanBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i> <span>一鍵清理孤立照片</span>';
+    }
+  }
+}
+
 // 綁定全域以供呼叫
 window.openAdminModal = openAdminModal;
 window.closeAdminModal = closeAdminModal;
@@ -1473,4 +1854,8 @@ window.renderAdminIssuesTable = renderAdminIssuesTable;
 window.toggleSelectAllAdminIssues = toggleSelectAllAdminIssues;
 window.updateAdminIssueBatchUI = updateAdminIssueBatchUI;
 window.batchDeleteSelectedAdminIssues = batchDeleteSelectedAdminIssues;
+
+window.scanOrphanStorageImages = scanOrphanStorageImages;
+window.cleanOrphanStorageImages = cleanOrphanStorageImages;
+window.loadCloudQuotaDashboard = loadCloudQuotaDashboard;
 
