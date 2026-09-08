@@ -56,3 +56,9 @@ var detailPhotoIdx = 0;
 // 成交紀錄狀態
 var archiveLogs = [];
 var selectedArchiveIds = new Set();
+
+// 新手圖文說明彈窗狀態
+var modalGuideCurrentStep = 1;
+var modalGuideTotalSteps = 5;
+window.modalGuideCurrentStep = 1;
+window.modalGuideTotalSteps = 5;

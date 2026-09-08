@@ -1968,8 +1968,8 @@ function initDetailModalGestures() {
 /**
  * 📖 新手圖文使用指南彈窗邏輯 (互動式 5 步驟輪播彈窗)
  */
-var modalGuideCurrentStep = 1;
-var modalGuideTotalSteps = 5;
+window.modalGuideCurrentStep = window.modalGuideCurrentStep || 1;
+window.modalGuideTotalSteps = window.modalGuideTotalSteps || 5;
 
 function openGuideModal() {
   if (typeof closeAllModals === 'function') {
@@ -1977,7 +1977,7 @@ function openGuideModal() {
   }
   const modal = document.getElementById('guide-modal');
   if (modal) {
-    modalGuideCurrentStep = 1;
+    window.modalGuideCurrentStep = 1;
     updateModalGuideUI();
     modal.classList.remove('hidden');
   } else {
@@ -1991,9 +1991,12 @@ function closeGuideModal() {
 }
 
 function updateModalGuideUI() {
+  const curStep = window.modalGuideCurrentStep || 1;
+  const totSteps = window.modalGuideTotalSteps || 5;
+
   document.querySelectorAll('.modal-guide-slide').forEach(slide => {
     const step = parseInt(slide.getAttribute('data-step'), 10);
-    if (step === modalGuideCurrentStep) {
+    if (step === curStep) {
       slide.classList.remove('hidden');
       slide.classList.add('block');
     } else {
@@ -2003,21 +2006,21 @@ function updateModalGuideUI() {
   });
 
   const stepText = document.getElementById('modal-guide-step-text');
-  if (stepText) stepText.innerText = modalGuideCurrentStep;
+  if (stepText) stepText.innerText = curStep;
 
   const progressBar = document.getElementById('modal-guide-progress');
   if (progressBar) {
-    progressBar.style.width = `${(modalGuideCurrentStep / modalGuideTotalSteps) * 100}%`;
+    progressBar.style.width = `${(curStep / totSteps) * 100}%`;
   }
 
   const prevBtn = document.getElementById('modal-guide-btn-prev');
   if (prevBtn) {
-    prevBtn.disabled = (modalGuideCurrentStep === 1);
+    prevBtn.disabled = (curStep === 1);
   }
 
   const nextBtn = document.getElementById('modal-guide-btn-next');
   if (nextBtn) {
-    if (modalGuideCurrentStep === modalGuideTotalSteps) {
+    if (curStep >= totSteps) {
       nextBtn.innerHTML = `<span>開始體驗</span> <i class="fa-solid fa-arrow-right text-[9px]"></i>`;
       nextBtn.onclick = finishModalGuide;
     } else {
@@ -2030,7 +2033,7 @@ function updateModalGuideUI() {
   if (dotsContainer) {
     const dots = dotsContainer.querySelectorAll('span');
     dots.forEach((dot, idx) => {
-      if (idx + 1 === modalGuideCurrentStep) {
+      if (idx + 1 === curStep) {
         dot.className = 'w-3 h-2 rounded-full bg-amber-400 shadow-md shadow-amber-400/50 transition-all';
       } else {
         dot.className = 'w-1.5 h-1.5 rounded-full bg-gray-700 transition-all';
@@ -2040,15 +2043,16 @@ function updateModalGuideUI() {
 }
 
 function nextModalGuideStep() {
-  if (modalGuideCurrentStep < modalGuideTotalSteps) {
-    modalGuideCurrentStep++;
+  const totSteps = window.modalGuideTotalSteps || 5;
+  if ((window.modalGuideCurrentStep || 1) < totSteps) {
+    window.modalGuideCurrentStep = (window.modalGuideCurrentStep || 1) + 1;
     updateModalGuideUI();
   }
 }
 
 function prevModalGuideStep() {
-  if (modalGuideCurrentStep > 1) {
-    modalGuideCurrentStep--;
+  if ((window.modalGuideCurrentStep || 1) > 1) {
+    window.modalGuideCurrentStep = (window.modalGuideCurrentStep || 1) - 1;
     updateModalGuideUI();
   }
 }
