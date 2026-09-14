@@ -1,7 +1,7 @@
 /**
  * 2026 關渡園區 尾牙與文康券歷史行情數據庫
  * 產出時間：2026-09-14
- * 來源：Google Sheets 舊拍賣表 (已去除測試範例，遮罩同仁分機保護隱私)
+ * 來源：Google Sheets 舊拍賣表 (保留同仁分機與聯絡資訊方便詢問)
  */
 window.HISTORY_2026_DATA = [
   {
@@ -13,11 +13,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "🚲 捷安特電輔車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sandy",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33012",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33012"
   },
   {
     "id": "hist-sell-002",
@@ -28,26 +30,30 @@ window.HISTORY_2026_DATA = [
     "categoryName": "🚲 捷安特電輔車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Kris",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35300",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35300"
   },
   {
     "id": "hist-sell-003",
     "type": "sell",
     "typeBadge": "💰 尾牙轉賣",
     "title": "AirPod Pro 3 全新品",
-    "category": "other",
-    "categoryName": "📦 其他好物",
+    "category": "phone",
+    "categoryName": "🎧 AirPods Pro 3",
     "priceDisplay": "$6,500",
     "priceNum": 6500,
+    "isSold": false,
     "author": "Jer",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33831",
     "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "image": "./images/airpods_pro_3.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33831"
   },
   {
     "id": "hist-sell-004",
@@ -55,14 +61,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jerry",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36174",
     "notes": "可議價",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36174"
   },
   {
     "id": "hist-sell-005",
@@ -70,14 +78,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Wood",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 37084",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37084"
   },
   {
     "id": "hist-sell-006",
@@ -85,14 +95,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Henry",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 33269",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33269"
   },
   {
     "id": "hist-sell-007",
@@ -100,14 +112,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Xin",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31451",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31451"
   },
   {
     "id": "hist-sell-008",
@@ -115,14 +129,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "ASUS 華碩 ExpertBook 14吋商用AI筆電深色(Ultra 5 225H/16GB/1TB/WIN11PRO/B5405CCA-0911A225H) + 電腦包",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$45,000",
     "priceNum": 45000,
+    "isSold": false,
     "author": "Celia Chou",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32848",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32848"
   },
   {
     "id": "hist-sell-009",
@@ -133,11 +149,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "🚲 捷安特電輔車",
     "priceDisplay": "$45,000",
     "priceNum": 45000,
+    "isSold": true,
     "author": "Andy",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34362",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34362"
   },
   {
     "id": "hist-sell-010",
@@ -145,14 +163,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Peter",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33437",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33437"
   },
   {
     "id": "hist-sell-011",
@@ -160,14 +180,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Nina",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 33089",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33089"
   },
   {
     "id": "hist-sell-012",
@@ -175,14 +197,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Steven1",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31535",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31535"
   },
   {
     "id": "hist-sell-013",
@@ -190,14 +214,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jasper",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35203",
     "notes": "可議價",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35203"
   },
   {
     "id": "hist-sell-014",
@@ -205,14 +231,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Daniel",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34069",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34069"
   },
   {
     "id": "hist-sell-015",
@@ -220,14 +248,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Bore",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 32777",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32777"
   },
   {
     "id": "hist-sell-016",
@@ -235,14 +265,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch 2 主機 + Joy-Con 2 + Nintendo Switch 2 底座 + Joy-Con 2 握把 + Joy-Con 2 腕帶 ×2 + HDMI Cable + Nintendo Switch 2 遊戲軟體《瑪利歐賽車世界》盒裝版",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$13,500",
     "priceNum": 13500,
+    "isSold": true,
     "author": "Statham",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 37602",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37602"
   },
   {
     "id": "hist-sell-017",
@@ -250,14 +282,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Louis Cheng",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 35882",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35882"
   },
   {
     "id": "hist-sell-018",
@@ -265,14 +299,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Phoebe",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 33568",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33568"
   },
   {
     "id": "hist-sell-019",
@@ -280,14 +316,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$22,600",
     "priceNum": 22600,
+    "isSold": true,
     "author": "Ryan",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 32797",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32797"
   },
   {
     "id": "hist-sell-020",
@@ -295,14 +333,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Ru",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 39525",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39525"
   },
   {
     "id": "hist-sell-021",
@@ -310,14 +350,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Chloe",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 33776",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33776"
   },
   {
     "id": "hist-sell-022",
@@ -325,14 +367,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Evelyn",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 32863",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32863"
   },
   {
     "id": "hist-sell-023",
@@ -340,14 +384,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Patrick",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31369",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31369"
   },
   {
     "id": "hist-sell-024",
@@ -355,14 +401,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Ronald",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34864",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34864"
   },
   {
     "id": "hist-sell-025",
@@ -370,14 +418,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Walt",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37515",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37515"
   },
   {
     "id": "hist-sell-026",
@@ -385,14 +435,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Helen Tseng",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36095",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36095"
   },
   {
     "id": "hist-sell-027",
@@ -400,14 +452,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Wayne",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33209",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33209"
   },
   {
     "id": "hist-sell-028",
@@ -415,14 +469,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Stanley",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33622",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33622"
   },
   {
     "id": "hist-sell-029",
@@ -430,14 +486,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,500",
     "priceNum": 22500,
+    "isSold": true,
     "author": "Steven8",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35790",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35790"
   },
   {
     "id": "hist-sell-030",
@@ -445,14 +503,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Yvonne",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31961",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31961"
   },
   {
     "id": "hist-sell-031",
@@ -463,11 +523,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Thor",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "議價：1/27已售出；銘謝惠顧",
+    "contact": "分機 34682",
+    "notes": "銘謝惠顧",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34682"
   },
   {
     "id": "hist-sell-032",
@@ -478,11 +540,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Eunice",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33167",
     "notes": "可議價；過年換新機，開開心心",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33167"
   },
   {
     "id": "hist-sell-033",
@@ -490,14 +554,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,500",
     "priceNum": 22500,
+    "isSold": true,
     "author": "Tom",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32513",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32513"
   },
   {
     "id": "hist-sell-034",
@@ -505,14 +571,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$20,000",
     "priceNum": 20000,
+    "isSold": true,
     "author": "Leo",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33812",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33812"
   },
   {
     "id": "hist-sell-035",
@@ -520,14 +588,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "Standly Lu",
-    "contactMasked": "30*** (歷史封存)",
+    "contact": "分機 30294",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 30294"
   },
   {
     "id": "hist-sell-036",
@@ -535,14 +605,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Angus",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33842",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33842"
   },
   {
     "id": "hist-sell-037",
@@ -550,14 +622,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$21,680",
     "priceNum": 21680,
+    "isSold": false,
     "author": "Travis Yeh",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31513",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31513"
   },
   {
     "id": "hist-sell-038",
@@ -565,14 +639,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Alvin",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34090",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34090"
   },
   {
     "id": "hist-sell-039",
@@ -583,11 +659,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "BOB",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33510",
     "notes": "已有人下訂",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33510"
   },
   {
     "id": "hist-sell-040",
@@ -595,14 +673,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,500",
     "priceNum": 23500,
+    "isSold": false,
     "author": "yufuyu",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31860",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31860"
   },
   {
     "id": "hist-sell-041",
@@ -613,11 +693,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jennifer",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37603",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37603"
   },
   {
     "id": "hist-sell-042",
@@ -625,14 +707,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,500",
     "priceNum": 23500,
+    "isSold": true,
     "author": "Van",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35687",
     "notes": "已領到，年前就可拿到~",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35687"
   },
   {
     "id": "hist-sell-043",
@@ -643,11 +727,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Peggy",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33538",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33538"
   },
   {
     "id": "hist-sell-044",
@@ -655,14 +741,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$24,000",
     "priceNum": 24000,
+    "isSold": false,
     "author": "Ray",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37286",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37286"
   },
   {
     "id": "hist-sell-045",
@@ -670,14 +758,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": true,
     "author": "Sylvia",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37409",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37409"
   },
   {
     "id": "hist-sell-046",
@@ -688,11 +778,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Uni",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35433",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35433"
   },
   {
     "id": "hist-sell-047",
@@ -703,11 +795,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Cardell",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36826",
     "notes": "議價：微議價",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36826"
   },
   {
     "id": "hist-sell-048",
@@ -718,11 +812,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Ken_Luo",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35033",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35033"
   },
   {
     "id": "hist-sell-049",
@@ -733,11 +829,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Kevin",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37593",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37593"
   },
   {
     "id": "hist-sell-050",
@@ -748,11 +846,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Angel2",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32632",
     "notes": "可議價；祝你好運旺旺來（等哀鳳拿到再面交）",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32632"
   },
   {
     "id": "hist-sell-051",
@@ -763,11 +863,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Hao",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33704",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33704"
   },
   {
     "id": "hist-sell-052",
@@ -778,11 +880,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Tim",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33876",
     "notes": "已有人下訂",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33876"
   },
   {
     "id": "hist-sell-053",
@@ -793,11 +897,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Rachel",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35383",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35383"
   },
   {
     "id": "hist-sell-054",
@@ -808,11 +914,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jiannhaur",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35248",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35248"
   },
   {
     "id": "hist-sell-055",
@@ -823,11 +931,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Henry",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37295",
     "notes": "議價：可議",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37295"
   },
   {
     "id": "hist-sell-056",
@@ -838,11 +948,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "JasonKH",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32512",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32512"
   },
   {
     "id": "hist-sell-057",
@@ -850,14 +962,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Draco",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32111",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32111"
   },
   {
     "id": "hist-sell-058",
@@ -868,11 +982,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Ken",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35717",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35717"
   },
   {
     "id": "hist-sell-059",
@@ -880,14 +996,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": false,
     "author": "Maurice",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31705",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31705"
   },
   {
     "id": "hist-sell-060",
@@ -898,11 +1016,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Robin",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32347",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32347"
   },
   {
     "id": "hist-sell-061",
@@ -913,11 +1033,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Debbie",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32006",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32006"
   },
   {
     "id": "hist-sell-062",
@@ -928,11 +1050,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Robert",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34363",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34363"
   },
   {
     "id": "hist-sell-063",
@@ -943,11 +1067,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Eddy_Lee",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35290",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35290"
   },
   {
     "id": "hist-sell-064",
@@ -958,11 +1084,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,000",
     "priceNum": 26000,
+    "isSold": true,
     "author": "Jan",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37541",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37541"
   },
   {
     "id": "hist-sell-065",
@@ -973,11 +1101,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Draco",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32111",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32111"
   },
   {
     "id": "hist-sell-066",
@@ -985,14 +1115,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Ivy",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36602",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36602"
   },
   {
     "id": "hist-sell-067",
@@ -1003,11 +1135,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "Ace",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34958",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34958"
   },
   {
     "id": "hist-sell-068",
@@ -1018,11 +1152,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "Benson_Lee",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34252",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34252"
   },
   {
     "id": "hist-sell-069",
@@ -1033,11 +1169,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Sherry",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35929",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35929"
   },
   {
     "id": "hist-sell-070",
@@ -1045,14 +1183,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jeff K",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32423",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32423"
   },
   {
     "id": "hist-sell-071",
@@ -1063,11 +1203,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Hank",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31602",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31602"
   },
   {
     "id": "hist-sell-072",
@@ -1078,11 +1220,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "jeff",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33640",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33640"
   },
   {
     "id": "hist-sell-073",
@@ -1093,11 +1237,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sway",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32289",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32289"
   },
   {
     "id": "hist-sell-074",
@@ -1108,11 +1254,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Mad",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36759",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36759"
   },
   {
     "id": "hist-sell-075",
@@ -1123,11 +1271,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Yimin",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36050",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36050"
   },
   {
     "id": "hist-sell-076",
@@ -1138,11 +1288,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Hopper",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36416",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36416"
   },
   {
     "id": "hist-sell-077",
@@ -1150,14 +1302,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Willy",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36422",
     "notes": "議價：Cain Chen預訂；慶祝登頂101破盤價，",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36422"
   },
   {
     "id": "hist-sell-078",
@@ -1168,11 +1322,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Eunice",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33167",
     "notes": "新年快樂，換了手機好過年🧨",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33167"
   },
   {
     "id": "hist-sell-079",
@@ -1183,11 +1339,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Candy_Chu",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31142",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31142"
   },
   {
     "id": "hist-sell-080",
@@ -1198,11 +1356,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Jason",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31980",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31980"
   },
   {
     "id": "hist-sell-081",
@@ -1213,11 +1373,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "Lia",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35936",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35936"
   },
   {
     "id": "hist-sell-082",
@@ -1228,11 +1390,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,368",
     "priceNum": 26368,
+    "isSold": true,
     "author": "David_Tsao",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32374",
     "notes": "年前促銷價！買隻新機好過年！",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32374"
   },
   {
     "id": "hist-sell-083",
@@ -1243,11 +1407,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "Roger",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37025",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37025"
   },
   {
     "id": "hist-sell-084",
@@ -1258,11 +1424,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Derek",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35428",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35428"
   },
   {
     "id": "hist-sell-085",
@@ -1273,11 +1441,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Jeff",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31610",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31610"
   },
   {
     "id": "hist-sell-086",
@@ -1288,11 +1458,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,500",
     "priceNum": 25500,
+    "isSold": true,
     "author": "Lily",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34820",
     "notes": "已有拆封，僅確認內容物，無拿出、無開機，可",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34820"
   },
   {
     "id": "hist-sell-087",
@@ -1303,11 +1475,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "TM",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31259",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31259"
   },
   {
     "id": "hist-sell-088",
@@ -1318,11 +1492,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "Ike",
-    "contactMasked": "30*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 30296",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 30296"
   },
   {
     "id": "hist-sell-089",
@@ -1333,11 +1509,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Chinan",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34003",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34003"
   },
   {
     "id": "hist-sell-090",
@@ -1348,11 +1526,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,900",
     "priceNum": 26900,
+    "isSold": true,
     "author": "Vicky",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36601",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36601"
   },
   {
     "id": "hist-sell-091",
@@ -1363,11 +1543,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "HsinYing",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36944",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36944"
   },
   {
     "id": "hist-sell-092",
@@ -1378,11 +1560,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Brooke",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33885",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33885"
   },
   {
     "id": "hist-sell-093",
@@ -1393,11 +1577,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Chika",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31463",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31463"
   },
   {
     "id": "hist-sell-094",
@@ -1408,11 +1594,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "Evelyn",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36638",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36638"
   },
   {
     "id": "hist-sell-095",
@@ -1423,11 +1611,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$37,000",
     "priceNum": 37000,
+    "isSold": true,
     "author": "Malik",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37580",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37580"
   },
   {
     "id": "hist-sell-096",
@@ -1438,11 +1628,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": true,
     "author": "Wendy",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33219",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33219"
   },
   {
     "id": "hist-sell-097",
@@ -1453,11 +1645,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,500",
     "priceNum": 35500,
+    "isSold": true,
     "author": "Steven",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36439",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36439"
   },
   {
     "id": "hist-sell-098",
@@ -1468,11 +1662,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$36,000",
     "priceNum": 36000,
+    "isSold": true,
     "author": "Tank",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35814",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35814"
   },
   {
     "id": "hist-sell-099",
@@ -1483,11 +1679,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,800",
     "priceNum": 35800,
+    "isSold": true,
     "author": "Barrel",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35618",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35618"
   },
   {
     "id": "hist-sell-100",
@@ -1498,11 +1696,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$36,000",
     "priceNum": 36000,
+    "isSold": true,
     "author": "Kyle",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37268",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37268"
   },
   {
     "id": "hist-sell-101",
@@ -1513,11 +1713,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Chipper",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37054",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37054"
   },
   {
     "id": "hist-sell-102",
@@ -1528,11 +1730,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Fanru",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32750",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32750"
   },
   {
     "id": "hist-sell-103",
@@ -1543,11 +1747,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "kai",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34648",
     "notes": "team可聯絡",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34648"
   },
   {
     "id": "hist-sell-104",
@@ -1558,11 +1764,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Chris",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37491",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37491"
   },
   {
     "id": "hist-sell-105",
@@ -1570,14 +1778,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Patrick",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33069",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33069"
   },
   {
     "id": "hist-sell-106",
@@ -1585,14 +1795,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Michelle",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32695",
     "notes": "可議價；歡迎",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32695"
   },
   {
     "id": "hist-sell-107",
@@ -1603,11 +1815,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sean",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31209",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31209"
   },
   {
     "id": "hist-sell-108",
@@ -1618,11 +1832,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$41,800",
     "priceNum": 41800,
+    "isSold": true,
     "author": "Helen",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31336",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31336"
   },
   {
     "id": "hist-sell-109",
@@ -1633,11 +1849,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$48,000",
     "priceNum": 48000,
+    "isSold": true,
     "author": "Miss Y",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33248",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33248"
   },
   {
     "id": "hist-sell-110",
@@ -1648,11 +1866,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$40,000",
     "priceNum": 40000,
+    "isSold": true,
     "author": "Chuck",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36432",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36432"
   },
   {
     "id": "hist-sell-111",
@@ -1663,11 +1883,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$40,000",
     "priceNum": 40000,
+    "isSold": true,
     "author": "David_Wong",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32369",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32369"
   },
   {
     "id": "hist-sell-112",
@@ -1678,11 +1900,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jerry",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32049",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32049"
   },
   {
     "id": "hist-sell-113",
@@ -1693,11 +1917,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Alen",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33125",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33125"
   },
   {
     "id": "hist-sell-114",
@@ -1708,11 +1934,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sherry",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31553",
     "notes": "議價：暫售",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31553"
   },
   {
     "id": "hist-sell-115",
@@ -1723,11 +1951,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Denny",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37022",
     "notes": "Team可聯絡",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37022"
   },
   {
     "id": "hist-sell-116",
@@ -1735,14 +1965,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "James",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37071",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37071"
   },
   {
     "id": "hist-sell-117",
@@ -1750,14 +1982,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Jolyn",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 39512",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39512"
   },
   {
     "id": "hist-sell-118",
@@ -1765,14 +1999,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Sid",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35052",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35052"
   },
   {
     "id": "hist-sell-119",
@@ -1780,14 +2016,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Cindy",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32135",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32135"
   },
   {
     "id": "hist-sell-120",
@@ -1795,14 +2033,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Richard",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37015",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37015"
   },
   {
     "id": "hist-sell-121",
@@ -1810,14 +2050,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": true,
     "author": "Enif",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32972",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32972"
   },
   {
     "id": "hist-sell-122",
@@ -1825,14 +2067,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$28,000",
     "priceNum": 28000,
+    "isSold": true,
     "author": "Willy",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36422",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36422"
   },
   {
     "id": "hist-sell-123",
@@ -1840,14 +2084,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Ryan6_Chen",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35828",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35828"
   },
   {
     "id": "hist-sell-124",
@@ -1855,14 +2101,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Ariel",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34567",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34567"
   },
   {
     "id": "hist-sell-125",
@@ -1870,14 +2118,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$29,000",
     "priceNum": 29000,
+    "isSold": true,
     "author": "Billy",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35884",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35884"
   },
   {
     "id": "hist-sell-126",
@@ -1885,14 +2135,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G22",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$29,000",
     "priceNum": 29000,
+    "isSold": false,
     "author": "Jolyn",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-sell-127",
@@ -1903,11 +2155,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Vani",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35491",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35491"
   },
   {
     "id": "hist-sell-128",
@@ -1918,11 +2172,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Derek",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33002",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33002"
   },
   {
     "id": "hist-sell-129",
@@ -1930,14 +2186,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": false,
     "author": "Joy",
-    "contactMasked": "39*** (歷史封存)",
+    "contact": "分機 39476",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39476"
   },
   {
     "id": "hist-sell-130",
@@ -1948,11 +2206,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Carrie",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34837",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34837"
   },
   {
     "id": "hist-sell-131",
@@ -1963,11 +2223,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Brian",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33601",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33601"
   },
   {
     "id": "hist-sell-132",
@@ -1975,14 +2237,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": true,
     "author": "Jeff",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34733",
     "notes": "敢出我就敢回,跪求",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34733"
   },
   {
     "id": "hist-sell-133",
@@ -1990,14 +2254,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Kyo",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37246",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37246"
   },
   {
     "id": "hist-sell-134",
@@ -2005,14 +2271,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Joseph",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34105",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34105"
   },
   {
     "id": "hist-sell-135",
@@ -2020,14 +2288,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Martin",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33513",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33513"
   },
   {
     "id": "hist-sell-136",
@@ -2035,14 +2305,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Warren",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35873",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35873"
   },
   {
     "id": "hist-sell-137",
@@ -2053,11 +2325,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Will1 Lin",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36333",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36333"
   },
   {
     "id": "hist-sell-138",
@@ -2068,11 +2342,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Robert",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32771",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32771"
   },
   {
     "id": "hist-sell-139",
@@ -2080,14 +2356,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Hal",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37212",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37212"
   },
   {
     "id": "hist-sell-140",
@@ -2095,14 +2373,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": true,
     "author": "Peihan",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33724",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33724"
   },
   {
     "id": "hist-sell-141",
@@ -2110,14 +2390,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Alex",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31727",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31727"
   },
   {
     "id": "hist-sell-142",
@@ -2128,11 +2410,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Andy Lien",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33240",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33240"
   },
   {
     "id": "hist-sell-143",
@@ -2140,14 +2424,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Kevin",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32087",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32087"
   },
   {
     "id": "hist-sell-144",
@@ -2155,14 +2441,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$29,000",
     "priceNum": 29000,
+    "isSold": true,
     "author": "Brian",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33171",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33171"
   },
   {
     "id": "hist-sell-145",
@@ -2170,14 +2458,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$29,000",
     "priceNum": 29000,
+    "isSold": true,
     "author": "Michael",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 39403",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39403"
   },
   {
     "id": "hist-sell-146",
@@ -2185,14 +2475,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Jerry",
-    "contactMasked": "🔒 分機已封存",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "Teams 聯繫",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-sell-147",
@@ -2203,11 +2495,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "John",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32658",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32658"
   },
   {
     "id": "hist-sell-148",
@@ -2218,11 +2512,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": true,
     "author": "Jay3",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32309",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32309"
   },
   {
     "id": "hist-sell-149",
@@ -2233,11 +2529,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Frank",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37354",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37354"
   },
   {
     "id": "hist-sell-150",
@@ -2248,11 +2546,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": false,
     "author": "Flea_Wu",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35372",
     "notes": "議價：sold",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35372"
   },
   {
     "id": "hist-sell-151",
@@ -2263,11 +2563,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Jason",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36428",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36428"
   },
   {
     "id": "hist-sell-152",
@@ -2278,11 +2580,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": true,
     "author": "YOKO",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34151",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34151"
   },
   {
     "id": "hist-sell-153",
@@ -2293,11 +2597,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": true,
     "author": "Walter Huang",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37267",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37267"
   },
   {
     "id": "hist-sell-154",
@@ -2308,11 +2614,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Joyce",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34832",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34832"
   },
   {
     "id": "hist-sell-155",
@@ -2323,11 +2631,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": true,
     "author": "John",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33371",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33371"
   },
   {
     "id": "hist-sell-156",
@@ -2338,11 +2648,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Sam1",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32000",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32000"
   },
   {
     "id": "hist-sell-157",
@@ -2353,11 +2665,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": true,
     "author": "Rick",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35209",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35209"
   },
   {
     "id": "hist-sell-158",
@@ -2368,11 +2682,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$24,000",
     "priceNum": 24000,
+    "isSold": true,
     "author": "Han",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36381",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36381"
   },
   {
     "id": "hist-sell-159",
@@ -2383,11 +2699,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Tzuchao",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "32336,887\n-:77847777",
     "notes": "議價：已出售",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "32336,887\n-:77847777"
   },
   {
     "id": "hist-sell-160",
@@ -2398,11 +2716,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$21,000",
     "priceNum": 21000,
+    "isSold": true,
     "author": "Nancy",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 39901",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39901"
   },
   {
     "id": "hist-sell-161",
@@ -2413,11 +2733,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Brian Tao",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34147",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34147"
   },
   {
     "id": "hist-sell-162",
@@ -2425,14 +2747,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Henry",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33484",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33484"
   },
   {
     "id": "hist-sell-163",
@@ -2443,11 +2767,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$26,000",
     "priceNum": 26000,
+    "isSold": false,
     "author": "Harry+",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32019",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32019"
   },
   {
     "id": "hist-sell-164",
@@ -2458,11 +2784,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Wallace",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31191",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31191"
   },
   {
     "id": "hist-sell-165",
@@ -2473,11 +2801,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Ken Yu",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32916",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32916"
   },
   {
     "id": "hist-sell-166",
@@ -2488,11 +2818,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,500",
     "priceNum": 22500,
+    "isSold": true,
     "author": "分，吃，c，彩田村吃飯，跟，箇箇，，，， *,🛶箇+",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35858",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35858"
   },
   {
     "id": "hist-sell-167",
@@ -2503,11 +2835,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Euna",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34672",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34672"
   },
   {
     "id": "hist-sell-168",
@@ -2515,14 +2849,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Yiluen",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33165",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33165"
   },
   {
     "id": "hist-sell-169",
@@ -2530,14 +2866,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "David",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32717",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32717"
   },
   {
     "id": "hist-sell-170",
@@ -2548,11 +2886,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Xiang",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34554",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34554"
   },
   {
     "id": "hist-sell-171",
@@ -2563,11 +2903,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Julie",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36593",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36593"
   },
   {
     "id": "hist-sell-172",
@@ -2575,14 +2917,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "華翔旅遊金 $30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sam",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32094",
+    "notes": "當期已順利成交轉讓",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32094"
   },
   {
     "id": "hist-sell-173",
@@ -2593,11 +2937,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jerry",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34087",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34087"
   },
   {
     "id": "hist-sell-174",
@@ -2608,11 +2954,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Chris",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31267",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31267"
   },
   {
     "id": "hist-sell-175",
@@ -2623,11 +2971,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Simon6",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35960",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35960"
   },
   {
     "id": "hist-sell-176",
@@ -2638,11 +2988,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Julian",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36533",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36533"
   },
   {
     "id": "hist-sell-177",
@@ -2653,11 +3005,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Liz",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37652",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37652"
   },
   {
     "id": "hist-sell-178",
@@ -2668,11 +3022,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Amice",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31894",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31894"
   },
   {
     "id": "hist-sell-179",
@@ -2683,11 +3039,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Renee",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35236",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35236"
   },
   {
     "id": "hist-sell-180",
@@ -2698,11 +3056,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Lucas Lin",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37441",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37441"
   },
   {
     "id": "hist-sell-181",
@@ -2713,11 +3073,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sandy",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 33820",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33820"
   },
   {
     "id": "hist-sell-182",
@@ -2725,14 +3087,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Mingjuan",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32943",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32943"
   },
   {
     "id": "hist-sell-183",
@@ -2743,11 +3107,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Stanly",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31953",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31953"
   },
   {
     "id": "hist-sell-184",
@@ -2758,11 +3124,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Daniel Huang",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35430",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35430"
   },
   {
     "id": "hist-sell-185",
@@ -2773,11 +3141,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Alex8",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31694",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31694"
   },
   {
     "id": "hist-sell-186",
@@ -2788,11 +3158,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sheng",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37678",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37678"
   },
   {
     "id": "hist-sell-187",
@@ -2800,14 +3172,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "華翔旅遊金 $30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Edward Chang",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35731",
+    "notes": "當期已順利成交轉讓",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35731"
   },
   {
     "id": "hist-sell-188",
@@ -2815,14 +3189,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Willy",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36422",
     "notes": "Cain Chen預訂",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36422"
   },
   {
     "id": "hist-sell-189",
@@ -2833,11 +3209,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Emily",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36336",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36336"
   },
   {
     "id": "hist-sell-190",
@@ -2848,11 +3226,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jyunming_Jhang",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35416",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35416"
   },
   {
     "id": "hist-sell-191",
@@ -2863,11 +3243,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Baron_lin",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32295",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32295"
   },
   {
     "id": "hist-sell-192",
@@ -2878,11 +3260,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Duncan",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31410",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31410"
   },
   {
     "id": "hist-sell-193",
@@ -2893,11 +3277,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Jacky_wei",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31721",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31721"
   },
   {
     "id": "hist-sell-194",
@@ -2908,11 +3294,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Daivd",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34573",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34573"
   },
   {
     "id": "hist-sell-195",
@@ -2923,11 +3311,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Sandy5_wang",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32610",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32610"
   },
   {
     "id": "hist-sell-196",
@@ -2938,11 +3328,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$32,000",
     "priceNum": 32000,
+    "isSold": true,
     "author": "Vic",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 32453",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32453"
   },
   {
     "id": "hist-sell-197",
@@ -2950,14 +3342,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS 14吋 Ultra 7 AI商用筆電 (B5405CCA-0901A255H/Ultra 7 255H/16G/1TB SSD/W11PRO)",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$70,000",
     "priceNum": 70000,
+    "isSold": true,
     "author": "Archer",
-    "contactMasked": "AS*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "ASUS",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "ASUS"
   },
   {
     "id": "hist-sell-198",
@@ -2965,14 +3359,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "華翔旅遊金$30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Gars",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 39022",
+    "notes": "當期已順利成交轉讓",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39022"
   },
   {
     "id": "hist-sell-199",
@@ -2980,14 +3376,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "華翔旅遊金$30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Emma",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 37254",
+    "notes": "當期已順利成交轉讓",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37254"
   },
   {
     "id": "hist-sell-200",
@@ -2995,14 +3393,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "華翔旅遊金$30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Erin1_Wang",
-    "contactMasked": "30*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 30256",
+    "notes": "當期已順利成交轉讓",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 30256"
   },
   {
     "id": "hist-sell-201",
@@ -3010,14 +3410,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "(動漫展抽公仔抽到）SONY 索尼 New PlayStation 5 光碟版主機(PS5 Slim)(CFI-2018A01)",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$14,000",
     "priceNum": 14000,
+    "isSold": false,
     "author": "Leslie Hung",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31746",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31746"
   },
   {
     "id": "hist-sell-202",
@@ -3028,11 +3430,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$23,300",
     "priceNum": 23300,
+    "isSold": false,
     "author": "Seanfa",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37240",
     "notes": "議價：sold",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37240"
   },
   {
     "id": "hist-sell-203",
@@ -3043,11 +3447,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "⌚ 智慧穿戴",
     "priceDisplay": "$10,000",
     "priceNum": 10000,
+    "isSold": false,
     "author": "Kevin",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34286",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34286"
   },
   {
     "id": "hist-sell-204",
@@ -3058,11 +3464,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$37,000",
     "priceNum": 37000,
+    "isSold": true,
     "author": "Paul",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35603",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35603"
   },
   {
     "id": "hist-sell-205",
@@ -3073,11 +3481,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": true,
     "author": "Yvonne",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 34677",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34677"
   },
   {
     "id": "hist-sell-206",
@@ -3088,11 +3498,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": false,
     "author": "Eric",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34881",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34881"
   },
   {
     "id": "hist-sell-207",
@@ -3100,14 +3512,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$29,000",
     "priceNum": 29000,
+    "isSold": true,
     "author": "Mars",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36946",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36946"
   },
   {
     "id": "hist-sell-208",
@@ -3115,14 +3529,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": false,
     "author": "Sarah",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32088",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32088"
   },
   {
     "id": "hist-sell-209",
@@ -3130,14 +3546,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$24,000",
     "priceNum": 24000,
+    "isSold": false,
     "author": "Ray",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34391",
     "notes": "可議價",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34391"
   },
   {
     "id": "hist-sell-210",
@@ -3145,14 +3563,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$22,500",
     "priceNum": 22500,
+    "isSold": false,
     "author": "Lavy",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32344",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32344"
   },
   {
     "id": "hist-sell-211",
@@ -3163,11 +3583,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": true,
     "author": "frank_lee",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35269",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35269"
   },
   {
     "id": "hist-sell-212",
@@ -3178,11 +3600,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📖 數位生活",
     "priceDisplay": "$2,300",
     "priceNum": 2300,
+    "isSold": true,
     "author": "frank_lee",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 35269",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35269"
   },
   {
     "id": "hist-sell-213",
@@ -3190,14 +3614,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 0,
+    "isSold": true,
     "author": "Max_Lin",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 33228",
+    "notes": "當期已順利成交轉讓",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33228"
   },
   {
     "id": "hist-sell-214",
@@ -3208,11 +3634,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "🤖 家電生活",
     "priceDisplay": "$17,000",
     "priceNum": 17000,
+    "isSold": false,
     "author": "Fanny,",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：誠可議；手機聯絡0963056192",
     "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-sell-215",
@@ -3223,11 +3651,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": true,
     "author": "Vicky Pan",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 31801",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31801"
   },
   {
     "id": "hist-sell-216",
@@ -3238,11 +3668,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$37,000",
     "priceNum": 37000,
+    "isSold": false,
     "author": "Steve",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35408",
     "notes": "議價：誠可議",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35408"
   },
   {
     "id": "hist-sell-217",
@@ -3253,11 +3685,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "💻 商務筆電",
     "priceDisplay": "$22,000",
     "priceNum": 22000,
+    "isSold": false,
     "author": "Elle Hung",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35562",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35562"
   },
   {
     "id": "hist-sell-218",
@@ -3265,14 +3699,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "華翔旅遊金$30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "$30,000",
     "priceNum": 30000,
+    "isSold": true,
     "author": "Jeff  Hsiao",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36562",
+    "notes": "當期已順利成交轉讓",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36562"
   },
   {
     "id": "hist-sell-219",
@@ -3280,14 +3716,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$28,000",
     "priceNum": 28000,
+    "isSold": true,
     "author": "Patrick Luo",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "全新原廠正品 / 尾牙抽中",
+    "contact": "分機 36628",
+    "notes": "當期已順利成交轉讓",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36628"
   },
   {
     "id": "hist-sell-220",
@@ -3298,11 +3736,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 平板/手持",
     "priceDisplay": "$9,500",
     "priceNum": 9500,
+    "isSold": false,
     "author": "Belle",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35268",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35268"
   },
   {
     "id": "hist-sell-221",
@@ -3310,14 +3750,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "Nintendo sound clock alarmo",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$2,300",
     "priceNum": 2300,
+    "isSold": false,
     "author": "Mandy_Yu",
-    "contactMasked": "37*** (歷史封存)",
+    "contact": "分機 37060",
     "notes": "全新原廠正品 / 尾牙抽中",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37060"
   },
   {
     "id": "hist-sell-222",
@@ -3325,14 +3767,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$2,300",
     "priceNum": 2300,
+    "isSold": false,
     "author": "Vivi",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35964",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35964"
   },
   {
     "id": "hist-sell-223",
@@ -3340,14 +3784,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "💰 尾牙轉賣",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": false,
     "author": "Mark Jhang",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36536",
     "notes": "全新原廠正品 / 尾牙抽中",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36536"
   },
   {
     "id": "hist-buy-001",
@@ -3356,13 +3802,15 @@ window.HISTORY_2026_DATA = [
     "title": "手持裝置 Apple iPhone 17 (256GB) 綠/藍/白",
     "category": "phone",
     "categoryName": "📱 iPhone 17",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Timor",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33216",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33216"
   },
   {
     "id": "hist-buy-002",
@@ -3371,13 +3819,15 @@ window.HISTORY_2026_DATA = [
     "title": "手持裝置 Apple iPhone 17 Pro  (256GB) 顏色均可",
     "category": "phone",
     "categoryName": "📱 iPhone 17",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Terry",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31103",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31103"
   },
   {
     "id": "hist-buy-003",
@@ -3385,14 +3835,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2)便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Eddie",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 32138",
+    "notes": "當期已成功收購結案",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32138"
   },
   {
     "id": "hist-buy-004",
@@ -3400,14 +3852,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G N$S2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$20,000",
     "priceNum": 20000,
+    "isSold": false,
     "author": "Sam",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 35272",
+    "notes": "誠意徵求 / 當期收購",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35272"
   },
   {
     "id": "hist-buy-005",
@@ -3415,14 +3869,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "和妍美容儀 PRIlo 潼妍焕美容儀/太妃杏",
     "category": "beauty",
-    "categoryName": "💆 美容生活",
+    "categoryName": "💆 潼妍美顏儀",
     "priceDisplay": "$2,800",
     "priceNum": 2800,
+    "isSold": false,
     "author": "Liz",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 37652",
+    "notes": "誠意徵求 / 當期收購",
+    "image": "images/beauty_tongyan.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37652"
   },
   {
     "id": "hist-buy-006",
@@ -3433,11 +3889,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,415",
     "priceNum": 25415,
+    "isSold": false,
     "author": "Julien",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33293",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33293"
   },
   {
     "id": "hist-buy-007",
@@ -3448,11 +3906,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,500",
     "priceNum": 25500,
+    "isSold": false,
     "author": "Terry",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31154",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31154"
   },
   {
     "id": "hist-buy-008",
@@ -3463,11 +3923,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,500",
     "priceNum": 25500,
+    "isSold": false,
     "author": "James",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 32903",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32903"
   },
   {
     "id": "hist-buy-009",
@@ -3478,11 +3940,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Mason",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 37935",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37935"
   },
   {
     "id": "hist-buy-010",
@@ -3493,11 +3957,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Kens",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 32533",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32533"
   },
   {
     "id": "hist-buy-011",
@@ -3508,11 +3974,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,500",
     "priceNum": 25500,
+    "isSold": true,
     "author": "Scott",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31317",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31317"
   },
   {
     "id": "hist-buy-012",
@@ -3523,11 +3991,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "Ethan",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34062",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34062"
   },
   {
     "id": "hist-buy-013",
@@ -3538,11 +4008,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Bill",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 35686",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35686"
   },
   {
     "id": "hist-buy-014",
@@ -3553,11 +4025,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Helen",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34097",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34097"
   },
   {
     "id": "hist-buy-015",
@@ -3568,11 +4042,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,550",
     "priceNum": 25550,
+    "isSold": false,
     "author": "Pink",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33149",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33149"
   },
   {
     "id": "hist-buy-016",
@@ -3583,11 +4059,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,100",
     "priceNum": 25100,
+    "isSold": false,
     "author": "Angela",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 36132",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36132"
   },
   {
     "id": "hist-buy-017",
@@ -3598,11 +4076,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,100",
     "priceNum": 25100,
+    "isSold": false,
     "author": "Sandy",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32364",
     "notes": "可",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32364"
   },
   {
     "id": "hist-buy-018",
@@ -3613,11 +4093,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Kenny",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 32339",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32339"
   },
   {
     "id": "hist-buy-019",
@@ -3626,13 +4108,15 @@ window.HISTORY_2026_DATA = [
     "title": "手持裝置 Apple iPhone 17 (256GB) 紫/綠/藍/白/黑",
     "category": "phone",
     "categoryName": "📱 iPhone 17",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Yiluen",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33165",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33165"
   },
   {
     "id": "hist-buy-020",
@@ -3643,11 +4127,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,500",
     "priceNum": 25500,
+    "isSold": false,
     "author": "Standly",
-    "contactMasked": "30*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 30294",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 30294"
   },
   {
     "id": "hist-buy-021",
@@ -3658,11 +4144,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Leo",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 35419",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35419"
   },
   {
     "id": "hist-buy-022",
@@ -3673,11 +4161,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,800",
     "priceNum": 26800,
+    "isSold": true,
     "author": "Alyson",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34026",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34026"
   },
   {
     "id": "hist-buy-023",
@@ -3688,11 +4178,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,600",
     "priceNum": 25600,
+    "isSold": false,
     "author": "Kenny",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 35770",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35770"
   },
   {
     "id": "hist-buy-024",
@@ -3703,11 +4195,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,500",
     "priceNum": 25500,
+    "isSold": false,
     "author": "Joyce",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 32898",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32898"
   },
   {
     "id": "hist-buy-025",
@@ -3718,11 +4212,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Vanessa",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34435",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34435"
   },
   {
     "id": "hist-buy-026",
@@ -3731,13 +4227,15 @@ window.HISTORY_2026_DATA = [
     "title": "手持裝置 Apple iPhone 17 (256GB) 藍/白/綠",
     "category": "phone",
     "categoryName": "📱 iPhone 17",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "YANG",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 36507",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36507"
   },
   {
     "id": "hist-buy-027",
@@ -3748,11 +4246,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": false,
     "author": "Ethan",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34062",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34062"
   },
   {
     "id": "hist-buy-028",
@@ -3763,11 +4263,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Andrew",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 35130",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35130"
   },
   {
     "id": "hist-buy-029",
@@ -3778,11 +4280,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Dolphins",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31880",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31880"
   },
   {
     "id": "hist-buy-030",
@@ -3793,11 +4297,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Pink",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33149",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33149"
   },
   {
     "id": "hist-buy-031",
@@ -3808,11 +4314,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Robert",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34595",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34595"
   },
   {
     "id": "hist-buy-032",
@@ -3823,11 +4331,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Ryan",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34973",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34973"
   },
   {
     "id": "hist-buy-033",
@@ -3838,11 +4348,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Darren",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31893",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31893"
   },
   {
     "id": "hist-buy-034",
@@ -3853,11 +4365,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$31,000",
     "priceNum": 31000,
+    "isSold": false,
     "author": "Rick",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 37564",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37564"
   },
   {
     "id": "hist-buy-035",
@@ -3868,11 +4382,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": true,
     "author": "Eric",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 36610",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36610"
   },
   {
     "id": "hist-buy-036",
@@ -3883,11 +4399,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Katy",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 39283",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39283"
   },
   {
     "id": "hist-buy-037",
@@ -3898,11 +4416,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Ken",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34654",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34654"
   },
   {
     "id": "hist-buy-038",
@@ -3913,11 +4433,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,000",
     "priceNum": 35000,
+    "isSold": false,
     "author": "Leo",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 35419",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35419"
   },
   {
     "id": "hist-buy-039",
@@ -3928,11 +4450,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$40,000",
     "priceNum": 40000,
+    "isSold": false,
     "author": "Joe",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31509",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31509"
   },
   {
     "id": "hist-buy-040",
@@ -3940,14 +4464,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "categoryName": "💻 ASUS 筆電",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Scott",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 34794",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34794"
   },
   {
     "id": "hist-buy-041",
@@ -3955,14 +4481,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$26,000",
     "priceNum": 26000,
+    "isSold": true,
     "author": "Scott",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31317",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31317"
   },
   {
     "id": "hist-buy-042",
@@ -3970,14 +4498,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2瑪利歐派對空前盛會TV+NS2 Joy-con+microSDEx 256G NS2記憶卡*1+NS2便攜收納包+Alarmo 任天堂互動式鬧鐘",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$21,000",
     "priceNum": 21000,
+    "isSold": true,
     "author": "Min",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 32153",
+    "notes": "當期已成功收購結案",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32153"
   },
   {
     "id": "hist-buy-043",
@@ -3985,14 +4515,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Yuki",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33541",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33541"
   },
   {
     "id": "hist-buy-044",
@@ -4000,14 +4532,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "和妍美容儀 PRIlo 潼妍焕美容儀/ 太妃杏",
     "category": "beauty",
-    "categoryName": "💆 美容生活",
+    "categoryName": "💆 潼妍美顏儀",
     "priceDisplay": "$3,901",
     "priceNum": 3901,
+    "isSold": false,
     "author": "Travis Yeh",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 31513",
+    "notes": "誠意徵求 / 當期收購",
+    "image": "images/beauty_tongyan.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31513"
   },
   {
     "id": "hist-buy-045",
@@ -4015,14 +4549,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "和妍美容儀 PRIlo 潼妍焕美容儀/ 太妃杏",
     "category": "beauty",
-    "categoryName": "💆 美容生活",
+    "categoryName": "💆 潼妍美顏儀",
     "priceDisplay": "$3,902",
     "priceNum": 3902,
+    "isSold": false,
     "author": "Travis Yeh",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 31513",
+    "notes": "誠意徵求 / 當期收購",
+    "image": "images/beauty_tongyan.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31513"
   },
   {
     "id": "hist-buy-046",
@@ -4031,13 +4567,15 @@ window.HISTORY_2026_DATA = [
     "title": "手持裝置 Apple iPhone 17 (256GB) 白",
     "category": "phone",
     "categoryName": "📱 iPhone 17",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Anne",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31937",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31937"
   },
   {
     "id": "hist-buy-047",
@@ -4048,11 +4586,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": false,
     "author": "Penny",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33142",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33142"
   },
   {
     "id": "hist-buy-048",
@@ -4060,14 +4600,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
-    "priceDisplay": "🔍 徵求收購 (行情面議)",
+    "categoryName": "💻 ASUS 筆電",
+    "priceDisplay": "🤝 當期已收得",
     "priceNum": 0,
+    "isSold": true,
     "author": "Bee",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34361",
     "notes": "意誠~",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34361"
   },
   {
     "id": "hist-buy-049",
@@ -4078,11 +4620,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$34,500",
     "priceNum": 34500,
+    "isSold": false,
     "author": "Leo",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33076",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33076"
   },
   {
     "id": "hist-buy-050",
@@ -4093,11 +4637,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$35,500",
     "priceNum": 35500,
+    "isSold": false,
     "author": "Jeff",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 36562",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36562"
   },
   {
     "id": "hist-buy-051",
@@ -4105,14 +4651,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "和妍美容儀 PRIlo 潼妍焕美容儀/太妃杏",
     "category": "beauty",
-    "categoryName": "💆 美容生活",
+    "categoryName": "💆 潼妍美顏儀",
     "priceDisplay": "$3,988",
     "priceNum": 3988,
+    "isSold": false,
     "author": "Vicky",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 36451",
+    "notes": "誠意徵求 / 當期收購",
+    "image": "images/beauty_tongyan.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36451"
   },
   {
     "id": "hist-buy-052",
@@ -4120,14 +4668,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "筆電 ASUS TP3407SA-0023G226V",
     "category": "laptop",
-    "categoryName": "💻 商務筆電",
+    "categoryName": "💻 ASUS 筆電",
     "priceDisplay": "$25,000",
     "priceNum": 25000,
+    "isSold": false,
     "author": "Polo",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33878",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33878"
   },
   {
     "id": "hist-buy-053",
@@ -4138,11 +4688,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "🔍 徵求收購 (行情面議)",
     "priceNum": 0,
+    "isSold": false,
     "author": "Kyle",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 37268",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37268"
   },
   {
     "id": "hist-buy-054",
@@ -4150,14 +4702,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "Nintendo Switch2瑪利歐賽車世界主機組+NS2 PRO控制器*1+NS2便攜收納包",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 Switch 2 瑪利歐賽車",
     "priceDisplay": "$14,500",
     "priceNum": 14500,
+    "isSold": false,
     "author": "",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
-    "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "contact": "分機 37475",
+    "notes": "誠意徵求 / 當期收購",
+    "image": "./images/switch2_mario_kart.webp",
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37475"
   },
   {
     "id": "hist-buy-055",
@@ -4168,11 +4722,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": true,
     "author": "yun",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 39516",
+    "notes": "當期已成功收購結案",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39516"
   },
   {
     "id": "hist-buy-056",
@@ -4183,11 +4739,13 @@ window.HISTORY_2026_DATA = [
     "categoryName": "📱 iPhone 17",
     "priceDisplay": "$26,500",
     "priceNum": 26500,
+    "isSold": false,
     "author": "Joe",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 33174",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33174"
   },
   {
     "id": "hist-buy-057",
@@ -4195,14 +4753,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "SONY 遊戲機羊蹄山戰鬼 黃金限量版PS5同捆組+遙控遊玩機+DualSense Arctis Nova 5促銷組合包+充電座+媒體遙控器遊戲機組",
     "category": "game",
-    "categoryName": "🎮 次世代電玩",
+    "categoryName": "🎮 PS5 羊蹄山戰鬼",
     "priceDisplay": "$23,000",
     "priceNum": 23000,
+    "isSold": false,
     "author": "Peiwen",
-    "contactMasked": "9.*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "9.30947159E8",
+    "notes": "誠意徵求 / 當期收購",
     "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop&q=80",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "9.30947159E8"
   },
   {
     "id": "hist-buy-058",
@@ -4210,14 +4770,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🔍 尾牙收購",
     "title": "華翔旅遊金30000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ 旅遊補助金",
     "priceDisplay": "$27,000",
     "priceNum": 27000,
+    "isSold": false,
     "author": "Jay",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "誠意徵求 / 當期已收購結案",
+    "contact": "分機 31515",
+    "notes": "誠意徵求 / 當期收購",
     "image": "./images/voucher_travel.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31515"
   },
   {
     "id": "hist-vouch-001",
@@ -4225,14 +4787,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Shian",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "折數：已完成",
+    "contact": "分機 34506",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34506"
   },
   {
     "id": "hist-vouch-002",
@@ -4240,14 +4804,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Kwa",
-    "contactMasked": "63*** (歷史封存)",
-    "notes": "折數：已完成",
+    "contact": "分機 639788",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 639788"
   },
   {
     "id": "hist-vouch-003",
@@ -4255,29 +4821,33 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Tatsumi",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "折數：已完成",
+    "contact": "分機 37712",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37712"
   },
   {
     "id": "hist-vouch-004",
     "type": "voucher_buy",
     "typeBadge": "🎟️ 文康券 (收購)",
-    "title": "PEGA 文康禮券 面額 $9,500【已結束】",
+    "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "面額 $9,500 (已結束)",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Charto",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "折數：已結束；議價：否",
+    "contact": "分機 31765",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31765"
   },
   {
     "id": "hist-vouch-005",
@@ -4285,14 +4855,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Jay",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 32309",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32309"
   },
   {
     "id": "hist-vouch-006",
@@ -4300,14 +4872,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Vic",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 32453",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32453"
   },
   {
     "id": "hist-vouch-007",
@@ -4315,14 +4889,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Karen",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "折數：已完成；議價：否",
+    "contact": "分機 35583",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35583"
   },
   {
     "id": "hist-vouch-008",
@@ -4330,14 +4906,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Han",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 32456",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32456"
   },
   {
     "id": "hist-vouch-009",
@@ -4345,14 +4923,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Sunny",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 39087",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39087"
   },
   {
     "id": "hist-vouch-010",
@@ -4360,14 +4940,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Shannan_hsu",
-    "contactMasked": "39*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 39606",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 39606"
   },
   {
     "id": "hist-vouch-011",
@@ -4375,14 +4957,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Kevin",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 32817",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32817"
   },
   {
     "id": "hist-vouch-012",
@@ -4390,14 +4974,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Chloe",
-    "contactMasked": "9.*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "9.72288587E8",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "9.72288587E8"
   },
   {
     "id": "hist-vouch-013",
@@ -4405,14 +4991,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $19,000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 19000,
+    "isSold": true,
     "author": "Jason",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 35234",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35234"
   },
   {
     "id": "hist-vouch-014",
@@ -4420,14 +5008,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Byron",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 32368",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32368"
   },
   {
     "id": "hist-vouch-015",
@@ -4435,14 +5025,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,450",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9450,
+    "isSold": true,
     "author": "Daniel",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 36183",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36183"
   },
   {
     "id": "hist-vouch-016",
@@ -4450,14 +5042,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Liz",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 37652",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37652"
   },
   {
     "id": "hist-vouch-017",
@@ -4465,14 +5059,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Mickey_Yang",
-    "contactMasked": "33*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 33021",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33021"
   },
   {
     "id": "hist-vouch-018",
@@ -4480,14 +5076,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Matt",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 32286",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32286"
   },
   {
     "id": "hist-vouch-019",
@@ -4495,14 +5093,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Adam",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 34303",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34303"
   },
   {
     "id": "hist-vouch-020",
@@ -4510,14 +5110,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,400",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9400,
+    "isSold": true,
     "author": "yuhsien",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 32808",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32808"
   },
   {
     "id": "hist-vouch-021",
@@ -4525,14 +5127,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $9,500 (洽詢)",
     "priceNum": 9500,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "和碩文康禮券 / 實體券交接",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-022",
@@ -4540,14 +5144,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Hera",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 35379",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35379"
   },
   {
     "id": "hist-vouch-023",
@@ -4555,14 +5161,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $18,000【己完成】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $18,000 (己完成)",
     "priceNum": 18000,
+    "isSold": false,
     "author": "Stan",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36669",
     "notes": "折數：己完成；議價：是",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36669"
   },
   {
     "id": "hist-vouch-024",
@@ -4570,14 +5178,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,400",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $9,400 (洽詢)",
     "priceNum": 9400,
+    "isSold": false,
     "author": "Ryan",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34973",
     "notes": "和碩文康禮券 / 實體券交接",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34973"
   },
   {
     "id": "hist-vouch-025",
@@ -4585,14 +5195,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $70,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $70,000 (95折收)",
     "priceNum": 70000,
+    "isSold": false,
     "author": "Jay2",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31515",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31515"
   },
   {
     "id": "hist-vouch-026",
@@ -4600,14 +5212,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $9,500 (洽詢)",
     "priceNum": 9500,
+    "isSold": false,
     "author": "James",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31993",
     "notes": "和碩文康禮券 / 實體券交接",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31993"
   },
   {
     "id": "hist-vouch-027",
@@ -4615,14 +5229,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $9,500 (洽詢)",
     "priceNum": 9500,
+    "isSold": false,
     "author": "YCHung",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33265",
     "notes": "和碩文康禮券 / 實體券交接",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33265"
   },
   {
     "id": "hist-vouch-028",
@@ -4630,14 +5246,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Paul",
-    "contactMasked": "35*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 35603",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35603"
   },
   {
     "id": "hist-vouch-029",
@@ -4645,14 +5263,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,400",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9400,
+    "isSold": true,
     "author": "Adam",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 32214",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32214"
   },
   {
     "id": "hist-vouch-030",
@@ -4660,14 +5280,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,400【己完成】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $9,400 (己完成)",
     "priceNum": 9400,
+    "isSold": false,
     "author": "Doris",
-    "contactMasked": "33*** (歷史封存)",
+    "contact": "分機 33169",
     "notes": "折數：己完成；議價：是",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 33169"
   },
   {
     "id": "hist-vouch-031",
@@ -4675,14 +5297,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Mars",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 32958",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32958"
   },
   {
     "id": "hist-vouch-032",
@@ -4690,14 +5314,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $9,500 (洽詢)",
     "priceNum": 9500,
+    "isSold": false,
     "author": "Jeffic",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31231",
     "notes": "和碩文康禮券 / 實體券交接",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31231"
   },
   {
     "id": "hist-vouch-033",
@@ -4705,14 +5331,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Kuanwei",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 34150",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34150"
   },
   {
     "id": "hist-vouch-034",
@@ -4720,14 +5348,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Sunny",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "折數：已售出；議價：否",
+    "contact": "分機 34110",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34110"
   },
   {
     "id": "hist-vouch-035",
@@ -4735,14 +5365,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Mark Tan",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 31690",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31690"
   },
   {
     "id": "hist-vouch-036",
@@ -4750,14 +5382,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Joyoung",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "折數：已完成；議價：否",
+    "contact": "分機 31687",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31687"
   },
   {
     "id": "hist-vouch-037",
@@ -4765,14 +5399,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $40,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $40,000 (95折收)",
     "priceNum": 40000,
+    "isSold": false,
     "author": "Jonas",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34542",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34542"
   },
   {
     "id": "hist-vouch-038",
@@ -4780,14 +5416,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $40,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $40,000 (95折收)",
     "priceNum": 40000,
+    "isSold": false,
     "author": "Joseph",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35571",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35571"
   },
   {
     "id": "hist-vouch-039",
@@ -4795,14 +5433,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Michael",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "折數：已完成",
+    "contact": "分機 34185",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34185"
   },
   {
     "id": "hist-vouch-040",
@@ -4810,14 +5450,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $100,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $100,000 (95折收)",
     "priceNum": 100000,
+    "isSold": false,
     "author": "Beibei",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32762",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32762"
   },
   {
     "id": "hist-vouch-041",
@@ -4825,14 +5467,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $20,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $20,000 (95折收)",
     "priceNum": 20000,
+    "isSold": false,
     "author": "Eric_Nien",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34330",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34330"
   },
   {
     "id": "hist-vouch-042",
@@ -4840,14 +5484,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $100,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $100,000 (95折收)",
     "priceNum": 100000,
+    "isSold": false,
     "author": "Charto",
-    "contactMasked": "31*** (歷史封存)",
+    "contact": "分機 31765",
     "notes": "折數：95折收；7/13 更新",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31765"
   },
   {
     "id": "hist-vouch-043",
@@ -4855,14 +5501,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $9,500",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 9500,
+    "isSold": true,
     "author": "Small",
-    "contactMasked": "36*** (歷史封存)",
-    "notes": "折數：已售出；5/18更新",
+    "contact": "分機 36657",
+    "notes": "5/18更新",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36657"
   },
   {
     "id": "hist-vouch-044",
@@ -4870,14 +5518,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 面額 $10,000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 10000,
+    "isSold": true,
     "author": "Billy",
-    "contactMasked": "32*** (歷史封存)",
-    "notes": "折數：已售出",
+    "contact": "分機 32473",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32473"
   },
   {
     "id": "hist-vouch-045",
@@ -4885,14 +5535,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $100,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $100,000 (95折收)",
     "priceNum": 100000,
+    "isSold": false,
     "author": "Linda",
-    "contactMasked": "32*** (歷史封存)",
+    "contact": "分機 32960",
     "notes": "折數：95折收；6/29",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 32960"
   },
   {
     "id": "hist-vouch-046",
@@ -4900,14 +5552,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $5,000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 5000,
+    "isSold": true,
     "author": "Peiwen",
-    "contactMasked": "31*** (歷史封存)",
-    "notes": "折數：已完成；7/3 起",
+    "contact": "分機 31900",
+    "notes": "7/3 起",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 31900"
   },
   {
     "id": "hist-vouch-047",
@@ -4915,14 +5569,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $10,000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 10000,
+    "isSold": true,
     "author": "Scott",
-    "contactMasked": "34*** (歷史封存)",
-    "notes": "折數：已完成；7/20",
+    "contact": "分機 34794",
+    "notes": "7/20",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34794"
   },
   {
     "id": "hist-vouch-048",
@@ -4930,14 +5586,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $100,000【96折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $100,000 (96折收)",
     "priceNum": 100000,
+    "isSold": false,
     "author": "Tsung",
-    "contactMasked": "36*** (歷史封存)",
+    "contact": "分機 36342",
     "notes": "折數：96折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 36342"
   },
   {
     "id": "hist-vouch-049",
@@ -4945,14 +5603,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $30,000【95收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $30,000 (95收)",
     "priceNum": 30000,
+    "isSold": false,
     "author": "Paul",
-    "contactMasked": "35*** (歷史封存)",
+    "contact": "分機 35603",
     "notes": "折數：95收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 35603"
   },
   {
     "id": "hist-vouch-050",
@@ -4960,14 +5620,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $10,000",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "🤝 當期已成交",
     "priceNum": 10000,
+    "isSold": true,
     "author": "Bob",
-    "contactMasked": "37*** (歷史封存)",
-    "notes": "折數：已完成",
+    "contact": "分機 37136",
+    "notes": "當期已順利交接完成",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 37136"
   },
   {
     "id": "hist-vouch-051",
@@ -4975,14 +5637,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $10,000【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $10,000 (95折收)",
     "priceNum": 10000,
+    "isSold": false,
     "author": "Mateo",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34969",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34969"
   },
   {
     "id": "hist-vouch-052",
@@ -4990,14 +5654,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (收購)",
     "title": "PEGA 文康禮券 面額 $500【95折收】",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
+    "categoryName": "🎟️ PEGA 文康禮券",
     "priceDisplay": "面額 $500 (95折收)",
     "priceNum": 500,
+    "isSold": false,
     "author": "Mateo",
-    "contactMasked": "34*** (歷史封存)",
+    "contact": "分機 34969",
     "notes": "折數：95折收",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "分機 34969"
   },
   {
     "id": "hist-vouch-053",
@@ -5005,14 +5671,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：10000.0；34800.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-054",
@@ -5020,14 +5688,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：5800.0；10400.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-055",
@@ -5035,14 +5705,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：690.0；25600.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-056",
@@ -5050,14 +5722,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：9000.0；450.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-057",
@@ -5065,14 +5739,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：22500.0；80.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-058",
@@ -5080,14 +5756,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：1000.0；100.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-059",
@@ -5095,14 +5773,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：1000.0；12400.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-060",
@@ -5110,14 +5790,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：31900.0；300.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-061",
@@ -5125,14 +5807,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：31900.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-062",
@@ -5140,14 +5824,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：31900.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-063",
@@ -5155,14 +5841,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：32000.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-064",
@@ -5170,14 +5858,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：19700.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-065",
@@ -5185,14 +5875,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：100.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-066",
@@ -5200,14 +5892,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：12900.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-067",
@@ -5215,14 +5909,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：6000.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-068",
@@ -5230,14 +5926,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：590.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-069",
@@ -5245,14 +5943,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：2999.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-070",
@@ -5260,14 +5960,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：3999.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-071",
@@ -5275,14 +5977,16 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：2000.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   },
   {
     "id": "hist-vouch-072",
@@ -5290,13 +5994,15 @@ window.HISTORY_2026_DATA = [
     "typeBadge": "🎟️ 文康券 (出售)",
     "title": "PEGA 文康禮券 ",
     "category": "voucher",
-    "categoryName": "🎟️ 文康/旅遊券",
-    "priceDisplay": "$ 面議 / 已成交",
+    "categoryName": "🎟️ PEGA 文康禮券",
+    "priceDisplay": "$ 面議 / 洽詢",
     "priceNum": 0,
+    "isSold": false,
     "author": "",
-    "contactMasked": "🔒 分機已封存",
+    "contact": "Teams 聯繫",
     "notes": "議價：534906.0",
     "image": "./images/voucher_pega.svg",
-    "year": "2026 尾牙"
+    "year": "2026 尾牙",
+    "contactMasked": "Teams 聯繫"
   }
 ];

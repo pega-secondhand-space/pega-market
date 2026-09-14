@@ -1,10 +1,34 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="dark">
+<html lang="zh-TW" class="dark font-level-base">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>2026 尾牙與文康券歷史行情回顧庫 - PEGA 關渡園區好物交換所</title>
   <meta name="description" content="關渡園區 2026 尾牙抽獎大獎與 PEGA 文康禮券歷史成交行情查詢庫，提供 iPhone 17、PS5、Switch 2、筆電、捷安特電輔車與文康券行情參考。">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- 🔤 頁面渲染前極速套用全站字體設定 (保證手機 0 延遲同步) -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('pega_user_font_size') || 'base';
+        var scaleMap = {
+          'sm': { scale: 0.88, rootSize: '14px' },
+          'base': { scale: 1.0, rootSize: '16px' },
+          'lg': { scale: 1.15, rootSize: '18px' },
+          'xl': { scale: 1.28, rootSize: '20.5px' },
+          '2xl': { scale: 1.44, rootSize: '23px' }
+        };
+        var cur = scaleMap[saved] || scaleMap['base'];
+        document.documentElement.style.fontSize = cur.rootSize;
+        document.documentElement.style.setProperty('--text-scale', cur.scale);
+        document.documentElement.classList.remove('font-level-sm', 'font-level-base', 'font-level-lg', 'font-level-xl', 'font-level-2xl');
+        document.documentElement.classList.add('font-level-' + saved);
+      } catch(e) {}
+    })();
+  </script>
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -33,7 +57,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20260914_1135">
   <style>
     body {
       font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -44,273 +68,411 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .apple-step-card {
+      position: relative;
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.85) 0%, rgba(3, 7, 18, 0.95) 100%);
+      border-radius: 2rem;
+      backdrop-filter: blur(20px);
+    }
+    .step-watermark-num {
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      line-height: 0.8;
+      font-weight: 900;
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.15) 0%, rgba(255, 255, 255, 0.01) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.25;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body id="main-body" class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans transition-all duration-300 pb-20 sm:pb-0">
 
-  <!-- 頂部導航列 -->
-  <header class="sticky top-0 z-40 bg-[#111827]/90 backdrop-blur-md border-b border-gray-800 transition-colors">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+  <!-- 浮動 Notification Toast 提示框 (與主頁一致) -->
+  <div id="toast-container" class="fixed top-20 right-6 z-[9999] flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+  <!-- 頂部導航欄 (Navbar) - 100% 仿照主頁結構 (雙層排版 + 5 段字體按鈕) -->
+  <header class="bg-gray-950/95 backdrop-blur-xl border-b-2 border-amber-500/50 sticky top-0 z-40 shadow-[0_4px_25px_rgba(245,158,11,0.12)]">
+    <div class="max-w-6xl mx-auto px-2.5 sm:px-4 py-2 sm:py-2.5 space-y-1.5 sm:space-y-2">
       
-      <!-- 返回首頁與標題 -->
-      <div class="flex items-center gap-3 min-w-0">
-        <a href="index.html" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white border border-gray-700 text-xs sm:text-sm font-bold transition-all shadow-sm flex-shrink-0">
-          <i class="fa-solid fa-arrow-left"></i>
-          <span class="hidden sm:inline">返回好物首頁</span>
-          <span class="sm:hidden">首頁</span>
-        </a>
-        
+      <!-- 頂部第一行：返回市集與標題 (左) ｜ 目前收錄筆數 ＋ 返回好物市集按鈕 (右) -->
+      <div class="flex items-center justify-between gap-1.5 sm:gap-2">
         <div class="flex items-center gap-2 min-w-0">
-          <span class="text-xl sm:text-2xl flex-shrink-0">📜</span>
-          <div class="truncate">
-            <h1 class="text-sm sm:text-lg font-black text-white flex items-center gap-2 truncate">
-              2026 尾牙與文康券歷史行情庫
-              <span class="hidden md:inline-block text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                封存歷史檔案
-              </span>
-            </h1>
+          <a href="index.html" class="px-2 sm:px-2.5 py-1 rounded-xl bg-gray-900 hover:bg-gray-800 text-amber-300 hover:text-white border border-amber-500/40 text-xs font-bold transition active:scale-95 shadow-sm flex items-center gap-1 shrink-0" title="返回好物市集首頁">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span class="hidden sm:inline">返回市集</span>
+          </a>
+          <h1 class="text-sm sm:text-2xl font-black bg-gradient-to-r from-purple-300 via-pink-400 to-amber-300 bg-clip-text text-transparent truncate flex items-center gap-1.5 drop-shadow">
+            <span>📜 2026 尾牙與文康券歷史行情庫</span>
+            <span class="hidden md:inline-block text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/40">封存庫</span>
+          </h1>
+        </div>
+
+        <!-- 右側膠囊：總筆數與返回市集 -->
+        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+          <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-gray-900/90 border border-amber-500/40 text-gray-200 rounded-xl font-bold text-xs flex items-center gap-1 shadow-sm select-none">
+            <i class="fa-solid fa-boxes-stacked text-amber-400 text-xs"></i>
+            <span class="text-gray-300">共 <strong id="header-total-count" class="text-amber-400 font-black">353</strong> 筆</span>
           </div>
+
+          <a href="index.html" class="flex px-2.5 sm:px-3.5 py-1 sm:py-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:opacity-95 text-gray-950 rounded-xl font-black text-xs transition items-center gap-1 shadow-lg shadow-amber-500/25 active:scale-95 shrink-0" title="進入即時好物市集">
+            <i class="fa-solid fa-store text-xs"></i>
+            <span>好物市集</span>
+          </a>
         </div>
       </div>
 
-      <!-- 右側工具區：字體大小、主題切換 -->
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <!-- 五級字體縮放 -->
-        <div class="hidden sm:flex items-center bg-gray-800 border border-gray-700 rounded-xl p-0.5 text-xs">
-          <button id="hist-font-btn" onclick="toggleHistoryFontSize()" title="調整字體大小" class="px-2.5 py-1 text-gray-300 hover:text-white font-bold flex items-center gap-1">
-            <i class="fa-solid fa-font"></i>
-            <span id="hist-font-label">標準</span>
-          </button>
+      <!-- 頂部第二行：5 段動態字體調整 (左，與主頁 100% 一致) ｜ 每頁筆數 + 使用說明 (右) -->
+      <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-1.5 sm:gap-2 pt-0.5">
+        <!-- 🔤 5 級字體調整按鈕 (與主頁完全一致，共用 LocalStorage) -->
+        <div class="flex items-center gap-0.5 sm:gap-1 bg-gray-900/90 p-0.5 sm:p-1 rounded-xl border border-amber-500/30 shrink-0 shadow-inner">
+          <span class="text-xs text-amber-400 font-black px-0.5 sm:px-1 shrink-0">🔤 字體：</span>
+          <button onclick="setFontSize('sm')" id="font-btn-sm" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="小字體 (A⁻)">A⁻</button>
+          <button onclick="setFontSize('base')" id="font-btn-base" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md" title="標準字體 (A)">A</button>
+          <button onclick="setFontSize('lg')" id="font-btn-lg" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="大字體 (A⁺)">A⁺</button>
+          <button onclick="setFontSize('xl')" id="font-btn-xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="特大字體 (A⁺⁺)">A⁺⁺</button>
+          <button onclick="setFontSize('2xl')" id="font-btn-2xl" class="px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800" title="超大字體 (A⁺⁺⁺)">A⁺⁺⁺</button>
         </div>
 
-        <!-- 返回最新市集按鈕 -->
-        <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-900/30 transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-store"></i>
-          <span class="hidden sm:inline">即時好物市集</span>
-        </a>
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <!-- 每頁筆數選單 (同步後台設定) -->
+          <div class="flex items-center bg-gray-900 border border-amber-500/30 rounded-xl px-2 py-1 text-xs gap-1 shadow-inner">
+            <i class="fa-solid fa-layer-group text-amber-400 text-xs"></i>
+            <select id="hist-perpage-select" onchange="onPerPageChange()" class="bg-transparent text-gray-200 font-bold focus:outline-none cursor-pointer text-xs">
+              <option value="20" class="bg-gray-900">每頁 20 筆</option>
+              <option value="30" class="bg-gray-900">每頁 30 筆</option>
+              <option value="50" class="bg-gray-900" selected>每頁 50 筆 (建議)</option>
+              <option value="80" class="bg-gray-900">每頁 80 筆</option>
+              <option value="100" class="bg-gray-900">每頁 100 筆</option>
+            </select>
+          </div>
+
+          <!-- 使用說明手冊按鈕 -->
+          <a href="guide.html" class="flex px-2.5 sm:px-3 py-1 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl font-bold text-xs transition items-center gap-1 shadow-sm shrink-0 active:scale-95" title="打開實用圖文教學">
+            <i class="fa-solid fa-book-open text-amber-400"></i>
+            <span class="hidden sm:inline">說明手冊</span>
+          </a>
+        </div>
       </div>
 
     </div>
   </header>
 
+  <!-- 🔍 手機專屬極致流暢懸浮搜尋列 (點擊底部搜尋直接滑出，與主頁 100% 同款) -->
+  <div id="sticky-search-overlay" class="hidden fixed inset-x-0 top-0 z-50 bg-gray-950/98 backdrop-blur-2xl border-b-2 border-amber-500/60 shadow-[0_15px_35px_rgba(0,0,0,0.8)] p-3.5 space-y-3 animate-fadeIn">
+    <div class="max-w-xl mx-auto flex items-center gap-2">
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-amber-400 text-sm"></i>
+        <input type="text" id="overlay-search-input" oninput="syncOverlaySearch(this.value)" placeholder="輸入好物名稱、規格或折數..." class="w-full pl-10 pr-10 py-2.5 bg-gray-900 border border-amber-500/40 rounded-2xl text-xs sm:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 font-bold shadow-inner">
+        <button onclick="clearOverlaySearch()" id="overlay-search-clear" class="hidden absolute right-3 top-2.5 text-gray-400 hover:text-white p-1 text-sm"><i class="fa-solid fa-circle-xmark"></i></button>
+      </div>
+      <button onclick="closeSearchOverlay()" class="px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 rounded-2xl text-xs font-bold transition active:scale-95 shrink-0">
+        關閉
+      </button>
+    </div>
+    <!-- 快速熱門關鍵字膠囊 (Quick Keywords) -->
+    <div class="max-w-xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold text-gray-300 py-0.5">
+      <span class="text-xs text-amber-400 shrink-0"><i class="fa-solid fa-fire"></i> 熱門：</span>
+      <button onclick="applyQuickSearch('文康券')" class="px-2.5 py-1 bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 rounded-xl shrink-0 transition">🎫 文康券</button>
+      <button onclick="applyQuickSearch('Switch')" class="px-2.5 py-1 bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 rounded-xl shrink-0 transition">🎮 Switch 2</button>
+      <button onclick="applyQuickSearch('iPhone')" class="px-2.5 py-1 bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 rounded-xl shrink-0 transition">📱 iPhone 17</button>
+      <button onclick="applyQuickSearch('AirPods')" class="px-2.5 py-1 bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 rounded-xl shrink-0 transition">🎧 AirPods Pro 3</button>
+      <button onclick="applyQuickSearch('潼妍')" class="px-2.5 py-1 bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 rounded-xl shrink-0 transition">💆 潼妍美顏儀</button>
+    </div>
+  </div>
+
   <!-- 主內容區 -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <main class="flex-1 max-w-6xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6 space-y-4 pb-28 sm:pb-12">
 
-    <!-- Hero 介紹與隱私公告橫幅 -->
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 border border-gray-800 p-5 sm:p-6 shadow-xl">
-      <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl select-none pointer-events-none font-black text-amber-400">2026</div>
+    <!-- 全站置頂說明橫幅 -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-950 via-gray-900 to-slate-950 border border-pink-500/30 p-3.5 sm:p-5 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-bold">
+            <span class="px-2 py-0.5 rounded-md bg-pink-500/20 text-pink-300 border border-pink-500/30">📜 2026 尾牙與文康券檔案</span>
+            <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 待售優先排前</span>
+            <span class="px-2 py-0.5 rounded-md bg-red-500/20 text-red-300 border border-red-500/30">✔ 已成交自動置底</span>
+            <span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40">📞 顯示真實分機 (可洽詢)</span>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            收錄 Tesla、iPhone 17、PS5、Switch 2、AirPods Pro 3、ASUS 筆電、捷安特電輔車、潼妍美顏儀與 PEGA 文康禮券之開價與成交歷史。
+          </p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 text-xs font-black">
+          <div class="bg-gray-900/90 border border-gray-800 rounded-xl px-2.5 py-1 text-center">
+            <span class="text-gray-400 text-[10px]">待售中</span>
+            <div class="text-emerald-400 font-black" id="stat-active-num">113 筆</div>
+          </div>
+          <div class="bg-gray-900/90 border border-gray-800 rounded-xl px-2.5 py-1 text-center">
+            <span class="text-gray-400 text-[10px]">已成交</span>
+            <div class="text-gray-400 font-black" id="stat-sold-num">240 筆</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 搜尋列、排版切換與專區 Tabs (100% 仿照主頁 index.html 排版) -->
+    <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
       
-      <div class="relative z-10 space-y-3 max-w-4xl">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5">
-            <i class="fa-solid fa-shield-halved"></i> 隱私安全封存
-          </span>
-          <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-bold">
-            📊 共收錄 353 筆歷史紀錄
-          </span>
-          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
-            ✨ 原廠官方照片配對
-          </span>
-        </div>
-
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">
-          關渡園區 2026 尾牙大獎 ＆ 文康禮券行情查詢
-        </h2>
-        
-        <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
-          收錄 2026 年度同仁抽中之 Tesla 純電車、iPhone 17 系列、PS5 羊蹄山同捆組、Switch 2、ASUS 商務筆電、捷安特電輔車與 PEGA 文康禮券之開價與成交紀錄。
-          <strong class="text-amber-300">本專區純屬歷史行情參考，為維護同仁隱私，所有分機已進行遮罩，不提供即時通話或 Teams 聯繫。</strong>
-        </p>
-
-        <!-- 數據統計膠囊 -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-          <div class="bg-gray-800/80 border border-gray-700/80 rounded-xl p-2.5 text-center">
-            <div class="text-gray-400 text-[11px] font-medium">總收錄檔案</div>
-            <div class="text-lg sm:text-xl font-black text-white" id="stat-total">353 <span class="text-xs font-normal text-gray-400">筆</span></div>
-          </div>
-          <div class="bg-amber-950/40 border border-amber-700/40 rounded-xl p-2.5 text-center">
-            <div class="text-amber-300/80 text-[11px] font-medium">💰 尾牙轉賣</div>
-            <div class="text-lg sm:text-xl font-black text-amber-300" id="stat-sell">223 <span class="text-xs font-normal text-amber-400/80">筆</span></div>
-          </div>
-          <div class="bg-sky-950/40 border border-sky-700/40 rounded-xl p-2.5 text-center">
-            <div class="text-sky-300/80 text-[11px] font-medium">🔍 尾牙收購</div>
-            <div class="text-lg sm:text-xl font-black text-sky-300" id="stat-buy">58 <span class="text-xs font-normal text-sky-400/80">筆</span></div>
-          </div>
-          <div class="bg-emerald-950/40 border border-emerald-700/40 rounded-xl p-2.5 text-center">
-            <div class="text-emerald-300/80 text-[11px] font-medium">🎟️ 文康券買賣</div>
-            <div class="text-lg sm:text-xl font-black text-emerald-300" id="stat-voucher">72 <span class="text-xs font-normal text-emerald-400/80">筆</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 搜尋與篩選控制面板 -->
-    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-md">
-      
-      <!-- 第一行：搜尋框 ＋ 專區 Tabs -->
-      <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-        
-        <!-- 專區 Tabs (全部 / 轉賣 / 收購 / 文康券) -->
-        <div class="flex items-center gap-1.5 p-1 bg-gray-950 border border-gray-800 rounded-xl overflow-x-auto">
-          <button onclick="setTab('all')" id="tab-all" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-amber-500 text-gray-950 shadow">
-            全部 (<span id="count-tab-all">353</span>)
-          </button>
-          <button onclick="setTab('sell')" id="tab-sell" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800">
-            💰 尾牙轉賣 (<span id="count-tab-sell">223</span>)
-          </button>
-          <button onclick="setTab('buy')" id="tab-buy" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800">
-            🔍 尾牙收購 (<span id="count-tab-buy">58</span>)
-          </button>
-          <button onclick="setTab('voucher')" id="tab-voucher" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800">
-            🎟️ 文康券 (<span id="count-tab-voucher">72</span>)
+      <!-- 左側：搜尋輸入框 + 📱 手機版型切換 (大卡/雙排) + 💻 電腦版型下拉選單 -->
+      <div class="flex items-center gap-2 w-full sm:w-auto flex-1">
+        <!-- 搜尋輸入框 (與首頁一模一樣) -->
+        <div class="relative flex-1 sm:w-72">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-amber-400 text-xs"></i>
+          <input type="text" id="search-input" oninput="onSearchChange()" placeholder="搜尋尾牙物品、規格或折數..." class="w-full pl-9 pr-8 py-2 bg-gray-900/90 border border-gray-700 rounded-xl text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/40 transition shadow-inner font-medium">
+          <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-2.5 text-gray-400 hover:text-white text-xs">
+            <i class="fa-solid fa-circle-xmark"></i>
           </button>
         </div>
 
-        <!-- 搜尋與排序 -->
-        <div class="flex items-center gap-2 flex-1 md:max-w-md">
-          <div class="relative flex-1">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-            <input type="text" id="hist-search-input" placeholder="搜尋物品品名、規格、配件或折數..." oninput="onSearchChange()" class="w-full pl-9 pr-8 py-2 bg-gray-950 border border-gray-800 rounded-xl text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors">
-            <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-
-          <!-- 價格排序選單 -->
-          <select id="hist-sort-select" onchange="onSortChange()" class="bg-gray-950 border border-gray-800 text-gray-200 text-xs sm:text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500">
-            <option value="default">預設排序</option>
-            <option value="price_desc">價格：高 ➔ 低</option>
-            <option value="price_asc">價格：低 ➔ 高</option>
-          </select>
+        <!-- 📱 手機專屬：醒目版型切換膠囊 (預設階差大卡，可切換雙排) -->
+        <div class="flex sm:hidden items-center gap-1 bg-gray-900/90 p-1 rounded-xl border border-amber-500/40 shrink-0">
+          <button onclick="changeGridLayout('showcase')" id="layout-btn-showcase" class="px-3 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition flex items-center gap-1" title="切換為 Apple 階差沉浸大卡">
+            <span>🍎 階差大卡</span>
+          </button>
+          <button onclick="changeGridLayout('2')" id="layout-btn-2" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1" title="切換為雙排方格">
+            <span>▦ 雙排</span>
+          </button>
         </div>
 
+        <!-- 💻 電腦專屬：2-4 卡下拉選單 (與首頁完全同款同ID) -->
+        <select id="grid-layout-select" onchange="changeGridLayout(this.value)" class="hidden sm:block py-2 px-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400 shrink-0 cursor-pointer">
+          <option value="2">雙排 2 卡</option>
+          <option value="3" selected>三排 3 卡 (預設)</option>
+          <option value="4">四排 4 卡 (寬螢幕)</option>
+          <option value="showcase">🍎 階差大卡</option>
+        </select>
+
+        <!-- 價格排序選單 -->
+        <select id="hist-sort-select" onchange="onSortChange()" class="hidden md:block py-2 px-3 bg-gray-900 border border-gray-700 rounded-xl text-xs text-gray-300 font-bold focus:outline-none focus:border-amber-400 shrink-0 cursor-pointer">
+          <option value="default">預設 (待售在前/成交置底)</option>
+          <option value="price_desc">價格：高 ➔ 低</option>
+          <option value="price_asc">價格：低 ➔ 高</option>
+        </select>
       </div>
 
-      <!-- 第二行：熱門品類快速膠囊 -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-        <span class="text-gray-400 text-[11px] font-bold flex-shrink-0 flex items-center gap-1">
-          <i class="fa-solid fa-tags"></i> 快速品類：
-        </span>
-        <button onclick="setCategory('all')" id="cat-all" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all bg-gray-800 text-amber-300 border border-amber-500/30 flex-shrink-0">
-          全品類
+      <!-- 右側：專區分類 Tab (全部 / 轉賣 / 收購 / 文康券 - 仿照主頁 Filter Tab 樣式) -->
+      <div class="flex gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 text-xs font-bold no-scrollbar">
+        <button onclick="setTab('all')" id="tab-all" class="tab-btn px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 transition shadow-md shadow-amber-500/20 active:scale-95 shrink-0 font-black">
+          全部 (<span id="count-tab-all">353</span>)
         </button>
-        <button onclick="setCategory('phone')" id="cat-phone" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          📱 iPhone 17 系列
+        <button onclick="setTab('sell')" id="tab-sell" class="tab-btn px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:text-amber-300 hover:bg-gray-800 transition active:scale-95 shrink-0">
+          💰 尾牙轉賣 (<span id="count-tab-sell">223</span>)
         </button>
-        <button onclick="setCategory('game')" id="cat-game" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          🎮 Switch 2 / PS5 電玩
+        <button onclick="setTab('buy')" id="tab-buy" class="tab-btn px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:text-amber-300 hover:bg-gray-800 transition active:scale-95 shrink-0">
+          🔍 尾牙收購 (<span id="count-tab-buy">58</span>)
         </button>
-        <button onclick="setCategory('laptop')" id="cat-laptop" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          💻 ASUS / Surface 筆電
+        <button onclick="setTab('voucher')" id="tab-voucher" class="tab-btn px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:text-amber-300 hover:bg-gray-800 transition active:scale-95 shrink-0">
+          🎟️ 文康券 (<span id="count-tab-voucher">72</span>)
         </button>
-        <button onclick="setCategory('voucher')" id="cat-voucher" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          🎟️ 文康禮券 / 旅遊金
-        </button>
-        <button onclick="setCategory('bike')" id="cat-bike" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          🚲 捷安特電輔車
-        </button>
-        <button onclick="setCategory('car')" id="cat-car" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          🚗 Tesla Model Y
-        </button>
-        <button onclick="setCategory('beauty')" id="cat-beauty" class="cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0">
-          💆 美容生活家電
-        </button>
-      </div>
-
-    </div>
-
-    <!-- 即時過濾結果提示 -->
-    <div class="flex items-center justify-between text-xs text-gray-400 px-1">
-      <div>
-        目前篩選出 <strong class="text-amber-400 text-sm font-bold" id="result-count">353</strong> 筆歷史紀錄
-      </div>
-      <div class="text-[11px] text-gray-500 flex items-center gap-1">
-        <i class="fa-solid fa-clock-rotate-left"></i> 2026 尾牙封存資料庫
       </div>
     </div>
 
-    <!-- 歷史卡片瀑布流列表 -->
-    <div id="history-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <!-- 由 JS 動態渲染 -->
+    <!-- 快速熱門品類膠囊列 (Quick Categories) -->
+    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold text-gray-300 py-1">
+      <span class="text-xs text-amber-400 shrink-0 flex items-center gap-1"><i class="fa-solid fa-tags"></i> 快速品類：</span>
+      <button onclick="setCategory('all')" id="cat-all" class="cat-pill px-3 py-1 rounded-xl transition bg-amber-400 text-gray-950 font-black shadow shrink-0">全品類</button>
+      <button onclick="setCategory('phone')" id="cat-phone" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">📱 iPhone / 耳機</button>
+      <button onclick="setCategory('game')" id="cat-game" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">🎮 Switch 2 / PS5</button>
+      <button onclick="setCategory('laptop')" id="cat-laptop" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">💻 ASUS 筆電</button>
+      <button onclick="setCategory('voucher')" id="cat-voucher" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">🎟️ 文康禮券</button>
+      <button onclick="setCategory('bike')" id="cat-bike" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">🚲 捷安特電輔車</button>
+      <button onclick="setCategory('car')" id="cat-car" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">🚗 Tesla</button>
+      <button onclick="setCategory('beauty')" id="cat-beauty" class="cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300">💆 潼妍美顏儀</button>
     </div>
 
-    <!-- 空狀態提示 -->
-    <div id="empty-state" class="hidden py-16 text-center space-y-3">
-      <div class="text-5xl">🔍</div>
-      <h3 class="text-lg font-bold text-gray-300">找不到符合條件的歷史紀錄</h3>
-      <p class="text-xs text-gray-500">請嘗試更改搜尋關鍵字，或切換至其他品類分類。</p>
-      <button onclick="resetFilters()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-amber-300 text-xs font-bold rounded-xl border border-gray-700 transition-all">
-        重設所有篩選條件
+    <!-- 當前篩選摘要提示列 -->
+    <div class="flex items-center justify-between text-xs text-gray-400 px-1 pt-1">
+      <div class="flex items-center gap-2">
+        <span>目前檢索：<strong id="result-count" class="text-amber-300 font-bold">353</strong> 筆</span>
+        <span id="active-count-badge" class="hidden sm:inline text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60">🟢 待售優先</span>
+        <span id="sold-count-badge" class="hidden sm:inline text-red-400 font-bold bg-red-950/60 px-2 py-0.5 rounded border border-red-800/60">✔ 已成交置底</span>
+      </div>
+      <div id="page-summary-text" class="text-gray-400 text-xs font-medium"></div>
+    </div>
+
+    <!-- 動態卡片網格容器 (完全連動 changeGridLayout) -->
+    <div id="grid-container" class="mx-auto w-full">
+      <div id="history-grid" class="grid grid-cols-2 gap-2.5 sm:gap-4">
+        <!-- 動態渲染卡片 -->
+      </div>
+    </div>
+
+    <!-- 無搜尋結果提示 -->
+    <div id="empty-state" class="hidden text-center py-16 space-y-4 bg-gray-900/60 border border-gray-800 rounded-3xl p-8 max-w-xl mx-auto">
+      <div class="text-6xl">🔍</div>
+      <h3 class="text-lg font-bold text-gray-200">查無相符之歷史拍賣紀錄</h3>
+      <p class="text-xs text-gray-400">請嘗試更換關鍵字、搜尋條件或切換為「全部」專區。</p>
+      <button onclick="resetFilters()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs shadow transition active:scale-95">
+        清除所有搜尋條件
       </button>
     </div>
 
+    <!-- 電腦與手機分頁導航列 (與主頁一致風格) -->
+    <div id="pagination-container" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900/95 p-3.5 sm:p-4 rounded-2xl border border-gray-800 text-xs shadow-2xl backdrop-blur-md relative z-20">
+      <div class="text-gray-300 font-bold text-center sm:text-left text-xs">
+        頁次：<span id="current-page-num" class="text-indigo-300 font-black">1</span> / <span id="total-page-num" class="text-gray-200 font-black">1</span> 頁 (共 <span id="pag-total-items" class="text-amber-400 font-black">353</span> 筆)
+      </div>
+      <div class="flex items-center justify-center gap-1.5 font-bold w-full sm:w-auto overflow-x-auto py-1">
+        <button onclick="goToPage(1)" id="btn-page-first" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">⏮ 首頁</button>
+        <button onclick="prevPage()" id="btn-page-prev" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">◀ 上一頁</button>
+        <div id="page-numbers-container" class="flex items-center gap-1 shrink-0"></div>
+        <button onclick="nextPage()" id="btn-page-next" class="px-3 py-2 bg-indigo-900/60 hover:bg-indigo-800 active:scale-95 text-indigo-200 border border-indigo-500/40 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">下一頁 ▶</button>
+        <button onclick="goToPage(totalPages)" id="btn-page-last" class="px-2.5 py-2 bg-gray-800 hover:bg-gray-700 active:scale-95 text-gray-300 rounded-xl transition disabled:opacity-30 text-xs font-bold shrink-0">末頁 ⏭</button>
+      </div>
+    </div>
+
+    <!-- 頁尾資訊 -->
+    <footer class="mt-12 mb-24 sm:mb-8 text-center text-xs text-gray-500 font-medium space-y-1 select-none">
+      <p>PEGA 二手物品匿名流通空間 · 2026 尾牙與文康券歷史行情封存庫</p>
+      <p class="text-xs text-gray-400 font-mono">
+        系統版本：<span class="text-amber-400 font-bold bg-gray-900 px-2 py-0.5 rounded-md border border-gray-800">v2026.09.14-1130</span>
+      </p>
+    </footer>
+
   </main>
 
-  <!-- 詳情彈窗 (Modal) -->
-  <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity" onclick="if(event.target === this) closeDetailModal()">
-    <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl space-y-0 transform transition-transform animate-in fade-in zoom-in-95 duration-150">
+  <!-- 📱 手機專屬底部固定導覽列 (與首頁 100% 同款同設計) -->
+  <nav id="mobile-bottom-nav" class="block sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-gray-950/95 backdrop-blur-xl border-t-2 border-amber-500/50 shadow-[0_-8px_30px_rgba(245,158,11,0.18)]">
+    <div class="max-w-md mx-auto px-3 py-2 flex items-center justify-between">
+      <!-- 🏠 市集首頁 -->
+      <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-400 active:scale-90 transition p-1">
+        <i class="fa-solid fa-house text-lg"></i>
+        <span class="text-xs font-bold">市集首頁</span>
+      </a>
       
-      <!-- 彈窗圖片區 -->
-      <div class="relative w-full h-56 bg-gray-950 flex items-center justify-center overflow-hidden">
-        <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
-        <button onclick="closeDetailModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 hover:bg-black text-gray-300 hover:text-white flex items-center justify-center transition-all">
-          <i class="fa-solid fa-xmark text-sm"></i>
+      <!-- 📜 2026 行情庫 (當前頁面高亮) -->
+      <a href="history-2026.html" class="flex flex-col items-center gap-1 text-pink-400 active:scale-90 transition p-1 font-black">
+        <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+        <span class="text-xs font-black">2026行情</span>
+      </a>
+      
+      <!-- 🔍 搜尋/探索 (一鍵彈出全螢幕懸浮搜尋) -->
+      <button onclick="openSearchOverlay()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-300 active:scale-90 transition p-1">
+        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        <span class="text-xs font-bold">搜尋</span>
+      </button>
+      
+      <!-- 📖 說明手冊 -->
+      <a href="guide.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-amber-300 active:scale-90 transition p-1" title="打開說明手冊">
+        <i class="fa-solid fa-book-open text-lg"></i>
+        <span class="text-xs font-bold">說明</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 🔍 2026 詳情放大 Modal (100% 仿照主頁 Apple 階差質感 + 紅色圓形叉叉關閉鈕 + 誇張大標價 + 隱私通話防護) -->
+  <div id="detail-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-2.5 pt-6 sm:p-4 animate-fadeIn" onclick="if(event.target === this) closeDetailModal()">
+    <div id="detail-modal-card" class="relative bg-gradient-to-b from-gray-900/95 to-gray-950/95 border-2 border-amber-500/40 text-gray-100 w-full max-w-2xl rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.15)] overflow-hidden flex flex-col max-h-[92vh] transition-all duration-200">
+      
+      <!-- 頂部列：分類徽章 + 標題 + 右側醒目紅色圓形關閉按鈕 (與主頁 100% 一致) -->
+      <div class="px-5 py-3.5 bg-gray-950/90 border-b border-gray-800 flex items-center justify-between shrink-0 gap-3">
+        <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-1">
+          <span id="modal-type-badge" class="shrink-0 font-bold"></span>
+          <h3 id="modal-title" class="font-black text-gray-100 detail-title-font break-words whitespace-normal leading-snug"></h3>
+        </div>
+        
+        <!-- 🔴 紅色圓形關閉按鈕 (與主頁相同) -->
+        <button onclick="closeDetailModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-base shadow-xl flex items-center justify-center border-2 border-white/30 transition active:scale-90 shrink-0 cursor-pointer z-30" title="按下關閉視窗">
+          <i class="fa-solid fa-xmark"></i>
         </button>
-        <div id="modal-type-badge" class="absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-black shadow-lg"></div>
       </div>
 
-      <!-- 彈窗內容區 -->
-      <div class="p-5 space-y-4">
-        <div>
-          <span id="modal-category" class="text-[11px] font-bold text-amber-400"></span>
-          <h3 id="modal-title" class="text-base sm:text-lg font-black text-white leading-snug mt-0.5"></h3>
-        </div>
-
-        <!-- 價格與狀態 -->
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-950 border border-gray-800">
-          <div>
-            <div class="text-[10px] text-gray-400 font-medium">當期參考價格 / 行情</div>
-            <div id="modal-price" class="text-xl font-black text-amber-400"></div>
-          </div>
-          <div class="text-right">
-            <div class="text-[10px] text-gray-400 font-medium">紀錄狀態</div>
-            <div class="text-xs font-bold text-emerald-400">🔒 2026 歷史封存已結案</div>
-          </div>
-        </div>
-
-        <!-- 詳細配件說明 -->
-        <div class="space-y-1.5">
-          <div class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
-            <i class="fa-solid fa-circle-info text-amber-400"></i> 配件與補充說明：
-          </div>
-          <div id="modal-notes" class="p-3 bg-gray-950/70 border border-gray-800/80 rounded-xl text-xs text-gray-300 leading-relaxed"></div>
-        </div>
-
-        <!-- 刊登同仁與隱私遮罩 -->
-        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-800/40 border border-gray-800 text-xs">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-xs">
-              <i class="fa-solid fa-user"></i>
-            </div>
-            <div>
-              <div class="font-bold text-gray-200" id="modal-author"></div>
-              <div class="text-[10px] text-gray-400" id="modal-contact"></div>
+      <!-- 可滾動內容區 (與主頁排版完全一致) -->
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4">
+        
+        <!-- 照片展示區 (100% 完整全圖展示 + 鮮紅已成交印章) -->
+        <div class="relative rounded-2xl overflow-hidden bg-black border border-gray-800 p-2 shadow-inner flex items-center justify-center min-h-[160px]">
+          <img id="modal-img" src="" alt="" class="w-full max-h-72 object-contain rounded-xl block">
+          <!-- 彈窗火紅已成交印章 -->
+          <div id="modal-sold-stamp" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+            <div class="border-4 border-red-500 text-red-400 font-black text-lg sm:text-2xl px-6 py-3 rounded-2xl uppercase tracking-widest transform -rotate-12 bg-black/90 backdrop-blur-md shadow-[0_0_40px_rgba(239,68,68,0.85)] flex items-center gap-3 ring-2 ring-red-500/60">
+              <i class="fa-solid fa-circle-check text-red-500 text-2xl"></i> 已成交 SOLD OUT
             </div>
           </div>
-          <div class="text-[11px] text-gray-400 font-medium bg-gray-800 px-2.5 py-1 rounded-lg">
-            🔒 歷史存檔不可聯絡
+        </div>
+
+        <!-- 🍎 階差式核心標價區 (誇張大字體 + 流金漸層) -->
+        <div class="p-4 bg-gray-950/90 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+          <div class="space-y-0.5">
+            <span class="text-xs text-gray-400 font-bold tracking-wider uppercase">PRICE / VALUE</span>
+            <div id="modal-price" class="font-black detail-price-font bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent"></div>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-gray-400 font-bold self-start sm:self-center">
+            <span id="modal-category-tag" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 text-gray-300"></span>
+            <span id="modal-status-badge" class="bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 font-bold text-emerald-400">🔒 2026 歷史封存已結案</span>
           </div>
         </div>
 
-        <!-- 底部安全提示與關閉按鈕 -->
-        <div class="pt-2 flex items-center justify-between gap-3 border-t border-gray-800/80">
-          <div class="text-[10px] text-gray-500 leading-tight">
-            * 僅供行情回顧參考，請勿查詢擾動當事人。
+        <!-- 聯絡資訊方塊 (紫色/靛藍質感漸層，顯示真實分機與聯絡方式) -->
+        <div class="bg-gradient-to-r from-indigo-950/90 to-purple-950/90 border-2 border-indigo-500/40 p-4 sm:p-5 rounded-2xl space-y-2.5 shadow-lg">
+          <div class="flex items-center justify-between">
+            <p class="font-black text-indigo-300 flex items-center gap-1.5 text-xs sm:text-sm">
+              <i class="fa-solid fa-phone text-amber-400"></i> 刊登同仁聯絡資訊：
+            </p>
+            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs px-3 py-1 rounded-xl shadow-sm flex items-center gap-1">
+              <i class="fa-solid fa-phone-volume"></i> 園區分機 / Teams 可洽詢
+            </span>
           </div>
-          <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl text-xs transition-colors flex-shrink-0">
-            關閉視窗
-          </button>
+          
+          <div class="flex flex-wrap items-center gap-2.5 text-xs sm:text-sm pt-1">
+            <div class="bg-gray-900/80 px-3 py-1.5 rounded-xl border border-indigo-500/30 flex items-center gap-1.5">
+              <span class="text-gray-400">刊登同仁：</span>
+              <span id="modal-author" class="text-amber-300 font-bold"></span>
+            </div>
+            <div class="bg-gray-900/80 px-3.5 py-1.5 rounded-xl border border-amber-500/40 flex items-center gap-2 shadow-sm">
+              <span class="text-gray-400">分機/聯絡：</span>
+              <span id="modal-contact" class="font-mono text-amber-300 font-black text-sm"></span>
+              <button onclick="copyContactForItem(currentOpenedId)" class="ml-1 px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-gray-950 rounded-lg text-xs font-black shadow transition active:scale-90 flex items-center gap-1">
+                <i class="fa-regular fa-copy"></i> 複製分機
+              </button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-gray-300 leading-relaxed pt-1">
+            💡 <strong>洽詢說明</strong>：此為 2026 尾牙與文康券同仁刊登紀錄。若對該物品有興趣，可於上班時間透過內部電話撥打分機，或以 Microsoft Teams 搜尋同仁英文暱稱詢問是否已出售或有意割愛。
+          </p>
+        </div>
+
+        <!-- 物品備註與規格描述 -->
+        <div class="space-y-2 bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80">
+          <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-align-left text-amber-400"></i> 物品詳情與規格備註
+          </h4>
+          <p id="modal-notes" class="text-gray-200 detail-desc-font leading-relaxed whitespace-pre-line"></p>
+        </div>
+
+        <!-- 🤝 同仁下架與狀態回報控制區 (當事人也許已賣出/不便再受打擾) -->
+        <div class="p-3.5 sm:p-4 bg-gray-950 border border-gray-800 rounded-2xl space-y-2.5 shadow-inner">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-user-check text-amber-400"></i> 我是刊登人（變更狀態 / 下架）：
+            </span>
+            <span class="text-[10px] text-gray-400">若已售出可隨時回報下架</span>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2 pt-0.5">
+            <button onclick="markCurrentItemSold()" id="btn-modal-sold" class="flex-1 px-3.5 py-2 rounded-xl bg-gradient-to-r from-red-950 to-gray-900 border border-red-500/50 hover:border-red-400 text-red-300 hover:text-red-200 font-bold text-xs transition active:scale-95 flex items-center justify-center gap-1.5 shadow">
+              <i class="fa-solid fa-stamp text-red-400"></i> <span>標記為【已售出 / 已收得】</span>
+            </button>
+            <button onclick="hideCurrentItemPermanently()" id="btn-modal-hide" class="px-3.5 py-2 rounded-xl bg-gray-900 border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white font-bold text-xs transition active:scale-95 flex items-center justify-center gap-1.5 shadow" title="完全從歷史行情庫中移除隱藏">
+              <i class="fa-solid fa-trash-can text-gray-400"></i> <span>直接下架移除</span>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -318,77 +480,218 @@
     </div>
   </div>
 
-  <!-- 頁尾 -->
-  <footer class="mt-auto border-t border-gray-800 bg-[#0a0d14] py-6 text-center text-xs text-gray-500">
-    <div class="max-w-7xl mx-auto px-4 space-y-1">
-      <p>PEGA 關渡園區 好物交換所 • 2026 尾牙與文康券歷史行情回顧專區</p>
-      <p class="text-[11px] text-gray-600">本系統所有歷史資料已受隱私保護機制處理 | 僅供同仁內部行情參考</p>
-    </div>
-  </footer>
-
-  <!-- 載入歷史資料庫與互動邏輯 -->
+  <!-- 引入 2026 歷史數據庫 -->
   <script src="js/history_2026_data.js"></script>
+
   <script>
-    // State
-    let currentTab = 'all'; // 'all', 'sell', 'buy', 'voucher'
+    // State Management
+    let currentLayout = 'showcase'; // 預設 🍎 階差大卡
+    let currentTab = 'all';
     let currentCategory = 'all';
     let searchQuery = '';
     let sortMode = 'default';
+    let currentPage = 1;
+    let itemsPerPage = 50; // 預設 50 筆 (手機與電腦最佳平衡)
+    let totalPages = 1;
+    let filteredCount = 0;
+    let currentOpenedId = null;
 
-    const fontScales = [
-      { label: '特小', scale: 0.85 },
-      { label: '小', scale: 0.925 },
-      { label: '標準', scale: 1.0 },
-      { label: '大', scale: 1.1 },
-      { label: '特大', scale: 1.25 }
-    ];
-    let currentFontIdx = 2;
+    // 5 級字體設定 (與主頁 utils.js 100% 同款同規則)
+    const scaleMap = {
+      'sm': { scale: 0.88, rootSize: '14px' },
+      'base': { scale: 1.0, rootSize: '16px' },
+      'lg': { scale: 1.15, rootSize: '18px' },
+      'xl': { scale: 1.28, rootSize: '20.5px' },
+      '2xl': { scale: 1.44, rootSize: '23px' }
+    };
+
+    function setFontSize(level, showToast = true) {
+      const levels = ['sm', 'base', 'lg', 'xl', '2xl'];
+      if (!levels.includes(level)) level = 'base';
+
+      const current = scaleMap[level] || scaleMap['base'];
+      try {
+        document.documentElement.style.setProperty('--text-scale', current.scale);
+        document.documentElement.style.fontSize = current.rootSize;
+      } catch(e) {
+        console.warn('Set font size error:', e);
+      }
+
+      document.documentElement.classList.remove('font-level-sm', 'font-level-base', 'font-level-lg', 'font-level-xl', 'font-level-2xl');
+      document.documentElement.classList.add(`font-level-${level}`);
+
+      levels.forEach(l => {
+        const btn = document.getElementById(`font-btn-${l}`);
+        if (btn) {
+          if (l === level) {
+            btn.className = 'px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-black transition bg-amber-400 text-gray-950 shadow-md';
+          } else {
+            btn.className = 'px-1.5 py-0.5 sm:py-1 rounded-lg text-xs font-bold transition text-gray-400 hover:text-amber-300 hover:bg-gray-800';
+          }
+        }
+      });
+
+      localStorage.setItem('pega_user_font_size', level);
+      if (showToast) {
+        const levelNames = {
+          'sm': '小 (A⁻)',
+          'base': '標準 (A)',
+          'lg': '大 (A⁺)',
+          'xl': '特大 (A⁺⁺)',
+          '2xl': '超大 (A⁺⁺⁺)'
+        };
+        showToastMsg(`🔤 字體大小已切換為：${levelNames[level] || level}`);
+      }
+    }
+
+    function initFontSize() {
+      const savedLevel = localStorage.getItem('pega_user_font_size') || 'base';
+      setFontSize(savedLevel, false);
+    }
+
+    function showToastMsg(msg) {
+      const c = document.getElementById('toast-container');
+      if (!c) return;
+      const t = document.createElement('div');
+      t.className = 'bg-gray-900 border border-amber-500/50 text-gray-100 text-xs font-bold px-3.5 py-2 rounded-xl shadow-2xl flex items-center gap-2 animate-bounce';
+      t.innerHTML = `<i class="fa-solid fa-circle-check text-amber-400"></i> <span>${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => {
+        t.remove();
+      }, 2200);
+    }
+
+    // 版型切換函式 (與主頁 changeGridLayout 100% 完全同名、同架構)
+    function changeGridLayout(cols) {
+      const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
+      currentLayout = cols;
+
+      const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
+      localStorage.setItem(storageKey, cols);
+
+      applyGridLayout(cols);
+      renderHistory();
+    }
+
+    function applyGridLayout(cols) {
+      const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
+      const grid = document.getElementById('history-grid');
+      const container = document.getElementById('grid-container');
+      const btnShowcase = document.getElementById('layout-btn-showcase');
+      const btn2 = document.getElementById('layout-btn-2');
+      const select = document.getElementById('grid-layout-select');
+
+      const activeStyle = 'px-3 py-1.5 rounded-lg text-xs font-black bg-amber-400 text-gray-950 shadow transition flex items-center gap-1';
+      const inactiveStyle = 'px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center gap-1';
+
+      if (btnShowcase) btnShowcase.className = (cols === 'showcase') ? activeStyle : inactiveStyle;
+      if (btn2) btn2.className = (cols === '2') ? activeStyle : inactiveStyle;
+      if (select && cols) select.value = cols;
+
+      if (!grid || !container) return;
+
+      if (cols === 'showcase') {
+        container.className = 'mx-auto max-w-xl sm:max-w-2xl';
+        grid.className = 'flex flex-col gap-4 sm:gap-6';
+      } else if (cols === '2') {
+        container.className = 'mx-auto max-w-2xl sm:max-w-4xl';
+        grid.className = 'grid grid-cols-2 gap-2.5 sm:gap-4';
+      } else if (cols === '4') {
+        container.className = 'mx-auto max-w-7xl';
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4';
+      } else {
+        // 3 欄預設
+        container.className = 'mx-auto max-w-5xl';
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4';
+      }
+    }
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      // Load saved font scale
-      const savedFont = localStorage.getItem('pega_font_scale');
-      if (savedFont !== null) {
-        const idx = parseInt(savedFont, 10);
-        if (!isNaN(idx) && idx >= 0 && idx < fontScales.length) {
-          currentFontIdx = idx;
-        }
+      const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
+      
+      // 1. Load layout (依指示：預設 🍎 階差大卡)
+      const storageKey = isMobile ? 'pega_grid_cols_mobile' : 'pega_grid_cols_pc';
+      let savedLayout = localStorage.getItem(storageKey);
+      if (!savedLayout) {
+        savedLayout = 'showcase'; // 預設階差大卡！
+        localStorage.setItem(storageKey, savedLayout);
       }
-      applyFontSize();
+      currentLayout = savedLayout;
+      applyGridLayout(currentLayout);
 
-      // Render
+      // 2. Load itemsPerPage from localStorage (預設 50 筆)
+      const savedPerPage = localStorage.getItem('pega_items_per_page');
+      if (savedPerPage) {
+        const p = parseInt(savedPerPage, 10);
+        if (!isNaN(p) && p >= 1) itemsPerPage = p;
+      } else {
+        itemsPerPage = 50;
+        localStorage.setItem('pega_items_per_page', '50');
+      }
+      const sel = document.getElementById('hist-perpage-select');
+      if (sel) sel.value = itemsPerPage.toString();
+
+      // 3. Init Font Size & Cross-tab Storage Listener
+      initFontSize();
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'pega_user_font_size' && e.newValue) {
+          setFontSize(e.newValue, false);
+        }
+        if (e.key === storageKey && e.newValue) {
+          currentLayout = e.newValue;
+          applyGridLayout(currentLayout);
+          renderHistory();
+        }
+      });
+
+      // 4. Render
       renderCounts();
       renderHistory();
 
-      // Global ESC key
+      // 5. Global ESC key
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeDetailModal();
+        if (e.key === 'Escape') {
+          closeDetailModal();
+          closeSearchOverlay();
+        }
       });
     });
 
-    function toggleHistoryFontSize() {
-      currentFontIdx = (currentFontIdx + 1) % fontScales.length;
-      localStorage.setItem('pega_font_scale', currentFontIdx);
-      applyFontSize();
-    }
-
-    function applyFontSize() {
-      const item = fontScales[currentFontIdx];
-      document.documentElement.style.fontSize = `${item.scale * 16}px`;
-      const lbl = document.getElementById('hist-font-label');
-      if (lbl) lbl.textContent = item.label;
+    function onPerPageChange() {
+      const sel = document.getElementById('hist-perpage-select');
+      if (!sel) return;
+      itemsPerPage = parseInt(sel.value, 10) || 40;
+      localStorage.setItem('pega_items_per_page', itemsPerPage.toString());
+      currentPage = 1;
+      renderHistory();
     }
 
     function renderCounts() {
-      const data = window.HISTORY_2026_DATA || [];
+      let data = window.HISTORY_2026_DATA || [];
+      const soldIds = JSON.parse(localStorage.getItem('pega_hist_sold_ids') || '[]');
+      const hiddenIds = JSON.parse(localStorage.getItem('pega_hist_hidden_ids') || '[]');
+
+      data = data.filter(item => !hiddenIds.includes(item.id));
+      data.forEach(item => {
+        if (soldIds.includes(item.id)) {
+          item.isSold = true;
+        }
+      });
       const sellCount = data.filter(d => d.type === 'sell').length;
       const buyCount = data.filter(d => d.type === 'buy').length;
       const voucherCount = data.filter(d => d.type.startsWith('voucher')).length;
+      const soldCount = data.filter(d => !!d.isSold).length;
+      const activeCount = data.length - soldCount;
 
-      document.getElementById('stat-total').innerHTML = `${data.length} <span class="text-xs font-normal text-gray-400">筆</span>`;
-      document.getElementById('stat-sell').innerHTML = `${sellCount} <span class="text-xs font-normal text-amber-400/80">筆</span>`;
-      document.getElementById('stat-buy').innerHTML = `${buyCount} <span class="text-xs font-normal text-sky-400/80">筆</span>`;
-      document.getElementById('stat-voucher').innerHTML = `${voucherCount} <span class="text-xs font-normal text-emerald-400/80">筆</span>`;
+      const totalBadge = document.getElementById('header-total-count');
+      if (totalBadge) totalBadge.textContent = data.length;
+
+      const actEl = document.getElementById('stat-active-num');
+      if (actEl) actEl.textContent = `${activeCount} 筆`;
+
+      const soldEl = document.getElementById('stat-sold-num');
+      if (soldEl) soldEl.textContent = `${soldCount} 筆`;
 
       document.getElementById('count-tab-all').textContent = data.length;
       document.getElementById('count-tab-sell').textContent = sellCount;
@@ -398,17 +701,14 @@
 
     function setTab(tab) {
       currentTab = tab;
+      currentPage = 1;
       
-      // Update tab buttons
       document.querySelectorAll('.tab-btn').forEach(b => {
-        b.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800';
+        b.className = 'tab-btn px-4 py-2 rounded-xl bg-gray-900 border border-gray-700 text-gray-300 hover:text-amber-300 hover:bg-gray-800 transition active:scale-95 shrink-0';
       });
       const active = document.getElementById(`tab-${tab}`);
       if (active) {
-        if (tab === 'all') active.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-amber-500 text-gray-950 shadow';
-        else if (tab === 'sell') active.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-amber-500 text-gray-950 shadow';
-        else if (tab === 'buy') active.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-sky-500 text-gray-950 shadow';
-        else if (tab === 'voucher') active.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-emerald-500 text-gray-950 shadow';
+        active.className = 'tab-btn px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 transition shadow-md shadow-amber-500/20 active:scale-95 shrink-0 font-black';
       }
 
       renderHistory();
@@ -416,21 +716,23 @@
 
     function setCategory(cat) {
       currentCategory = cat;
+      currentPage = 1;
 
       document.querySelectorAll('.cat-pill').forEach(p => {
-        p.className = 'cat-pill px-3 py-1 rounded-lg font-bold transition-all text-gray-400 hover:text-white hover:bg-gray-800 border border-transparent flex-shrink-0';
+        p.className = 'cat-pill px-3 py-1 rounded-xl bg-gray-900 border border-gray-700 hover:border-amber-400/50 hover:text-amber-300 shrink-0 transition text-gray-300';
       });
       const active = document.getElementById(`cat-${cat}`);
       if (active) {
-        active.className = 'cat-pill px-3 py-1 rounded-lg font-bold transition-all bg-gray-800 text-amber-300 border border-amber-500/30 flex-shrink-0';
+        active.className = 'cat-pill px-3 py-1 rounded-xl transition bg-amber-400 text-gray-950 font-black shadow shrink-0';
       }
 
       renderHistory();
     }
 
     function onSearchChange() {
-      const input = document.getElementById('hist-search-input');
+      const input = document.getElementById('search-input');
       searchQuery = input.value.trim().toLowerCase();
+      currentPage = 1;
       const clearBtn = document.getElementById('clear-search-btn');
       if (searchQuery) clearBtn.classList.remove('hidden');
       else clearBtn.classList.add('hidden');
@@ -439,15 +741,17 @@
     }
 
     function clearSearch() {
-      const input = document.getElementById('hist-search-input');
+      const input = document.getElementById('search-input');
       input.value = '';
       searchQuery = '';
+      currentPage = 1;
       document.getElementById('clear-search-btn').classList.add('hidden');
       renderHistory();
     }
 
     function onSortChange() {
       sortMode = document.getElementById('hist-sort-select').value;
+      currentPage = 1;
       renderHistory();
     }
 
@@ -456,17 +760,160 @@
       currentCategory = 'all';
       searchQuery = '';
       sortMode = 'default';
-      document.getElementById('hist-search-input').value = '';
+      currentPage = 1;
+      document.getElementById('search-input').value = '';
       document.getElementById('hist-sort-select').value = 'default';
       setTab('all');
       setCategory('all');
     }
 
+    // 📱 手機專屬搜尋 Overlay (與主頁完全同款)
+    function openSearchOverlay() {
+      const overlay = document.getElementById('sticky-search-overlay');
+      const input = document.getElementById('overlay-search-input');
+      if (overlay) {
+        overlay.classList.remove('hidden');
+        if (input) {
+          input.value = searchQuery;
+          setTimeout(() => input.focus(), 100);
+        }
+      }
+    }
+
+    function closeSearchOverlay() {
+      const overlay = document.getElementById('sticky-search-overlay');
+      if (overlay) overlay.classList.add('hidden');
+    }
+
+    function syncOverlaySearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      const mainInput = document.getElementById('search-input');
+      if (mainInput) mainInput.value = val;
+      const clearBtn = document.getElementById('overlay-search-clear');
+      if (val) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
+      currentPage = 1;
+      renderHistory();
+    }
+
+    function clearOverlaySearch() {
+      const input = document.getElementById('overlay-search-input');
+      if (input) input.value = '';
+      syncOverlaySearch('');
+    }
+
+    function applyQuickSearch(keyword) {
+      const input = document.getElementById('overlay-search-input');
+      if (input) input.value = keyword;
+      syncOverlaySearch(keyword);
+      closeSearchOverlay();
+      showToastMsg(`🔍 已套用搜尋：${keyword}`);
+    }
+
+    function goToPage(p) {
+      if (p < 1) p = 1;
+      if (p > totalPages) p = totalPages;
+      if (p === currentPage) return;
+      currentPage = p;
+      renderHistory();
+      
+      const mainBody = document.getElementById('main-body');
+      if (mainBody) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) goToPage(currentPage - 1);
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages) goToPage(currentPage + 1);
+    }
+
+    // 🤝 同仁自發下架：標記此物品已售出 (移至底部 + 蓋上火紅 SOLD 印章)
+    function markCurrentItemSold() {
+      if (!currentOpenedId) return;
+      const item = (window.HISTORY_2026_DATA || []).find(d => d.id === currentOpenedId);
+      if (!item) return;
+
+      if (!confirm(`您確定要將「${item.title}」標記為【已售出】嗎？\n\n標記後將會蓋上火紅【已成交 SOLD】印章並移至清單最底端，避免其他同仁再撥打分機！`)) return;
+
+      let soldIds = JSON.parse(localStorage.getItem('pega_hist_sold_ids') || '[]');
+      if (!soldIds.includes(currentOpenedId)) {
+        soldIds.push(currentOpenedId);
+        localStorage.setItem('pega_hist_sold_ids', JSON.stringify(soldIds));
+      }
+      item.isSold = true;
+      closeDetailModal();
+      renderCounts();
+      renderHistory();
+      showToastMsg(`🤝 已成功將「${item.title}」標記為已售出！`);
+    }
+
+    // 🗑️ 同仁自發下架：完全從歷史庫中移除隱藏
+    function hideCurrentItemPermanently() {
+      if (!currentOpenedId) return;
+      const item = (window.HISTORY_2026_DATA || []).find(d => d.id === currentOpenedId);
+      if (!item) return;
+
+      if (!confirm(`您確定要將「${item.title}」完全下架移除嗎？\n\n下架後本頁面將不再展示此筆物品紀錄。`)) return;
+
+      let hiddenIds = JSON.parse(localStorage.getItem('pega_hist_hidden_ids') || '[]');
+      if (!hiddenIds.includes(currentOpenedId)) {
+        hiddenIds.push(currentOpenedId);
+        localStorage.setItem('pega_hist_hidden_ids', JSON.stringify(hiddenIds));
+      }
+      closeDetailModal();
+      renderCounts();
+      renderHistory();
+      showToastMsg(`🗑️ 已成功將「${item.title}」永久下架！`);
+    }
+
+        function copyContactForItem(id) {
+      const item = (window.HISTORY_2026_DATA || []).find(d => d.id === id);
+      if (!item || !item.contact) return;
+      const cleanNum = item.contact.replace(/[^0-9]/g, '');
+      const textToCopy = cleanNum || item.author;
+      copyTextToClipboard(textToCopy, `📋 已複製分機號碼：${textToCopy}`);
+    }
+
+    function copyTextToClipboard(text, msg) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToastMsg(msg || '📋 已複製到剪貼簿！'));
+      } else {
+        const input = document.createElement('input');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToastMsg(msg || '📋 已複製到剪貼簿！');
+      }
+    }
+
     function renderHistory() {
-      const raw = window.HISTORY_2026_DATA || [];
+      let raw = window.HISTORY_2026_DATA || [];
+      
+      // 套用同仁自主下架與售出本機紀錄
+      const soldIds = JSON.parse(localStorage.getItem('pega_hist_sold_ids') || '[]');
+      const hiddenIds = JSON.parse(localStorage.getItem('pega_hist_hidden_ids') || '[]');
+
+      // 1. 排除永久下架物品
+      raw = raw.filter(item => !hiddenIds.includes(item.id));
+
+      // 2. 標記已售出覆蓋
+      raw.forEach(item => {
+        if (soldIds.includes(item.id)) {
+          item.isSold = true;
+        }
+      });
       const grid = document.getElementById('history-grid');
       const emptyState = document.getElementById('empty-state');
       const countEl = document.getElementById('result-count');
+      const activeCountEl = document.getElementById('active-count-badge');
+      const soldCountEl = document.getElementById('sold-count-badge');
+      const pagContainer = document.getElementById('pagination-container');
 
       // 1. Tab Filter
       let filtered = raw.filter(item => {
@@ -493,81 +940,276 @@
         });
       }
 
-      // 4. Sort
+      // 4. 【核心需求：已售出自動置底，不影響待售商品觀看】
+      const activeItems = filtered.filter(item => !item.isSold);
+      const soldItems = filtered.filter(item => !!item.isSold);
+
       if (sortMode === 'price_desc') {
-        filtered.sort((a, b) => b.priceNum - a.priceNum);
+        activeItems.sort((a, b) => b.priceNum - a.priceNum);
+        soldItems.sort((a, b) => b.priceNum - a.priceNum);
       } else if (sortMode === 'price_asc') {
-        filtered.sort((a, b) => a.priceNum - b.priceNum);
+        activeItems.sort((a, b) => a.priceNum - b.priceNum);
+        soldItems.sort((a, b) => a.priceNum - b.priceNum);
       }
 
-      countEl.textContent = filtered.length;
+      // 待售在前，已售置底
+      filtered = [...activeItems, ...soldItems];
 
-      if (filtered.length === 0) {
+      filteredCount = filtered.length;
+      if (countEl) countEl.textContent = filteredCount;
+      if (activeCountEl) activeCountEl.textContent = `🟢 待售 ${activeItems.length} 筆`;
+      if (soldCountEl) soldCountEl.textContent = `✔ 已成交 ${soldItems.length} 筆置底`;
+
+      // 5. Calculate Pagination
+      totalPages = Math.ceil(filteredCount / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      // Pagination elements
+      const curPageEl = document.getElementById('current-page-num');
+      const totPageEl = document.getElementById('total-page-num');
+      const pagTotalEl = document.getElementById('pag-total-items');
+      const pageSummary = document.getElementById('page-summary-text');
+      const numContainer = document.getElementById('page-numbers-container');
+      const btnFirst = document.getElementById('btn-page-first');
+      const btnPrev = document.getElementById('btn-page-prev');
+      const btnNext = document.getElementById('btn-page-next');
+      const btnLast = document.getElementById('btn-page-last');
+
+      if (curPageEl) curPageEl.textContent = currentPage;
+      if (totPageEl) totPageEl.textContent = totalPages;
+
+      if (filteredCount === 0) {
         grid.innerHTML = '';
         emptyState.classList.remove('hidden');
+        if (pagContainer) pagContainer.classList.add('hidden');
+        if (pageSummary) pageSummary.textContent = '';
         return;
       }
 
       emptyState.classList.add('hidden');
+      if (pagContainer) pagContainer.classList.remove('hidden');
 
-      // Build HTML
-      grid.innerHTML = filtered.map(item => {
-        let badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
-        if (item.type === 'buy') badgeColor = 'bg-sky-500/20 text-sky-300 border-sky-500/40';
-        else if (item.type.startsWith('voucher')) badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+      // Calculate slice range
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, filteredCount);
+      const pageItems = filtered.slice(startIndex, endIndex);
 
-        const escapedNotes = escapeHtml(item.notes);
-        const escapedTitle = escapeHtml(item.title);
-        const escapedAuthor = escapeHtml(item.author);
+      if (pagTotalEl) pagTotalEl.textContent = filteredCount;
+      if (pageSummary) pageSummary.textContent = `（顯示第 ${startIndex + 1} - ${endIndex} 筆）`;
 
-        return `
-          <div onclick="openDetailModal('${item.id}')" class="group cursor-pointer bg-gray-900 border border-gray-800 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-200 flex flex-col">
-            
-            <!-- 封面圖片區 -->
-            <div class="relative w-full h-44 bg-gray-950 overflow-hidden">
-              <img src="${item.image}" alt="${escapedTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600';">
-              <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80"></div>
+      // Update Pagination Buttons State
+      if (btnFirst) btnFirst.disabled = (currentPage === 1);
+      if (btnPrev) btnPrev.disabled = (currentPage === 1);
+      if (btnNext) btnNext.disabled = (currentPage === totalPages);
+      if (btnLast) btnLast.disabled = (currentPage === totalPages);
+
+      // Render Dynamic Page Numbers
+      if (numContainer) {
+        let btnHtml = '';
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+        if (endPage - startPage < 4) {
+          startPage = Math.max(1, endPage - 4);
+        }
+
+        for (let p = startPage; p <= endPage; p++) {
+          if (p === currentPage) {
+            btnHtml += `<button class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-xs sm:text-sm shadow-md flex items-center justify-center">${p}</button>`;
+          } else {
+            btnHtml += `<button onclick="goToPage(${p})" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold text-xs sm:text-sm transition flex items-center justify-center border border-gray-800">${p}</button>`;
+          }
+        }
+        numContainer.innerHTML = btnHtml;
+      }
+
+            // Render Cards based on layout (100% 仿照主頁排版與內文結構)
+      const isMobileDevice = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 1024);
+
+      grid.innerHTML = pageItems.map((item, idx) => {
+        const isSold = !!item.isSold;
+        const globalIdx = startIndex + idx;
+        
+        let badgeHtml = '';
+        if (isSold) {
+          badgeHtml = `<span class="px-2 py-0.5 rounded-md bg-gray-800 text-gray-400 border border-gray-700 font-bold text-[10px] sm:text-xs shadow">已成交</span>`;
+        } else {
+          let badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+          if (item.type === 'buy') badgeColor = 'bg-sky-500/20 text-sky-300 border-sky-500/40';
+          else if (item.type.startsWith('voucher')) badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+          badgeHtml = `<span class="px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-bold border ${badgeColor} backdrop-blur-md">${item.typeBadge}</span>`;
+        }
+
+        const safeTitle = escapeHtml(item.title);
+        const safeDesc = escapeHtml(item.notes || '');
+        const safeNickname = escapeHtml(item.author || '和碩同仁');
+        const safeContact = escapeHtml(item.contact || '');
+
+        // 🍎 模式 1：Apple 官網階差沉浸大卡 (100% 貼齊主頁 showcaseCardHtml 排版與內文)
+        if (currentLayout === 'showcase') {
+          return `
+            <div onclick="openDetailModal('${item.id}')" class="apple-step-card p-4 sm:p-7 relative overflow-hidden transition-all duration-300 active:scale-[0.99] cursor-pointer shadow-2xl group text-left ${isSold ? 'grayscale opacity-75 contrast-90 border-2 border-gray-700 bg-gray-950/80' : 'border-2 border-amber-500/45 hover:border-amber-500/80'}">
+              <div class="relative z-10 space-y-3.5">
+                
+                <!-- 頂部資訊列：階差編號徽章 + 頭像/暱稱 + 分類徽章 + 時間 -->
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="px-2.5 py-0.5 rounded-md ${isSold ? 'bg-gray-800 text-gray-400 border border-gray-700' : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950'} font-black text-xs shadow">
+                      ${isSold ? '已成交' : `NO. ${String(globalIdx + 1).padStart(2, '0')}`}
+                    </span>
+                    <div class="w-7 h-7 rounded-full ${isSold ? 'bg-gray-800 text-gray-400' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white'} flex items-center justify-center text-xs font-black shadow-md shrink-0">
+                      ${safeNickname.slice(0, 1) || '同'}
+                    </div>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span class="font-black text-gray-100 truncate showcase-meta-font">${safeNickname}</span>
+                      ${badgeHtml}
+                    </div>
+                    <div class="text-gray-400 font-medium showcase-meta-font text-xs hidden sm:inline">· 2026 尾牙封存</div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-[10px] sm:text-xs text-gray-400 bg-gray-900/80 px-2 py-0.5 rounded-md border border-gray-800">
+                      ${item.categoryName}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 標題與描述 (字體動態聯動) -->
+                <div class="space-y-1">
+                  <h3 class="font-black text-gray-100 leading-snug break-words showcase-title-font group-hover:text-amber-300 transition-colors" title="${safeTitle}">
+                    ${isSold ? '<span class="text-gray-400 font-black">【已成交】</span>' : ''}${safeTitle}
+                  </h3>
+                  ${safeDesc ? `<p class="text-gray-300 leading-relaxed font-medium line-clamp-3 showcase-desc-font">${safeDesc}</p>` : ''}
+                </div>
+
+                <!-- 滿版大圖 (點擊放大) -->
+                <div class="relative aspect-[16/10] w-full bg-gray-950 rounded-2xl overflow-hidden border border-gray-800 shadow-inner group cursor-zoom-in" title="點擊放大全圖">
+                  <img src="${item.image}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${isSold ? 'grayscale contrast-90 opacity-60' : ''}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';">
+                  <div class="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent"></div>
+                  
+                  ${isSold ? `
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                      <div class="border-4 border-red-500 text-red-400 font-black text-base sm:text-xl px-5 py-2.5 rounded-2xl uppercase tracking-widest transform -rotate-12 bg-black/85 backdrop-blur-md shadow-[0_0_35px_rgba(239,68,68,0.7)] flex items-center gap-2.5 ring-2 ring-red-500/50">
+                        <i class="fa-solid fa-circle-check text-red-500 text-xl"></i> 已成交 SOLD OUT
+                      </div>
+                    </div>
+                  ` : ''}
+
+                  <span class="absolute bottom-2 right-2 bg-black/75 text-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-white/20 shadow flex items-center gap-1">
+                    <i class="fa-solid fa-expand text-xs"></i> 點擊放大全圖
+                  </span>
+                </div>
+
+                <!-- 底部階差標價 ＋ 一鍵複製直貼 / 詳情按鈕 (字體動態聯動) -->
+                <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between gap-3 relative z-10">
+                  <div>
+                    <span class="text-xs text-gray-500 font-bold uppercase tracking-wider block">${isSold ? 'STATUS' : 'PRICE / VALUE'}</span>
+                    <div class="font-black ${isSold ? 'text-gray-400 line-through' : 'bg-gradient-to-r from-yellow-100 via-amber-300 to-yellow-500 bg-clip-text text-transparent'} showcase-price-font">${item.priceDisplay}</div>
+                  </div>
+
+                  <div class="flex items-center gap-2" onclick="event.stopPropagation()">
+                    ${safeContact ? `
+                      <button onclick="copyContactForItem('${item.id}')" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-950 font-black rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-1.5 showcase-meta-font" title="複製此分機">
+                        <i class="fa-solid fa-phone text-xs"></i> ${safeContact}
+                      </button>
+                    ` : ''}
+                    <button onclick="openDetailModal('${item.id}')" class="px-3.5 py-1.5 bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold rounded-xl border border-gray-700 active:scale-95 transition showcase-meta-font">
+                      詳情 <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- 🌟 巨大沉浸金色/灰階數字 (01, 02...) -->
+              <div class="step-watermark-num absolute right-2 -bottom-2 pointer-events-none z-0 select-none ${isSold ? 'opacity-20' : ''}">${String(globalIdx + 1).padStart(2, '0')}</div>
+            </div>
+          `;
+        }
+
+        // 📱 模式 2：雙排 2 欄 (100% 仿照主頁 mobileCardHtml：1:1 正方形、底部黑漸層懸浮內文)
+        if (currentLayout === '2' || (isMobileDevice && currentLayout !== 'showcase' && currentLayout !== '3' && currentLayout !== '4')) {
+          return `
+            <div onclick="openDetailModal('${item.id}')" class="threads-card-item block relative aspect-square bg-gray-950 rounded-2xl overflow-hidden shadow-lg border ${isSold ? 'grayscale opacity-60 border-gray-800' : 'border-gray-800 active:scale-95'} transition cursor-pointer group">
+              <img src="${item.image}" alt="${safeTitle}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300">
               
-              <!-- 類型徽章 -->
-              <div class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold border ${badgeColor} backdrop-blur-md">
-                ${item.typeBadge}
+              <!-- 鮮紅已成交斜角印章 (雙排小尺寸專用) -->
+              ${isSold ? `
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                  <div class="border-2 border-red-500 text-red-400 font-black text-[10px] sm:text-xs px-2.5 py-1 rounded-xl uppercase tracking-wider transform -rotate-12 bg-black/85 backdrop-blur-md shadow-[0_0_20px_rgba(239,68,68,0.7)] flex items-center gap-1 ring-1 ring-red-500/40">
+                    <i class="fa-solid fa-circle-check text-red-500"></i> 已成交 SOLD
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- 左上角類型徽章 -->
+              <div class="absolute top-2 left-2 flex gap-1 z-10">${badgeHtml}</div>
+
+              <!-- 右上角分機號碼膠囊 -->
+              <div class="absolute top-2 right-2 z-10" onclick="event.stopPropagation()">
+                <button onclick="copyContactForItem('${item.id}')" class="bg-black/75 hover:bg-black text-amber-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-lg border border-white/20 shadow flex items-center gap-1 active:scale-90 transition" title="點擊複製分機">
+                  <i class="fa-solid fa-phone text-[9px]"></i> ${safeContact}
+                </button>
               </div>
 
-              <!-- 2026 封存徽章 -->
-              <div class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-black/60 text-gray-300 backdrop-blur-md">
-                🔒 2026
+              <!-- 底部黑色漸層懸浮文字 (仿照主頁 mobile-grid-title-font + mobile-grid-price-font) -->
+              <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/85 to-transparent p-2.5 pt-10 flex flex-col justify-end pointer-events-none">
+                <h3 class="font-black text-white line-clamp-2 leading-snug drop-shadow-md mobile-grid-title-font" title="${safeTitle}">
+                  ${isSold ? '<span class="text-gray-400 font-bold">【已成交】</span>' : ''}${safeTitle}
+                </h3>
+                <div class="font-black text-amber-400 drop-shadow-md mt-0.5 mobile-grid-price-font">${item.priceDisplay}</div>
               </div>
+            </div>
+          `;
+        }
 
-              <!-- 價格標籤浮層 -->
-              <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-baseline justify-between">
-                <div class="text-amber-400 font-black text-base sm:text-lg drop-shadow-md">
-                  ${item.priceDisplay}
+        // 💻 模式 3：電腦端經典 3 欄 / 4 欄 (100% 仿照主頁 desktopCardHtml：完整豐富卡片風格)
+        return `
+          <div onclick="openDetailModal('${item.id}')" class="flex bg-gray-900 border ${isSold ? 'grayscale opacity-60 border-gray-800' : 'border-gray-800 hover:border-indigo-500/60'} rounded-2xl relative transition group cursor-pointer overflow-hidden flex-col justify-between shadow-md">
+            
+            <!-- 圖片區 -->
+            <div class="relative aspect-video bg-gray-950 overflow-hidden flex items-center justify-center">
+              <img src="${item.image}" alt="${safeTitle}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 block">
+              
+              ${isSold ? `
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                  <div class="border-3 border-red-500 text-red-400 font-black text-sm px-3.5 py-1.5 rounded-xl uppercase tracking-wider transform -rotate-12 bg-black/85 backdrop-blur-md shadow-[0_0_25px_rgba(239,68,68,0.7)] flex items-center gap-1.5 ring-2 ring-red-500/40">
+                    <i class="fa-solid fa-circle-check text-red-500"></i> 已成交 SOLD
+                  </div>
                 </div>
-                <div class="text-[10px] text-gray-300 bg-gray-900/80 px-2 py-0.5 rounded-md backdrop-blur-sm">
-                  ${item.categoryName}
-                </div>
+              ` : ''}
+
+              <div class="absolute top-2 left-2 flex gap-1 z-10">${badgeHtml}</div>
+
+              <!-- 右上角品類 -->
+              <div class="absolute top-2 right-2 bg-black/70 text-gray-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/20">
+                ${item.categoryName}
               </div>
             </div>
 
-            <!-- 卡片內容區 -->
-            <div class="p-3.5 flex-1 flex flex-col justify-between space-y-3">
+            <!-- 卡片內容區 (desktop-title-font + desktop-price-font) -->
+            <div class="p-3.5 sm:p-4 flex-1 flex flex-col justify-between space-y-2.5">
               <div>
-                <h3 class="font-bold text-white text-xs sm:text-sm line-clamp-2 group-hover:text-amber-300 transition-colors" title="${escapedTitle}">
-                  ${escapedTitle}
+                <h3 class="font-black ${isSold ? 'text-gray-300' : 'text-gray-100'} desktop-title-font line-clamp-2 group-hover:text-amber-300 transition-colors leading-snug" title="${safeTitle}">
+                  ${isSold ? '<span class="text-gray-400 font-bold">【已成交】</span>' : ''}${safeTitle}
                 </h3>
-                <p class="text-[11px] text-gray-400 mt-1 line-clamp-2 leading-relaxed">
-                  ${escapedNotes}
+                <p class="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed font-medium">
+                  ${safeDesc}
                 </p>
               </div>
 
-              <!-- 底部同仁隱私遮罩 -->
-              <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between text-[11px] text-gray-400">
-                <span class="flex items-center gap-1.5 font-medium text-gray-300">
-                  <i class="fa-solid fa-user-tag text-gray-400"></i> ${escapedAuthor}
-                </span>
-                <span class="text-[10px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">
-                  ${item.contactMasked}
-                </span>
+              <!-- 底部標價與分機 -->
+              <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-gray-500 font-bold uppercase block">${isSold ? 'STATUS' : 'PRICE'}</span>
+                  <div class="font-black ${isSold ? 'text-gray-400 line-through' : 'text-amber-400'} desktop-price-font">${item.priceDisplay}</div>
+                </div>
+                
+                <div onclick="event.stopPropagation()" class="flex items-center gap-1.5">
+                  <button onclick="copyContactForItem('${item.id}')" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-amber-300 font-mono font-bold text-xs rounded-xl border border-amber-500/30 transition active:scale-90 flex items-center gap-1" title="點擊複製分機">
+                    <i class="fa-solid fa-phone text-[10px]"></i> ${safeContact}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -576,26 +1218,49 @@
       }).join('');
     }
 
+    // 詳情彈窗
     function openDetailModal(id) {
+      currentOpenedId = id;
       const item = (window.HISTORY_2026_DATA || []).find(d => d.id === id);
       if (!item) return;
 
-      document.getElementById('modal-img').src = item.image;
-      document.getElementById('modal-category').textContent = item.categoryName;
-      document.getElementById('modal-title').textContent = item.title;
+      const isSold = !!item.isSold;
+      const modalImg = document.getElementById('modal-img');
+      const modalStamp = document.getElementById('modal-sold-stamp');
+      modalImg.src = item.image;
+      if (isSold) {
+        modalImg.classList.add('grayscale', 'contrast-90', 'opacity-70');
+        if (modalStamp) modalStamp.classList.remove('hidden');
+      } else {
+        modalImg.classList.remove('grayscale', 'contrast-90', 'opacity-70');
+        if (modalStamp) modalStamp.classList.add('hidden');
+      }
+
+      document.getElementById('modal-title').textContent = (isSold ? '【已成交】' : '') + item.title;
       document.getElementById('modal-price').textContent = item.priceDisplay;
+      document.getElementById('modal-category-tag').textContent = item.categoryName;
       document.getElementById('modal-notes').textContent = item.notes || '無額外備註（全新原廠抽獎正品）';
-      document.getElementById('modal-author').textContent = `刊登同仁：${item.author}`;
-      document.getElementById('modal-contact').textContent = `聯絡紀錄：${item.contactMasked}`;
+      document.getElementById('modal-author').textContent = item.author;
+      document.getElementById('modal-contact').textContent = item.contactMasked;
+
+      const statusBadge = document.getElementById('modal-status-badge');
+      if (isSold) {
+        statusBadge.textContent = '🔒 已成交結案';
+        statusBadge.className = 'bg-gray-900 px-2.5 py-1 rounded-lg border border-gray-800 font-bold text-gray-400';
+      } else {
+        statusBadge.textContent = '🟢 待洽詢 / 待轉讓';
+        statusBadge.className = 'bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-500/40 font-bold text-emerald-300 shadow-sm';
+      }
 
       const badge = document.getElementById('modal-type-badge');
-      badge.textContent = item.typeBadge;
-      if (item.type === 'buy') {
-        badge.className = 'absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-black bg-sky-500 text-gray-950 shadow-lg';
+      if (isSold) {
+        badge.innerHTML = `<span class="bg-gray-800 text-gray-300 border border-gray-700 font-bold px-2 py-0.5 rounded-lg text-xs">已成交</span>`;
+      } else if (item.type === 'buy') {
+        badge.innerHTML = `<span class="bg-sky-500 text-gray-950 font-black px-2.5 py-0.5 rounded-lg text-xs shadow">🔍 尾牙收購</span>`;
       } else if (item.type.startsWith('voucher')) {
-        badge.className = 'absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-black bg-emerald-500 text-gray-950 shadow-lg';
+        badge.innerHTML = `<span class="bg-emerald-500 text-gray-950 font-black px-2.5 py-0.5 rounded-lg text-xs shadow">🎟️ 文康券</span>`;
       } else {
-        badge.className = 'absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-black bg-amber-500 text-gray-950 shadow-lg';
+        badge.innerHTML = `<span class="bg-amber-500 text-gray-950 font-black px-2.5 py-0.5 rounded-lg text-xs shadow">💰 尾牙轉賣</span>`;
       }
 
       document.getElementById('detail-modal').classList.remove('hidden');
