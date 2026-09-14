@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="trBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="50%" stop-color="#115e59"/>
+      <stop offset="100%" stop-color="#042f2e"/>
+    </linearGradient>
+    <linearGradient id="trGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#facc15"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" rx="28" fill="url(#trBgGrad)"/>
+  <rect x="24" y="24" width="752" height="402" rx="20" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="8 6" stroke-opacity="0.6"/>
+
+  <rect x="24" y="24" width="160" height="402" rx="20" fill="#2dd4bf" fill-opacity="0.15"/>
+  <circle cx="104" cy="120" r="48" fill="#2dd4bf" fill-opacity="0.2"/>
+  <text x="104" y="132" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="42" text-anchor="middle">✈️</text>
+  <text x="104" y="220" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800" fill="#5eead4" text-anchor="middle">華翔旅遊</text>
+  <text x="104" y="250" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600" fill="#99f6e4" text-anchor="middle">TRAVEL</text>
+  <text x="104" y="275" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="500" fill="#ccfbf1" text-anchor="middle">VOUCHER</text>
+  
+  <line x1="184" y1="24" x2="184" y2="426" stroke="#134e4a" stroke-width="2" stroke-dasharray="6 6"/>
+  <circle cx="184" cy="24" r="14" fill="#042f2e"/>
+  <circle cx="184" cy="426" r="14" fill="#042f2e"/>
+
+  <g transform="translate(220, 0)">
+    <text x="0" y="85" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" fill="#a7f3d0" letter-spacing="3">年度尾牙抽獎 幸運大獎</text>
+    <text x="0" y="150" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="42" font-weight="900" fill="#ffffff">華翔旅遊金 禮券</text>
+    <text x="0" y="195" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800" fill="url(#trGold)">面額價值 NT$ 30,000 元整</text>
+
+    <rect x="0" y="235" width="510" height="72" rx="14" fill="#134e4a" fill-opacity="0.8" stroke="#2dd4bf" stroke-width="1.5"/>
+    <text x="24" y="278" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="600" fill="#e6fffa">適用：</text>
+    <text x="75" y="278" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700" fill="#ffffff">全球機票 / 國內外精選行程 / 自由行折抵</text>
+
+    <text x="0" y="360" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="500" fill="#99f6e4">無使用期限限制 • 專人行程規劃服務 • 歷史存檔</text>
+    <rect x="420" y="342" width="90" height="26" rx="6" fill="#facc15" fill-opacity="0.2"/>
+    <text x="465" y="360" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#fde047" text-anchor="middle">★ 特等獎</text>
+  </g>
+</svg>
