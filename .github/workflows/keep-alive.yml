@@ -5,11 +5,6 @@ on:
     # 每天於 UTC 04:00 (台灣時間中午 12:00) 自動執行一次
     - cron: '0 4 * * *'
   workflow_dispatch: # 支援在 GitHub Actions 後台手動隨時觸發測試並立即寄發狀態通知信
-    inputs:
-      force_mail:
-        description: '是否立即寄發系統狀態通知信 (true/false)'
-        required: false
-        default: 'true'
 
 permissions:
   contents: write
@@ -20,7 +15,7 @@ jobs:
   keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 檢出倉庫代碼 (用於每月定期刷新活躍度)
+      - name: 📥 檢出倉庫代碼
         uses: actions/checkout@v4
 
       - name: 🛡️ 第一層防護：檢查 Supabase 專案狀態與睡著自動強制開機 (Auto-Restore)
@@ -87,7 +82,6 @@ jobs:
           API_KEY="${{ secrets.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyOTE5MjYsImV4cCI6MjEwMDg2NzkyNn0.ljcpgFCejH4OmUWZTp80RZ8nVsKtg5gbB1AYfNfoSDI' }}"
           PRESENCE_UUID="00000000-0000-0000-0000-000000000012"
 
-          # 1. 讀取 Items 資料表並計算線上有效刊登數
           ITEMS_JSON=$(curl -s --retry 3 --retry-delay 5 \
             -X GET "${SUPABASE_URL}/rest/v1/items?select=id,title,device_id" \
             -H "apikey: ${API_KEY}" \
@@ -102,14 +96,12 @@ jobs:
           ACTIVE_COUNT=$(echo "$ITEMS_JSON" | python3 -c "import sys, json; data=json.load(sys.stdin); valid=[i for i in data if isinstance(i, dict) and i.get('device_id')!='SYSTEM' and not (i.get('title') or '').startswith('SYSTEM_') and not (i.get('id') or '').startswith('00000000-0000-0000-0000-')]; print(len(valid))" 2>/dev/null || echo "5")
           echo "📦 目前雲端真實刊登商品數: ${ACTIVE_COUNT} 件"
 
-          # 2. 讀取 Messages 公告設定表
           HTTP_STATUS_MSG=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
             -X GET "${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=*&limit=1" \
             -H "apikey: ${API_KEY}" \
             -H "Authorization: Bearer ${API_KEY}")
           echo "📖 [讀取 2] Messages 表查詢狀態碼: ${HTTP_STATUS_MSG}"
 
-          # 3. 寫入實質交易 (POST 新增一筆保活心跳紀錄至 PostgreSQL WAL)
           NOW_TS=$(date -u -d '+8 hours' +"%Y-%m-%d %H:%M:%S")
           HTTP_STATUS_POST=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
             -X POST "${SUPABASE_URL}/rest/v1/messages" \
@@ -119,7 +111,6 @@ jobs:
             -d "{\"item_id\":\"${PRESENCE_UUID}\",\"sender_id\":\"GITHUB_KEEPALIVE_BOT\",\"sender_name\":\"系統保活守衛\",\"content\":\"KEEPALIVE_${NOW_TS}\"}")
           echo "✍️ [寫入 1] POST 新增交易狀態碼: ${HTTP_STATUS_POST}"
 
-          # 4. 清理保活心跳紀錄 (DELETE 交易，確保不留垃圾資料且不影響在線人數)
           HTTP_STATUS_DEL=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
             -X DELETE "${SUPABASE_URL}/rest/v1/messages?item_id=eq.${PRESENCE_UUID}&sender_id=eq.GITHUB_KEEPALIVE_BOT" \
             -H "apikey: ${API_KEY}" \
@@ -143,7 +134,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
-          FORCE_MAIL: ${{ github.event.inputs.force_mail || 'true' }}
           AUTO_RESTORED: ${{ steps.check_status.outputs.auto_restored }}
           FINAL_STATUS: ${{ steps.check_status.outputs.final_status }}
           STATUS_ITEMS: ${{ steps.db_ping.outputs.status_items }}
@@ -152,11 +142,10 @@ jobs:
           ACTIVE_COUNT: ${{ steps.db_ping.outputs.active_count }}
           TW_TIME: ${{ steps.db_ping.outputs.tw_time }}
         run: |
-          # 判斷是否為每週一 (1)、手動觸發測試 (workflow_dispatch)，或曾發生自動強制開機 (auto_restored=true)
           DAY_OF_WEEK=$(date -u -d '+8 hours' '+%u')
           SHOULD_SEND="false"
 
-          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$FORCE_MAIL" = "true" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             SHOULD_SEND="true"
             export REPORT_TYPE="手動觸發即時驗證測試報告"
           elif [ "$AUTO_RESTORED" = "true" ]; then
@@ -169,79 +158,7 @@ jobs:
 
           if [ "$SHOULD_SEND" = "true" ]; then
             echo "📧 準備透過 GitHub 官方通知機制寄發【${REPORT_TYPE}】給 @JOVIANpega ..."
-            python3 -c '
-import os, json, urllib.request
-
-token = os.environ["GH_TOKEN"]
-repo = os.environ["GITHUB_REPOSITORY"]
-tw_time = os.environ.get("TW_TIME", "")
-date_only = tw_time.split(" ")[0] if tw_time else "今日"
-report_type = os.environ.get("REPORT_TYPE", "系統健康週報")
-final_status = os.environ.get("FINAL_STATUS", "ACTIVE_HEALTHY")
-s_items = os.environ.get("STATUS_ITEMS", "200")
-s_post = os.environ.get("STATUS_POST", "201")
-s_del = os.environ.get("STATUS_DEL", "204")
-active_count = os.environ.get("ACTIVE_COUNT", "5")
-
-title = f"📊 [PEGA 好物交換所] 系統運作健康週報 ({date_only})"
-lines = [
-    f"@JOVIANpega 您好，系統自動保活守衛為您回報最新運作狀態（**{report_type}**）：",
-    "",
-    "### 🟢 1. 雲端資料庫與保活心跳狀態",
-    "| 檢查項目 | 檢測結果 | 狀態說明 |",
-    "| :--- | :--- | :--- |",
-    f"| **Supabase 總控台狀態** | `{final_status}` | 🟢 雲端伺服器正常運作中 |",
-    f"| **資料庫讀取驗證 (`GET`)** | `HTTP {s_items}` | ✅ 商品與公告資料表讀取正常 |",
-    f"| **資料庫寫入交易 (`POST`)** | `HTTP {s_post}` | ✅ 底層 WAL 實質寫入交易成功 |",
-    f"| **保活紀錄清理 (`DELETE`)** | `HTTP {s_del}` | ✅ 自動清除測試紀錄、零垃圾殘留 |",
-    f"| **目前雲端真實刊登數** | **{active_count} 件** | 📦 另含 13 件常態示範好物離線保底 |",
-    f"| **打卡檢測時間 (台灣時間)** | `{tw_time}` | ⏰ 每日中午 12:00 定時執行保活 |",
-    "",
-    "---",
-    "",
-    "### 🌐 2. 線上站點快速巡檢連結",
-    "* **官方正式站**：https://pega-exchange.netlify.app",
-    "* **備用分流站**：https://chipper-rolypoly-7c56c3.netlify.app",
-    "* **2026 尾牙歷史行情庫**：https://pega-exchange.netlify.app/history-2026.html",
-    "",
-    "> 💡 **說明**：本通知信由 GitHub Actions 保活守衛於每週一中午 12:00（或手動測試時）自動產生，並由 GitHub 官方通知系統寄達您的信箱；平時週二至週日將安靜執行保活不打擾您。"
-]
-body = "\n".join(lines)
-
-req_list = urllib.request.Request(
-    f"https://api.github.com/repos/{repo}/issues?state=open",
-    headers={"Authorization": f"Bearer {token}", "User-Agent": "PEGA-KeepAlive-Bot"}
-)
-try:
-    with urllib.request.urlopen(req_list) as r:
-        old_issues = json.loads(r.read().decode("utf-8"))
-        for iss in old_issues:
-            if "[PEGA 好物交換所]" in (iss.get("title") or ""):
-                num = iss["number"]
-                close_req = urllib.request.Request(
-                    f"https://api.github.com/repos/{repo}/issues/{num}",
-                    data=json.dumps({"state": "closed"}).encode("utf-8"),
-                    headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json", "User-Agent": "PEGA-KeepAlive-Bot"},
-                    method="PATCH"
-                )
-                urllib.request.urlopen(close_req).read()
-except Exception as e:
-    print("Close old issues warning:", e)
-
-req_create = urllib.request.Request(
-    f"https://api.github.com/repos/{repo}/issues",
-    data=json.dumps({
-        "title": title,
-        "body": body,
-        "assignees": ["JOVIANpega"]
-    }).encode("utf-8"),
-    headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json", "User-Agent": "PEGA-KeepAlive-Bot"},
-    method="POST"
-)
-with urllib.request.urlopen(req_create) as r:
-    res_data = json.loads(r.read().decode("utf-8"))
-    print("✅ 已成功發布週報並觸發 GitHub 官方通知信！Issue URL:", res_data.get("html_url"))
-'
+            python3 .github/send_weekly_report.py
           else
             echo "ℹ️ 今日非週一例行週報日 (Day=${DAY_OF_WEEK})，已完成每日安靜讀寫保活，不寄信打擾。"
           fi
