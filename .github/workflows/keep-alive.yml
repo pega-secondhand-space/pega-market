@@ -1,42 +1,134 @@
-name: Supabase Keep-Alive (保活防休眠心跳)
+name: Supabase Keep-Alive (保活防休眠心跳與自動喚醒)
 
 on:
   schedule:
-    # 每 3 天於 UTC 04:00 (台灣時間中午 12:00) 自動執行一次
-    - cron: '0 4 */3 * *'
+    # 每天於 UTC 04:00 (台灣時間中午 12:00) 自動執行一次
+    - cron: '0 4 * * *'
   workflow_dispatch: # 支援在 GitHub Actions 後台手動隨時觸發測試
+
+permissions:
+  contents: write
+  actions: write
 
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - name: 💓 發送 Supabase 心跳保活請求 (Ping Items Table)
+      - name: 📥 檢出倉庫代碼 (用於每月定期刷新活躍度)
+        uses: actions/checkout@v4
+
+      - name: 🛡️ 第一層防護：檢查 Supabase 專案狀態與睡著自動強制開機 (Auto-Restore)
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID || 'llnnbanqtmnccfvtwooo' }}
         run: |
           echo "=================================================="
-          echo "🚀 正在發送 Supabase 保活心跳請求..."
+          echo "🔍 [Step 1] 檢查 Supabase 雲端專案總控台狀態..."
           echo "執行時間: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "=================================================="
+
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "ℹ️ 未設定 SUPABASE_ACCESS_TOKEN，跳過總控台狀態檢查，直接進行資料庫讀寫心跳。"
+            exit 0
+          fi
+
+          PROJECT_INFO=$(curl -s -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            "https://api.supabase.com/v1/projects/${PROJECT_ID}")
+
+          STATUS=$(echo "$PROJECT_INFO" | grep -o '"status":"[^"]*"' | head -n1 | cut -d'"' -f4)
+          echo "📊 目前專案狀態: ${STATUS:-UNKNOWN}"
+
+          if [ "$STATUS" != "ACTIVE_HEALTHY" ] && [ -n "$STATUS" ]; then
+            echo "⚠️ 偵測到專案處於非活躍狀態 (${STATUS})，正在發送自動喚醒指令 (Restore API)..."
+            RESTORE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+              -H "Content-Length: 0" \
+              "https://api.supabase.com/v1/projects/${PROJECT_ID}/restore")
+            echo "⚡ Restore API 回應狀態碼: ${RESTORE_CODE}"
+
+            echo "⏳ 等待資料庫容器重新啟動與 DNS 生效 (最多等待 150 秒)..."
+            for i in $(seq 1 30); do
+              sleep 5
+              CHK_INFO=$(curl -s -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+                "https://api.supabase.com/v1/projects/${PROJECT_ID}")
+              CHK_STATUS=$(echo "$CHK_INFO" | grep -o '"status":"[^"]*"' | head -n1 | cut -d'"' -f4)
+              echo "  [$((i*5))s] 狀態: ${CHK_STATUS}"
+              if [ "$CHK_STATUS" = "ACTIVE_HEALTHY" ]; then
+                echo "✅ 資料庫已成功喚醒並恢復 ACTIVE_HEALTHY！額外等待 10 秒確保 DNS 同步..."
+                sleep 10
+                break
+              fi
+            done
+          else
+            echo "✅ 專案目前處於 ACTIVE_HEALTHY 正常運作狀態。"
+          fi
+
+      - name: 💓 第二層防護：執行資料庫「實質讀寫交易 (GET + POST + DELETE)」保活心跳
+        run: |
+          echo "=================================================="
+          echo "🚀 [Step 2] 發送 Supabase 實質讀寫交易保活請求..."
           echo "=================================================="
 
           SUPABASE_URL="https://llnnbanqtmnccfvtwooo.supabase.co"
           API_KEY="${{ secrets.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5iYW5xdG1uY2NmdnR3b29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyOTE5MjYsImV4cCI6MjEwMDg2NzkyNn0.ljcpgFCejH4OmUWZTp80RZ8nVsKtg5gbB1AYfNfoSDI' }}"
+          PRESENCE_UUID="00000000-0000-0000-0000-000000000012"
 
-          # 1. 查詢 Items 資料表 1 筆資料
-          HTTP_STATUS_ITEMS=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${SUPABASE_URL}/rest/v1/items?select=id&limit=1"             -H "apikey: ${API_KEY}"             -H "Authorization: Bearer ${API_KEY}")
+          # 1. 讀取 Items 資料表
+          HTTP_STATUS_ITEMS=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
+            -X GET "${SUPABASE_URL}/rest/v1/items?select=id&limit=1" \
+            -H "apikey: ${API_KEY}" \
+            -H "Authorization: Bearer ${API_KEY}")
+          echo "📖 [讀取 1] Items 表查詢狀態碼: ${HTTP_STATUS_ITEMS}"
 
-          echo "Items 表查詢狀態碼: ${HTTP_STATUS_ITEMS}"
+          # 2. 讀取 Messages 公告設定表
+          HTTP_STATUS_MSG=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
+            -X GET "${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=*&limit=1" \
+            -H "apikey: ${API_KEY}" \
+            -H "Authorization: Bearer ${API_KEY}")
+          echo "📖 [讀取 2] Messages 表查詢狀態碼: ${HTTP_STATUS_MSG}"
 
-          # 2. 查詢 Messages 公告設定表
-          HTTP_STATUS_MSG=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${SUPABASE_URL}/rest/v1/messages?item_id=eq.00000000-0000-0000-0000-000000000008&select=*&limit=1"             -H "apikey: ${API_KEY}"             -H "Authorization: Bearer ${API_KEY}")
+          # 3. 寫入實質交易 (POST 新增一筆保活心跳紀錄至 PostgreSQL WAL)
+          NOW_TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          HTTP_STATUS_POST=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
+            -X POST "${SUPABASE_URL}/rest/v1/messages" \
+            -H "apikey: ${API_KEY}" \
+            -H "Authorization: Bearer ${API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"item_id\":\"${PRESENCE_UUID}\",\"sender_id\":\"GITHUB_KEEPALIVE_BOT\",\"sender_name\":\"系統保活守衛\",\"content\":\"KEEPALIVE_${NOW_TS}\"}")
+          echo "✍️ [寫入 1] POST 新增交易狀態碼: ${HTTP_STATUS_POST}"
 
-          echo "Messages 表查詢狀態碼: ${HTTP_STATUS_MSG}"
+          # 4. 清理保活心跳紀錄 (DELETE 交易，確保不留垃圾資料且不影響在線人數)
+          HTTP_STATUS_DEL=$(curl -s --retry 3 --retry-delay 5 -o /dev/null -w "%{http_code}" \
+            -X DELETE "${SUPABASE_URL}/rest/v1/messages?item_id=eq.${PRESENCE_UUID}&sender_id=eq.GITHUB_KEEPALIVE_BOT" \
+            -H "apikey: ${API_KEY}" \
+            -H "Authorization: Bearer ${API_KEY}")
+          echo "🧹 [寫入 2] DELETE 清理交易狀態碼: ${HTTP_STATUS_DEL}"
 
-          if [ "$HTTP_STATUS_ITEMS" -eq 200 ] || [ "$HTTP_STATUS_MSG" -eq 200 ]; then
+          if [ "$HTTP_STATUS_ITEMS" -eq 200 ] && [ "$HTTP_STATUS_POST" -eq 201 ]; then
             echo "=================================================="
-            echo "✅ Supabase 資料庫保活成功！專案狀態正常活躍中。"
+            echo "✅ Supabase 讀寫雙重保活成功！底層資料庫已記錄實質交易。"
             echo "=================================================="
           else
             echo "=================================================="
-            echo "⚠️ 請求異常 (Items: ${HTTP_STATUS_ITEMS}, Msg: ${HTTP_STATUS_MSG})"
+            echo "⚠️ 請求異常 (Items: ${HTTP_STATUS_ITEMS}, Msg: ${HTTP_STATUS_MSG}, POST: ${HTTP_STATUS_POST}, DEL: ${HTTP_STATUS_DEL})"
             echo "=================================================="
             exit 1
+          fi
+
+      - name: 🔄 第三層防護：防止 GitHub 60 天無活動自動凍結排程
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 每月 1 號與 15 號自動更新輕量心跳時間戳，重置 GitHub 60 天倉庫活躍計時器
+          DAY_OF_MONTH=$(date -u '+%d')
+          if [ "$DAY_OF_MONTH" = "01" ] || [ "$DAY_OF_MONTH" = "15" ]; then
+            echo "📅 今日為每月定期活躍日 (${DAY_OF_MONTH}日)，更新保活時間戳紀錄..."
+            echo "{\"last_verified_utc\": \"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"}" > .github/keepalive_status.json
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -f .github/keepalive_status.json
+            git commit -m "chore: update keep-alive heartbeat status [skip ci]" || true
+            git push || true
+          else
+            echo "✅ 倉庫活躍度正常 (每月 1、15 日將自動刷新 Git 活躍紀錄)。"
           fi
