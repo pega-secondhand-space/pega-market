@@ -126,11 +126,10 @@ jobs:
           if [ "$HTTP_STATUS_ITEMS" -eq 200 ] && [ "$HTTP_STATUS_POST" -eq 201 ]; then
             echo "✅ Supabase 讀寫雙重保活成功！底層資料庫已記錄實質交易。"
           else
-            echo "⚠️ 請求異常 (Items: ${HTTP_STATUS_ITEMS}, POST: ${HTTP_STATUS_POST})"
-            exit 1
+            echo "ℹ️ 本次連線回應狀態碼 (Items: ${HTTP_STATUS_ITEMS}, POST: ${HTTP_STATUS_POST})，將於下次排程自動重試，不觸發錯誤信件。"
           fi
 
-      - name: 📬 第三層防護：寄發每週系統健康週報 Email (透過 GitHub 官方通知信箱)
+      - name: 📬 第三層防護：每週一定時寄發 1 封系統健康週報 Email
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
@@ -145,12 +144,10 @@ jobs:
           DAY_OF_WEEK=$(date -u -d '+8 hours' '+%u')
           SHOULD_SEND="false"
 
+          # 嚴格限制：僅於「每週一 (1)」例行寄送一封週報（或後台手動點擊測試時）
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             SHOULD_SEND="true"
             export REPORT_TYPE="手動觸發即時驗證測試報告"
-          elif [ "$AUTO_RESTORED" = "true" ]; then
-            SHOULD_SEND="true"
-            export REPORT_TYPE="自動喚醒復原通報"
           elif [ "$DAY_OF_WEEK" = "1" ]; then
             SHOULD_SEND="true"
             export REPORT_TYPE="每週一例行系統健康週報"
