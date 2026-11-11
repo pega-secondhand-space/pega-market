@@ -85,6 +85,20 @@ async function togglePinItem(id) {
 }
 
 /**
+ * 合併線上貼文與常態展示之長期刊登示範好物
+ * @param {Array} dbItems 雲端資料庫回傳之商品清單
+ */
+function mergeItemsWithSamples(dbItems) {
+  const samples = (typeof getFallbackSampleItems === 'function') ? getFallbackSampleItems() : [];
+  if (!dbItems || dbItems.length === 0) return samples;
+  
+  // 檢查是否已有相同 ID，避免重複
+  const existingIds = new Set(dbItems.map(i => i.id));
+  const newSamples = samples.filter(s => !existingIds.has(s.id));
+  return [...dbItems, ...newSamples];
+}
+
+/**
  * 載入全站所有商品清單
  * @param {string} [itemIdToOpen] 載入後自動聚焦並展開的商品 ID
  */
@@ -101,50 +115,61 @@ async function loadItems(highlightItemId, autoOpenModal = false) {
       }
     });
     if (res.ok) {
-      allItems = await res.json();
-      filterItems();
-      refreshAnnouncementDisplay();
-
-      if (highlightItemId) {
-        const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
-        const filtered = allItems.filter(item => {
-          if (item.device_id === 'SYSTEM' || (item.title && item.title.startsWith('SYSTEM_')) || (item.id && item.id.startsWith('00000000-0000-0000-0000-'))) return false;
-          if (currentFilter !== 'all' && item.type !== currentFilter) return false;
-          if (searchVal) {
-            const matchTitle = (item.title || '').toLowerCase().includes(searchVal);
-            const matchDesc = (item.description || '').toLowerCase().includes(searchVal);
-            const matchContact = (item.contact_info || item.contact || '').toLowerCase().includes(searchVal);
-            return matchTitle || matchDesc || matchContact;
-          }
-          return true;
-        });
-
-        const index = filtered.findIndex(item => item.id === highlightItemId);
-        if (index !== -1) {
-          const itemPage = Math.floor(index / itemsPerPage) + 1;
-          currentPage = itemPage;
-          renderItems();
-
-          if (autoOpenModal) {
-            openDetailModal(highlightItemId);
-          }
-
-          setTimeout(() => {
-            const cardElement = document.querySelector(`[data-card-img-id="${highlightItemId}"]`)?.closest('.threads-card-item') ||
-                              document.querySelector(`[onclick*="openDetailModal('${highlightItemId}')"]`);
-            if (cardElement) {
-              cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              cardElement.classList.add('ring-4', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]', 'transition-all');
-              setTimeout(() => {
-                cardElement.classList.remove('ring-4', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
-              }, 3500);
-            }
-          }, 200);
-        }
+      const dbItems = await res.json();
+      if (Array.isArray(dbItems) && dbItems.length > 0) {
+        allItems = mergeItemsWithSamples(dbItems);
+      } else {
+        console.info('雲端目前尚無同仁刊登，載入長期刊登示範版本');
+        allItems = (typeof getFallbackSampleItems === 'function') ? getFallbackSampleItems() : [];
       }
+    } else {
+      console.warn(`Supabase 回傳狀態碼 ${res.status}（可能處於休眠），已啟動長期刊登示範保護機制`);
+      allItems = (typeof getFallbackSampleItems === 'function') ? getFallbackSampleItems() : [];
     }
   } catch(e) {
-    console.error('Load items error:', e);
+    console.warn('Supabase 連線失敗或處於休眠狀態，已啟動長期刊登示範保護機制:', e);
+    allItems = (typeof getFallbackSampleItems === 'function') ? getFallbackSampleItems() : [];
+  }
+
+  filterItems();
+  refreshAnnouncementDisplay();
+
+  if (highlightItemId) {
+    const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+    const filtered = allItems.filter(item => {
+      if (item.device_id === 'SYSTEM' || (item.title && item.title.startsWith('SYSTEM_')) || (item.id && item.id.startsWith('00000000-0000-0000-0000-'))) return false;
+      if (currentFilter !== 'all' && item.type !== currentFilter) return false;
+      if (searchVal) {
+        const matchTitle = (item.title || '').toLowerCase().includes(searchVal);
+        const matchDesc = (item.description || '').toLowerCase().includes(searchVal);
+        const matchContact = (item.contact_info || item.contact || '').toLowerCase().includes(searchVal);
+        return matchTitle || matchDesc || matchContact;
+      }
+      return true;
+    });
+
+    const index = filtered.findIndex(item => item.id === highlightItemId);
+    if (index !== -1) {
+      const itemPage = Math.floor(index / itemsPerPage) + 1;
+      currentPage = itemPage;
+      renderItems();
+
+      if (autoOpenModal) {
+        openDetailModal(highlightItemId);
+      }
+
+      setTimeout(() => {
+        const cardElement = document.querySelector(`[data-card-img-id="${highlightItemId}"]`)?.closest('.threads-card-item') ||
+                          document.querySelector(`[onclick*="openDetailModal('${highlightItemId}')"]`);
+        if (cardElement) {
+          cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          cardElement.classList.add('ring-4', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]', 'transition-all');
+          setTimeout(() => {
+            cardElement.classList.remove('ring-4', 'ring-amber-400', 'shadow-[0_0_35px_rgba(245,158,11,0.6)]');
+          }, 3500);
+        }
+      }, 200);
+    }
   }
 }
 
@@ -173,9 +198,10 @@ async function toggleItemSoldState(itemId) {
   const item = allItems.find(i => i.id === itemId);
   if (!item) return;
 
+  const isSample = item.device_id === 'OFFICIAL_SAMPLE';
   const myItems = JSON.parse(localStorage.getItem('my_created_item_ids') || '[]');
   const isOwner = (item.device_id === myDeviceId) || myItems.includes(item.id);
-  const hasPermission = isOwner || isAdmin;
+  const hasPermission = isOwner || isAdmin || isSample;
 
   if (!hasPermission) {
     return showNotification('⚠️ 只有該貼文的發布同仁或版主可以標記「已售出」喔！', 'warning');
@@ -207,6 +233,8 @@ async function toggleItemSoldState(itemId) {
   item.description = newDesc;
   renderItems();
 
+  if (isSample) return;
+
   try {
     let res;
     if (isOwner) {
@@ -237,6 +265,14 @@ async function toggleItemSoldState(itemId) {
 async function deleteMyItem(itemId) {
   const item = allItems.find(i => i.id === itemId);
   if (!item) return;
+
+  if (item.device_id === 'OFFICIAL_SAMPLE') {
+    if (!confirm('您確定要下架此示範好物嗎？')) return;
+    allItems = allItems.filter(i => i.id !== itemId);
+    filterItems();
+    showNotification('🗑️ 示範好物已順利下架！', 'success');
+    return;
+  }
 
   const isSold = isItemSold(item);
 
